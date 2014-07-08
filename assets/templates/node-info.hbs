@@ -1,3 +1,5 @@
-{{#each attributes}}
-<li class="list-group-item">{{this}}</li>
-{{/each}}
+<ul class="list-unstyled">
+	{{#each attributes}}
+	<li><b>{{key}}</b> : {{value}}</li>
+	{{/each}}
+</ul>

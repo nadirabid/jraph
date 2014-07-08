@@ -138,38 +138,23 @@ var SVGView = Backbone.View.extend({
 
 var NodeDataView = Backbone.View.extend({
 
-	tagName: 'ul',
-
-	className: 'list-group',
-
 	template: JST['node-info'],
 
-	attributes: {
-		style: 'z-index: 20;'
-	},
-
-	initialize: function( options ) {
-		self.position = options.position;
-		self.parent = options.parent;
-	},
+	className: 'info-card panel panel-default',
 
 	render: function() {
 		var self = this;
 
-		var compiledTemplate = self.template({ 
-			attributes: _.collect( self.model.attributes )
+		var attributes = _.map(self.model.attributes, function( v, k ) {
+			return { key: k, value: v };
 		});
-		
-		self.$el.html( compiledTemplate );
-		$( '#container' ).append( self.$el );
 
-		self.$el.css({
-			'position': 'absolute',
-			'top': '100px',
-			'left': '300px',
-			'width': ( self.parent - 400 ) + 'px',
-			'height': ( self.parent - 200 ) + 'px'
+		var compiledTemplate = self.template({ 
+			attributes: attributes
 		});
+
+		self.$el.html( compiledTemplate );
+		$( '#container-overlay' ).append( self.$el );
 
 		return self;
 	}
@@ -188,8 +173,8 @@ var NodeView = SVGView.extend({
 		var self = this;
 		self.force = options.force;
 		self.parent = options.parent;
-		self.radius = 10;
-		self.labelDistance = 25;
+		self.radius = 15;
+		self.labelDistance = 35;
 	},
 
 	click: function( e ) {
@@ -198,9 +183,9 @@ var NodeView = SVGView.extend({
 		if ( e.isDefaultPrevented() )
 			return;
 
-		self.pin( self.parent.width / 6, self.parent.height / 2 )
+		self.pin( ( self.parent.width / 2 ) - 5, ( self.parent.height / 2 ) - 5 )
 			.then(function() { 
-				//self.dataView(); 
+				self.dataView(); 
 			});
 	},
 
@@ -269,10 +254,11 @@ var NodeView = SVGView.extend({
 		});
 	},
 
-	pin: function(nx, ny) {
+	pin: function( nx, ny ) {
 		var self = this;
 		var deferred = Q.defer();
 		var $circle = self.$d3.select( 'circle' );
+		var transitionDuration = 300;
 
 		self.force.resume();
 
@@ -284,7 +270,7 @@ var NodeView = SVGView.extend({
 
 			$circle
 				.transition()
-				.duration( 200 )
+				.duration( transitionDuration )
 				.attr( 'r', self.radius )
 				.each('end', function() {
 					deferred.resolve();
@@ -297,10 +283,10 @@ var NodeView = SVGView.extend({
 
 			$circle
 				.transition()
-				.duration( 500 )
+				.duration( transitionDuration )
 				.attr( 'r', self.radius )
 				.attrTween('transform' , function() {
-					var iX = d3.interpolateRound( self.model.x, nx);
+					var iX = d3.interpolateRound( self.model.x, nx );
 					var iY = d3.interpolateRound( self.model.y, ny );
 					
 					nx = nx || self.model.x;
@@ -332,10 +318,7 @@ var NodeView = SVGView.extend({
 		var self = this;
 
 		//todo: define behavior for what happends when dataView is called multiple times
-		var dataView = new NodeDataView({ 
-			model: self.model,
-			parent: self.parent
-		});
+		var dataView = new NodeDataView({ model: self.model });
 
 		dataView.render();
 
@@ -343,7 +326,7 @@ var NodeView = SVGView.extend({
 			.click(function() {
 				Mousetrap.trigger( 'esc' ); 
 			})
-			.appendTo( '#container' );
+			.appendTo( 'body' );
     
 		Mousetrap.bind('esc', function() {
 			Mousetrap.unbind( 'esc' );
@@ -362,6 +345,8 @@ var NodeView = SVGView.extend({
 		var $d3 = self.$d3 = self.parent.svg
 			.append( function() { return self.el; } )
 			.data( [ self.model ] );
+
+		$d3.select( 'circle' ).attr( 'r', self.radius );
 
 		$d3.call( self.force.drag );
 
@@ -425,8 +410,8 @@ var GraphView = SVGView.extend({
 		self.labelLinks = [];
 		self.nodeViews = [];
 		self.linkViews = [];
-		self.width = $( window ).innerWidth() || options.width;
-		self.height = $( window ).innerHeight() || options.height;
+		self.width = $( window ).outerWidth();
+		self.height = $( window ).outerHeight();
 		self.force = d3.layout.force()
 			.size( [ self.width, self.height ] )
 			.theta( .5 )
@@ -461,11 +446,14 @@ var GraphView = SVGView.extend({
 	resize: function() {
 		var self = this;
 
-		self.width = $( window ).innerWidth();
-		self.height = $( window ).innerHeight();
+		self.width = $( window ).outerWidth();
+		self.height = $( window ).outerHeight();
 
-		self.svg.attr( 'width', self.width );
-		self.svg.attr( 'height', self.height );
+		//self.svg.attr( 'width', self.width );
+		//self.svg.attr( 'height', self.height );
+
+		$( '#graph-view' ).height( $(window).outerHeight() );
+		$( '#graph-view' ).width( $(window).outerWidth() );
 
 		self.force.size( [ self.width, self.height ] );
 		self.force.start();
@@ -479,7 +467,7 @@ var GraphView = SVGView.extend({
 
 		var svg = self.svg = d3.select( self.el );
 
-		window.addEventListener( 'resize', _.bind( self.resize, self ) );
+		window.addEventListener( 'resize', _.throttle( _.bind( self.resize, self ), 400 ) );
 		self.resize();
 
     self.links.forEach(function ( link ) {
@@ -505,5 +493,4 @@ var GraphView = SVGView.extend({
 // Initialization
 //
 
-var graphView = new GraphView( { width: 960, height: 500 } );
-
+var graphView = new GraphView();

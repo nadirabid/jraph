@@ -1,0 +1,81 @@
+body {
+  overflow: hidden;
+}
+
+#container-overlay {
+  pointer-events: none;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  padding: 2em;
+}
+
+.hypergraph {
+  fill: #666;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.signin-form {
+  max-width: 500px;
+  margin-top: 200px;
+}
+
+.node {
+  stroke-width:1px;
+  stroke:#eee;
+  fill:#fff;
+}
+
+.link {
+  opacity: .2;
+  stroke: #000;
+  stroke-width:.5em;
+}
+
+.overlay
+{
+   background-color: #fff;
+   opacity: 0;
+   filter: alpha(opacity=0);
+   position: absolute; 
+   top: 0; 
+   left: 0;
+   width: 100%; 
+   height: 100%;
+   z-index: 1;
+}
+
+.info-card
+{
+  pointer-events:auto;
+  background-color: rgba(255,255,255,.95);
+  white-space:nowrap;
+  padding:2em;
+  height:100%;
+  box-shadow:0 .05em .2em rgba(0,0,0,.1);
+  border:1px solid #eee;
+  border-radius:0;
+  display:inline-block;
+}
+
+.info-card-pin
+{
+  border:1px solid #eee; 
+  background-color:#fff;
+  border-radius:50%;
+  width:5em;
+  height:5em;
+  box-shadow:inset 0 2px 5px rgba(0,0,0,.1);
+  position:absolute;
+  top:50%;
+  left:-2.5em;
+  margin-top:-2.5em;
+}
+
+.info-card ul {
+  margin:0;
+}
