@@ -85,7 +85,7 @@ var HypernodeController = {
 		var hypernodeId = req.param( 'id' );
 		var data = JSON.stringify( req.body.data );
 
-		if ( !_.isString( hypernodeId) ) {
+		if ( !_.isString( hypernodeId ) ) {
 			res.json({ error: 'You must specify a valid hypernodeId douch. You specified: ' + hypernodeId });
 		}
 

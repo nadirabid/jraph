@@ -30,6 +30,7 @@ var jsFilesToInject = [
   'js/dependencies/lodash.js',
   'js/dependencies/handlebars-v1.3.0.js',
   'js/dependencies/backbone.js',
+  'js/dependencies/vue.js',
   'js/dependencies/q.js',
   'js/dependencies/mousetrap.js',
   //'js/dependencies/**/*.js',
@@ -37,6 +38,7 @@ var jsFilesToInject = [
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
   'js/jst.js',
+  'js/vuetest.js',
   'js/hypergraph.js'
   //'js/**/*.js'
 ];

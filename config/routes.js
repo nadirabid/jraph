@@ -30,8 +30,8 @@ module.exports.routes = {
 
 
   '/': {
-    controller: 'ApplicationController',
-    action: 'home'
+    controller: 'DesignController',
+    action: 'index'
   },
 
   // HypernodeController

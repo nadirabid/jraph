@@ -4,38 +4,49 @@
 
 var Hypernode = Backbone.Model.extend({
 
+	idAttribute: '_id',
+
 	initialize: function() {
 		Object.defineProperties(this, {
 			index: {
-				get: function() { return this.get( 'index' ); },
-				set: function( val ) { this.set( 'index', val ); }
+				get: function() { return this.get( '_index' ); },
+				set: function( val ) { this.set( '_index', val ); }
 			},
 			x: {
-				get: function() { return this.get( 'x' ); },
-				set: function( val ) { this.set( 'x', val ); }
+				get: function() { return this.get( '_x' ); },
+				set: function( val ) { this.set( '_x', val ); }
 			},
 			y: {
-				get: function() { return this.get( 'y' ); },
-				set: function( val ) { this.set( 'y', val ); }
+				get: function() { return this.get( '_y' ); },
+				set: function( val ) { this.set( '_y', val ); }
 			},
 			px: {
-				get: function() { return this.get( 'px' ); },
-				set: function( val ) { this.set( 'px', val ); }
+				get: function() { return this.get( '_px' ); },
+				set: function( val ) { this.set( '_px', val ); }
 			},
 			py: {
-				get: function() { return this.get( 'py' ); },
-				set: function( val ) { this.set( 'py', val ); }
+				get: function() { return this.get( '_py' ); },
+				set: function( val ) { this.set( '_py', val ); }
 			},
 			fixed: {
-				get: function() { return this.get( 'fixed' ); },
-				set: function( val ) { this.set( 'fixed', val ); }
+				get: function() { return this.get( '_fixed' ); },
+				set: function( val ) { this.set( '_fixed', val ); }
 			},
 			weight: {
-				get: function() { return this.get( 'weight' ); },
-				set: function( val ) { this.set( 'weight', val ); }
+				get: function() { return this.get( '_weight' ); },
+				set: function( val ) { this.set( '_weight', val ); }
 			}
 		});
-	}
+	},
+
+	toJSON: function( options ) {
+		//parse out attributes with keys without the '_' prefix
+		var attributes = _.pick(this.attributes, function( value, key ) {
+			return key.charAt( 0 ) != '_';
+		});		
+
+    return attributes;
+  }
 
 });
 
@@ -72,9 +83,17 @@ var HypergraphNodes = Backbone.Collection.extend({
 				return datum[0] != null;
 			})
 			.map(function( datum ) {
-				var ret = datum[0].data;
-				ret.data = JSON.parse( ret.data );
-				return ret;
+				var data = datum[0].data;
+				var model = JSON.parse( data.data );
+				
+				delete data.data;
+
+				var meta = _.transform(data, function( result, value, key ) {
+					result[ ( '_' + key ) ] = value;
+					return result;
+				});
+
+				return _.merge( model, meta );
 			})
 			.value();
 
@@ -101,9 +120,10 @@ var HypergraphLinks = Backbone.Collection.extend({
 				return datum[0] != null;
 			})
 			.map(function( datum ) {
-				var ret = datum[0].data;
-				ret.data = JSON.parse( ret.data );
-				return ret;
+				var data = datum[0].data;
+				data = JSON.parse( data.data );
+				
+				return datum[0].data;
 			})
 			.value();
 
@@ -142,6 +162,16 @@ var NodeDataView = Backbone.View.extend({
 
 	className: 'info-card panel panel-default',
 
+	addProperty: function() {
+		var self = this;
+
+		self.$el.find( '#add-property' ).toggle();
+
+		var $addProperty = self.$el.find( '.list-unstyled' )
+			.append( JST['node-info-add-property']() );
+
+	},
+
 	render: function() {
 		var self = this;
 
@@ -155,6 +185,11 @@ var NodeDataView = Backbone.View.extend({
 
 		self.$el.html( compiledTemplate );
 		$( '#container-overlay' ).append( self.$el );
+
+
+		self.$el.find( '#add-property' ).click(function() {
+			self.addProperty();
+		});
 
 		return self;
 	}
@@ -274,7 +309,7 @@ var NodeView = SVGView.extend({
 				.attr( 'r', self.radius )
 				.each('end', function() {
 					deferred.resolve();
-				})
+				});
 		}
 		else {
 			self.radius += 8;
@@ -296,7 +331,7 @@ var NodeView = SVGView.extend({
 						var x = self.model.x = self.model.px = iX( t );
 						var y = self.model.y = self.model.py = iY( t );
 
-						self.tick();
+						//self.tick();
 						self.force.resume();
 
 						return 'translate(' + x + ',' + y + ')';
@@ -449,11 +484,11 @@ var GraphView = SVGView.extend({
 		self.width = $( window ).outerWidth();
 		self.height = $( window ).outerHeight();
 
-		//self.svg.attr( 'width', self.width );
-		//self.svg.attr( 'height', self.height );
+		self.svg.attr( 'width', self.width );
+		self.svg.attr( 'height', self.height );
 
-		$( '#graph-view' ).height( $(window).outerHeight() );
-		$( '#graph-view' ).width( $(window).outerWidth() );
+		//$( '#graph-view' ).height( $(window).outerHeight() );
+		//$( '#graph-view' ).width( $(window).outerWidth() );
 
 		self.force.size( [ self.width, self.height ] );
 		self.force.start();
@@ -493,4 +528,6 @@ var GraphView = SVGView.extend({
 // Initialization
 //
 
+if (window.location.pathname == '/application/home') {
 var graphView = new GraphView();
+}
