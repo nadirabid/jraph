@@ -30,7 +30,7 @@ module.exports.routes = {
 
 
   '/': {
-    controller: 'DesignController',
+    controller: 'ApplicationController',
     action: 'index'
   },
 

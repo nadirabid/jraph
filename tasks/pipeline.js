@@ -38,7 +38,6 @@ var jsFilesToInject = [
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
   'js/jst.js',
-  'js/vuetest.js',
   'js/hypergraph.js'
   //'js/**/*.js'
 ];

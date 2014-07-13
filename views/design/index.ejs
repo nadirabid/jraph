@@ -24,10 +24,13 @@
 
 <script id="node-template" type="text/x-template">
 	<circle v-attr="transform:circleTranslation, r:radius"
-					v-on="click: pin($event)"
+					v-on="click:pin( $event )"
 					filter="url(#dropShadow)"
 					class="node">
 		<title>{{id}}</title>
 	</circle>
-	<text class="node-label" v-attr="transform:labelTranslation">Label</text>
+	<text v-attr="transform:labelTranslation"
+				class="node-label">
+		Label
+	</text>
 </script>

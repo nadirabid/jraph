@@ -1,9 +1,8 @@
 var ApplicationController = {
 	
-	home: function( req, res ) {
+	index: function( req, res ) {
 		return res.view();
 	}
-
 
 };
 

@@ -1,0 +1,56 @@
+<div id="application">
+	<div id="container-overlay">
+		<div style="float:right;pointer-events:auto;">
+			<button type="button" class="btn btn-default">
+		  	<span class="glyphicon glyphicon-plus"></span> Add Node
+			</button>
+		</div>
+	</div>
+
+	<div v-component="app-graph" v-with="links:links, nodes:nodes" ></div>
+</div>
+
+<script id="graph-template" type="text/x-template">
+	<svg v-attr="width:width, height:height" class="hypergraph">
+		<defs>
+			<filter id="dropShadow" width="1.5" height="1.5" x="-0.1" y="-0.1" primitiveUnits="objectBoundingBox">
+	    	<feGaussianBlur in="SourceAlpha" stdDeviation=".04" />
+	    	<feOffset dx="0" dy=".04" />
+	    	<feColorMatrix type="matrix" values="0 0 0 0 0
+																						 0 0 0 0 0		
+																						 0 0 0 0 0
+																						 0 0 0 .1 0" />
+	    	<feMerge>
+	        <feMergeNode />
+	        <feMergeNode in="SourceGraphic" />
+	    	</feMerge>
+	  	</filter>
+		</defs>
+
+		<g v-component="app-link" v-repeat="links"></g>
+		<g v-component="app-node" v-repeat="nodes"></g>
+	</svg>
+</script>
+
+<script id="link-template" type="text/x-template">
+	<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
+</script>
+
+<script id="node-template" type="text/x-template">
+	<circle v-attr="transform:circleTranslation, r:radius"
+					v-on="click:pin( $event )"
+					filter="url(#dropShadow)"
+					class="node">
+		<title>{{id}}</title>
+	</circle>
+	<text v-attr="transform:labelTranslation"
+				class="node-label">
+		Label
+	</text>
+</script>
+
+<script id="node-data-template" type="text/x-template">
+	<ul class="list-unstyled">
+		<li v-repeat="properties">{{this}}</li>
+	<ul>
+</script>

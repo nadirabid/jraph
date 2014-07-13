@@ -1,533 +1,349 @@
-//
-// Models
-//
+Vue.component('app-node-data', {
 
-var Hypernode = Backbone.Model.extend({
-
-	idAttribute: '_id',
-
-	initialize: function() {
-		Object.defineProperties(this, {
-			index: {
-				get: function() { return this.get( '_index' ); },
-				set: function( val ) { this.set( '_index', val ); }
-			},
-			x: {
-				get: function() { return this.get( '_x' ); },
-				set: function( val ) { this.set( '_x', val ); }
-			},
-			y: {
-				get: function() { return this.get( '_y' ); },
-				set: function( val ) { this.set( '_y', val ); }
-			},
-			px: {
-				get: function() { return this.get( '_px' ); },
-				set: function( val ) { this.set( '_px', val ); }
-			},
-			py: {
-				get: function() { return this.get( '_py' ); },
-				set: function( val ) { this.set( '_py', val ); }
-			},
-			fixed: {
-				get: function() { return this.get( '_fixed' ); },
-				set: function( val ) { this.set( '_fixed', val ); }
-			},
-			weight: {
-				get: function() { return this.get( '_weight' ); },
-				set: function( val ) { this.set( '_weight', val ); }
-			}
-		});
-	},
-
-	toJSON: function( options ) {
-		//parse out attributes with keys without the '_' prefix
-		var attributes = _.pick(this.attributes, function( value, key ) {
-			return key.charAt( 0 ) != '_';
-		});		
-
-    return attributes;
-  }
+	template: '#node-data-template'
 
 });
 
-var Hyperlink = Backbone.Model.extend({
+Vue.component('app-link', {
 
-	initialize: function(attr, options) {
-		var nodes = this.collection.nodes;
-
-		Object.defineProperties(this, {
-			source: {
-				get: function() { return nodes.get( this.get( 'sourceId' ) ); }
-			},
-			target: {
-				get: function() { return nodes.get( this.get( 'targetId' ) ); }
-			}
-		});
-	}
+	template: '#link-template'
 
 });
 
-//
-// Collections
-//
+Vue.component('app-node', {
 
-var HypergraphNodes = Backbone.Collection.extend({
-	
-	url: '/hypernode/',
-	
-	model: Hypernode,
+	template: '#node-template',
 
-	parse: function( response ) {
-		var nodes = _( response.data )
-			.filter(function( datum ) {
-				return datum[0] != null;
-			})
-			.map(function( datum ) {
-				var data = datum[0].data;
-				var model = JSON.parse( data.data );
-				
-				delete data.data;
+	data: {
 
-				var meta = _.transform(data, function( result, value, key ) {
-					result[ ( '_' + key ) ] = value;
-					return result;
-				});
+		labelDistance: 35,
 
-				return _.merge( model, meta );
-			})
-			.value();
+		radius: 15,
 
-		return nodes;
-	}
+		labelX: 0,
 
-});
+		labelY: 0,
 
-var HypergraphLinks = Backbone.Collection.extend({
-	
-	url: '/hyperlink/',
-	
-	model: Hyperlink,
-
-	initialize: function(links, options) {
-		var self = this;
-
-		self.nodes = options.nodes;
-	},
-
-	parse: function( response ) {
-		var links = _( response.data )
-			.filter(function( datum ) {
-				return datum[0] != null;
-			})
-			.map(function( datum ) {
-				var data = datum[0].data;
-				data = JSON.parse( data.data );
-				
-				return datum[0].data;
-			})
-			.value();
-
-		return links;
-	}
-
-});
-
-//
-// Views
-//
-
-var SVGView = Backbone.View.extend({
-
-	tagName: 'g',
-  
-  nameSpace: "http://www.w3.org/2000/svg",
-  
-  _ensureElement: function() {
-     if (!this.el) {
-        var attrs = _.extend({}, _.result(this, 'attributes'));
-        if (this.id) attrs.id = _.result(this, 'id');
-        if (this.className) attrs['class'] = _.result(this, 'className');
-        var $el = $(window.document.createElementNS(_.result(this, 'nameSpace'), _.result(this, 'tagName'))).attr(attrs);
-        this.setElement($el, false);
-     } else {
-        this.setElement(_.result(this, 'el'), false);
-     }
-  }
-
-});
-
-var NodeDataView = Backbone.View.extend({
-
-	template: JST['node-info'],
-
-	className: 'info-card panel panel-default',
-
-	addProperty: function() {
-		var self = this;
-
-		self.$el.find( '#add-property' ).toggle();
-
-		var $addProperty = self.$el.find( '.list-unstyled' )
-			.append( JST['node-info-add-property']() );
+		fixed: false //doesn't work if not explicitly set
 
 	},
 
-	render: function() {
-		var self = this;
+	computed: {
 
-		var attributes = _.map(self.model.attributes, function( v, k ) {
-			return { key: k, value: v };
-		});
+		circleTranslation: function() {
+			return 'translate(' + this.x + ',' + this.y + ')';
+		},
 
-		var compiledTemplate = self.template({ 
-			attributes: attributes
-		});
-
-		self.$el.html( compiledTemplate );
-		$( '#container-overlay' ).append( self.$el );
-
-
-		self.$el.find( '#add-property' ).click(function() {
-			self.addProperty();
-		});
-
-		return self;
-	}
-
-});
-
-var NodeView = SVGView.extend({
-
-	template: JST['node'],
-
-	events: {
-		'click .node': 'click'
-	},
-
-	initialize: function( options ) {
-		var self = this;
-		self.force = options.force;
-		self.parent = options.parent;
-		self.radius = 15;
-		self.labelDistance = 35;
-	},
-
-	click: function( e ) {
-		var self = this;
-
-		if ( e.isDefaultPrevented() )
-			return;
-
-		self.pin( ( self.parent.width / 2 ) - 5, ( self.parent.height / 2 ) - 5 )
-			.then(function() { 
-				self.dataView(); 
-			});
-	},
-
-	tick: function() {
-		var self = this;
-		var model = self.model;
-		var $d3 = self.$d3;
+		labelTranslation: function() {
+			var self = this;
+			var labelDistance = self.labelDistance;
 		
-		var labelDistance = self.labelDistance;
-	
-		var width = self.parent.width,
-			  height = self.parent.height;
-		var x0 = width / 2,
-			  y0 = height / 2;
-		var x1 = model.x,
-				y1 = model.y;
-		var dy = y1 - y0,
-				dx = x1 - x0;
-		var m = dy / dx,
-				b = y0 - ( m * x0 );
+			var width = self.$parent.width,
+				  height = self.$parent.height;
+			var x0 = width / 2,
+				  y0 = height / 2;
+			var x1 = self.x,
+					y1 = self.y;
+			var dy = y1 - y0,
+					dx = x1 - x0;
+			var m = dy / dx,
+					b = y0 - ( m * x0 );
 
-		if (dx == 0)
-			throw 'DIVIDE BY ZERO';
+			if (dx == 0)
+				throw 'DIVIDE BY ZERO';
 
-		var nodeDistance = Math.sqrt( Math.pow( dy, 2 ) + Math.pow( dx, 2 ) );
+			var nodeDistance = Math.sqrt( Math.pow( dy, 2 ) + Math.pow( dx, 2 ) );
 
-		var qa = Math.pow( m, 2 ) + 1,
-				qb = 2 * ( ( m * b ) - ( m * y0 ) - x0 ),
-				qc = Math.pow( y0, 2 ) 
-					 + Math.pow( x0, 2 )
-					 + Math.pow( b, 2 )
-					 - Math.pow( labelDistance + nodeDistance, 2 )
-					 - ( 2 * y0 * b );
+			var qa = Math.pow( m, 2 ) + 1,
+					qb = 2 * ( ( m * b ) - ( m * y0 ) - x0 ),
+					qc = Math.pow( y0, 2 ) 
+						 + Math.pow( x0, 2 )
+						 + Math.pow( b, 2 )
+						 - Math.pow( labelDistance + nodeDistance, 2 )
+						 - ( 2 * y0 * b );
 
-		var x2a = ( -qb + Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa ),
-				x2b = ( -qb - Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa );
-		var y2a = ( m * x2a ) + b,
-				y2b = ( m * x2b ) + b;
-		var x2 = 0,
-				y2 = 0;
+			var x2a = ( -qb + Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa ),
+					x2b = ( -qb - Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa );
+			var y2a = ( m * x2a ) + b,
+					y2b = ( m * x2b ) + b;
+			var x2 = 0,
+					y2 = 0;
 
-		if ( x1 > x0 )
-			x2 = ( x2a > x1 ) ? x2a : x2b;
-		else
-			x2 = ( x2a < x1 ) ? x2a : x2b;
+			if ( x1 > x0 )
+				x2 = ( x2a > x1 ) ? x2a : x2b;
+			else
+				x2 = ( x2a < x1 ) ? x2a : x2b;
 
-		if ( y1 > y0 )
-			y2 = ( y2a > y1 ) ? y2a : y2b;
-		else
-			y2 = ( y2a < y1 ) ? y2a : y2b;
+			if ( y1 > y0 )
+				y2 = ( y2a > y1 ) ? y2a : y2b;
+			else
+				y2 = ( y2a < y1 ) ? y2a : y2b;
 
-		var bBox = $d3.select( 'text' ).node().getBBox();
+			var bBox = d3.select( self.$el ).select( 'text' ).node().getBBox();
 
-		var shiftY = -4 + ( 18 * ( y2 / height ) ),
-				shiftX = bBox.width *  ( ( x2 - x1 ) - labelDistance ) / ( 2 * labelDistance );
+			var shiftY = -4 + ( 18 * ( y2 / height ) ),
+					shiftX = bBox.width *  ( ( x2 - x1 ) - labelDistance ) / ( 2 * labelDistance );
 
-		shiftX = Math.max( -bBox.width, Math.min( shiftX, 0 ) );
+			shiftX = Math.max( -bBox.width, Math.min( shiftX, 0 ) );
 
-		_.defer(function() {
-				
-			$d3.select( 'text ' ).attr( 'transform', 'translate(' + ( x2 + shiftX ) + ',' + ( y2 + shiftY ) + ')' );
-
-			if ( !self.ignore )
-				$d3.select( 'circle' ).attr( 'transform', 'translate(' + model.x + ',' + model.y + ')' );
-
-		});
-	},
-
-	pin: function( nx, ny ) {
-		var self = this;
-		var deferred = Q.defer();
-		var $circle = self.$d3.select( 'circle' );
-		var transitionDuration = 300;
-
-		self.force.resume();
-
-		if ( self.pinned ) {
-			self.model.fixed = false;
-			self.radius -= 8;
-			self.labelDistance -= 12;
-			self.ignore = false;
-
-			$circle
-				.transition()
-				.duration( transitionDuration )
-				.attr( 'r', self.radius )
-				.each('end', function() {
-					deferred.resolve();
-				});
-		}
-		else {
-			self.radius += 8;
-			self.labelDistance += 12;
-			self.ignore = true;
-
-			$circle
-				.transition()
-				.duration( transitionDuration )
-				.attr( 'r', self.radius )
-				.attrTween('transform' , function() {
-					var iX = d3.interpolateRound( self.model.x, nx );
-					var iY = d3.interpolateRound( self.model.y, ny );
-					
-					nx = nx || self.model.x;
-					ny = ny || self.model.y;
-						
-					return function( t ) {
-						var x = self.model.x = self.model.px = iX( t );
-						var y = self.model.y = self.model.py = iY( t );
-
-						//self.tick();
-						self.force.resume();
-
-						return 'translate(' + x + ',' + y + ')';
-					};
-				})
-				.each('end', function() {						
-					self.model.fixed = true;
-					deferred.resolve();
-				});
+			return 'translate(' + ( x2 + shiftX ) + ',' + ( y2 + shiftY ) + ')';
 		}
 
-		self.force.resume();
-		self.pinned = !self.pinned;
-
-		return deferred.promise;
 	},
 
-	dataView: function() {
-		var self = this;
-
-		//todo: define behavior for what happends when dataView is called multiple times
-		var dataView = new NodeDataView({ model: self.model });
-
-		dataView.render();
-
-		var overlay = $( '<div class="overlay"></div>' )
-			.click(function() {
-				Mousetrap.trigger( 'esc' ); 
-			})
-			.appendTo( 'body' );
-    
-		Mousetrap.bind('esc', function() {
-			Mousetrap.unbind( 'esc' );
-			self.pin();
-			dataView.remove();
-			overlay.remove();
-		});
+	created: function() {
+		//setup drag handler
+		d3.select( this.$el )
+			.data([ this.$data ])
+			.call( this.$parent.force.drag );
 	},
 
-	render: function() {
-		var self = this;
+	methods: {
 
-		var compiledTemplate = self.template( self.model.attributes );
-		self.el.appendChild( $.parseXML( compiledTemplate ).documentElement );
+		pin: function( e ) {
+			if ( e.defaultPrevented )
+				return;
 
-		var $d3 = self.$d3 = self.parent.svg
-			.append( function() { return self.el; } )
-			.data( [ self.model ] );
+			var self = this;
+			var deferred = Q.defer();
+			var $circle = d3.select( self.$el ).select( 'circle' );
+			var transitionDuration = 300;
 
-		$d3.select( 'circle' ).attr( 'r', self.radius );
+			self.$parent.force.resume();
 
-		$d3.call( self.force.drag );
+			if ( self.pinned ) {
+				self.fixed = false;
+				self.radius -= 8;
+				self.labelDistance -= 12;
+				self.ignore = false;
 
-		return self;
+				$circle
+					.transition()
+					.duration( transitionDuration )
+					.attr( 'r', self.radius )
+					.each('end', function() {
+						deferred.resolve();
+					});
+			}
+			else {
+				self.radius += 8;
+				self.labelDistance += 12;
+				self.ignore = true;
+
+				var nx = ( self.$parent.width / 2 ) - 5;
+				var ny = ( self.$parent.height / 2 ) - 5;
+				var iX = d3.interpolateRound( self.x, nx );
+				var iY = d3.interpolateRound( self.y, ny );
+
+				$circle
+					.transition()
+					.duration( transitionDuration )
+					.attr( 'r', self.radius )
+					.attrTween('transform' , function() {
+						return function( t ) {
+							var x = self.x = self.px = iX( t );
+							var y = self.y = self.py = iY( t );
+
+							_.defer(function() {
+								self.$parent.force.resume();	
+							});
+							
+							return 'translate(' + x + ',' + y + ')';
+						};
+					})
+					.each('end', function() {						
+						self.fixed = true;
+					});
+			}
+
+			self.$parent.force.resume();
+			self.pinned = !self.pinned;
+
+			return deferred.promise;
+		}
+
 	}
 
 });
 
-var LinkView = SVGView.extend({
+Vue.component('app-graph', {
 
-	template: JST['link'],
+	template: '#graph-template',
 
-	initialize: function( options ) {
-		var self = this;
-		self.parent = options.parent;
-		self.force = options.force;
+	data: {
+
+		nodes: [], 
+
+		links: []
+
 	},
 
-	tick: function() {
+	created: function() {
 		var self = this;
-		var source = self.model.source;
-		var target = self.model.target;
-		var $link = self.$d3.select('.link');
 
-		_.defer(function() {
-
-			$link.attr( 'x1', source.x );
-			$link.attr( 'y1', source.y );
-
-			$link.attr( 'x2', target.x );
-			$link.attr( 'y2', target.y );
+		self.width = $( window ).innerWidth();
+		self.height = $( window ).innerHeight();
 		
-		});
-	},
-
-	render: function() {
-		var self = this;
-
-		var compiledTemplate = self.template();
-		self.el.appendChild( $.parseXML( compiledTemplate ).documentElement );
-
-		var $d3 = self.$d3 = self.parent
-			.append( function() { return self.el; } )
-			.data( [ self.model ] );
-
-		return self;
-	}
-
-});
-
-var GraphView = SVGView.extend({
-
-	el: '#graph-view',
-
-	initialize: function( options ) {
-		var self = this;
-
-		self.nodes = new HypergraphNodes();
-		self.links = new HypergraphLinks([], { nodes: self.nodes });
-		self.labels = [];
-		self.labelLinks = [];
-		self.nodeViews = [];
-		self.linkViews = [];
-		self.width = $( window ).outerWidth();
-		self.height = $( window ).outerHeight();
 		self.force = d3.layout.force()
-			.size( [ self.width, self.height ] )
-			.theta( .5 )
-			.friction( .7 )
-			.gravity( .4 )
-			.charge( -15000 )
-			.linkDistance( 10 )
-			.chargeDistance( 400 );
+				.size( [ self.width , self.height ] )
+				.theta( .5 )
+				.friction( .7 )
+				.gravity( .4 )
+				.charge( -15000 )
+				.linkDistance( 10 )
+				.chargeDistance( 400 );
 
-		// fetch data and init force layout
+		window.addEventListener('resize', _.bind( this.resize, this ));
 
-		var nodesXhr = self.nodes.fetch();
-		var linksXhr = self.links.fetch();
+		this.$on('data', function( nodes, links ) {
+			self.nodes = nodes;
+			self.links = links;
 
-		$.when( nodesXhr, linksXhr ).done(function() {
 			self.force
-				.nodes( self.nodes.models )
-				.links( self.links.models )
+				.nodes( self.nodes )
+				.links( self.links )
 				.start();
-
-			self.render();
 		});
 	},
 
-	tick: function() {
-		var self = this;
+	methods: {
 
-		self.nodeViews.forEach( function( v ) { v.tick(); } );
-		self.linkViews.forEach( function( v ) { v.tick(); } );
-	},
+		resize: function() {
+			this.$data.width = $( window ).innerWidth();
+			this.$data.height = $( window ).innerHeight();
 
-	resize: function() {
-		var self = this;
+			this.force.size( [ this.width, this.height ] );
+			this.force.start();
+		},
 
-		self.width = $( window ).outerWidth();
-		self.height = $( window ).outerHeight();
+		fetchNodes: function() {
+			var self = this;
 
-		self.svg.attr( 'width', self.width );
-		self.svg.attr( 'height', self.height );
+			var nodesXhr = $.getJSON( '/hypernode' ).then(function( response ) {
+				var nodes = _( response.data )
+					.filter(function( datum ) {
+						return datum[0] != null;
+					})
+					.map(function( datum ) {
+						var data = datum[0].data;
+						delete data.data;
+						return data;
+					})
+					.value();
 
-		//$( '#graph-view' ).height( $(window).outerHeight() );
-		//$( '#graph-view' ).width( $(window).outerWidth() );
+				return nodes;
+			});
 
-		self.force.size( [ self.width, self.height ] );
-		self.force.start();
-	},
+			return nodesXhr;
+		},
 
-	render: function() {
-		var self = this;
-		var force = self.force;
-		var linkViews = self.linkViews;
-		var nodeViews = self.nodeViews;
+		fetchLinks: function() {
+			var self = this;
 
-		var svg = self.svg = d3.select( self.el );
+			var linksXhr = $.getJSON( '/hyperlink' ).then(function( response ) {
+				var links = _( response.data )
+					.filter(function( datum ) {
+						return datum[0] != null;
+					})
+					.uniq(function( datum ) {
+						return datum[0].data.id;
+					})
+					.map(function( datum ) {
+						var data = datum[0].data;
+						delete data.data;
+						return data;
+					})
+					.value();
 
-		window.addEventListener( 'resize', _.throttle( _.bind( self.resize, self ), 400 ) );
-		self.resize();
+				return links;
+			});
 
-    self.links.forEach(function ( link ) {
-    	var linkView = new LinkView( { model: link, force: force, parent: svg } );
-    	self.linkViews.push( linkView ); //TODO: remove from array "on destroy" 
-    	linkView.render();
-    });
+			return linksXhr;
+		}
 
-		self.nodes.forEach(function( node ) {
-			var nodeView = new NodeView( { model: node, force: force, parent: self } );
-			self.nodeViews.push( nodeView );
-			nodeView.render();
-		});
-
-		self.force.on( 'tick', _.bind( self.tick, self ) );
-
-		return self;
 	}
 
 });
 
-//
-// Initialization
-//
+var app = new Vue({
 
-if (window.location.pathname == '/application/home') {
-var graphView = new GraphView();
-}
+	el: '#application',
+
+	data: {
+
+		nodes: [],
+		
+		links: []
+	
+	},
+
+	created: function() {
+		var self = this;
+		var nodesPromise = self.fetchNodes();
+		var linksPromise = self.fetchLinks();
+
+		$.when( nodesPromise, linksPromise ).done(function( nodes, links ) {
+			nodes.forEach(function( n ) {
+				links.forEach(function( l ) {
+					if ( l.sourceId == n.id ) l.source = n;
+					if ( l.targetId == n.id ) l.target = n;
+				});
+			});
+
+			self.nodes = nodes;
+			self.links = links;
+
+			self.$broadcast( 'data', nodes, links );
+		});
+	},
+
+	methods: {
+
+		fetchNodes: function() {
+			var self = this;
+
+			var nodesXhr = $.getJSON( '/hypernode' ).then(function( response ) {
+				var nodes = _( response.data )
+					.filter(function( datum ) {
+						return datum[0] != null;
+					})
+					.map(function( datum ) {
+						var data = datum[0].data;
+						delete data.data;
+						return data;
+					})
+					.value();
+
+				return nodes;
+			});
+
+			return nodesXhr;
+		},
+
+		fetchLinks: function() {
+			var self = this;
+
+			var linksXhr = $.getJSON( '/hyperlink' ).then(function( response ) {
+				var links = _( response.data )
+					.filter(function( datum ) {
+						return datum[0] != null;
+					})
+					.uniq(function( datum ) {
+						return datum[0].data.id;
+					})
+					.map(function( datum ) {
+						var data = datum[0].data;
+						delete data.data;
+						return data;
+					})
+					.value();
+
+				return links;
+			});
+
+			return linksXhr;
+		}	
+
+	}
+
+});
