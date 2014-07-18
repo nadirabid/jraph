@@ -1,17 +1,61 @@
 <div id="application">
-	<div id="container-overlay">
-		<div style="float:right;pointer-events:auto;">
-			<button type="button" class="btn btn-default">
-		  	<span class="glyphicon glyphicon-plus"></span> Add Node
-			</button>
+
+	<div class="container-overlay" v-class="disable-pointer-events : !displayNodeData">
+
+		<span class="enable-pointer-events" v-component="cmp-nodeCreate">
+	 		<button class="btn btn-default node-create" v-class="hidden: displayNodeCreate" v-on="click: displayNodeCreate=true">
+	 	  	<span class="glyphicon glyphicon-plus"></span>
+	 		</button>
+	 		<div class="node-data" v-if="displayNodeCreate">
+	 			<div v-if="data">
+		 			<ul class="list-unstyled">
+		 				<li v-repeat="data"><b>{{$key}}</b>: {{$value}}</li>
+		 			</ul>
+	 			</div>
+
+				<form class="form-inline">
+					<div class="form-group" v-class="has-error: keyHasError">
+						<input class="form-control" placeholder="Key" type="text" v-model="key">
+					</div>
+					<div class="form-group" v-class="has-error: valueHasError">
+						<input class="form-control" placeholder="Value" type="text" v-model="value">
+					</div>
+					<button class="btn btn-default" type="button" v-on="click: addPropertyHandler()">Add</button>
+				</form>
+				<button class="btn btn-default" v-class="disabled: !data" v-on="click: createNodeHandler()">Create</button>
+	 		</div>
+		</span>
+
+		<div class="node-data" v-component="cmp-nodeData" v-if="displayNodeData">
+			<ul class="list-unstyled">
+				<li v-repeat="nodeDataList">
+					<span v-if="typeof(value)!='object'"><b>{{key}}</b>: {{value}}</span>
+					<span v-if="typeof(value)=='object'">
+						<b>{{key}}</b>:
+						<ul>
+							<li v-repeat="value"><b>{{$key}}</b>: {{$value}}</li>
+						</ul>
+					</span>
+				</li>
+			</ul>
+			<div v-if="addProperty">
+				<form class="form-inline">
+					<div class="form-group" v-class="has-error: keyHasError">
+						<input class="form-control" placeholder="Key" type="text" v-model="key">
+					</div>
+					<div class="form-group" v-class="has-error: valueHasError">
+						<input class="form-control" placeholder="Value" type="text" v-model="value">
+					</div>
+					<button class="btn btn-default" type="button" v-on="click: savePropertyHandler()">Save</button>
+				</form>
+			</div>
+			<button class="btn btn-default" v-class="hidden: addProperty" v-on="click: addProperty=true">Add</button>
+			<button class="btn btn-default" v-class="hidden: !addProperty" v-on="click: addProperty=false">Cancel</button>
 		</div>
+
 	</div>
 
-	<div v-component="app-graph" v-with="links:links, nodes:nodes" ></div>
-</div>
-
-<script id="graph-template" type="text/x-template">
-	<svg v-attr="width:width, height:height" class="hypergraph">
+	<svg class="hypergraph" v-attr="width:width, height:height" v-component="cmp-graph">
 		<defs>
 			<filter id="dropShadow" width="1.5" height="1.5" x="-0.1" y="-0.1" primitiveUnits="objectBoundingBox">
 	    	<feGaussianBlur in="SourceAlpha" stdDeviation=".04" />
@@ -26,31 +70,18 @@
 	    	</feMerge>
 	  	</filter>
 		</defs>
-
-		<g v-component="app-link" v-repeat="links"></g>
-		<g v-component="app-node" v-repeat="nodes"></g>
+		<g v-repeat="links">
+			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
+		</g>
+		<g v-component="cmp-node" v-repeat="nodes">
+			<circle v-attr="r:radius, transform:'translate(' + x + ',' + y +')'"
+							v-on="click:pin( $event )"
+							filter="url(#dropShadow)"
+							class="node">
+				<title>{{id}}</title>
+			</circle>
+			<text v-attr="transform: 'translate(' + labelX + ',' + labelY +')'" class="node-label">Label</text>
+		</g>
 	</svg>
-</script>
 
-<script id="link-template" type="text/x-template">
-	<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
-</script>
-
-<script id="node-template" type="text/x-template">
-	<circle v-attr="transform:circleTranslation, r:radius"
-					v-on="click:pin( $event )"
-					filter="url(#dropShadow)"
-					class="node">
-		<title>{{id}}</title>
-	</circle>
-	<text v-attr="transform:labelTranslation"
-				class="node-label">
-		Label
-	</text>
-</script>
-
-<script id="node-data-template" type="text/x-template">
-	<ul class="list-unstyled">
-		<li v-repeat="properties">{{this}}</li>
-	<ul>
-</script>
+</div>

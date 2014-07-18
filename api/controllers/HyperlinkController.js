@@ -3,6 +3,8 @@ var request = require('request');
 var uuid = require('node-uuid');
 var moment = require('moment');
 
+var mockUserId = 'c53303e1-0287-4e5a-8020-1026493c6e37';
+
 var HyperlinkController = {
 
 	create: function( req, res ) {
@@ -45,8 +47,7 @@ var HyperlinkController = {
 	},
 
 	read: function( req, res ) {
-  	var userId = '71e721da-222b-407a-b30e-f76db499d4c0';
-  	//var userId = req.user.id;
+  	var userId = mockUserId || req.user.id;
 		var hyperlinkId = req.param( 'id' );
 
 		var options = {

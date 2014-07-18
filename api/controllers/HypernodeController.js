@@ -3,11 +3,12 @@ var request = require('request');
 var uuid = require('node-uuid');
 var moment = require('moment');
 
+var mockUserId = 'c53303e1-0287-4e5a-8020-1026493c6e37';
+
 var HypernodeController = {
 
 	create: function( req, res ) {
-		//var userId = req.user.id;
-		var userId = '71e721da-222b-407a-b30e-f76db499d4c0';
+		var userId = mockUserId || req.user.id;
 
 		if ( !_.isString( userId ) ) {
 			res.json({ error: 'You must specify a valid userId douch. You specified: ' + userId });
@@ -44,8 +45,7 @@ var HypernodeController = {
 
   read: function( req, res ) {
   	var hypernodeId = req.param( 'id' );
-  	//var userId = req.user.id;
-  	var userId = '71e721da-222b-407a-b30e-f76db499d4c0';
+  	var userId = mockUserId || req.user.id;
 
   	if ( !_.isString( userId ) ) {
   		res.json({ error: 'You must specify a valid userId douch. You specified: ' + userId });
@@ -112,8 +112,7 @@ var HypernodeController = {
 
 	delete: function( req, res ) {
 		var hypernodeId = req.param( 'id' );
-		//var userId = req.user.id;
-		var userId = '71e721da-222b-407a-b30e-f76db499d4c0';
+		var userId = mockUserId || req.user.id;
 
 		if ( !_.isString( userId ) || !_.isString( hypernodeId ) ) {
 			res.json({ error: 'You must specify a valid userId and hypernodeId douch.' });
