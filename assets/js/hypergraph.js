@@ -1,8 +1,39 @@
+var HALF_PI = Math.PI / 2;
+var E_MINUS_1 = Math.E - 1;
+
+Vue.component('cmp-arc', {
+
+	data: {
+
+		innerRadius: 20,
+
+		outerRadius: 60,
+
+		_arc: d3.svg.arc()
+
+	},
+
+	computed: {
+
+		d: function() {
+			this._arc
+					.innerRadius( this.innerRadius )
+					.outerRadius( this.outerRadius )
+					.startAngle( this.startAngle )
+					.endAngle( this.endAngle );
+
+			return this._arc();
+		}
+
+	}
+
+});
+
 Vue.component('cmp-node', {
 
 	data: {
 
-		labelDistance: 35,
+		labelDistance: 15,
 
 		radius: 15,
 
@@ -16,86 +47,55 @@ Vue.component('cmp-node', {
 
 		fixed: false, //doesn't work if not explicitly set
 
+		menu: [
+			{ fill: "#bdc3c7", startAngle: 0, endAngle: 2 },
+			{ fill: "#7f8c8d", startAngle: 2, endAngle: 5 },
+			{ fill: "#95a5a6", startAngle: 5, endAngle: Math.PI*2 }
+		]
+
 	},
 
-	created: function() {
+	ready: function() {
+		//can we get by with not watching y
 		this.$watch( 'x', _.bind( this.updateLable, this ) );
-		this.$watch( 'y', _.bind( this.updateLable, this ) );
+		this.$watch( 'labelDistance', _.bind( this.updateLable, this ) );
+		this.$watch( 'radius', _.bind( this.updateLable, this ) );
 		
 		d3.select( this.$el )
 				.data([ this.$data ])
 				.call( this.$parent.force.drag );
-	},
+
+		this._textElement = this.$el.querySelector( 'text' );
+	},	
 
 	methods: {
 
 		updateLable: function() {
 			var self = this;
-			var labelDistance = self.labelDistance;
-		
-			var width = self.$parent.width,
-				  height = self.$parent.height;
-			var x0 = width / 2,
-				  y0 = height / 2;
-			var x1 = self.x,
-					y1 = self.y;
-			var x2 = 0,
-					y2 = 0;
-			var dy = y1 - y0,
-					dx = x1 - x0;
-			var m = dy / dx,
-					b = y0 - ( m * x0 );
+			var labelDistance = self.radius + self.labelDistance;
+			var bBox = self._textElement.getBBox();
 
-			if ( dx == 0 && dy < 5 ) {
-				x2 = x1 + ( Math.cos( 225 * ( Math.PI / 180 ) ) * labelDistance );
-				y2 = y1 + ( Math.sin( 225 * ( Math.PI / 180 ) ) * labelDistance );
-			}
-			else if ( dx == 0 ) {
-				x2 = x0;
+			var dx = self.x - ( self.$parent.width  / 2 ),
+					dy = self.y - ( self.$parent.height  / 2 );
 
-				if ( y1 > y0 ) 
-					y2 = y1 + labelDistance;
-				else
-					y2 = y1 - labelDistance;
-			}
-			else {
-				var nodeDistance = Math.sqrt( Math.pow( dy, 2 ) + Math.pow( dx, 2 ) );
+			var theta = Math.atan( dy / dx );
 
-				var qa = Math.pow( m, 2 ) + 1,
-						qb = 2 * ( ( m * b ) - ( m * y0 ) - x0 ),
-						qc = Math.pow( y0, 2 ) 
-							 + Math.pow( x0, 2 )
-							 + Math.pow( b, 2 )
-							 - Math.pow( labelDistance + nodeDistance, 2 )
-							 - ( 2 * y0 * b );
+			var shiftX = bBox.width * -0.5;
+					shiftY = bBox.y * -0.5;
 
-				var x2a = ( -qb + Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa ),
-						x2b = ( -qb - Math.sqrt( Math.pow( qb, 2 ) - ( 4 * qa * qc ) ) ) / ( 2 * qa );
-				var y2a = ( m * x2a ) + b,
-						y2b = ( m * x2b ) + b;
+			var ratio = E_MINUS_1 * ( 1 - Math.abs( theta % HALF_PI / HALF_PI ) );
+			shiftX += bBox.width * Math.log( ratio + 1 ) * ( ( dx > 0 ) ? 0.5 : -0.5 );
 
-				if ( x1 > x0 )
-					x2 = ( x2a > x1 ) ? x2a : x2b;
-				else
-					x2 = ( x2a < x1 ) ? x2a : x2b;
+			var tX = labelDistance * Math.cos( theta ),
+				  tY = labelDistance * Math.sin( theta );
 
-				if ( y1 > y0 )
-					y2 = ( y2a > y1 ) ? y2a : y2b;
-				else
-					y2 = ( y2a < y1 ) ? y2a : y2b;
+			if ( dx < 0 ) {
+				tX *= -1;
+				tY *= -1;
 			}
 
-			var bBox = d3.select( self.$el ).select( 'text' ).node().getBBox();
-
-			var shiftY = -4 + ( 18 * ( y2 / height ) ),
-					shiftX = bBox.width *  ( ( x2 - x1 ) - labelDistance ) / ( 2 * labelDistance );
-
-			shiftX = Math.max( -bBox.width, Math.min( shiftX, 0 ) );
-
-			self.labelX = x2 + shiftX;
-			self.labelY = y2 + shiftY;
-
-			return 'translate(' + ( x2 + shiftX ) + ',' + ( y2 + shiftY ) + ')';
+			self.labelX = tX + shiftX;
+			self.labelY = tY + shiftY;
 		},
 
 		pin: function( e ) {
@@ -103,7 +103,7 @@ Vue.component('cmp-node', {
 				return;
 
 			var self = this;
-			var $circle = d3.select( self.$el ).select( 'circle' );
+			var $node = d3.select( self.$el );
 			var transitionDuration = 400;
 
 			self.$parent.force.resume();
@@ -121,18 +121,18 @@ Vue.component('cmp-node', {
 				self.labelDistance += 12;
 				self.ignore = true;
 
-				var nx = self.$parent.width / 2;
-				var ny = self.$parent.height / 2;
-				var iX = d3.interpolateRound( self.x, nx );
-				var iY = d3.interpolateRound( self.y, ny );
+				var nx = ( self.$parent.width / 2 ) + 10,
+						ny = self.$parent.height / 2 - 10;
+				var iX = d3.interpolateRound( self.x, nx ),
+						iY = d3.interpolateRound( self.y, ny );
 
-				$circle
+				$node
 						.transition()
 						.duration( transitionDuration )
 						.attrTween('transform' , function() {
 							return function( t ) {
-								var x = self.x = self.px = iX( t );
-								var y = self.y = self.py = iY( t );
+								var x = self.x = self.px = iX( t ),
+										y = self.y = self.py = iY( t );
 
 								_.defer(function() {
 									self.$parent.force.resume();	
@@ -141,7 +141,8 @@ Vue.component('cmp-node', {
 								return 'translate(' + x + ',' + y + ')';
 							};
 						})
-						.each('end', function() {						
+						.each('end', function() {	
+							//BUG: don't set fixed flag if we cancel before the transition ends				
 							self.fixed = true;
 						});
 
@@ -155,70 +156,6 @@ Vue.component('cmp-node', {
 
 			self.$parent.force.resume();
 			self.pinned = !self.pinned;
-		}
-
-	}
-
-});
-
-Vue.component('cmp-graph', {
-
-	data: {
-
-		nodes: [ ], 
-
-		links: [ ]
-
-	},
-
-	created: function() {
-		var self = this;
-
-		self.width = $( window ).innerWidth();
-		self.height = $( window ).innerHeight();
-		
-		self.force = d3.layout.force()
-				.size( [ self.width , self.height ] )
-				.theta( .5 )
-				.friction( .5 )
-				.gravity( .6 )
-				.charge( -6000 )
-				.linkDistance( 30 )
-				.chargeDistance( 600 );
-
-		window.addEventListener('resize', _.bind( this.resize, this ));
-
-		this.$on('data', function( nodes, links ) {
-			self.nodes = nodes;
-			self.links = links;
-
-			self.force
-					.nodes( self.nodes )
-					.links( self.links )
-					.start();
-		});
-
-		this.$watch('nodes', function( value, mutation ) {
-			if ( mutation ) {
-				self.force.nodes( self.nodes ).start();
-			}
-		});
-
-		this.$watch('links', function( value, mutation ) {
-			if ( mutation ) {
-				self.force.links( self.links ).start();
-			}
-		});
-	},
-
-	methods: {
-
-		resize: function() {
-			this.$data.width = $( window ).innerWidth();
-			this.$data.height = $( window ).innerHeight();
-
-			this.force.size( [ this.width, this.height ] );
-			this.force.start();
 		}
 
 	}
@@ -335,7 +272,6 @@ Vue.component('cmp-nodeCreate', {
 		},
 
 		createNodeHandler: function() {
-			console.log( 'hello');
 			var self = this;
 
 			$.ajax({
@@ -354,6 +290,70 @@ Vue.component('cmp-nodeCreate', {
 					self.displayNodeCreate = false;
 				}
 			});
+		}
+
+	}
+
+});
+
+Vue.component('cmp-graph', {
+
+	data: {
+
+		nodes: [ ], 
+
+		links: [ ]
+
+	},
+
+	created: function() {
+		var self = this;
+
+		self.width = $( window ).innerWidth();
+		self.height = $( window ).innerHeight();
+		
+		self.force = d3.layout.force()
+				.size( [ self.width , self.height ] )
+				.theta( .1 )
+				.friction( .5 )
+				.gravity( .6 )
+				.charge( -6000 )
+				.linkDistance( 30 )
+				.chargeDistance( 600 );
+
+		window.addEventListener('resize', _.bind( this.resize, this ));
+
+		this.$on('data', function( nodes, links ) {
+			self.nodes = nodes;
+			self.links = links;
+
+			self.force
+					.nodes( self.nodes )
+					.links( self.links )
+					.start();
+		});
+
+		this.$watch('nodes', function( value, mutation ) {
+			if ( mutation ) {
+				self.force.nodes( self.nodes ).start();
+			}
+		});
+
+		this.$watch('links', function( value, mutation ) {
+			if ( mutation ) {
+				self.force.links( self.links ).start();
+			}
+		});
+	},
+
+	methods: {
+
+		resize: function() {
+			this.$data.width = $( window ).innerWidth();
+			this.$data.height = $( window ).innerHeight();
+
+			this.force.size( [ this.width, this.height ] );
+			this.force.start();
 		}
 
 	}

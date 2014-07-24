@@ -1,5 +1,6 @@
 body {
   overflow: hidden;
+  background-color: #fff;
 }
 
 .disable-pointer-events {

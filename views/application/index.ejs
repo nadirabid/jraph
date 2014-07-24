@@ -73,14 +73,21 @@
 		<g v-repeat="links">
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
 		</g>
-		<g v-component="cmp-node" v-repeat="nodes">
-			<circle v-attr="r:radius, transform:'translate(' + x + ',' + y +')'"
-							v-on="click:pin( $event )"
-							filter="url(#dropShadow)"
-							class="node">
-				<title>{{id}}</title>
+		<g v-attr="transform:'translate('+x+','+y+')'"
+			 v-component="cmp-node" 
+			 v-repeat="nodes"
+			 v-on="mouseover: displayNodeMenu=true, mouseleave: displayNodeMenu=false">
+			<circle class="node"
+							filter="url( #dropShadow )"
+							v-attr="r:radius"
+							v-on="click:pin( $event )">
 			</circle>
-			<text v-attr="transform: 'translate(' + labelX + ',' + labelY +')'" class="node-label">Label</text>
+			<g v-if="displayNodeMenu">
+				<path fill="{{fill}}" stroke="#fff" v-attr="d:d" v-component="cmp-arc" v-repeat="menu"></path>
+			</g>
+			<text v-attr="transform:'translate('+labelX+','+labelY+')'" v-class="node-label, invisible: displayNodeMenu">
+				Node Label
+			</text>
 		</g>
 	</svg>
 
