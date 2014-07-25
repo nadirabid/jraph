@@ -96,8 +96,6 @@ Vue.component('cmp-node', {
 
 		mouseenterHandler: function() {
 			this.displayNodeMenu = true;
-
-
 		},
 
 		mouseleaveHandler: function() {
@@ -107,44 +105,46 @@ Vue.component('cmp-node', {
 			this.displayNodeMenu = false;
 		},
 
-		mousedownHandler: function() {
-			//TODO: only listen to LEFT-CLICK mouse event
+		mousedownHandler: function( e ) {
+			if ( e.button != 0 )
+				return;
+
 			this._mousemoveHandler = _.bind( this.mousemoveHandler, this );
+			this._mouseupHandler = _.bind( this.mouseupHandler, this );
 			document.addEventListener( 'mousemove', this._mousemoveHandler );
+			document.addEventListener( 'mouseup', this._mouseupHandler );
+
 			this.displayNodeMenu = true;
 			this.fixed = true;
 		},
 
 		mousemoveHandler: function( e ) {
-			console.log( 'mousemove' );
 			this._mousemoved = true;
 			this.x = this.px = e.x;
 			this.y = this.py = e.y;
+			this.$parent.force.resume();
 		},
 
 		mouseupHandler: function( e ) {
-			//TODO: only listen to LEFT-CLICK mouse event
-			if ( !this._mousemoveHandler )
+			if ( !this._mousemoveHandler || e.button != 0 )
 				return;
 
 			e.preventDefault();
-			console.log( 'mouseupHandler', e );
 
 			document.removeEventListener( 'mousemove', this._mousemoveHandler );
+			document.removeEventListener( 'mouseup', this._mouseupHandler );
 			delete this._mousemoveHandler;
+			delete this._mouseupHandler;
+
 			this.displayNodeMenu = false;
 			this.fixed = false;
 		},
 
 		pin: function( e ) {
-			console.log( 'mousemoved', this._mousemoved );
-
 			if ( this._mousemoved ) {
 				this._mousemoved = false;
 				return;
 			}
-
-			console.log( 'pin', e );
 
 			var self = this;
 			var $node = d3.select( self.$el );

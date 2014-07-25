@@ -78,8 +78,7 @@
 			 v-repeat="nodes"
 			 v-on="mouseenter: mouseenterHandler(),
 			 			 mouseleave: mouseleaveHandler(),
-			 			 mousedown: mousedownHandler(),
-			 			 mouseup: mouseupHandler( $event ),
+			 			 mousedown: mousedownHandler( $event ),
 			 			 click: pin( $event )">
 			<circle class="node"
 							filter="url( #dropShadow )"
