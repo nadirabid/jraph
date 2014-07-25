@@ -73,19 +73,22 @@
 		<g v-repeat="links">
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
 		</g>
-		<g v-attr="transform:'translate('+x+','+y+')'"
+		<g v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="cmp-node" 
 			 v-repeat="nodes"
-			 v-on="mouseover: displayNodeMenu=true, mouseleave: displayNodeMenu=false">
+			 v-on="mouseenter: mouseenterHandler(),
+			 			 mouseleave: mouseleaveHandler(),
+			 			 mousedown: mousedownHandler(),
+			 			 mouseup: mouseupHandler( $event ),
+			 			 click: pin( $event )">
 			<circle class="node"
 							filter="url( #dropShadow )"
-							v-attr="r:radius"
-							v-on="click:pin( $event )">
+							v-attr="r: radius">
 			</circle>
 			<g v-if="displayNodeMenu">
-				<path fill="{{fill}}" stroke="#fff" v-attr="d:d" v-component="cmp-arc" v-repeat="menu"></path>
+				<path fill="{{fill}}" stroke="#fff" v-attr="d: path" v-component="cmp-arc" v-repeat="menu"></path>
 			</g>
-			<text v-attr="transform:'translate('+labelX+','+labelY+')'" v-class="node-label, invisible: displayNodeMenu">
+			<text v-attr="transform: 'translate('+labelX+','+labelY+')'" v-class="node-label, invisible: displayNodeMenu">
 				Node Label
 			</text>
 		</g>

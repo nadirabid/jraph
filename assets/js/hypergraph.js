@@ -15,7 +15,7 @@ Vue.component('cmp-arc', {
 
 	computed: {
 
-		d: function() {
+		path: function() {
 			this._arc
 					.innerRadius( this.innerRadius )
 					.outerRadius( this.outerRadius )
@@ -60,13 +60,9 @@ Vue.component('cmp-node', {
 		this.$watch( 'x', _.bind( this.updateLable, this ) );
 		this.$watch( 'labelDistance', _.bind( this.updateLable, this ) );
 		this.$watch( 'radius', _.bind( this.updateLable, this ) );
-		
-		d3.select( this.$el )
-				.data([ this.$data ])
-				.call( this.$parent.force.drag );
 
 		this._textElement = this.$el.querySelector( 'text' );
-	},	
+	},
 
 	methods: {
 
@@ -98,9 +94,57 @@ Vue.component('cmp-node', {
 			self.labelY = tY + shiftY;
 		},
 
-		pin: function( e ) {
-			if ( e.defaultPrevented )
+		mouseenterHandler: function() {
+			this.displayNodeMenu = true;
+
+
+		},
+
+		mouseleaveHandler: function() {
+			if ( this._mousemoveHandler )
 				return;
+
+			this.displayNodeMenu = false;
+		},
+
+		mousedownHandler: function() {
+			//TODO: only listen to LEFT-CLICK mouse event
+			this._mousemoveHandler = _.bind( this.mousemoveHandler, this );
+			document.addEventListener( 'mousemove', this._mousemoveHandler );
+			this.displayNodeMenu = true;
+			this.fixed = true;
+		},
+
+		mousemoveHandler: function( e ) {
+			console.log( 'mousemove' );
+			this._mousemoved = true;
+			this.x = this.px = e.x;
+			this.y = this.py = e.y;
+		},
+
+		mouseupHandler: function( e ) {
+			//TODO: only listen to LEFT-CLICK mouse event
+			if ( !this._mousemoveHandler )
+				return;
+
+			e.preventDefault();
+			console.log( 'mouseupHandler', e );
+
+			document.removeEventListener( 'mousemove', this._mousemoveHandler );
+			delete this._mousemoveHandler;
+			this.displayNodeMenu = false;
+			this.fixed = false;
+		},
+
+		pin: function( e ) {
+			console.log( 'mousemoved', this._mousemoved );
+
+			if ( this._mousemoved ) {
+				this._mousemoved = false;
+				return;
+			}
+
+			console.log( 'pin', e );
 
 			var self = this;
 			var $node = d3.select( self.$el );
@@ -108,54 +152,48 @@ Vue.component('cmp-node', {
 
 			self.$parent.force.resume();
 
-			if ( self.pinned ) {
+			self.radius += 12;
+			self.labelDistance += 12;
+			self.ignore = true;
+
+			var nx = ( self.$parent.width / 2 ) + 10,
+					ny = self.$parent.height / 2 - 10;
+			var iX = d3.interpolateRound( self.x, nx ),
+					iY = d3.interpolateRound( self.y, ny );
+
+			$node
+					.transition()
+					.duration( transitionDuration )
+					.attrTween('transform' , function() {
+						return function( t ) {
+							var x = self.x = self.px = iX( t ),
+									y = self.y = self.py = iY( t );
+
+							_.defer(function() {
+								self.$parent.force.resume();	
+							});
+							
+							return 'translate(' + x + ',' + y + ')';
+						};
+					})
+					.each('end', function() {	
+						//BUG: don't set fixed flag if we cancel before the transition ends				
+						self.fixed = true;
+					});
+
+			self.$dispatch( 'showNodeData', self.$data );
+			self.$parent.force.resume();
+			self.pinned = !self.pinned;
+
+			Mousetrap.bind('esc', function() {
 				self.fixed = false;
 				self.radius -= 12;
 				self.labelDistance -= 12;
 				self.ignore = false;
 
+				Mousetrap.unbind( 'esc' );
 				self.$dispatch( 'hideNodeData' );
-			}
-			else {
-				self.radius += 12;
-				self.labelDistance += 12;
-				self.ignore = true;
-
-				var nx = ( self.$parent.width / 2 ) + 10,
-						ny = self.$parent.height / 2 - 10;
-				var iX = d3.interpolateRound( self.x, nx ),
-						iY = d3.interpolateRound( self.y, ny );
-
-				$node
-						.transition()
-						.duration( transitionDuration )
-						.attrTween('transform' , function() {
-							return function( t ) {
-								var x = self.x = self.px = iX( t ),
-										y = self.y = self.py = iY( t );
-
-								_.defer(function() {
-									self.$parent.force.resume();	
-								});
-								
-								return 'translate(' + x + ',' + y + ')';
-							};
-						})
-						.each('end', function() {	
-							//BUG: don't set fixed flag if we cancel before the transition ends				
-							self.fixed = true;
-						});
-
-				Mousetrap.bind('esc', function() {
-					self.pin( { defaultPrevented: false } );
-					Mousetrap.unbind( 'esc' );
-				});
-
-				self.$dispatch( 'showNodeData', self.$data );
-			}
-
-			self.$parent.force.resume();
-			self.pinned = !self.pinned;
+			});
 		}
 
 	}
