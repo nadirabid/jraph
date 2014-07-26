@@ -5,9 +5,9 @@ Vue.component('cmp-arc', {
 
 	data: {
 
-		innerRadius: 20,
+		innerRadius: 40,
 
-		outerRadius: 60,
+		outerRadius: 80,
 
 		_arc: d3.svg.arc()
 
@@ -33,9 +33,11 @@ Vue.component('cmp-node', {
 
 	data: {
 
+		nodeMenu: false,
+
 		labelDistance: 15,
 
-		radius: 15,
+		radius: 20,
 
 		x: 0,
 
@@ -49,7 +51,8 @@ Vue.component('cmp-node', {
 
 		menu: [
 			{ fill: "#bdc3c7", startAngle: 0, endAngle: 2 },
-			{ fill: "#7f8c8d", startAngle: 2, endAngle: 5 },
+			{ fill: "#7f8c8d", startAngle: 2, endAngle: 3 },
+			{ fill: "#ecf0f1", startAngle: 3, endAngle: 5 },
 			{ fill: "#95a5a6", startAngle: 5, endAngle: Math.PI*2 }
 		]
 
@@ -94,57 +97,77 @@ Vue.component('cmp-node', {
 			self.labelY = tY + shiftY;
 		},
 
-		mouseenterHandler: function() {
-			this.displayNodeMenu = true;
+		showNodeMenu: function( e, index ) {
+			//move node to front to make sure menu is not 
+			//hidden by overlapping elements
+			var node = this.$parent.nodes.$remove( index );
+			this.$parent.nodes.push( node );
+			
+			this.nodeMenu = true;
+			this.fixed = true;
+			this.px = this.x;
+			this.py = this.y;
+
+			console.log( 'showNodeMenu', this.id );
 		},
 
-		mouseleaveHandler: function() {
-			if ( this._mousemoveHandler )
+		hideNodeMenu: function() {
+			console.log( 'hideNodeMenu', this.id );
+			if ( this._dragged )
 				return;
 
-			this.displayNodeMenu = false;
+			this.nodeMenu = false;
+			this.fixed = this.pinned || false;
 		},
 
-		mousedownHandler: function( e ) {
+		dragStart: function( e ) {
 			if ( e.button != 0 )
 				return;
 
-			this._mousemoveHandler = _.bind( this.mousemoveHandler, this );
-			this._mouseupHandler = _.bind( this.mouseupHandler, this );
-			document.addEventListener( 'mousemove', this._mousemoveHandler );
-			document.addEventListener( 'mouseup', this._mouseupHandler );
+			this._drag = _.bind( this.drag, this );
+			this._dragEnd = _.bind( this.dragEnd, this );
+			document.addEventListener( 'mousemove', this._drag );
+			document.addEventListener( 'mouseup', this._dragEnd );
 
-			this.displayNodeMenu = true;
+			this.nodeMenu = true;
 			this.fixed = true;
 		},
 
-		mousemoveHandler: function( e ) {
-			this._mousemoved = true;
+		drag: function( e ) {
+			this._dragged = true;
 			this.x = this.px = e.x;
 			this.y = this.py = e.y;
 			this.$parent.force.resume();
 		},
 
-		mouseupHandler: function( e ) {
-			if ( !this._mousemoveHandler || e.button != 0 )
+		dragEnd: function( e ) {
+			if ( !this._drag || e.button != 0 )
 				return;
 
 			e.preventDefault();
 
-			document.removeEventListener( 'mousemove', this._mousemoveHandler );
-			document.removeEventListener( 'mouseup', this._mouseupHandler );
-			delete this._mousemoveHandler;
-			delete this._mouseupHandler;
+			document.removeEventListener( 'mousemove', this._drag );
+			document.removeEventListener( 'mouseup', this._dragEnd );
+			delete this._drag;
+			delete this._dragEnd;
 
-			this.displayNodeMenu = false;
-			this.fixed = false;
+			// when the mouse is positioned outside the viewPort
+			// the 'mouseleave' and 'clicked' events are not registered
+			if ( e.clientX < 0 || e.clientY < 0 ) {
+				this._dragged = false;
+				this.hideNodeMenu();
+			}
 		},
 
 		pin: function( e ) {
-			if ( this._mousemoved ) {
-				this._mousemoved = false;
+			if ( this._dragged ) {
+				this._dragged = false;
 				return;
 			}
+
+			// mouseleave is not registered when the element 
+			// is progmatically moved out underneath the mouse
+			this.hideNodeMenu();
 
 			var self = this;
 			var $node = d3.select( self.$el );
@@ -373,13 +396,13 @@ Vue.component('cmp-graph', {
 
 		this.$watch('nodes', function( value, mutation ) {
 			if ( mutation ) {
-				self.force.nodes( self.nodes ).start();
+				self.force.nodes( self.nodes ).resume();
 			}
 		});
 
 		this.$watch('links', function( value, mutation ) {
 			if ( mutation ) {
-				self.force.links( self.links ).start();
+				self.force.links( self.links ).resume();
 			}
 		});
 	},

@@ -75,20 +75,19 @@
 		</g>
 		<g v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="cmp-node" 
-			 v-repeat="nodes"
-			 v-on="mouseenter: mouseenterHandler(),
-			 			 mouseleave: mouseleaveHandler(),
-			 			 mousedown: mousedownHandler( $event ),
+			 v-repeat="nodes | orderBy cid reverse"
+			 v-on="mouseenter: showNodeMenu( $event, $index ),
+			 			 mouseout: hideNodeMenu(),
+			 			 mousedown: dragStart( $event ),
 			 			 click: pin( $event )">
-			<circle class="node"
-							filter="url( #dropShadow )"
-							v-attr="r: radius">
-			</circle>
-			<g v-if="displayNodeMenu">
-				<path fill="{{fill}}" stroke="#fff" v-attr="d: path" v-component="cmp-arc" v-repeat="menu"></path>
+			<circle class="node" fill="#DADFE1" stroke-width="{{swidth}}" stroke="#fff" v-attr="r: radius"></circle>
+			<g v-if="nodeMenu" class="node-menu">
+				<path fill="{{fill}}" v-attr="d: path" v-component="cmp-arc" v-repeat="menu"></path>
 			</g>
-			<text v-attr="transform: 'translate('+labelX+','+labelY+')'" v-class="node-label, invisible: displayNodeMenu">
-				Node Label
+			<text class="node-label disable-pointer-events"
+						v-attr="transform: 'translate('+labelX+','+labelY+')'"
+						v-class="invisible: nodeMenu">
+				Label {{ $index }}
 			</text>
 		</g>
 	</svg>

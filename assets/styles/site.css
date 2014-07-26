@@ -1,6 +1,6 @@
 body {
   overflow: hidden;
-  background-color: #fff;
+  background-color: #34495E;
 }
 
 .disable-pointer-events {
@@ -36,15 +36,9 @@ body {
   margin-top: 200px;
 }
 
-.node {
-  stroke-width:1px;
-  stroke:#eee;
-  fill:#fff;
-}
-
 .link {
-  opacity: .2;
-  stroke: #000;
+  opacity: .3;
+  stroke: #F2F1EF;
   stroke-width:.5em;
 }
 
@@ -62,6 +56,11 @@ body {
   z-index: 1;
 }
 
+.node
+{
+  stroke-width:0;
+}
+
 .node-data
 {
   pointer-events:auto;
@@ -73,6 +72,22 @@ body {
   border:1px solid #eee;
   border-radius:0;
   display:inline-block;
+}
+
+.node-menu
+{
+  stroke:#34495E;
+  stroke-width:.2em;
+}
+
+.node-label {
+  fill:#ecf0f1;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .info-card ul {

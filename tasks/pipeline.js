@@ -26,7 +26,7 @@ var jsFilesToInject = [
   // Dependencies like sails.io.js, jQuery, or Angular
   // are brought in here
   'js/dependencies/jquery-2.1.1.js',
-  'js/dependencies/d3.js',
+  'js/dependencies/d3.js',  
   'js/dependencies/lodash.js',
   'js/dependencies/handlebars-v1.3.0.js',
   'js/dependencies/backbone.js',
