@@ -11,9 +11,13 @@ Vue.component('cmp-arc', {
 
 		endAngle: 0,
 
-		innerRadius: 35,
+		innerRadius: 50,
 
-		outerRadius: 75,
+		outerRadius: 90,
+
+		hInnerRadius: 44,
+
+		hOuterRadius: 48,
 
 		x: 0,
 
@@ -33,6 +37,16 @@ Vue.component('cmp-arc', {
 					.endAngle( this.endAngle );
 
 			return this._arc();
+		},
+
+		highlight: function() {
+			var arc = d3.svg.arc()
+					.innerRadius( this.hInnerRadius )
+					.outerRadius( this.hOuterRadius )
+					.startAngle( this.startAngle )
+					.endAngle( this.endAngle );
+
+			return arc();
 		}
 
 	},

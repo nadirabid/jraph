@@ -76,19 +76,6 @@ body {
   stroke:#fff;
 }
 
-.node-menu
-{
-  stroke:#34495E;
-  fill:#ff7043;
-  stroke-width:.2em;
-}
-
-.node-menu:hover {
-  stroke-width:.001em;
-  stroke:#ff8a65;
-  fill:#ff8a65;
-}
-
 .node-label {
   fill:#ecf0f1;
 }
@@ -106,12 +93,33 @@ body {
   display:inline-block;
 }
 
-.menu-item-label 
+.node-menu
 {
+  stroke-width:.1em;
+  stroke:#34495E;
+  fill:#ff9800;
+}
+
+.node-menu:hover {
+  fill:#ffa726;
+}
+
+.node-menu > .node-menu-highlight {
+  visibility: hidden;
+}
+
+.node-menu:hover > .node-menu-highlight {
+  stroke-width:0;
+  visibility: visible;
+}
+
+.node-menu-item-label 
+{
+  stroke-width: 0;
   fill:#ecf0f1;
   font-weight: bolder;
   font-size: 1em;
-  letter-spacing: .2em;
+  letter-spacing: .25em;
 }
 
 .info-card ul {
