@@ -69,15 +69,17 @@
 			 			 click      : pin( $event )">			
 			<g v-if="nodeMenu">
 				<circle fill-opacity="0" r="80"></circle>
-				<path class="node-menu"
-							fill="{{fill}}"
-							v-attr="d: path"
-							v-component="cmp-arc"
-							v-on="mouseenter: bringToFront( $index )"
-							v-repeat="menu"></path>
+				<g v-component="cmp-arc" v-repeat="menu"  v-on="mouseenter: bringToFront( $index )">
+					<path id="menuItem-{{$index}}" class="node-menu" v-attr="d: path"></path>
+					<text class="menu-item-label disable-user-selection disable-pointer-events"
+								text-anchor="middle"
+								v-attr="x: x, dy: y">
+						<textPath xlink:href="#menuItem-{{$index}}">{{label | uppercase}}</textPath>
+					</text>
+				</g>
 			</g>
 			<circle class="node-circle" v-attr="r: radius"></circle>
-			<text class="node-label disable-pointer-events"
+			<text text-anchor="middle" class="node-label disable-user-selection disable-pointer-events"
 						v-attr="transform: 'translate('+labelX+','+labelY+')'"
 						v-class="invisible: nodeMenu">
 				Label {{ $index }}

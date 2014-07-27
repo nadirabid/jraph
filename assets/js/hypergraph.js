@@ -5,9 +5,19 @@ Vue.component('cmp-arc', {
 
 	data: {
 
-		innerRadius: 40,
+		label: '',
 
-		outerRadius: 80,
+		startAngle: 0,
+
+		endAngle: 0,
+
+		innerRadius: 35,
+
+		outerRadius: 75,
+
+		x: 0,
+
+		y: 0,
 
 		_arc: d3.svg.arc()
 
@@ -27,7 +37,40 @@ Vue.component('cmp-arc', {
 
 	},
 
+	attached: function() {
+		var self = this;
+
+		this._textElement = this.$el.querySelector( 'text' );
+		
+		self.updateY();
+		self.updateX();
+		
+	},
+
 	methods: {
+
+		updateX: function() {
+			var endAngle 		= this.endAngle,
+					startAngle 	= this.startAngle,
+					innerRadius = this.innerRadius,
+					outerRadius = this.outerRadius;
+
+			var midAngle 	= ( endAngle - startAngle ) / 2;
+					midRadius = innerRadius + ( ( outerRadius - innerRadius ) / 2 );
+			
+			this.x = midAngle * ( outerRadius );
+		},
+
+		updateY: function() {
+			var innerRadius = this.innerRadius,
+					outerRadius = this.outerRadius;
+
+		  var fontSize = window.getComputedStyle( this._textElement )
+		  										 .getPropertyValue( 'font-size' );
+
+			this.y = ( _.parseInt( fontSize ) / 2 ) + ( ( outerRadius - innerRadius ) / 2 );
+		},
+
 
 		bringToFront: function( index ) {
 			var menuItem = this.$get( 'menu' ).$remove( index );
@@ -59,10 +102,10 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ startAngle: 0, endAngle: 2 },
-			{ startAngle: 2, endAngle: 3 },
-			{ startAngle: 3, endAngle: 5 },
-			{ startAngle: 5, endAngle: Math.PI*2 }
+			{ label: 'Item', startAngle: 0, endAngle: 2 },
+			{ label: 'Item', startAngle: 2, endAngle: 3 },
+			{ label: 'Item', startAngle: 3, endAngle: 4.5 },
+			{ label: 'Item', startAngle: 4.5, endAngle: Math.PI*2 }
 		]
 
 	},
@@ -88,11 +131,10 @@ Vue.component('cmp-node', {
 
 			var theta = Math.atan( dy / dx );
 
-			var shiftX = bBox.width * -0.5;
-					shiftY = bBox.y * -0.5;
-
 			var ratio = E_MINUS_1 * ( 1 - Math.abs( theta % HALF_PI / HALF_PI ) );
-			shiftX += bBox.width * Math.log( ratio + 1 ) * ( ( dx > 0 ) ? 0.5 : -0.5 );
+			
+			var shiftX = bBox.width * Math.log( ratio + 1 ) * ( ( dx > 0 ) ? 0.5 : -0.5 ),
+					shiftY = bBox.y * -0.5;
 
 			var tX = labelDistance * Math.cos( theta ),
 				  tY = labelDistance * Math.sin( theta );
