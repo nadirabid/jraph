@@ -2,7 +2,7 @@
 
 	<div class="container-overlay" v-class="disable-pointer-events : !displayNodeData">
 
-		<span class="enable-pointer-events" v-component="cmp-nodeCreate">
+		<span class="default-pointer-events" v-component="cmp-nodeCreate">
 	 		<button class="btn btn-default node-create" v-class="hidden: displayNodeCreate" v-on="click: displayNodeCreate=true">
 	 	  	<span class="glyphicon glyphicon-plus"></span>
 	 		</button>
@@ -56,34 +56,27 @@
 	</div>
 
 	<svg class="hypergraph" v-attr="width:width, height:height" v-component="cmp-graph">
-		<defs>
-			<filter id="dropShadow" width="1.5" height="1.5" x="-0.1" y="-0.1" primitiveUnits="objectBoundingBox">
-	    	<feGaussianBlur in="SourceAlpha" stdDeviation=".04" />
-	    	<feOffset dx="0" dy=".04" />
-	    	<feColorMatrix type="matrix" values="0 0 0 0 0
-																						 0 0 0 0 0		
-																						 0 0 0 0 0
-																						 0 0 0 .1 0" />
-	    	<feMerge>
-	        <feMergeNode />
-	        <feMergeNode in="SourceGraphic" />
-	    	</feMerge>
-	  	</filter>
-		</defs>
-		<g v-repeat="links">
-			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
+		<g class="link" v-repeat="links">
+			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 		</g>
-		<g v-attr="transform: 'translate('+x+','+y+')'"
+		<g class="node"
+			 v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="cmp-node" 
 			 v-repeat="nodes | orderBy cid reverse"
-			 v-on="mouseenter: showNodeMenu( $event, $index ),
-			 			 mouseout: hideNodeMenu(),
-			 			 mousedown: dragStart( $event ),
-			 			 click: pin( $event )">
-			<circle class="node" fill="#DADFE1" stroke-width="{{swidth}}" stroke="#fff" v-attr="r: radius"></circle>
-			<g v-if="nodeMenu" class="node-menu">
-				<path fill="{{fill}}" v-attr="d: path" v-component="cmp-arc" v-repeat="menu"></path>
+			 v-on="mouseenter : showNodeMenu( $event, $index ),
+			 			 mouseleave : hideNodeMenu(),
+			 			 mousedown  : dragStart( $event ),
+			 			 click      : pin( $event )">			
+			<g v-if="nodeMenu">
+				<circle fill-opacity="0" r="80"></circle>
+				<path class="node-menu"
+							fill="{{fill}}"
+							v-attr="d: path"
+							v-component="cmp-arc"
+							v-on="mouseenter: bringToFront( $index )"
+							v-repeat="menu"></path>
 			</g>
+			<circle class="node-circle" v-attr="r: radius"></circle>
 			<text class="node-label disable-pointer-events"
 						v-attr="transform: 'translate('+labelX+','+labelY+')'"
 						v-class="invisible: nodeMenu">

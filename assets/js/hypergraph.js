@@ -25,6 +25,15 @@ Vue.component('cmp-arc', {
 			return this._arc();
 		}
 
+	},
+
+	methods: {
+
+		bringToFront: function( index ) {
+			var menuItem = this.$get( 'menu' ).$remove( index );
+			this.$get( 'menu' ).push( menuItem );
+		}
+
 	}
 
 });
@@ -50,10 +59,10 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ fill: "#bdc3c7", startAngle: 0, endAngle: 2 },
-			{ fill: "#7f8c8d", startAngle: 2, endAngle: 3 },
-			{ fill: "#ecf0f1", startAngle: 3, endAngle: 5 },
-			{ fill: "#95a5a6", startAngle: 5, endAngle: Math.PI*2 }
+			{ startAngle: 0, endAngle: 2 },
+			{ startAngle: 2, endAngle: 3 },
+			{ startAngle: 3, endAngle: 5 },
+			{ startAngle: 5, endAngle: Math.PI*2 }
 		]
 
 	},
@@ -107,12 +116,9 @@ Vue.component('cmp-node', {
 			this.fixed = true;
 			this.px = this.x;
 			this.py = this.y;
-
-			console.log( 'showNodeMenu', this.id );
 		},
 
 		hideNodeMenu: function() {
-			console.log( 'hideNodeMenu', this.id );
 			if ( this._dragged )
 				return;
 
@@ -200,19 +206,20 @@ Vue.component('cmp-node', {
 						};
 					})
 					.each('end', function() {	
-						//BUG: don't set fixed flag if we cancel before the transition ends				
-						self.fixed = true;
+						if ( self.pinned )			
+							self.fixed = true;
 					});
 
 			self.$dispatch( 'showNodeData', self.$data );
 			self.$parent.force.resume();
-			self.pinned = !self.pinned;
+			self.pinned = true;
 
 			Mousetrap.bind('esc', function() {
 				self.fixed = false;
+				self.ignore = false;
+				self.pinned = false;
 				self.radius -= 12;
 				self.labelDistance -= 12;
-				self.ignore = false;
 
 				Mousetrap.unbind( 'esc' );
 				self.$dispatch( 'hideNodeData' );
