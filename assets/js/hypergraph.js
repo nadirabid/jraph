@@ -9,13 +9,13 @@ Vue.component('cmp-arc', {
 
 		endAngle: 0,
 
-		innerRadius: 40,
+		innerRadius: 45,
 
-		outerRadius: 80,
+		outerRadius: 90,
 
-		highlightThickness: 3,
+		highlightThickness: 6,
 
-		highlightDistance: 2,
+		highlightDistance: 1,
 
 		x: 0,
 
@@ -96,11 +96,6 @@ Vue.component('cmp-arc', {
 		  										 .getPropertyValue( 'font-size' );
 
 			this.dy = _.parseInt( fontSize ) / 2;
-		},
-
-		bringToFront: function( index ) {
-			var menuItem = this.$get( 'menu' ).$remove( index );
-			this.$get( 'menu' ).push( menuItem );
 		}
 
 	}
@@ -128,10 +123,10 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ label: 'Item 1', startAngle: 1, endAngle: 2.5 },
-			{ label: 'Item 2', startAngle: 2.5, endAngle: 4.5 },
-			{ label: 'Item 3', startAngle: 4.5, endAngle: 6 },
-			{ label: 'Item 4', startAngle: 6, endAngle: Math.PI * 2 + 1 }
+			{ label: 'Item', startAngle: 1, endAngle: 2.5 },
+			{ label: 'Item', startAngle: 2.5, endAngle: 4.5 },
+			{ label: 'Item', startAngle: 4.5, endAngle: 6 },
+			{ label: 'Item', startAngle: 6, endAngle: Math.PI * 2 + 1 }
 		]
 
 	},

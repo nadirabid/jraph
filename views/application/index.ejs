@@ -73,8 +73,7 @@
 				<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
 				<g class="node-menu"
 					 v-component="cmp-arc"
-					 v-repeat="menu"
-					 v-on="mouseenter: bringToFront( $index )">
+					 v-repeat="menu">
 					<path v-attr="d: backgroundPath"></path>
 					<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
 					<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
