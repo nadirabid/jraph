@@ -5,48 +5,68 @@ Vue.component('cmp-arc', {
 
 	data: {
 
-		label: '',
-
 		startAngle: 0,
 
 		endAngle: 0,
 
-		innerRadius: 50,
+		innerRadius: 40,
 
-		outerRadius: 90,
+		outerRadius: 80,
 
-		hInnerRadius: 44,
+		highlightThickness: 3,
 
-		hOuterRadius: 48,
+		highlightDistance: 2,
 
 		x: 0,
 
-		y: 0,
-
-		_arc: d3.svg.arc()
+		dy: 0
 
 	},
 
 	computed: {
 
-		path: function() {
-			this._arc
+		backgroundPath: function() {
+			var arc = d3.svg.arc()
 					.innerRadius( this.innerRadius )
 					.outerRadius( this.outerRadius )
 					.startAngle( this.startAngle )
 					.endAngle( this.endAngle );
 
-			return this._arc();
+			return arc();
 		},
 
-		highlight: function() {
+		highlightPath: function() {
 			var arc = d3.svg.arc()
-					.innerRadius( this.hInnerRadius )
-					.outerRadius( this.hOuterRadius )
+					.innerRadius( this.innerRadius - this.highlightDistance )
+					.outerRadius( this.innerRadius - this.highlightDistance - this.highlightThickness )
 					.startAngle( this.startAngle )
 					.endAngle( this.endAngle );
 
 			return arc();
+		},
+
+		textPath: function() {
+			var innerRadius = this.innerRadius,
+					outerRadius = this.outerRadius,
+					startAngle	= this.startAngle - HALF_PI,
+					endAngle    = this.endAngle - HALF_PI;
+
+			var midRadius = innerRadius + ( ( outerRadius - innerRadius ) / 2 );
+			var midAngle = startAngle + ( ( endAngle - startAngle ) / 2 );
+
+			var reverse = midAngle > 0 && midAngle < Math.PI;
+			
+			var arcData = {
+				x0		: midRadius * Math.cos( reverse ? endAngle : startAngle ),
+				y0		: midRadius * Math.sin( reverse ? endAngle : startAngle ),
+				r 		: midRadius,
+				sweep : reverse ? 0 : 1,
+				x1 		: midRadius * Math.cos( reverse ? startAngle : endAngle ),
+				y1 		: midRadius * Math.sin( reverse ? startAngle : endAngle )
+			};
+
+			var arcPath = "M ${x0} ${y0} A ${r} ${r} 0 0 ${sweep} ${x1} ${y1}";
+			return _.template( arcPath, arcData );
 		}
 
 	},
@@ -58,7 +78,6 @@ Vue.component('cmp-arc', {
 		
 		self.updateY();
 		self.updateX();
-		
 	},
 
 	methods: {
@@ -68,23 +87,16 @@ Vue.component('cmp-arc', {
 					startAngle 	= this.startAngle,
 					innerRadius = this.innerRadius,
 					outerRadius = this.outerRadius;
-
-			var midAngle 	= ( endAngle - startAngle ) / 2;
-					midRadius = innerRadius + ( ( outerRadius - innerRadius ) / 2 );
 			
-			this.x = midAngle * ( outerRadius );
+			this.x = ( ( endAngle - startAngle ) / 2 ) * ( innerRadius + ( ( outerRadius - innerRadius ) / 2 ) );
 		},
 
 		updateY: function() {
-			var innerRadius = this.innerRadius,
-					outerRadius = this.outerRadius;
-
 		  var fontSize = window.getComputedStyle( this._textElement )
 		  										 .getPropertyValue( 'font-size' );
 
-			this.y = ( _.parseInt( fontSize ) / 2 ) + ( ( outerRadius - innerRadius ) / 2 );
+			this.dy = _.parseInt( fontSize ) / 2;
 		},
-
 
 		bringToFront: function( index ) {
 			var menuItem = this.$get( 'menu' ).$remove( index );
@@ -116,10 +128,10 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ label: 'Item', startAngle: 0, endAngle: 2 },
-			{ label: 'Item', startAngle: 2, endAngle: 3 },
-			{ label: 'Item', startAngle: 3, endAngle: 4.5 },
-			{ label: 'Item', startAngle: 4.5, endAngle: Math.PI*2 }
+			{ label: 'Item 1', startAngle: 1, endAngle: 2.5 },
+			{ label: 'Item 2', startAngle: 2.5, endAngle: 4.5 },
+			{ label: 'Item 3', startAngle: 4.5, endAngle: 6 },
+			{ label: 'Item 4', startAngle: 6, endAngle: Math.PI * 2 + 1 }
 		]
 
 	},
@@ -191,7 +203,7 @@ Vue.component('cmp-node', {
 			document.addEventListener( 'mousemove', this._drag );
 			document.addEventListener( 'mouseup', this._dragEnd );
 
-			this.nodeMenu = true;
+			this.nodeMenu = false;
 			this.fixed = true;
 		},
 

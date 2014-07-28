@@ -97,11 +97,11 @@ body {
 {
   stroke-width:.1em;
   stroke:#34495E;
-  fill:#ff9800;
+  fill:#f36c60;
 }
 
 .node-menu:hover {
-  fill:#ffa726;
+  fill:#f69988;
 }
 
 .node-menu > .node-menu-highlight {
@@ -119,7 +119,6 @@ body {
   fill:#ecf0f1;
   font-weight: bolder;
   font-size: 1em;
-  letter-spacing: .25em;
 }
 
 .info-card ul {

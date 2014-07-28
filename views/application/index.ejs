@@ -1,6 +1,6 @@
 <div id="application">
 
-	<div class="container-overlay" v-class="disable-pointer-events : !displayNodeData">
+	<div class="container-fluid container-overlay" v-class="disable-pointer-events : !displayNodeData">
 
 		<span class="default-pointer-events" v-component="cmp-nodeCreate">
 	 		<button class="btn btn-default node-create" v-class="hidden: displayNodeCreate" v-on="click: displayNodeCreate=true">
@@ -56,9 +56,11 @@
 	</div>
 
 	<svg class="hypergraph" v-attr="width:width, height:height" v-component="cmp-graph">
+		
 		<g class="link" v-repeat="links">
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 		</g>
+
 		<g class="node"
 			 v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="cmp-node" 
@@ -68,17 +70,18 @@
 			 			 mousedown  : dragStart( $event ),
 			 			 click      : pin( $event )">			
 			<g v-if="nodeMenu">
-				<circle fill-opacity="0" r="80"></circle>
+				<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
 				<g class="node-menu"
 					 v-component="cmp-arc"
 					 v-repeat="menu"
 					 v-on="mouseenter: bringToFront( $index )">
-					<path id="menuItem-{{$index}}" v-attr="d: path"></path>
-					<path class="node-menu-highlight" v-attr="d: highlight"></path>
+					<path v-attr="d: backgroundPath"></path>
+					<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
+					<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
 					<text class="node-menu-item-label disable-user-selection disable-pointer-events"
 								text-anchor="middle"
-								v-attr="x: x, dy: y">
-						<textPath xlink:href="#menuItem-{{$index}}">{{label | uppercase}}</textPath>
+								v-attr="x: x, dy: dy">
+						<textPath xlink:href="#itemLabel-textPath-{{$index}}">{{label | uppercase}}</textPath>
 					</text>
 				</g>
 			</g>
@@ -89,6 +92,7 @@
 				Label {{ $index }}
 			</text>
 		</g>
+
 	</svg>
 
 </div>
