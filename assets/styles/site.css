@@ -95,6 +95,7 @@ body {
 
 .node-menu
 {
+  transition: fill 200ms ease-out;
   stroke-width:.1em;
   stroke:#34495E;
   fill:#f36c60;
@@ -104,21 +105,25 @@ body {
   fill:#f69988;
 }
 
+.node-menu:active {
+  transition: fill 0;
+  fill:#e84e40;
+}
+
 .node-menu > .node-menu-highlight {
   visibility: hidden;
 }
 
 .node-menu:hover > .node-menu-highlight {
-  stroke-width:0;
   visibility: visible;
 }
 
 .node-menu-item-label 
 {
+  font-size: 1.3em;
+  letter-spacing: 0em;
   stroke-width: 0;
   fill:#ecf0f1;
-  font-weight: bolder;
-  font-size: 1em;
 }
 
 .info-card ul {

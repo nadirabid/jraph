@@ -66,30 +66,31 @@
 			 v-component="cmp-node" 
 			 v-repeat="nodes | orderBy cid reverse"
 			 v-on="mouseenter : showNodeMenu( $event, $index ),
-			 			 mouseleave : hideNodeMenu(),
-			 			 mousedown  : dragStart( $event ),
-			 			 click      : pin( $event )">			
+			 			 mouseleave : hideNodeMenu()">	
 			<g v-if="nodeMenu">
 				<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
-				<g class="node-menu"
-					 v-component="cmp-arc"
-					 v-repeat="menu">
+				<g class="node-menu" v-component="cmp-arc" v-repeat="menu">
 					<path v-attr="d: backgroundPath"></path>
 					<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
 					<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
 					<text class="node-menu-item-label disable-user-selection disable-pointer-events"
 								text-anchor="middle"
 								v-attr="x: x, dy: dy">
-						<textPath xlink:href="#itemLabel-textPath-{{$index}}">{{label | uppercase}}</textPath>
+						<textPath xlink:href="#itemLabel-textPath-{{$index}}">{{ label | lowercase }}</textPath>
 					</text>
 				</g>
 			</g>
-			<circle class="node-circle" v-attr="r: radius"></circle>
-			<text text-anchor="middle" class="node-label disable-user-selection disable-pointer-events"
-						v-attr="transform: 'translate('+labelX+','+labelY+')'"
-						v-class="invisible: nodeMenu">
-				Label {{ $index }}
-			</text>
+			<g>
+				<circle class="node-circle"
+								v-attr="r: radius"
+								v-on="mousedown : dragStart( $event ),
+											click			: pin( $event )"></circle>
+				<text text-anchor="middle" class="node-label disable-user-selection disable-pointer-events"
+							v-attr="transform: 'translate('+labelX+','+labelY+')'"
+							v-class="invisible: nodeMenu">
+					Label {{ $index }}
+				</text>
+			</g>
 		</g>
 
 	</svg>

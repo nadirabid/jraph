@@ -95,7 +95,7 @@ Vue.component('cmp-arc', {
 		  var fontSize = window.getComputedStyle( this._textElement )
 		  										 .getPropertyValue( 'font-size' );
 
-			this.dy = _.parseInt( fontSize ) / 2;
+			this.dy = _.parseInt( fontSize ) / 3;
 		}
 
 	}
@@ -105,6 +105,12 @@ Vue.component('cmp-arc', {
 Vue.component('cmp-node', {
 
 	data: {
+
+		shared: {
+
+			activeNode: false
+
+		},
 
 		nodeMenu: false,
 
@@ -123,10 +129,10 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ label: 'Item', startAngle: 1, endAngle: 2.5 },
-			{ label: 'Item', startAngle: 2.5, endAngle: 4.5 },
-			{ label: 'Item', startAngle: 4.5, endAngle: 6 },
-			{ label: 'Item', startAngle: 6, endAngle: Math.PI * 2 + 1 }
+			{ label: 'delete', startAngle: 0, endAngle: 1.5 },
+			{ label: 'add link', startAngle: 1.5, endAngle: 3.5 },
+			{ label: 'Item', startAngle: 3.5, endAngle: 5 },
+			{ label: 'Item', startAngle: 5, endAngle: Math.PI * 2 }
 		]
 
 	},
@@ -170,21 +176,28 @@ Vue.component('cmp-node', {
 		},
 
 		showNodeMenu: function( e, index ) {
-			//move node to front to make sure menu is not 
-			//hidden by overlapping elements
-			var node = this.$parent.nodes.$remove( index );
-			this.$parent.nodes.push( node );
+			// check shared.activeNode to make sure that we aren't 
+			// already displaying a menu on another node
+			if ( this._dragged || ( this.shared.activeNode && this.shared.activeNode != this.id ) )
+				return;
 			
+			this.shared.activeNode = this.id;
 			this.nodeMenu = true;
 			this.fixed = true;
 			this.px = this.x;
 			this.py = this.y;
+
+			//move node to front to make sure menu is not 
+			//hidden by overlapping elements
+			var node = this.$parent.nodes.$remove( index );
+			this.$parent.nodes.push( node );
 		},
 
 		hideNodeMenu: function() {
-			if ( this._dragged )
+			if ( this._dragged || ( this.shared.activeNode && this.shared.activeNode != this.id ) )
 				return;
 
+			this.shared.activeNode = false;
 			this.nodeMenu = false;
 			this.fixed = this.pinned || false;
 		},
@@ -195,8 +208,8 @@ Vue.component('cmp-node', {
 
 			this._drag = _.bind( this.drag, this );
 			this._dragEnd = _.bind( this.dragEnd, this );
-			document.addEventListener( 'mousemove', this._drag );
 			document.addEventListener( 'mouseup', this._dragEnd );
+			document.addEventListener( 'mousemove', this._drag );
 
 			this.nodeMenu = false;
 			this.fixed = true;
@@ -215,10 +228,13 @@ Vue.component('cmp-node', {
 
 			e.preventDefault();
 
-			document.removeEventListener( 'mousemove', this._drag );
 			document.removeEventListener( 'mouseup', this._dragEnd );
+			document.removeEventListener( 'mousemove', this._drag );
 			delete this._drag;
 			delete this._dragEnd;
+			
+			this.nodeMenu = true;
+			this.fixed = true;
 
 			// when the mouse is positioned outside the viewPort
 			// the 'mouseleave' and 'clicked' events are not registered
