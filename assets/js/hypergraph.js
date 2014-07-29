@@ -1,4 +1,5 @@
 var HALF_PI = Math.PI / 2;
+var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 
 Vue.component('cmp-arc', {
@@ -15,7 +16,7 @@ Vue.component('cmp-arc', {
 
 		highlightThickness: 6,
 
-		highlightDistance: 1,
+		highlightDistance: 2,
 
 		x: 0,
 
@@ -29,8 +30,8 @@ Vue.component('cmp-arc', {
 			var arc = d3.svg.arc()
 					.innerRadius( this.innerRadius )
 					.outerRadius( this.outerRadius )
-					.startAngle( this.startAngle )
-					.endAngle( this.endAngle );
+					.startAngle( this.startAngle + HALF_PI )
+					.endAngle( this.endAngle + HALF_PI );
 
 			return arc();
 		},
@@ -39,8 +40,8 @@ Vue.component('cmp-arc', {
 			var arc = d3.svg.arc()
 					.innerRadius( this.innerRadius - this.highlightDistance )
 					.outerRadius( this.innerRadius - this.highlightDistance - this.highlightThickness )
-					.startAngle( this.startAngle )
-					.endAngle( this.endAngle );
+					.startAngle( this.startAngle + HALF_PI )
+					.endAngle( this.endAngle + HALF_PI );
 
 			return arc();
 		},
@@ -48,8 +49,8 @@ Vue.component('cmp-arc', {
 		textPath: function() {
 			var innerRadius = this.innerRadius,
 					outerRadius = this.outerRadius,
-					startAngle	= this.startAngle - HALF_PI,
-					endAngle    = this.endAngle - HALF_PI;
+					startAngle	= this.startAngle,
+					endAngle    = this.endAngle;
 
 			var midRadius = innerRadius + ( ( outerRadius - innerRadius ) / 2 );
 			var midAngle = startAngle + ( ( endAngle - startAngle ) / 2 );
@@ -60,12 +61,13 @@ Vue.component('cmp-arc', {
 				x0		: midRadius * Math.cos( reverse ? endAngle : startAngle ),
 				y0		: midRadius * Math.sin( reverse ? endAngle : startAngle ),
 				r 		: midRadius,
+				large : ( endAngle - startAngle > Math.PI ) ? 1 : 0,
 				sweep : reverse ? 0 : 1,
 				x1 		: midRadius * Math.cos( reverse ? startAngle : endAngle ),
 				y1 		: midRadius * Math.sin( reverse ? startAngle : endAngle )
 			};
 
-			var arcPath = "M ${x0} ${y0} A ${r} ${r} 0 0 ${sweep} ${x1} ${y1}";
+			var arcPath = "M ${x0} ${y0} A ${r} ${r} 0 ${large} ${sweep} ${x1} ${y1}";
 			return _.template( arcPath, arcData );
 		}
 
@@ -129,12 +131,15 @@ Vue.component('cmp-node', {
 		fixed: false, //doesn't work if not explicitly set
 
 		menu: [
-			{ label: 'delete', startAngle: 0, endAngle: 1.5 },
-			{ label: 'add link', startAngle: 1.5, endAngle: 3.5 },
-			{ label: 'Item', startAngle: 3.5, endAngle: 5 },
-			{ label: 'Item', startAngle: 5, endAngle: Math.PI * 2 }
+			{ label: 'add link' },
+			{ label: 'delete' },
+			{ label: 'dependencies'}
 		]
 
+	},
+
+	created: function() {
+		this.calculateMenuItemAngles();
 	},
 
 	ready: function() {
@@ -147,6 +152,17 @@ Vue.component('cmp-node', {
 	},
 
 	methods: {
+
+		calculateMenuItemAngles: function() {
+			var totalLetters = this.menu.reduce(function( sum, item ) { 
+				return sum + item.label.length; 
+			}, 0);
+
+			this.menu.forEach(function( item, index, menu ) {
+				item.startAngle = index ? menu[ index - 1 ].endAngle : 0;
+				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
+			});
+		},
 
 		updateLable: function() {
 			var self = this;

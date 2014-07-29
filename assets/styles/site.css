@@ -95,7 +95,7 @@ body {
 
 .node-menu
 {
-  transition: fill 200ms ease-out;
+  transition: fill 300ms ease;
   stroke-width:.1em;
   stroke:#34495E;
   fill:#f36c60;
@@ -111,11 +111,13 @@ body {
 }
 
 .node-menu > .node-menu-highlight {
-  visibility: hidden;
+  transition: opacity 300ms ease;
+  opacity: 0;
 }
 
 .node-menu:hover > .node-menu-highlight {
-  visibility: visible;
+  opacity: 1;
+  stroke-width:0;
 }
 
 .node-menu-item-label 
