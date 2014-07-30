@@ -2,7 +2,7 @@ var HALF_PI = Math.PI / 2;
 var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 
-Vue.component('cmp-arc', {
+Vue.component('x-radial-button', {
 
 	data: {
 
@@ -104,7 +104,7 @@ Vue.component('cmp-arc', {
 
 });
 
-Vue.component('cmp-node', {
+Vue.component('x-node', {
 
 	data: {
 
@@ -113,8 +113,6 @@ Vue.component('cmp-node', {
 			activeNode: false
 
 		},
-
-		nodeMenu: false,
 
 		labelDistance: 15,
 
@@ -161,6 +159,7 @@ Vue.component('cmp-node', {
 			this.menu.forEach(function( item, index, menu ) {
 				item.startAngle = index ? menu[ index - 1 ].endAngle : 0;
 				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
+				console.log( item.startAngle, item.endAngle );
 			});
 		},
 
@@ -325,7 +324,7 @@ Vue.component('cmp-node', {
 
 });
 
-Vue.component('cmp-nodeData', {
+Vue.component('x-nodeData', {
 
 	data: {
 
@@ -388,7 +387,7 @@ Vue.component('cmp-nodeData', {
 
 });
 
-Vue.component('cmp-nodeCreate', {
+Vue.component('x-nodeCreate', {
 
 	data: {
 
@@ -459,7 +458,7 @@ Vue.component('cmp-nodeCreate', {
 
 });
 
-Vue.component('cmp-graph', {
+Vue.component('x-graph', {
 
 	data: {
 

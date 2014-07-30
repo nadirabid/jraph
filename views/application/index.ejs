@@ -2,7 +2,7 @@
 
 	<div class="container-fluid container-overlay" v-class="disable-pointer-events : !displayNodeData">
 
-		<span class="default-pointer-events" v-component="cmp-nodeCreate">
+		<span class="default-pointer-events" v-component="x-nodeCreate">
 	 		<button class="btn btn-default node-create" v-class="hidden: displayNodeCreate" v-on="click: displayNodeCreate=true">
 	 	  	<span class="glyphicon glyphicon-plus"></span>
 	 		</button>
@@ -26,7 +26,7 @@
 	 		</div>
 		</span>
 
-		<div class="node-data" v-component="cmp-nodeData" v-if="displayNodeData">
+		<div class="node-data" v-component="x-nodeData" v-if="displayNodeData">
 			<ul class="list-unstyled">
 				<li v-repeat="nodeDataList">
 					<span v-if="typeof(value)!='object'"><b>{{key}}</b>: {{value}}</span>
@@ -55,7 +55,7 @@
 
 	</div>
 
-	<svg class="hypergraph" v-attr="width:width, height:height" v-component="cmp-graph">
+	<svg class="hypergraph" v-attr="width:width, height:height" v-component="x-graph">
 		
 		<g class="link" v-repeat="links">
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
@@ -63,20 +63,22 @@
 
 		<g class="node"
 			 v-attr="transform: 'translate('+x+','+y+')'"
-			 v-component="cmp-node" 
+			 v-component="x-node" 
 			 v-repeat="nodes | orderBy cid reverse"
 			 v-on="mouseenter : showNodeMenu( $event, $index ),
-			 			 mouseleave : hideNodeMenu()">	
+			 			 mouseleave : hideNodeMenu()">
 			<g v-if="nodeMenu">
 				<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
-				<g class="node-menu" v-component="cmp-arc" v-repeat="menu">
+				<g class="node-menu" v-component="x-radial-button" v-repeat="menu">
 					<path v-attr="d: backgroundPath"></path>
 					<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
 					<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
 					<text class="node-menu-item-label disable-user-selection disable-pointer-events"
 								text-anchor="middle"
 								v-attr="x: x, dy: dy">
-						<textPath xlink:href="#itemLabel-textPath-{{$index}}">{{ label | lowercase }}</textPath>
+						<textPath xlink:href="#itemLabel-textPath-{{$index}}">
+							{{label}}
+						</textPath>
 					</text>
 				</g>
 			</g>
@@ -96,3 +98,27 @@
 	</svg>
 
 </div>
+
+<template id="template-radial-button" >
+		<svg:g class="node-menu">
+			<path v-attr="d: backgroundPath"></path>
+			<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
+			<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
+			<text class="node-menu-item-label disable-user-selection disable-pointer-events"
+						text-anchor="middle"
+						v-attr="x: x, dy: dy">
+				<textPath xlink:href="#itemLabel-textPath-{{$index}}">
+					<content></content>
+				</textPath>
+			</text>
+		</g>
+</template>
+
+<script id="template-radial-menu" type="text/x-template">
+	<svg>
+		<g>
+			<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
+			<content></content>
+		</g>
+	</svg>
+</script>
