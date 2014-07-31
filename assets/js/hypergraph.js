@@ -4,6 +4,10 @@ var E_MINUS_1 = Math.E - 1;
 
 Vue.component('x-radial-button', {
 
+	template: '#template-radial-button',
+
+	replace: true,
+
 	data: {
 
 		startAngle: 0,
@@ -74,12 +78,15 @@ Vue.component('x-radial-button', {
 	},
 
 	attached: function() {
-		var self = this;
-
-		this._textElement = this.$el.querySelector( 'text' );
+		this.$parent.$emit( 'radialMenu' );
+		this._textElement = this.$el.querySelector( '.node-menu-item-label' );
 		
-		self.updateY();
-		self.updateX();
+		this.updateY();
+		this.updateX();
+	},
+
+	detached: function() {
+		this.$parent.$emit( 'radialMenu' );
 	},
 
 	methods: {
@@ -104,6 +111,39 @@ Vue.component('x-radial-button', {
 
 });
 
+Vue.component('x-radial-menu', {
+
+	template: '#template-radial-menu',
+
+	replace: true,
+
+	data: {
+
+		buttons: [ ]
+
+	},
+
+	ready: function() {
+		this.calculateMenuItemAngles();
+	},
+
+	methods: {
+
+		calculateMenuItemAngles: function() {
+			var totalLetters = this.buttons.reduce(function( sum, item ) { 
+				return sum + item.label.length; 
+			}, 0);
+
+			this.buttons.forEach(function( item, index, buttons ) {
+				item.startAngle = index ? buttons[ index - 1 ].endAngle : 0;
+				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
+			});
+		}
+
+	}
+
+});
+
 Vue.component('x-node', {
 
 	data: {
@@ -113,6 +153,10 @@ Vue.component('x-node', {
 			activeNode: false
 
 		},
+
+		nodeMenu: false,
+
+		nodeMenu2: true,
 
 		labelDistance: 15,
 
@@ -136,9 +180,7 @@ Vue.component('x-node', {
 
 	},
 
-	created: function() {
-		this.calculateMenuItemAngles();
-	},
+
 
 	ready: function() {
 		//can we get by with not watching y
@@ -146,7 +188,7 @@ Vue.component('x-node', {
 		this.$watch( 'labelDistance', _.bind( this.updateLable, this ) );
 		this.$watch( 'radius', _.bind( this.updateLable, this ) );
 
-		this._textElement = this.$el.querySelector( 'text' );
+		this._textElement = this.$el.querySelector( '.node-label' );
 	},
 
 	methods: {
@@ -159,7 +201,6 @@ Vue.component('x-node', {
 			this.menu.forEach(function( item, index, menu ) {
 				item.startAngle = index ? menu[ index - 1 ].endAngle : 0;
 				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
-				console.log( item.startAngle, item.endAngle );
 			});
 		},
 
@@ -169,7 +210,7 @@ Vue.component('x-node', {
 			var bBox = self._textElement.getBBox();
 
 			var dx = self.x - ( self.$parent.width  / 2 ),
-					dy = self.y - ( self.$parent.height  / 2 );
+					dy = self.y - ( self.$parent.height / 2 );
 
 			var theta = Math.atan( dy / dx );
 

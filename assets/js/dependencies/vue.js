@@ -868,6 +868,7 @@ map.colgroup =
 map.caption =
 map.tfoot = [1, '<table>', '</table>']
 
+map.g =
 map.text =
 map.circle =
 map.ellipse =
