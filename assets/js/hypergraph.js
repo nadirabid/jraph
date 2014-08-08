@@ -3,6 +3,68 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
+function initCustomEvents( svgEl ) {
+	var X_CLICK = 'x-click';
+	var X_DRAG = 'x-drag';
+	var X_DRAG_START = 'x-dragstart';
+	var X_DRAG_END = 'x-dragend';
+
+	var elX, elY = 0;
+	var dragFlag = false;
+
+	var mousemove = function( e ) {
+		var deltaX = e.x - elX;
+		var deltaY = e.y - elY;
+
+		var nDragFlag = dragFlag || ( deltaX != 0  || deltaY != 0 );
+
+		elX = e.x;
+		elY = e.y;
+
+		if ( nDragFlag && !dragFlag ) {
+			var xDragStartEvent = new CustomEvent( X_DRAG_START, { x: elX, y: elY } );
+			svgEl.dispatchEvent( xDragStartEvent );
+		}
+		else if ( dragFlag ) {
+			var xDragEvent = new CustomEvent( X_DRAG, { x: elX, y: elY } );
+			svgEl.dispatchEvent( xDragEvent );
+		}
+	};
+
+	var mouseup = function( e ) {
+		document.removeEventListener( 'mousemove', mousemove );
+		document.removeEventListener( 'mouseup', mouseup );
+
+		elX = e.x;
+		elY = e.y;
+
+		var xDragEndEvent = new CustomEvent( X_DRAG_END, { x: elX, y: elY } );
+		svgEl.dispatchEvent( xDragEndEvent );
+
+		if ( elX < 0 || elY < 0 || elX > window.innerWidth || elY > window.innerHeight ) {
+			dragFlag = false;
+		}
+	};
+
+	svgEl.addEventListener('mousedown', function( e ) {
+		elX = e.x;
+		elY = e.y;
+
+		document.addEventListener( 'mousemove', mousemove );
+		document.addEventListener( 'mouseup', mouseup );
+	});
+
+	svgEl.addEventListener('click', function( e ) {
+		if ( dragFlag ) {
+			dragFlag = false;
+		}
+		else {
+			var xClickEvent = new CustomEvent( X_CLICK, { x: e.x, y: e.y } );
+			svgEl.dispatchEvent( xClickEvent );
+		}
+	});
+};
+
 Vue.component('x-radial-button', {
 
 	template: '#template-radial-button',
@@ -309,11 +371,11 @@ Vue.component('x-node', {
 			this.x = this.px = e.x;
 			this.y = this.py = e.y;
 
-			//self.$parent.force.resume();
 			this._forceResume();
 		},
 
 		dragEnd: function( e ) {
+			console.log( 'dragEnd', e );
 			if ( !this._drag || e.button != MOUSE_LEFT_BUTTON ) 
 				return;
 
