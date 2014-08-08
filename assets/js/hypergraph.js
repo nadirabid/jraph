@@ -471,7 +471,7 @@ Vue.component('x-node', {
 		this._textElement = this.$el.querySelector( '.node-label' );
 
 		var forceResume = this.$parent.force.resume.bind( this.$parent.force );
-		this._forceResume  = _.throttle( forceResume, 1000 );
+		this._forceResume  = _.throttle( forceResume, 2000 );
 	}
 
 });
