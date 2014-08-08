@@ -1,6 +1,7 @@
 var HALF_PI = Math.PI / 2;
 var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
+var MOUSE_LEFT_BUTTON = 0;
 
 Vue.component('x-radial-button', {
 
@@ -10,21 +11,21 @@ Vue.component('x-radial-button', {
 
 	data: {
 
-		startAngle: 0,
+		x: 0,
 
-		endAngle: 0,
-
-		innerRadius: 45,
-
-		outerRadius: 90,
-
-		highlightThickness: 6,
+		dy: 0,
 
 		highlightDistance: 2,
 
-		x: 0,
+		highlightThickness: 4,
 
-		dy: 0
+		radiusInner: 40,
+
+		radiusOuter: 80,
+
+		startAngle: 0,
+
+		endAngle: 0
 
 	},
 
@@ -32,8 +33,8 @@ Vue.component('x-radial-button', {
 
 		backgroundPath: function() {
 			var arc = d3.svg.arc()
-					.innerRadius( this.innerRadius )
-					.outerRadius( this.outerRadius )
+					.innerRadius( this.radiusInner )
+					.outerRadius( this.radiusOuter )
 					.startAngle( this.startAngle + HALF_PI )
 					.endAngle( this.endAngle + HALF_PI );
 
@@ -42,8 +43,8 @@ Vue.component('x-radial-button', {
 
 		highlightPath: function() {
 			var arc = d3.svg.arc()
-					.innerRadius( this.innerRadius - this.highlightDistance )
-					.outerRadius( this.innerRadius - this.highlightDistance - this.highlightThickness )
+					.innerRadius( this.radiusInner - this.highlightDistance )
+					.outerRadius( this.radiusInner - this.highlightDistance - this.highlightThickness )
 					.startAngle( this.startAngle + HALF_PI )
 					.endAngle( this.endAngle + HALF_PI );
 
@@ -51,12 +52,14 @@ Vue.component('x-radial-button', {
 		},
 
 		textPath: function() {
-			var innerRadius = this.innerRadius,
-					outerRadius = this.outerRadius,
+			var radiusInner = this.radiusInner,
+					radiusOuter = this.radiusOuter,
 					startAngle	= this.startAngle,
 					endAngle    = this.endAngle;
 
-			var midRadius = innerRadius + ( ( outerRadius - innerRadius ) / 2 );
+			console.log( )
+
+			var midRadius = radiusInner + ( ( radiusOuter - radiusInner ) / 2 );
 			var midAngle = startAngle + ( ( endAngle - startAngle ) / 2 );
 
 			var reverse = midAngle > 0 && midAngle < Math.PI;
@@ -77,16 +80,46 @@ Vue.component('x-radial-button', {
 
 	},
 
-	attached: function() {
-		this.$parent.$emit( 'radialMenu' );
-		this._textElement = this.$el.querySelector( '.node-menu-item-label' );
-		
-		this.updateY();
-		this.updateX();
-	},
+	directives: {
 
-	detached: function() {
-		this.$parent.$emit( 'radialMenu' );
+		//val is considered to be in pixels
+		'radius-inner': function( val ) {
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+
+			if ( Number.isNaN( val ) || val < 0 )
+				throw "v-inner-radius need to specify a valid positive integer";
+
+			this.vm.radiusInner = val;
+		},
+
+		//val is considered to be in pixels
+		'radius-outer': function( val ) {
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+
+			if ( Number.isNaN( val ) || val < 0 )
+				throw "v-outer-radius need to specify a valid positive integer";
+
+			this.vm.radiusOuter = val;
+		},
+
+		'highlight-thickness': function( val ) {
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+
+			if ( Number.isNaN( val ) || val < 0 )
+				throw "v-highlight-thickness need to specify a valid positive integer";
+
+			this.vm.highlightThickness = val;
+		},
+
+		'highlight-distance': function( val ) {
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+
+			if ( Number.isNaN( val ) || val < 0 )
+				throw "v-highlight-distance need to specify a valid positive integer";
+
+			this.vm.highlightDistance = val;
+		}
+
 	},
 
 	methods: {
@@ -94,10 +127,10 @@ Vue.component('x-radial-button', {
 		updateX: function() {
 			var endAngle 		= this.endAngle,
 					startAngle 	= this.startAngle,
-					innerRadius = this.innerRadius,
-					outerRadius = this.outerRadius;
+					radiusInner = this.radiusInner,
+					radiusOuter = this.radiusOuter;
 			
-			this.x = ( ( endAngle - startAngle ) / 2 ) * ( innerRadius + ( ( outerRadius - innerRadius ) / 2 ) );
+			this.x = ( ( endAngle - startAngle ) / 2 ) * ( radiusInner + ( ( radiusOuter - radiusInner ) / 2 ) );
 		},
 
 		updateY: function() {
@@ -107,6 +140,22 @@ Vue.component('x-radial-button', {
 			this.dy = _.parseInt( fontSize ) / 3;
 		}
 
+	},
+
+	created: function() {
+		this.id = _.uniqueId( 'radial_button_' );
+	},
+
+	ready: function() {
+		this._textElement = this.$el.querySelector( '.node-menu-item-label' );
+		this.label = this._textElement.textContent.trim();
+
+		this.$parent.buttonVms.push( this );
+	},
+
+	attached: function() {
+		this.updateY();
+		this.updateX();
 	}
 
 });
@@ -117,29 +166,27 @@ Vue.component('x-radial-menu', {
 
 	replace: true,
 
-	data: {
-
-		buttons: [ ]
-
-	},
-
-	ready: function() {
-		this.calculateMenuItemAngles();
-	},
-
 	methods: {
 
-		calculateMenuItemAngles: function() {
-			var totalLetters = this.buttons.reduce(function( sum, item ) { 
-				return sum + item.label.length; 
+		calcButtonAngles: function() {
+			var totalLetters = this.buttonVms.reduce(function( sum, vm ) {
+				return sum + vm.label.length;
 			}, 0);
 
-			this.buttons.forEach(function( item, index, buttons ) {
-				item.startAngle = index ? buttons[ index - 1 ].endAngle : 0;
-				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
+			this.buttonVms.forEach(function( vm, index, buttonVms ) {
+				vm.startAngle = index ? buttonVms[ index - 1 ].endAngle : 0;
+				vm.endAngle = vm.startAngle + ( vm.label.length / totalLetters ) * TWO_PI;
 			});
 		}
 
+	},
+
+	created: function() {
+		this.buttonVms = [ ];
+	},
+
+	ready: function() {
+		this.calcButtonAngles();
 	}
 
 });
@@ -148,15 +195,15 @@ Vue.component('x-node', {
 
 	data: {
 
-		shared: {
+		sharedState: {
 
-			activeNode: false
+			activeNode: false,
+
+			state: 'default'
 
 		},
 
 		nodeMenu: false,
-
-		nodeMenu2: true,
 
 		labelDistance: 15,
 
@@ -172,37 +219,11 @@ Vue.component('x-node', {
 
 		fixed: false, //doesn't work if not explicitly set
 
-		menu: [
-			{ label: 'add link' },
-			{ label: 'delete' },
-			{ label: 'dependencies'}
-		]
+		menu: [ 'link', 'delete', 'dependencies' ]
 
-	},
-
-
-
-	ready: function() {
-		//can we get by with not watching y
-		this.$watch( 'x', _.bind( this.updateLable, this ) );
-		this.$watch( 'labelDistance', _.bind( this.updateLable, this ) );
-		this.$watch( 'radius', _.bind( this.updateLable, this ) );
-
-		this._textElement = this.$el.querySelector( '.node-label' );
 	},
 
 	methods: {
-
-		calculateMenuItemAngles: function() {
-			var totalLetters = this.menu.reduce(function( sum, item ) { 
-				return sum + item.label.length; 
-			}, 0);
-
-			this.menu.forEach(function( item, index, menu ) {
-				item.startAngle = index ? menu[ index - 1 ].endAngle : 0;
-				item.endAngle = item.startAngle + ( item.label.length / totalLetters ) * TWO_PI;
-			});
-		},
 
 		updateLable: function() {
 			var self = this;
@@ -231,13 +252,22 @@ Vue.component('x-node', {
 			self.labelY = tY + shiftY;
 		},
 
+		link: function() {
+			this.fixed = true;
+			this.nodeMenu = false;
+		},
+
+		delete: function() { },
+
+		dependencies: function() { },
+
 		showNodeMenu: function( e, index ) {
-			// check shared.activeNode to make sure that we aren't 
+			// check sharedState.activeNode to make sure that we aren't 
 			// already displaying a menu on another node
-			if ( this._dragged || ( this.shared.activeNode && this.shared.activeNode != this.id ) )
+			if ( this._dragged || ( this.sharedState.activeNode && this.sharedState.activeNode != this.id ) )
 				return;
 			
-			this.shared.activeNode = this.id;
+			this.sharedState.activeNode = this.id;
 			this.nodeMenu = true;
 			this.fixed = true;
 			this.px = this.x;
@@ -250,20 +280,21 @@ Vue.component('x-node', {
 		},
 
 		hideNodeMenu: function() {
-			if ( this._dragged || ( this.shared.activeNode && this.shared.activeNode != this.id ) )
+			if ( this._dragged || ( this.sharedState.activeNode && this.sharedState.activeNode != this.id ) )
 				return;
 
-			this.shared.activeNode = false;
+			this.sharedState.activeNode = false;
 			this.nodeMenu = false;
 			this.fixed = this.pinned || false;
 		},
 
 		dragStart: function( e ) {
-			if ( e.button != 0 )
+			if ( e.button != MOUSE_LEFT_BUTTON )
 				return;
 
-			this._drag = _.bind( this.drag, this );
-			this._dragEnd = _.bind( this.dragEnd, this );
+			this._drag = this.drag.bind( this );
+			this._dragEnd = this.dragEnd.bind( this );
+
 			document.addEventListener( 'mouseup', this._dragEnd );
 			document.addEventListener( 'mousemove', this._drag );
 
@@ -272,14 +303,18 @@ Vue.component('x-node', {
 		},
 
 		drag: function( e ) {
+			var self = this;
+
 			this._dragged = true;
 			this.x = this.px = e.x;
 			this.y = this.py = e.y;
-			this.$parent.force.resume();
+
+			//self.$parent.force.resume();
+			this._forceResume();
 		},
 
 		dragEnd: function( e ) {
-			if ( !this._drag || e.button != 0 )
+			if ( !this._drag || e.button != MOUSE_LEFT_BUTTON ) 
 				return;
 
 			e.preventDefault();
@@ -361,6 +396,20 @@ Vue.component('x-node', {
 			});
 		}
 
+	},
+
+	ready: function() {
+		var self = this;
+
+		//can we get by with not watching y
+		this.$watch( 'x', this.updateLable.bind( this ) );
+		this.$watch( 'labelDistance', this.updateLable.bind( this ) );
+		this.$watch( 'radius', this.updateLable.bind( this ) );
+
+		this._textElement = this.$el.querySelector( '.node-label' );
+
+		var forceResume = this.$parent.force.resume.bind( this.$parent.force );
+		this._forceResume  = _.throttle( forceResume, 1000 );
 	}
 
 });
@@ -389,10 +438,6 @@ Vue.component('x-nodeData', {
 			});
 		}
 
-	},
-
-	created: function() {
-		this.nodeData = this.$parent.nodeData;
 	},
 
 	methods: {
@@ -424,6 +469,10 @@ Vue.component('x-nodeData', {
 			});
 		}
 
+	},
+
+	created: function() {
+		this.nodeData = this.$parent.nodeData;
 	}
 
 });
@@ -442,20 +491,6 @@ Vue.component('x-nodeCreate', {
 
 		data: null
 
-	},
-
-	created: function() {
-		var self = this;
-		
-		this.$watch('displayNodeCreate', function( value ) {
-			if ( !value )
-				return;
-
-			Mousetrap.bind('esc', function() {
-				self.displayNodeCreate = false;
-				Mousetrap.unbind('esc');
-			});
-		});
 	},
 
 	methods: {
@@ -495,6 +530,20 @@ Vue.component('x-nodeCreate', {
 			});
 		}
 
+	},
+
+	created: function() {
+		var self = this;
+		
+		this.$watch('displayNodeCreate', function( value ) {
+			if ( !value )
+				return;
+
+			Mousetrap.bind('esc', function() {
+				self.displayNodeCreate = false;
+				Mousetrap.unbind('esc');
+			});
+		});
 	}
 
 });
@@ -506,6 +555,18 @@ Vue.component('x-graph', {
 		nodes: [ ], 
 
 		links: [ ]
+
+	},
+
+	methods: {
+
+		resize: function() {
+			this.$data.width = $( window ).innerWidth();
+			this.$data.height = $( window ).innerHeight();
+
+			this.force.size( [ this.width, this.height ] );
+			this.force.start();
+		}
 
 	},
 
@@ -524,7 +585,7 @@ Vue.component('x-graph', {
 				.linkDistance( 30 )
 				.chargeDistance( 600 );
 
-		window.addEventListener('resize', _.bind( this.resize, this ));
+		window.addEventListener( 'resize', this.resize.bind( this ) );
 
 		this.$on('data', function( nodes, links ) {
 			self.nodes = nodes;
@@ -547,18 +608,6 @@ Vue.component('x-graph', {
 				self.force.links( self.links ).resume();
 			}
 		});
-	},
-
-	methods: {
-
-		resize: function() {
-			this.$data.width = $( window ).innerWidth();
-			this.$data.height = $( window ).innerHeight();
-
-			this.force.size( [ this.width, this.height ] );
-			this.force.start();
-		}
-
 	}
 
 });
@@ -573,28 +622,6 @@ var app = new Vue({
 		
 		links: [ ]
 	
-	},
-
-	created: function() {
-		var self = this;
-		var nodesPromise = self.fetchNodes();
-		var linksPromise = self.fetchLinks();
-
-		$.when( nodesPromise, linksPromise ).done(function( nodes, links ) {
-			nodes.forEach(function( n ) {
-				links.forEach(function( l ) {
-					if ( l.sourceId == n.id ) l.source = n;
-					if ( l.targetId == n.id ) l.target = n;
-				});
-			});
-
-			self.nodes = nodes;
-			self.links = links;
-
-			self.$broadcast( 'data', nodes, links );
-		});
-
-		self.$on( 'showNodeData', _.bind( self.showNodeData, self ) );
 	},
 
 	methods: {
@@ -658,6 +685,28 @@ var app = new Vue({
 			return linksXhr;
 		}	
 
+	},
+
+	created: function() {
+		var self = this;
+		var nodesPromise = self.fetchNodes();
+		var linksPromise = self.fetchLinks();
+
+		$.when( nodesPromise, linksPromise ).done(function( nodes, links ) {
+			nodes.forEach(function( n ) {
+				links.forEach(function( l ) {
+					if ( l.sourceId == n.id ) l.source = n;
+					if ( l.targetId == n.id ) l.target = n;
+				});
+			});
+
+			self.nodes = nodes;
+			self.links = links;
+
+			self.$broadcast( 'data', nodes, links );
+		});
+
+		self.$on( 'showNodeData', self.showNodeData.bind( this ) );
 	}
 
 });

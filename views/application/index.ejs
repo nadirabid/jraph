@@ -65,8 +65,8 @@
 			 v-repeat="nodes | orderBy cid reverse"
 			 v-on="mouseenter : showNodeMenu( $event, $index ),
 			 			 mouseleave : hideNodeMenu()">
-			<x-radial-menu v-if="nodeMenu" v-with="buttons: menu">
-				<x-radial-button v-repeat="buttons">{{ label }}</x-radial-button>
+			<x-radial-menu v-if="nodeMenu">
+				<x-radial-button v-repeat="menu" v-on="click: {{$value}}">{{$value}}</x-radial-button>
 			</x-radial-menu>
 			<g>
 				<circle class="node-circle"
@@ -88,11 +88,11 @@
 	<g class="node-menu">
 		<path v-attr="d: backgroundPath"></path>
 		<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
-		<path id="itemLabel-textPath-{{$index}}" opacity="0" fill="none" v-attr="d: textPath"></path>
+		<path id="{{id}}" opacity="0" fill="none" v-attr="d: textPath"></path>
 		<text class="node-menu-item-label disable-user-selection disable-pointer-events"
 					text-anchor="middle"
 					v-attr="x: x, dy: dy">
-			<textPath xlink:href="#itemLabel-textPath-{{$index}}">
+			<textPath xlink:href="#{{id}}">
 				<content></content>
 			</textPath>
 		</text>
@@ -102,6 +102,8 @@
 <script id="template-radial-menu" type="text/x-template">
 	<g>
 		<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
-		<content></content>
+		<g class="content">
+			<content></content>
+		</g>
 	</g>
 </script>
