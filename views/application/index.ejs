@@ -63,16 +63,16 @@
 			 v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="x-node" 
 			 v-repeat="nodes | orderBy cid reverse"
-			 v-on="mouseenter : showNodeMenu( $event, $index ),
-			 			 mouseleave : hideNodeMenu()">
+			 v-on="x-mouseenter: showMenu( $index ), x-mouseleave: hideMenu()"
+			 v-x-events>
 			<x-radial-menu v-if="nodeMenu">
 				<x-radial-button v-repeat="menu" v-on="click: {{$value}}">{{ $value }}</x-radial-button>
 			</x-radial-menu>
 			<g>
 				<circle class="node-circle"
 								v-attr="r: radius"
-								v-on="mousedown : dragStart( $event ),
-											click			: pin( $event )"></circle>
+								v-on="x-click:pin( $event ), x-dragstart:dragStart( $event ), x-drag:drag( $event ), x-dragend:dragEnd( $event )"
+			 			 		v-x-events></circle>
 				<text text-anchor="middle" class="node-label disable-user-selection disable-pointer-events"
 							v-attr="transform: 'translate('+labelX+','+labelY+')'"
 							v-class="invisible: nodeMenu">

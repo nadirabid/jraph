@@ -3,67 +3,107 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
-function initCustomEvents( svgEl ) {
-	var X_CLICK = 'x-click';
-	var X_DRAG = 'x-drag';
-	var X_DRAG_START = 'x-dragstart';
-	var X_DRAG_END = 'x-dragend';
+Vue.directive('x-events', {
 
-	var elX, elY = 0;
-	var dragFlag = false;
+	isEmpty: true,
 
-	var mousemove = function( e ) {
-		var deltaX = e.x - elX;
-		var deltaY = e.y - elY;
+	bind: function() {
+		var X_MOUSEENTER = 'x-mouseenter';
+		var X_MOUSELEAVE = 'x-mouseleave';
+		var X_CLICK = 'x-click';
+		var X_DRAG = 'x-drag';
+		var X_DRAGSTART = 'x-dragstart';
+		var X_DRAGEND = 'x-dragend';
 
-		var nDragFlag = dragFlag || ( deltaX != 0  || deltaY != 0 );
+		var el = this.el;
+		var mdElX, mdElY = 0;
+		var elX, elY = 0;
+		var dragFlag = false;
 
-		elX = e.x;
-		elY = e.y;
+		var extractEventDetail = function( e ) {
+			var detail = {
+				x: e.x,
+				y: e.y,
+				button: e.button
+			};
 
-		if ( nDragFlag && !dragFlag ) {
-			var xDragStartEvent = new CustomEvent( X_DRAG_START, { x: elX, y: elY } );
-			svgEl.dispatchEvent( xDragStartEvent );
-		}
-		else if ( dragFlag ) {
-			var xDragEvent = new CustomEvent( X_DRAG, { x: elX, y: elY } );
-			svgEl.dispatchEvent( xDragEvent );
-		}
-	};
+			return { detail: detail };
+		};
 
-	var mouseup = function( e ) {
-		document.removeEventListener( 'mousemove', mousemove );
-		document.removeEventListener( 'mouseup', mouseup );
+		var mousemove = function( e ) {
+			if ( !dragFlag ) {
+				var dX = Math.abs( mdElX - e.x );
+				var dY = Math.abs( mdElY - e.y );
+				var distSqrd = dX*dX + dY*dY;
 
-		elX = e.x;
-		elY = e.y;
+				if ( distSqrd > 3 ) {
+					var xDragStartEvent = new CustomEvent( X_DRAGSTART, extractEventDetail( e ) );
+					el.dispatchEvent( xDragStartEvent );
+					dragFlag = true;
+				}
+			}
+			else {
+				var xEvent = new CustomEvent( X_DRAG, extractEventDetail( e ) );
+				el.dispatchEvent( xEvent );
+			}
+		};
 
-		var xDragEndEvent = new CustomEvent( X_DRAG_END, { x: elX, y: elY } );
-		svgEl.dispatchEvent( xDragEndEvent );
+		var mouseup = function( e ) {
+			document.removeEventListener( 'mousemove', mousemove );
+			document.removeEventListener( 'mouseup', mouseup );
 
-		if ( elX < 0 || elY < 0 || elX > window.innerWidth || elY > window.innerHeight ) {
-			dragFlag = false;
-		}
-	};
+			if ( !dragFlag )
+				return;
 
-	svgEl.addEventListener('mousedown', function( e ) {
-		elX = e.x;
-		elY = e.y;
+			elX = e.x;
+			elY = e.y;
 
-		document.addEventListener( 'mousemove', mousemove );
-		document.addEventListener( 'mouseup', mouseup );
-	});
+			if ( elX < 0 || elY < 0 || elX > window.innerWidth || elY > window.innerHeight )
+				dragFlag = false;
 
-	svgEl.addEventListener('click', function( e ) {
-		if ( dragFlag ) {
-			dragFlag = false;
-		}
-		else {
-			var xClickEvent = new CustomEvent( X_CLICK, { x: e.x, y: e.y } );
-			svgEl.dispatchEvent( xClickEvent );
-		}
-	});
-};
+			var xEvent = new CustomEvent( X_DRAGEND, extractEventDetail( e ) );
+			el.dispatchEvent( xEvent );
+		};
+
+		el.addEventListener('mouseenter', function( e ) {
+			if ( dragFlag )
+				return;
+
+			var xEvent = new CustomEvent( X_MOUSEENTER, extractEventDetail( e ) );
+			el.dispatchEvent( xEvent );
+		});
+
+		el.addEventListener('mouseleave', function( e ) {
+			if ( dragFlag )
+				return;
+
+			var xEvent = new CustomEvent( X_MOUSELEAVE, extractEventDetail( e ) );
+			el.dispatchEvent( xEvent );
+		});
+
+		el.addEventListener('mousedown', function( e ) {
+			if ( e.button != MOUSE_LEFT_BUTTON )
+				return;
+
+			mdElX = elX = e.x;
+			mdElY = elY = e.y;
+
+			document.addEventListener( 'mousemove', mousemove );
+			document.addEventListener( 'mouseup', mouseup );
+		});
+
+		el.addEventListener('click', function( e ) {
+			if ( dragFlag ) {
+				dragFlag = false;
+			}
+			else {
+				var xEvent = new CustomEvent( X_CLICK, extractEventDetail( e ) );
+				el.dispatchEvent( xEvent );
+			}
+		});
+	}
+
+});
 
 Vue.component('x-radial-button', {
 
@@ -118,8 +158,6 @@ Vue.component('x-radial-button', {
 					radiusOuter = this.radiusOuter,
 					startAngle	= this.startAngle,
 					endAngle    = this.endAngle;
-
-			console.log( )
 
 			var midRadius = radiusInner + ( ( radiusOuter - radiusInner ) / 2 );
 			var midAngle = startAngle + ( ( endAngle - startAngle ) / 2 );
@@ -323,10 +361,10 @@ Vue.component('x-node', {
 
 		dependencies: function() { },
 
-		showNodeMenu: function( e, index ) {
+		showMenu: function( index ) {
 			// check sharedState.activeNode to make sure that we aren't 
 			// already displaying a menu on another node
-			if ( this._dragged || ( this.sharedState.activeNode && this.sharedState.activeNode != this.id ) )
+			if ( this.sharedState.activeNode && this.sharedState.activeNode != this.id )
 				return;
 			
 			this.sharedState.activeNode = this.id;
@@ -341,8 +379,8 @@ Vue.component('x-node', {
 			this.$parent.nodes.push( node );
 		},
 
-		hideNodeMenu: function() {
-			if ( this._dragged || ( this.sharedState.activeNode && this.sharedState.activeNode != this.id ) )
+		hideMenu: function() {
+			if ( this.sharedState.activeNode && this.sharedState.activeNode != this.id )
 				return;
 
 			this.sharedState.activeNode = false;
@@ -351,61 +389,26 @@ Vue.component('x-node', {
 		},
 
 		dragStart: function( e ) {
-			if ( e.button != MOUSE_LEFT_BUTTON )
-				return;
-
-			this._drag = this.drag.bind( this );
-			this._dragEnd = this.dragEnd.bind( this );
-
-			document.addEventListener( 'mouseup', this._dragEnd );
-			document.addEventListener( 'mousemove', this._drag );
-
 			this.nodeMenu = false;
 			this.fixed = true;
 		},
 
 		drag: function( e ) {
-			var self = this;
-
-			this._dragged = true;
-			this.x = this.px = e.x;
-			this.y = this.py = e.y;
+			this.x = this.px = e.detail.x;
+			this.y = this.py = e.detail.y;
 
 			this._forceResume();
 		},
 
 		dragEnd: function( e ) {
-			console.log( 'dragEnd', e );
-			if ( !this._drag || e.button != MOUSE_LEFT_BUTTON ) 
-				return;
-
-			e.preventDefault();
-
-			document.removeEventListener( 'mouseup', this._dragEnd );
-			document.removeEventListener( 'mousemove', this._drag );
-			delete this._drag;
-			delete this._dragEnd;
-			
 			this.nodeMenu = true;
 			this.fixed = true;
-
-			// when the mouse is positioned outside the viewPort
-			// the 'mouseleave' and 'clicked' events are not registered
-			if ( e.clientX < 0 || e.clientY < 0 ) {
-				this._dragged = false;
-				this.hideNodeMenu();
-			}
 		},
 
 		pin: function( e ) {
-			if ( this._dragged ) {
-				this._dragged = false;
-				return;
-			}
-
 			// mouseleave is not registered when the element 
 			// is progmatically moved out underneath the mouse
-			this.hideNodeMenu();
+			this.hideMenu();
 
 			var self = this;
 			var $node = d3.select( self.$el );
