@@ -20,7 +20,7 @@ Vue.directive('x-events', {
 		var elX, elY = 0;
 		var dragFlag = false;
 
-		var extractEventDetail = function( e ) {
+		function extractEventDetail( e ) {
 			var detail = {
 				x: e.x,
 				y: e.y,
@@ -28,9 +28,9 @@ Vue.directive('x-events', {
 			};
 
 			return { detail: detail };
-		};
+		}
 
-		var mousemove = function( e ) {
+		function mousemove( e ) {
 			if ( !dragFlag ) {
 				var dX = Math.abs( mdElX - e.x );
 				var dY = Math.abs( mdElY - e.y );
@@ -46,9 +46,9 @@ Vue.directive('x-events', {
 				var xEvent = new CustomEvent( X_DRAG, extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
 			}
-		};
+		}
 
-		var mouseup = function( e ) {
+		function mouseup( e ) {
 			document.removeEventListener( 'mousemove', mousemove );
 			document.removeEventListener( 'mouseup', mouseup );
 
@@ -58,30 +58,34 @@ Vue.directive('x-events', {
 			elX = e.x;
 			elY = e.y;
 
-			if ( elX < 0 || elY < 0 || elX > window.innerWidth || elY > window.innerHeight )
+			if ( elX < 0 || elY < 0 || elX > window.innerWidth || elY > window.innerHeight ) {
 				dragFlag = false;
+
+				var xEvent = new CustomEvent( X_MOUSELEAVE, extractEventDetail( e ) );
+				el.dispatchEvent( xEvent );
+			}
 
 			var xEvent = new CustomEvent( X_DRAGEND, extractEventDetail( e ) );
 			el.dispatchEvent( xEvent );
-		};
+		}
 
-		el.addEventListener('mouseenter', function( e ) {
+		this._mouseenter = function( e ) {
 			if ( dragFlag )
 				return;
 
 			var xEvent = new CustomEvent( X_MOUSEENTER, extractEventDetail( e ) );
 			el.dispatchEvent( xEvent );
-		});
+		};
 
-		el.addEventListener('mouseleave', function( e ) {
+		this._mouseleave = function( e ) {
 			if ( dragFlag )
 				return;
 
 			var xEvent = new CustomEvent( X_MOUSELEAVE, extractEventDetail( e ) );
 			el.dispatchEvent( xEvent );
-		});
+		};
 
-		el.addEventListener('mousedown', function( e ) {
+		this._mousedown = function( e ) {
 			if ( e.button != MOUSE_LEFT_BUTTON )
 				return;
 
@@ -90,9 +94,9 @@ Vue.directive('x-events', {
 
 			document.addEventListener( 'mousemove', mousemove );
 			document.addEventListener( 'mouseup', mouseup );
-		});
+		};
 
-		el.addEventListener('click', function( e ) {
+		this._click = function( e ) {
 			if ( dragFlag ) {
 				dragFlag = false;
 			}
@@ -100,7 +104,20 @@ Vue.directive('x-events', {
 				var xEvent = new CustomEvent( X_CLICK, extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
 			}
-		});
+		};
+
+		el.addEventListener( 'mouseenter', this._mouseenter );
+		el.addEventListener( 'mouseleave', this._mouseleave );
+		el.addEventListener( 'mousedown', this._mousedown );
+		el.addEventListener( 'click', this._click );
+	},
+
+	unbind: function() {
+		var el = this.el;
+		el.removeEventListener( 'mouseenter', this._mouseenter );
+		el.removeEventListener( 'mouseleave', this._mouseleave );
+		el.removeEventListener( 'mousedown', this._mousedown );
+		el.removeEventListener( 'click', this._click );
 	}
 
 });
@@ -402,7 +419,9 @@ Vue.component('x-node', {
 
 		dragEnd: function( e ) {
 			this.nodeMenu = true;
-			this.fixed = true;
+
+			var elX = e.detail.x,
+					elY = e.detail.y;
 		},
 
 		pin: function( e ) {
