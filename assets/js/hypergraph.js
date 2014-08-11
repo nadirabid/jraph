@@ -3,7 +3,19 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
-Vue.directive('x-events', {
+// Using this approach untill we can use
+// Vue.filters( ... ) in the next release
+Vue.options.filters.state = function( handler, state ) {
+	if ( !handler || !state )
+		return handler;
+
+	return function() {
+		if ( this.state == state )
+			return handler.apply( this, arguments );
+	};
+};
+
+Vue.directive('svg-events', {
 
 	isEmpty: true,
 
@@ -201,7 +213,7 @@ Vue.component('x-radial-button', {
 
 		//val is considered to be in pixels
 		'radius-inner': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-inner-radius need to specify a valid positive integer";
@@ -211,7 +223,7 @@ Vue.component('x-radial-button', {
 
 		//val is considered to be in pixels
 		'radius-outer': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-outer-radius need to specify a valid positive integer";
@@ -220,7 +232,7 @@ Vue.component('x-radial-button', {
 		},
 
 		'highlight-thickness': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-highlight-thickness need to specify a valid positive integer";
@@ -229,7 +241,7 @@ Vue.component('x-radial-button', {
 		},
 
 		'highlight-distance': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression );
+			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-highlight-distance need to specify a valid positive integer";
@@ -254,7 +266,7 @@ Vue.component('x-radial-button', {
 		  var fontSize = window.getComputedStyle( this._textElement )
 		  										 .getPropertyValue( 'font-size' );
 
-			this.dy = _.parseInt( fontSize ) / 3;
+			this.dy = Number.parseInt( fontSize, 10 ) / 3;
 		}
 
 	},
@@ -314,11 +326,11 @@ Vue.component('x-node', {
 
 		sharedState: {
 
-			activeNode: false,
-
-			state: 'default'
+			activeNode: false
 
 		},
+
+		state: 'default',
 
 		nodeMenu: false,
 
@@ -351,7 +363,6 @@ Vue.component('x-node', {
 					dy = self.y - ( self.$parent.height / 2 );
 
 			var theta = Math.atan( dy / dx );
-
 			var ratio = E_MINUS_1 * ( 1 - Math.abs( theta % HALF_PI / HALF_PI ) );
 			
 			var shiftX = bBox.width * Math.log( ratio + 1 ) * ( ( dx > 0 ) ? 0.5 : -0.5 ),
@@ -385,10 +396,10 @@ Vue.component('x-node', {
 				return;
 			
 			this.sharedState.activeNode = this.id;
-			this.nodeMenu = true;
-			this.fixed = true;
 			this.px = this.x;
 			this.py = this.y;
+			this.nodeMenu = true;
+			this.fixed = true;
 
 			//move node to front to make sure menu is not 
 			//hidden by overlapping elements
@@ -397,12 +408,12 @@ Vue.component('x-node', {
 		},
 
 		hideMenu: function() {
-			if ( this.sharedState.activeNode && this.sharedState.activeNode != this.id )
+			if ( this.pinned || this.sharedState.activeNode && this.sharedState.activeNode != this.id )
 				return;
 
 			this.sharedState.activeNode = false;
 			this.nodeMenu = false;
-			this.fixed = this.pinned || false;
+			this.fixed = false;
 		},
 
 		dragStart: function( e ) {
@@ -419,22 +430,16 @@ Vue.component('x-node', {
 
 		dragEnd: function( e ) {
 			this.nodeMenu = true;
-
-			var elX = e.detail.x,
-					elY = e.detail.y;
 		},
 
 		pin: function( e ) {
-			// mouseleave is not registered when the element 
-			// is progmatically moved out underneath the mouse
-			this.hideMenu();
-
 			var self = this;
 			var $node = d3.select( self.$el );
 			var transitionDuration = 400;
 
 			self.$parent.force.resume();
 
+			self.nodeMenu = false;
 			self.radius += 12;
 			self.labelDistance += 12;
 			self.ignore = true;
@@ -458,10 +463,6 @@ Vue.component('x-node', {
 							
 							return 'translate(' + x + ',' + y + ')';
 						};
-					})
-					.each('end', function() {	
-						if ( self.pinned )			
-							self.fixed = true;
 					});
 
 			self.$dispatch( 'showNodeData', self.$data );
@@ -498,7 +499,7 @@ Vue.component('x-node', {
 
 });
 
-Vue.component('x-nodeData', {
+Vue.component('x-node-data', {
 
 	data: {
 
@@ -561,7 +562,7 @@ Vue.component('x-nodeData', {
 
 });
 
-Vue.component('x-nodeCreate', {
+Vue.component('x-node-create', {
 
 	data: {
 
@@ -717,12 +718,8 @@ var app = new Vue({
 
 			self.$on( 'hideNodeData', function() {
 				Mousetrap.unbind( 'esc' );
-				self.hideNodeData();
+				this.displayNodeData = false;
 			});
-		},
-
-		hideNodeData: function() {
-			this.displayNodeData = false;
 		},
 
 		fetchNodes: function() {

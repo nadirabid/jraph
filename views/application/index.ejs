@@ -2,8 +2,10 @@
 
 	<div class="container-fluid container-overlay" v-class="disable-pointer-events : !displayNodeData">
 
-		<span class="default-pointer-events" v-component="x-nodeCreate">
-	 		<button class="btn btn-default node-create" v-class="hidden: displayNodeCreate" v-on="click: displayNodeCreate=true">
+		<span class="default-pointer-events" v-component="x-node-create">
+	 		<button class="btn btn-default node-create"
+	 						v-class="hidden: displayNodeCreate"
+	 						v-on="click: displayNodeCreate=true">
 	 	  	<span class="glyphicon glyphicon-plus"></span>
 	 		</button>
 	 		<div class="node-data" v-if="displayNodeCreate">
@@ -26,14 +28,14 @@
 	 		</div>
 		</span>
 
-		<div class="node-data" v-component="x-nodeData" v-if="displayNodeData">
+		<div class="node-data" v-component="x-node-data" v-if="displayNodeData">
 			<ul class="list-unstyled">
 				<li v-repeat="nodeDataList">
-					<span v-if="typeof(value)!='object'"><b>{{ key }}</b>: {{ value }}</span>
+					<span v-if="typeof(value)!='object'"><b>{{key}}</b>: {{value}}</span>
 					<span v-if="typeof(value)=='object'">
-						<b>{{ key }}</b>:
+						<b>{{key}}</b>:
 						<ul>
-							<li v-repeat="value"><b>{{ $key }}</b>: {{ $value }}</li>
+							<li v-repeat="value"><b>{{$key}}</b>: {{$value}}</li>
 						</ul>
 					</span>
 				</li>
@@ -63,20 +65,23 @@
 			 v-attr="transform: 'translate('+x+','+y+')'"
 			 v-component="x-node" 
 			 v-repeat="nodes | orderBy cid reverse"
-			 v-on="x-mouseenter: showMenu( $index ), x-mouseleave: hideMenu()"
-			 v-x-events>
+			 v-on="x-mouseenter: showMenu( $index ), x-mouseleave: hideMenu"
+			 v-svg-events>
 			<x-radial-menu v-if="nodeMenu">
-				<x-radial-button v-repeat="menu" v-on="click: {{$value}}">{{ $value }}</x-radial-button>
+				<x-radial-button v-repeat="menu" v-on="click: {{$value}}">{{$value}}</x-radial-button>
 			</x-radial-menu>
 			<g>
 				<circle class="node-circle"
 								v-attr="r: radius"
-								v-on="x-click:pin( $event ), x-dragstart:dragStart( $event ), x-drag:drag( $event ), x-dragend:dragEnd( $event )"
-			 			 		v-x-events></circle>
+								v-on="x-click: pin | state default,
+											x-dragstart: dragStart,
+											x-drag: drag,
+											x-dragend: dragEnd"
+			 			 		v-svg-events></circle>
 				<text text-anchor="middle" class="node-label disable-user-selection disable-pointer-events"
 							v-attr="transform: 'translate('+labelX+','+labelY+')'"
 							v-class="invisible: nodeMenu">
-					Label {{ $index }}
+					Label {{$index}}
 				</text>
 			</g>
 		</g>
@@ -88,11 +93,11 @@
 	<g class="node-menu">
 		<path v-attr="d: backgroundPath"></path>
 		<path class="node-menu-highlight" v-attr="d: highlightPath"></path>
-		<path id="{{ id }}" opacity="0" fill="none" v-attr="d: textPath"></path>
+		<path id="{{id}}" opacity="0" fill="none" v-attr="d: textPath"></path>
 		<text class="node-menu-item-label disable-user-selection disable-pointer-events"
 					text-anchor="middle"
 					v-attr="x: x, dy: dy">
-			<textPath xlink:href="#{{ id }}">
+			<textPath xlink:href="#{{id}}">
 				<content></content>
 			</textPath>
 		</text>
