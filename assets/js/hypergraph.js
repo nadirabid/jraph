@@ -3,14 +3,30 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
+StateEnum = Object.freeze({
+
+	DEFAULT: 1 << 0,
+
+	LINK_SOURCE: 1 << 1,
+
+	LINK_TARGET: 1 << 2,
+
+	PINNED: 1 << 3,
+
+	ALL: ( 1 << 30 ) - 1
+
+});
+
 // Using this approach untill we can use
 // Vue.filters( ... ) in the next release
 Vue.options.filters.state = function( handler, state ) {
 	if ( !handler || !state )
 		return handler;
 
+	state = state.toUpperCase();
+
 	return function() {
-		if ( this.state == state )
+		if ( this.state & StateEnum[ state ] )
 			return handler.apply( this, arguments );
 	};
 };
@@ -324,15 +340,17 @@ Vue.component('x-node', {
 
 	data: {
 
-		sharedState: {
+		shared: {
 
-			activeNode: false
+			activeNode: false,
+
+			state: StateEnum.DEFAULT
 
 		},
 
-		state: 'default',
+		state: StateEnum.DEFAULT,
 
-		nodeMenu: false,
+		menu: false,
 
 		labelDistance: 15,
 
@@ -346,9 +364,7 @@ Vue.component('x-node', {
 
 		labelY: 0,
 
-		fixed: false, //doesn't work if not explicitly set
-
-		menu: [ 'link', 'delete', 'dependencies' ]
+		fixed: false //d3.force doesn't pick it up if not explicity linked
 
 	},
 
@@ -380,44 +396,81 @@ Vue.component('x-node', {
 			self.labelY = tY + shiftY;
 		},
 
-		link: function() {
-			this.fixed = true;
-			this.nodeMenu = false;
+		linkFrom: function() {
+			var id = this.id;
+
+			this.menu = false;
+			this.shared.activeNode = this.id;
+			this.state = StateEnum.LINK_SOURCE;
+			this.shared.link = { source: this };
+
+			this.$parent.$.nodeVms.forEach(function( vm ) {
+				if ( id == vm.id ) {
+					vm.$el.classList.add( 'node-circle-link-source' );
+				}
+				else {
+					vm.state = StateEnum.LINK_TARGET;
+					vm.$el.classList.add( 'node-circle-link-hover' );
+				}
+			});
+
+			this._forceResume();
 		},
 
-		delete: function() { },
+		linkTo: function() {
+			var link = this.shared.link;
+			var linkFromId = this.shared.activeNode;
 
-		dependencies: function() { },
+			link.target = this;
 
-		showMenu: function( index ) {
-			// check sharedState.activeNode to make sure that we aren't 
+			this.$parent.$.nodeVms.forEach(function( vm ) {
+				if ( linkFromId == vm.id ) {
+					vm.$el.classList.remove( 'node-circle-link-source' );
+					vm.fixed = false;
+					vm.shared.activeNode = false;
+					delete vm.shared.link;
+				}
+				else {
+					vm.$el.classList.remove( 'node-circle-link-hover' );
+				}
+
+				vm.state = StateEnum.DEFAULT;
+			});
+
+			this._forceResume();
+		},
+
+		showMenu: function() {
+			// check shared.activeNode to make sure that we aren't 
 			// already displaying a menu on another node
-			if ( this.sharedState.activeNode && this.sharedState.activeNode != this.id )
+			if ( this.shared.activeNode && this.shared.activeNode != this.id )
 				return;
 			
-			this.sharedState.activeNode = this.id;
 			this.px = this.x;
 			this.py = this.y;
-			this.nodeMenu = true;
 			this.fixed = true;
+			this.menu = true;
+			this.shared.activeNode = this.id;
 
 			//move node to front to make sure menu is not 
 			//hidden by overlapping elements
-			var node = this.$parent.nodes.$remove( index );
-			this.$parent.nodes.push( node );
+			var nodes = this.$parent.nodes;
+
+			if ( this.$index < ( nodes.length - 1 ) )
+				nodes.push( nodes.$remove( this.$index ) );
 		},
 
 		hideMenu: function() {
-			if ( this.pinned || this.sharedState.activeNode && this.sharedState.activeNode != this.id )
+			if ( this.shared.activeNode && this.shared.activeNode != this.id )
 				return;
 
-			this.sharedState.activeNode = false;
-			this.nodeMenu = false;
 			this.fixed = false;
+			this.menu = false;
+			this.shared.activeNode = false;
 		},
 
 		dragStart: function( e ) {
-			this.nodeMenu = false;
+			this.menu = false;
 			this.fixed = true;
 		},
 
@@ -429,7 +482,7 @@ Vue.component('x-node', {
 		},
 
 		dragEnd: function( e ) {
-			this.nodeMenu = true;
+			this.menu = true;
 		},
 
 		pin: function( e ) {
@@ -437,17 +490,14 @@ Vue.component('x-node', {
 			var $node = d3.select( self.$el );
 			var transitionDuration = 400;
 
-			self.$parent.force.resume();
+			this.menu = false;
+			this.radius += 12;
+			this.labelDistance += 12;
 
-			self.nodeMenu = false;
-			self.radius += 12;
-			self.labelDistance += 12;
-			self.ignore = true;
-
-			var nx = ( self.$parent.width / 2 ) + 10,
-					ny = self.$parent.height / 2 - 10;
-			var iX = d3.interpolateRound( self.x, nx ),
-					iY = d3.interpolateRound( self.y, ny );
+			var nx = ( this.$parent.width / 2 ) + 10,
+					ny = this.$parent.height / 2 - 10;
+			var iX = d3.interpolateRound( this.x, nx ),
+					iY = d3.interpolateRound( this.y, ny );
 
 			$node
 					.transition()
@@ -457,22 +507,19 @@ Vue.component('x-node', {
 							var x = self.x = self.px = iX( t ),
 									y = self.y = self.py = iY( t );
 
-							_.defer(function() {
-								self.$parent.force.resume();	
-							});
+							self._forceResume();
 							
 							return 'translate(' + x + ',' + y + ')';
 						};
 					});
 
-			self.$dispatch( 'showNodeData', self.$data );
-			self.$parent.force.resume();
-			self.pinned = true;
+			this.state = StateEnum.PINNED;
+			this.$dispatch( 'showNodeData', this.$data );
+			this._forceResume();
 
 			Mousetrap.bind('esc', function() {
+				self.state = StateEnum.DEFAULT;
 				self.fixed = false;
-				self.ignore = false;
-				self.pinned = false;
 				self.radius -= 12;
 				self.labelDistance -= 12;
 

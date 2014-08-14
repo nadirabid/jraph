@@ -72,8 +72,18 @@ body {
 .node-circle
 {
   stroke-width:0;
-  fill:#eeeeee;
+  fill:#eee;
   stroke:#fff;
+}
+
+.node-circle-link-source
+{
+  fill:#03a9f4;
+}
+
+.node-circle-link-hover circle:hover
+{
+  fill:#00bcd4;
 }
 
 .node-label {
