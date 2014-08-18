@@ -11,7 +11,7 @@ var HypernodeController = {
 		var userId = mockUserId || req.user.id;
 
 		if ( !_.isString( userId ) ) {
-			res.json({ error: 'You must specify a valid userId douch. You specified: ' + userId });
+			res.json( { error: 'You must specify a valid userId douch. You specified: ' + userId } );
 		}
 
 		var now = moment.utc();
@@ -48,7 +48,7 @@ var HypernodeController = {
   	var userId = mockUserId || req.user.id;
 
   	if ( !_.isString( userId ) ) {
-  		res.json({ error: 'You must specify a valid userId douch. You specified: ' + userId });
+  		res.json( { error: 'You must specify a valid userId douch. You specified: ' + userId } );
   	}
 
   	var options = {
@@ -86,7 +86,7 @@ var HypernodeController = {
 		var data = JSON.stringify( req.body.data );
 
 		if ( !_.isString( hypernodeId ) ) {
-			res.json({ error: 'You must specify a valid hypernodeId douch. You specified: ' + hypernodeId });
+			res.json( { error: 'You must specify a valid hypernodeId douch. You specified: ' + hypernodeId } );
 		}
 
   	var options = {
@@ -115,7 +115,7 @@ var HypernodeController = {
 		var userId = mockUserId || req.user.id;
 
 		if ( !_.isString( userId ) || !_.isString( hypernodeId ) ) {
-			res.json({ error: 'You must specify a valid userId and hypernodeId douch.' });
+			res.json( { error: 'You must specify a valid userId and hypernodeId douch.' } );
 		}
 
 		var options = {
@@ -123,8 +123,9 @@ var HypernodeController = {
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
 			'json': {
-				'query': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }), (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
-							 + 'DELETE owns, hypernode;',
+				'query': 'MATCH (hypernode:Hypernode { id: {hypernodeId} })-[rels]-(), '
+							 +      ' (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
+							 + 'DELETE owns, rels, hypernode;',
 			  'params': {
 			  	'userId': userId,
 			  	'hypernodeId': hypernodeId

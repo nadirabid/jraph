@@ -67,21 +67,22 @@
 			<g class="node"
 				 v-attr="transform:'translate('+x+','+y+')'"
 				 v-component="x-node"
-				 v-on="x-mouseenter:showMenu | state default,
+				 v-on="x-mouseenter:holdNode | state link_target,
+				 			 x-mouseleave:releaseNode | state link_target,
+				 			 x-mouseenter:showMenu | state default,
 				 			 x-mouseleave:hideMenu | state default"
 				 v-ref="nodeVms"
 				 v-repeat="nodes"
 				 v-svg-events>
 				<x-radial-menu v-if="menu">
-					<x-radial-button v-on="click:linkFrom | state default">link</x-radial-button>
-					<x-radial-button>delete</x-radial-button>
-					<x-radial-button>dependencies</x-radial-button>
+					<x-radial-button v-on="click:setLinkSource | state default">link</x-radial-button>
+					<x-radial-button v-on="click:deleteNode | state default">delete</x-radial-button>
 				</x-radial-menu>
 				<g>
 					<circle class="node-circle"
 									v-attr="r:radius"
 									v-on="x-click:pin | state default,
-												x-click:linkTo | state link_target,
+												x-click:setLinkTarget | state link_target,
 												x-dragstart:dragStart | state default,
 												x-drag:drag | state default,
 												x-dragend:dragEnd | state default"

@@ -76,7 +76,7 @@ body {
   stroke:#fff;
 }
 
-.node-circle-link-source
+.node-circle-link-source circle
 {
   fill:#03a9f4;
 }

@@ -396,10 +396,21 @@ Vue.component('x-node', {
 			self.labelY = tY + shiftY;
 		},
 
-		linkFrom: function() {
+		holdNode: function() {
+			this.px = this.x;
+			this.py = this.y;
+			this.fixed = true;
+		},
+
+		releaseNode: function() {
+			this.fixed = false;
+		},
+
+		setLinkSource: function() {
 			var id = this.id;
 
 			this.menu = false;
+			this.fixed = true;
 			this.shared.activeNode = this.id;
 			this.state = StateEnum.LINK_SOURCE;
 			this.shared.link = { source: this };
@@ -413,11 +424,9 @@ Vue.component('x-node', {
 					vm.$el.classList.add( 'node-circle-link-hover' );
 				}
 			});
-
-			this._forceResume();
 		},
 
-		linkTo: function() {
+		setLinkTarget: function() {
 			var link = this.shared.link;
 			var linkFromId = this.shared.activeNode;
 
@@ -428,7 +437,7 @@ Vue.component('x-node', {
 					vm.$el.classList.remove( 'node-circle-link-source' );
 					vm.fixed = false;
 					vm.shared.activeNode = false;
-					delete vm.shared.link;
+					vm.shared.link = null;
 				}
 				else {
 					vm.$el.classList.remove( 'node-circle-link-hover' );
@@ -437,7 +446,7 @@ Vue.component('x-node', {
 				vm.state = StateEnum.DEFAULT;
 			});
 
-			this._forceResume();
+			this.$parent.createLink( link );
 		},
 
 		showMenu: function() {
@@ -485,11 +494,16 @@ Vue.component('x-node', {
 			this.menu = true;
 		},
 
+		deleteNode: function() {
+			this.$parent.deleteNode( this.id );
+		},
+
 		pin: function( e ) {
 			var self = this;
 			var $node = d3.select( self.$el );
 			var transitionDuration = 400;
 
+			this.state = StateEnum.PINNED;
 			this.menu = false;
 			this.radius += 12;
 			this.labelDistance += 12;
@@ -508,16 +522,15 @@ Vue.component('x-node', {
 									y = self.y = self.py = iY( t );
 
 							self._forceResume();
-							
 							return 'translate(' + x + ',' + y + ')';
 						};
 					});
 
-			this.state = StateEnum.PINNED;
 			this.$dispatch( 'showNodeData', this.$data );
 			this._forceResume();
 
 			Mousetrap.bind('esc', function() {
+				self.shared.activeNode = false;
 				self.state = StateEnum.DEFAULT;
 				self.fixed = false;
 				self.radius -= 12;
@@ -539,9 +552,133 @@ Vue.component('x-node', {
 		this.$watch( 'radius', this.updateLable.bind( this ) );
 
 		this._textElement = this.$el.querySelector( '.node-label' );
+		this._forceResume  = this.$parent._forceResume;
+	},
 
-		var forceResume = this.$parent.force.resume.bind( this.$parent.force );
-		this._forceResume  = _.throttle( forceResume, 2000 );
+	beforeDestroy: function() {
+		this.menu = false;
+		this.fixed = false;
+		this.state = StateEnum.DEFAULT;
+		this.shared.state = StateEnum.DEFAULT;
+		this.shared.activeNode = false;
+	}
+
+});
+
+Vue.component('x-graph', {
+
+	data: {
+
+		nodes: [ ], 
+
+		links: [ ]
+
+	},
+
+	methods: {
+
+		resize: function() {
+			this.$data.width = $( window ).innerWidth();
+			this.$data.height = $( window ).innerHeight();
+
+			this._force.size( [ this.width, this.height ] );
+			this._forceResume();
+		},
+
+		createLink: function( link ) {
+			var self = this;
+
+			var linkJson = {
+				sourceId: link.source.id,
+				targetId: link.target.id
+			};
+
+			$.ajax({
+				url: '/hyperlink/',
+				type: 'POST',
+				contentType: 'application/json; charset=utf-8',
+				data: JSON.stringify( linkJson ),
+				success: function( response ) {
+					var createdLink = response.data[0][0].data;
+
+					self.nodes.forEach(function( n ) {
+						if ( n.id == createdLink.sourceId ) createdLink.source = n;
+						if ( n.id == createdLink.targetId ) createdLink.target = n;
+					});
+
+					self.links.push( createdLink );
+				}
+			});
+		},
+
+		deleteNode: function( nodeId ) {
+			var self = this;
+
+			$.ajax({
+				url: '/hypernode/?id=' + nodeId,
+				type: 'DELETE',
+				contentType: 'application/json; charset=utf-8',
+				data: JSON.stringify( ),
+				success: function( response ) {
+					self.links = self.links.filter(function( l ) {
+						return l.sourceId != nodeId && l.targetId != nodeId;
+					});
+
+					self.nodes = self.nodes.filter(function( n ) {
+						return n.id != nodeId;
+					});
+				}
+			});
+		}
+
+	},
+
+	created: function() {
+		var self = this;
+
+		self.width = $( window ).innerWidth();
+		self.height = $( window ).innerHeight();
+		
+		self._force = d3.layout.force()
+				.size( [ self.width , self.height ] )
+				.theta( .1 )
+				.friction( .5 )
+				.gravity( .6 )
+				.charge( -6000 )
+				.linkDistance( 30 )
+				.chargeDistance( 600 );
+
+		var forceStart = self._force.start.bind( this._force );
+		self._forceStart = _.throttle( forceStart, 1200 );
+
+		var forceResume = self._force.resume.bind( this._force );
+		self._forceResume  = _.throttle( forceResume, 1200 );
+
+		window.addEventListener( 'resize', this.resize.bind( this ) );
+
+		this.$on('data', function( nodes, links ) {
+			self.nodes = nodes;
+			self.links = links;
+
+			self._force
+					.nodes( self.nodes )
+					.links( self.links )
+					.start();
+		});
+
+		this.$compiler.observer.on('change:nodes', function( value, mutation ) {
+			if ( mutation ) {
+				self._force.nodes( value );
+				self._forceStart();
+			}
+		});
+
+		this.$compiler.observer.on('change:links', function( value, mutation ) {
+			if ( mutation ) {
+				self._force.links( value );
+				self._forceStart();
+			}
+		});
 	}
 
 });
@@ -552,9 +689,9 @@ Vue.component('x-node-data', {
 
 		nodeData: { },
 
-		key: "",
+		key: '',
 
-		value: "",
+		value: '',
 
 		valueHasError: false,
 
@@ -675,70 +812,6 @@ Vue.component('x-node-create', {
 				self.displayNodeCreate = false;
 				Mousetrap.unbind('esc');
 			});
-		});
-	}
-
-});
-
-Vue.component('x-graph', {
-
-	data: {
-
-		nodes: [ ], 
-
-		links: [ ]
-
-	},
-
-	methods: {
-
-		resize: function() {
-			this.$data.width = $( window ).innerWidth();
-			this.$data.height = $( window ).innerHeight();
-
-			this.force.size( [ this.width, this.height ] );
-			this.force.start();
-		}
-
-	},
-
-	created: function() {
-		var self = this;
-
-		self.width = $( window ).innerWidth();
-		self.height = $( window ).innerHeight();
-		
-		self.force = d3.layout.force()
-				.size( [ self.width , self.height ] )
-				.theta( .1 )
-				.friction( .5 )
-				.gravity( .6 )
-				.charge( -6000 )
-				.linkDistance( 30 )
-				.chargeDistance( 600 );
-
-		window.addEventListener( 'resize', this.resize.bind( this ) );
-
-		this.$on('data', function( nodes, links ) {
-			self.nodes = nodes;
-			self.links = links;
-
-			self.force
-					.nodes( self.nodes )
-					.links( self.links )
-					.start();
-		});
-
-		this.$watch('nodes', function( value, mutation ) {
-			if ( mutation ) {
-				self.force.nodes( self.nodes ).resume();
-			}
-		});
-
-		this.$watch('links', function( value, mutation ) {
-			if ( mutation ) {
-				self.force.links( self.links ).resume();
-			}
 		});
 	}
 
