@@ -31,6 +31,63 @@ Vue.options.filters.state = function( handler, state ) {
 	};
 };
 
+// click:state(false)=pin
+Vue.directive('bind', {
+
+	update: function() {
+		var self = this;
+		var toks = this.expression.match( /^(\w+)?\s*\[\s*(\w+)?\s*=\s*(\w+)?\s*\]\s*:\s*(\w+)/ );
+		var eventName = toks[1];
+		var variable = toks[2];
+		var watchValue = toks[3];
+		var handler = this.vm[ toks[4] ];
+
+		if ( this.handler ) {
+			this.vm.$unwatch( this.variable, this.watcher );
+			this.el.removeEventListener( this.eventName, this.handler );
+			delete this.handler;
+		}
+
+		if ( typeof handler !== 'function' ) {
+			console.warn( 'Directive expects a function for event handler.');
+			return;
+		}
+
+		handler = handler.bind( this.vm );
+
+		this.variable = variable;
+		this.eventName = eventName;
+
+		this.watcher = function( val ) {
+			if ( !self.handler && val == watchValue ) {
+				self.el.addEventListener( eventName, handler );
+				self.handler = handler;
+			}
+			else if ( self.handler ) {
+				self.el.removeEventListener( eventName, handler );
+				delete self.handler;
+			}
+		};
+
+		this.vm.$watch( variable, this.watcher );
+
+
+		if ( this.vm[ variable ] == watchValue ) {
+			this.el.addEventListener( eventName, handler );
+			this.handler = handler;
+		}
+	},
+
+	unbind: function() {
+		this.vm.$unwatch( this.variable, this.watcher );
+		if ( this.handler ) {
+			this.el.removeEventListener( this.eventName, this.handler );
+			delete this.handler;
+		}
+	}
+
+});
+
 Vue.directive('svg-events', {
 
 	isEmpty: true,
@@ -229,7 +286,7 @@ Vue.component('x-radial-button', {
 
 		//val is considered to be in pixels
 		'radius-inner': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
+			val = Number.isInteger( val ) ? val : parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-inner-radius need to specify a valid positive integer";
@@ -239,7 +296,7 @@ Vue.component('x-radial-button', {
 
 		//val is considered to be in pixels
 		'radius-outer': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
+			val = Number.isInteger( val ) ? val : parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-outer-radius need to specify a valid positive integer";
@@ -248,7 +305,7 @@ Vue.component('x-radial-button', {
 		},
 
 		'highlight-thickness': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
+			val = Number.isInteger( val ) ? val : parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-highlight-thickness need to specify a valid positive integer";
@@ -257,7 +314,7 @@ Vue.component('x-radial-button', {
 		},
 
 		'highlight-distance': function( val ) {
-			val = Number.isInteger( val ) ? val : Number.parseInt( this.expression, 10 );
+			val = Number.isInteger( val ) ? val : parseInt( this.expression, 10 );
 
 			if ( Number.isNaN( val ) || val < 0 )
 				throw "v-highlight-distance need to specify a valid positive integer";
@@ -282,7 +339,7 @@ Vue.component('x-radial-button', {
 		  var fontSize = window.getComputedStyle( this._textElement )
 		  										 .getPropertyValue( 'font-size' );
 
-			this.dy = Number.parseInt( fontSize, 10 ) / 3;
+			this.dy = parseInt( fontSize, 10 ) / 3;
 		}
 
 	},
@@ -565,6 +622,25 @@ Vue.component('x-node', {
 
 });
 
+Vue.component('x-link', {
+
+	data: {
+
+		state: 'some_state'
+
+	},
+
+	methods: {
+
+		testHandler: function() {
+			this.state = 'some_other_state';
+			console.log( 'testHandler', this.state );
+		}
+
+	}
+
+});
+
 Vue.component('x-graph', {
 
 	data: {
@@ -645,8 +721,8 @@ Vue.component('x-graph', {
 				.friction( .5 )
 				.gravity( .6 )
 				.charge( -6000 )
-				.linkDistance( 30 )
-				.chargeDistance( 600 );
+				.linkDistance( 100 )
+				.chargeDistance( 700 );
 
 		var forceStart = self._force.start.bind( this._force );
 		self._forceStart = _.throttle( forceStart, 1200 );

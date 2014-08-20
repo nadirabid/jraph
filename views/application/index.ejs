@@ -58,43 +58,43 @@
 	</div>
 
 	<svg class="hypergraph" v-attr="width:width, height:height" v-component="x-graph">
-		<g class="links">
-			<g class="link" v-repeat="links">
-				<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-			</g>
+		<g class="link"
+			 v-component="x-link"
+			 v-repeat="links",
+			 v-bind="click[state=some_state]:testHandler"
+			 v-svg-events>
+			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 		</g>
-		<g class="nodes">
-			<g class="node"
-				 v-attr="transform:'translate('+x+','+y+')'"
-				 v-component="x-node"
-				 v-on="x-mouseenter:holdNode | state link_target,
-				 			 x-mouseleave:releaseNode | state link_target,
-				 			 x-mouseenter:showMenu | state default,
-				 			 x-mouseleave:hideMenu | state default"
-				 v-ref="nodeVms"
-				 v-repeat="nodes"
-				 v-svg-events>
-				<x-radial-menu v-if="menu">
-					<x-radial-button v-on="click:setLinkSource | state default">link</x-radial-button>
-					<x-radial-button v-on="click:deleteNode | state default">delete</x-radial-button>
-				</x-radial-menu>
-				<g>
-					<circle class="node-circle"
-									v-attr="r:radius"
-									v-on="x-click:pin | state default,
-												x-click:setLinkTarget | state link_target,
-												x-dragstart:dragStart | state default,
-												x-drag:drag | state default,
-												x-dragend:dragEnd | state default"
-				 			 		v-svg-events>
-			 		</circle>
-					<text class="node-label disable-user-selection disable-pointer-events"
-								text-anchor="middle"
-								v-attr="transform:'translate('+labelX+','+labelY+')'"
-								v-class="invisible:menu">
-						Label {{$index}}
-					</text>
-				</g>
+		<g class="node"
+			 v-attr="transform:'translate('+x+','+y+')'"
+			 v-component="x-node"
+			 v-on="x-mouseenter:holdNode | state link_target,
+			 			 x-mouseleave:releaseNode | state link_target,
+			 			 x-mouseenter:showMenu | state default,
+			 			 x-mouseleave:hideMenu | state default"
+			 v-ref="nodeVms"
+			 v-repeat="nodes"
+			 v-svg-events>
+			<x-radial-menu v-if="menu">
+				<x-radial-button v-on="click:setLinkSource | state default">link</x-radial-button>
+				<x-radial-button v-on="click:deleteNode | state default">delete</x-radial-button>
+			</x-radial-menu>
+			<g>
+				<circle class="node-circle"
+								v-attr="r:radius"
+								v-on="x-click:pin | state default,
+											x-click:setLinkTarget | state link_target,
+											x-dragstart:dragStart | state default,
+											x-drag:drag | state default,
+											x-dragend:dragEnd | state default"
+			 			 		v-svg-events>
+		 		</circle>
+				<text class="node-label disable-user-selection disable-pointer-events"
+							text-anchor="middle"
+							v-attr="transform:'translate('+labelX+','+labelY+')'"
+							v-class="invisible:menu">
+					Label {{$index}}
+				</text>
 			</g>
 		</g>
 	</svg>

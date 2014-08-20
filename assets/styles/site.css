@@ -51,8 +51,13 @@ body {
 
 .link {
   opacity: .3;
-  stroke: #F2F1EF;
+  stroke: #eee;
   stroke-width:.5em;
+}
+
+.link:hover {
+  opacity: .6;
+  stroke-width:.7em;
 }
 
 .overlay
