@@ -61,32 +61,33 @@
 		<g class="link"
 			 v-component="x-link"
 			 v-repeat="links",
-			 v-bind="click[state=some_state]:testHandler"
+			 v-bind="click[shared.state=some_state]:testHandler,
+			 				 mouseenter[shared.state=some_other_state]:testHandler2"
 			 v-svg-events>
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 		</g>
 		<g class="node"
 			 v-attr="transform:'translate('+x+','+y+')'"
 			 v-component="x-node"
-			 v-on="x-mouseenter:holdNode | state link_target,
-			 			 x-mouseleave:releaseNode | state link_target,
-			 			 x-mouseenter:showMenu | state default,
-			 			 x-mouseleave:hideMenu | state default"
+			 v-bind="x-mouseenter[state=link_target]:holdNode, 
+			 			   x-mouseleave[state=link_target]:releaseNode, 
+			 			   x-mouseenter[state=default]:showMenu, 
+			 			   x-mouseleave[state=default]:hideMenu"
 			 v-ref="nodeVms"
 			 v-repeat="nodes"
 			 v-svg-events>
 			<x-radial-menu v-if="menu">
-				<x-radial-button v-on="click:setLinkSource | state default">link</x-radial-button>
-				<x-radial-button v-on="click:deleteNode | state default">delete</x-radial-button>
+				<x-radial-button v-bind="click[state=default]:setLinkSource">link</x-radial-button>
+				<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
 			</x-radial-menu>
 			<g>
 				<circle class="node-circle"
 								v-attr="r:radius"
-								v-on="x-click:pin | state default,
-											x-click:setLinkTarget | state link_target,
-											x-dragstart:dragStart | state default,
-											x-drag:drag | state default,
-											x-dragend:dragEnd | state default"
+								v-bind="x-click[state=default]:pin,
+											  x-click[state=link_target]:setLinkTarget,
+											  x-dragstart[state=default]:dragStart,
+											  x-drag[state=default]:drag,
+											  x-dragend[state=default]:dragEnd"
 			 			 		v-svg-events>
 		 		</circle>
 				<text class="node-label disable-user-selection disable-pointer-events"

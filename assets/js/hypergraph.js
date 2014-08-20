@@ -5,81 +5,86 @@ var MOUSE_LEFT_BUTTON = 0;
 
 StateEnum = Object.freeze({
 
-	DEFAULT: 1 << 0,
+	DEFAULT: 'default',
 
-	LINK_SOURCE: 1 << 1,
+	LINK_SOURCE: 'link_source',
 
-	LINK_TARGET: 1 << 2,
+	LINK_TARGET: 'link_target',
 
-	PINNED: 1 << 3,
+	PINNED: 'pinned',
 
-	ALL: ( 1 << 30 ) - 1
+	ALL: 'all'
 
 });
 
-// Using this approach untill we can use
-// Vue.filters( ... ) in the next release
-Vue.options.filters.state = function( handler, state ) {
-	if ( !handler || !state )
-		return handler;
+function deepResolveIndex( obj, index ) {
+	var resolve = function( o, i ) { return o ? o[i] : o; };
+	return index.split( '.' ).reduce( resolve, obj );
+}
 
-	state = state.toUpperCase();
-
-	return function() {
-		if ( this.state & StateEnum[ state ] )
-			return handler.apply( this, arguments );
-	};
-};
+function chainEvalVm( vm, varName ) {
+	if ( !vm.$parent || deepResolveIndex( vm, varName ) ) {
+		return vm;
+	}
+	else {
+		return this.chainEvalVm( vm.$parent, varName )
+	}
+}
 
 // click:state(false)=pin
 Vue.directive('bind', {
 
+	isFn: true,
+
 	update: function() {
 		var self = this;
-		var toks = this.expression.match( /^(\w+)?\s*\[\s*(\w+)?\s*=\s*(\w+)?\s*\]\s*:\s*(\w+)/ );
-		var eventName = toks[1];
-		var variable = toks[2];
-		var watchValue = toks[3];
-		var handler = this.vm[ toks[4] ];
+
+		var toks = this.expression.match( /^\s*([\w\-]+)?\s*\[\s*([.\w]+)?\s*=\s*(\w+)?\s*\]\s*:\s*(\w+)/ );
+		var eventName = toks[ 1 ];
+		var varName = toks[ 2 ];
+		var watchValue = toks[ 3 ];
+		var handlerName = toks[ 4 ];
+		var watchVm = chainEvalVm( this.vm, varName );
+		var handler = chainEvalVm( this.vm, handlerName )[ handlerName ];
 
 		if ( this.handler ) {
-			this.vm.$unwatch( this.variable, this.watcher );
+			this.watchVm.$unwatch( this.varName, this.watcher );
 			this.el.removeEventListener( this.eventName, this.handler );
 			delete this.handler;
 		}
 
 		if ( typeof handler !== 'function' ) {
-			console.warn( 'Directive expects a function for event handler.');
+			console.error( 'Directive expects a function for event handler.', handler );
 			return;
 		}
 
-		handler = handler.bind( this.vm );
+		handler = handler.bind( watchVm );
 
-		this.variable = variable;
+		this.watchVm = watchVm;
+		this.varName = varName;
 		this.eventName = eventName;
 
 		this.watcher = function( val ) {
-			if ( !self.handler && val == watchValue ) {
+			if ( val == watchValue && !self.handler ) {
 				self.el.addEventListener( eventName, handler );
 				self.handler = handler;
 			}
-			else if ( self.handler ) {
+			else if ( val != watchValue && self.handler ) {
 				self.el.removeEventListener( eventName, handler );
 				delete self.handler;
 			}
 		};
 
-		this.vm.$watch( variable, this.watcher );
+		watchVm.$watch( varName, this.watcher );
 
-
-		if ( this.vm[ variable ] == watchValue ) {
+		if ( watchVm[ varName ] == watchValue ) {
 			this.el.addEventListener( eventName, handler );
 			this.handler = handler;
 		}
 	},
 
 	unbind: function() {
-		this.vm.$unwatch( this.variable, this.watcher );
+		this.watchVm.$unwatch( this.varName, this.watcher );
 		if ( this.handler ) {
 			this.el.removeEventListener( this.eventName, this.handler );
 			delete this.handler;
@@ -405,7 +410,7 @@ Vue.component('x-node', {
 
 		},
 
-		state: StateEnum.DEFAULT,
+		state: 'default',
 
 		menu: false,
 
@@ -484,6 +489,9 @@ Vue.component('x-node', {
 		},
 
 		setLinkTarget: function() {
+			if ( !this.shared.link )
+				throw new 'Trying to set link target without setting source';
+
 			var link = this.shared.link;
 			var linkFromId = this.shared.activeNode;
 
@@ -626,15 +634,20 @@ Vue.component('x-link', {
 
 	data: {
 
-		state: 'some_state'
+		shared: { state: 'some_state' }
 
 	},
 
 	methods: {
 
+		testHandler2: function() {
+			console.log( 'testHandler2' );
+			this.shared.state='some_state';
+		},
+
 		testHandler: function() {
-			this.state = 'some_other_state';
-			console.log( 'testHandler', this.state );
+			console.log( 'testHandler' );
+			this.shared.state = 'some_other_state';
 		}
 
 	}
@@ -721,7 +734,7 @@ Vue.component('x-graph', {
 				.friction( .5 )
 				.gravity( .6 )
 				.charge( -6000 )
-				.linkDistance( 100 )
+				.linkDistance( 50 )
 				.chargeDistance( 700 );
 
 		var forceStart = self._force.start.bind( this._force );
