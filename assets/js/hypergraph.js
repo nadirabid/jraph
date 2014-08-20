@@ -37,6 +37,19 @@ Vue.directive('bind', {
 	update: function() {
 		var self = this;
 
+		console.log( this.expression );
+
+		var reqToks = this.expression.match( /^\s*([\-\w]+)\s*(?=\[|:)(?:[^:]*:\s*)(\w+)/ );
+		var optToks = this.expression.match( /\[\s*([.\w]+)(?:\s*=\s*)(\w+)(?:\s*)(?=\])/ );
+
+		var _eventName = reqToks[ 1 ];
+		var _handlerName = reqToks[ 2 ];
+
+		var _varName = optToks && optToks[ 1 ];
+		var _watchValue = optToks && optToks[ 2 ];
+
+		console.log( _eventName, _handlerName, _varName, _watchValue );
+
 		var toks = this.expression.match( /^\s*([\w\-]+)?\s*\[\s*([.\w]+)?\s*=\s*(\w+)?\s*\]\s*:\s*(\w+)/ );
 		var eventName = toks[ 1 ];
 		var varName = toks[ 2 ];
@@ -58,9 +71,14 @@ Vue.directive('bind', {
 
 		handler = handler.bind( watchVm );
 
+		if ( watchVm[ varName ] == watchValue ) {
+			this.el.addEventListener( eventName, handler );
+			this.handler = handler;
+		}
+
+		this.eventName = eventName;
 		this.watchVm = watchVm;
 		this.varName = varName;
-		this.eventName = eventName;
 
 		this.watcher = function( val ) {
 			if ( val == watchValue && !self.handler ) {
@@ -75,10 +93,6 @@ Vue.directive('bind', {
 
 		watchVm.$watch( varName, this.watcher );
 
-		if ( watchVm[ varName ] == watchValue ) {
-			this.el.addEventListener( eventName, handler );
-			this.handler = handler;
-		}
 	},
 
 	unbind: function() {
@@ -731,9 +745,9 @@ Vue.component('x-graph', {
 				.theta( .1 )
 				.friction( .5 )
 				.gravity( .6 )
-				.charge( -6000 )
+				.charge( -8000 )
 				.linkDistance( 50 )
-				.chargeDistance( 700 );
+				.chargeDistance( 1000 );
 
 		var forceStart = self._force.start.bind( this._force );
 		self._forceStart = _.throttle( forceStart, 1200 );
