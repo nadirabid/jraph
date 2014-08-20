@@ -61,8 +61,6 @@
 		<g class="link"
 			 v-component="x-link"
 			 v-repeat="links",
-			 v-bind="click:testHandler,
-			 				 mouseenter[shared.state=some_other_state]:testHandler2"
 			 v-svg-events>
 			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 		</g>
@@ -78,7 +76,7 @@
 			 v-svg-events>
 			<x-radial-menu v-if="menu">
 				<x-radial-button v-bind="click[state=default]:setLinkSource">link</x-radial-button>
-				<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
+				<x-radial-button v-bind="click[state=default]:deleteNode">delete</x-radial-button>
 			</x-radial-menu>
 			<g>
 				<circle class="node-circle"
