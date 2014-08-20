@@ -37,66 +37,68 @@ Vue.directive('bind', {
 	update: function() {
 		var self = this;
 
-		console.log( this.expression );
+		this.reset();
 
 		var reqToks = this.expression.match( /^\s*([\-\w]+)\s*(?=\[|:)(?:[^:]*:\s*)(\w+)/ );
 		var optToks = this.expression.match( /\[\s*([.\w]+)(?:\s*=\s*)(\w+)(?:\s*)(?=\])/ );
 
-		var _eventName = reqToks[ 1 ];
-		var _handlerName = reqToks[ 2 ];
+		var eventName = reqToks[ 1 ];
+		var handlerName = reqToks[ 2 ];
 
-		var _varName = optToks && optToks[ 1 ];
-		var _watchValue = optToks && optToks[ 2 ];
+		var handlerVm = chainEvalVm( this.vm, handlerName );
+		var handler = handlerVm[ handlerName ];
 
-		console.log( _eventName, _handlerName, _varName, _watchValue );
-
-		var toks = this.expression.match( /^\s*([\w\-]+)?\s*\[\s*([.\w]+)?\s*=\s*(\w+)?\s*\]\s*:\s*(\w+)/ );
-		var eventName = toks[ 1 ];
-		var varName = toks[ 2 ];
-		var watchValue = toks[ 3 ];
-		var handlerName = toks[ 4 ];
-		var watchVm = chainEvalVm( this.vm, varName );
-		var handler = chainEvalVm( this.vm, handlerName )[ handlerName ];
-
-		if ( this.handler ) {
-			this.watchVm.$unwatch( this.varName, this.watcher );
-			this.el.removeEventListener( this.eventName, this.handler );
-			delete this.handler;
-		}
-
-		if ( typeof handler !== 'function' ) {
+		if ( typeof handler !== 'function' || !reqToks ) {
 			console.error( 'Directive expects a function for event handler.', handler );
 			return;
 		}
 
-		handler = handler.bind( watchVm );
+		handler = handler.bind( handlerVm );
+		this.eventName = eventName;
 
-		if ( watchVm[ varName ] == watchValue ) {
+		if ( !optToks ) {
 			this.el.addEventListener( eventName, handler );
 			this.handler = handler;
 		}
+		else {
+			var varName = optToks[ 1 ];
+			var watchValue = optToks[ 2 ];
+			var watchVm = chainEvalVm( this.vm, varName );
 
-		this.eventName = eventName;
-		this.watchVm = watchVm;
-		this.varName = varName;
+			this.watchVm = watchVm;
+			this.varName = varName;
 
-		this.watcher = function( val ) {
-			if ( val == watchValue && !self.handler ) {
-				self.el.addEventListener( eventName, handler );
-				self.handler = handler;
+			if ( watchVm[ varName ] == watchValue ) {
+				this.el.addEventListener( eventName, handler );
+				this.handler = handler;
 			}
-			else if ( val != watchValue && self.handler ) {
-				self.el.removeEventListener( eventName, handler );
-				delete self.handler;
-			}
-		};
 
-		watchVm.$watch( varName, this.watcher );
+			this.watcher = function( val ) {
+				if ( val == watchValue && !self.handler ) {
+					self.el.addEventListener( eventName, handler );
+					self.handler = handler;
+				}
+				else if ( val != watchValue && self.handler ) {
+					self.el.removeEventListener( eventName, handler );
+					delete self.handler;
+				}
+			};
+
+			watchVm.$watch( varName, this.watcher );
+		}
 
 	},
 
 	unbind: function() {
-		this.watchVm.$unwatch( this.varName, this.watcher );
+		this.reset();
+	},
+
+	reset: function() {
+		if ( this.watchVm ) {
+			this.watchVm.$unwatch( this.varName, this.watcher );	
+			delete this.watcher;
+		}
+		
 		if ( this.handler ) {
 			this.el.removeEventListener( this.eventName, this.handler );
 			delete this.handler;
