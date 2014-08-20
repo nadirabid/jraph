@@ -23,12 +23,10 @@ function deepResolveIndex( obj, index ) {
 }
 
 function chainEvalVm( vm, varName ) {
-	if ( !vm.$parent || deepResolveIndex( vm, varName ) ) {
+	if ( !vm.$parent || deepResolveIndex( vm, varName ) )
 		return vm;
-	}
-	else {
-		return this.chainEvalVm( vm.$parent, varName )
-	}
+	else 
+		return chainEvalVm( vm.$parent, varName );
 }
 
 // click:state(false)=pin
