@@ -601,6 +601,9 @@ Vue.component('x-node', {
 						};
 					});
 
+			this.$dispatch( 'showNodeData', this.$data );
+			this._forceResume();
+
 			Mousetrap.bind('esc', function() {
 				self.shared.activeNode = false;
 				self.state = 'default';
