@@ -59,18 +59,21 @@
 
 	<svg class="hypergraph" v-attr="width:width, height:height" v-component="x-graph">
 		<g class="link"
+			 v-bind="x-mouseenter:freezePosition, x-mouseleave:releasePosition"
 			 v-component="x-link"
 			 v-repeat="links",
 			 v-svg-events>
-			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+			<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
+						v-bind="x-dragstart:dragStart, x-drag:drag, x-dragend:dragEnd"
+						v-svg-events></line>
 		</g>
 		<g class="node"
 			 v-attr="transform:'translate('+x+','+y+')'"
-			 v-component="x-node"
-			 v-bind="x-mouseenter[state=link_target]:holdNode, 
-			 			   x-mouseleave[state=link_target]:releaseNode, 
+			 v-bind="x-mouseenter[state=link_target]:freezePosition, 
+			 			   x-mouseleave[state=link_target]:releasePosition, 
 			 			   x-mouseenter[state=default]:showMenu, 
 			 			   x-mouseleave[state=default]:hideMenu"
+			 v-component="x-node"
 			 v-ref="nodeVms"
 			 v-repeat="nodes"
 			 v-svg-events>
