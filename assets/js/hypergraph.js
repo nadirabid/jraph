@@ -668,8 +668,6 @@ Vue.component('x-link', {
 		},
 
 		dragStart: function( e ) {
-			var dx = e.detail.dx,
-					dy = e.detail.dy;
 			var source = this.source,
 					target = this.target;
 
@@ -678,6 +676,8 @@ Vue.component('x-link', {
 
 			target.menu = false;
 			target.fixed = true;
+
+			this.drag( e );
 		},
 
 		drag: function( e ) {
