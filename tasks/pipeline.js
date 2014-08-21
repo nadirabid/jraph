@@ -26,10 +26,9 @@ var jsFilesToInject = [
   // Dependencies like sails.io.js, jQuery, or Angular
   // are brought in here
   'js/dependencies/jquery-2.1.1.js',
+  'js/dependencies/snap.svg.js',
   'js/dependencies/d3.js',
   'js/dependencies/lodash.js',
-  'js/dependencies/handlebars-v1.3.0.js',
-  'js/dependencies/backbone.js',
   'js/dependencies/vue.js',
   'js/dependencies/q.js',
   'js/dependencies/mousetrap.js',
@@ -37,7 +36,6 @@ var jsFilesToInject = [
 
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
-  'js/jst.js',
   'js/hypergraph.js'
   //'js/**/*.js'
 ];
