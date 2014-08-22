@@ -156,7 +156,6 @@ Vue.directive('svg-events', {
 			var y = e.y;
 
 			if ( !mouseOnElFlag || x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight ) {
-				console.log( 'mouseOnElFlag', mouseOnElFlag );
 				dragFlag = false;
 				var xEvent = new CustomEvent( X_MOUSELEAVE, _extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
