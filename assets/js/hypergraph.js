@@ -136,14 +136,12 @@ Vue.directive('svg-events', {
 				var distSqrd = dx*dx + dy*dy;
 				
 				if ( distSqrd > 2 ) {
-
 					var xDragStartEvent = new CustomEvent( X_DRAGSTART, _extractEventDetail( e ) );
 					el.dispatchEvent( xDragStartEvent );
 					dragFlag = true;
 				}
 			}
 			else {
-
 				var xEvent = new CustomEvent( X_DRAG, _extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
 			}
