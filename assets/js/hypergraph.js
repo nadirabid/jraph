@@ -561,7 +561,6 @@ Vue.component('x-node', {
 		},
 
 		dragStart: function( e ) {
-			console.log('dragStart');
 			this.px = this.x = e.detail.x;
 			this.py = this.y = e.detail.y;
 
@@ -570,7 +569,6 @@ Vue.component('x-node', {
 		},
 
 		drag: function( e ) {
-			console.log('drag');
 			this.px = this.x = e.detail.x;
 			this.py = this.y = e.detail.y;
 
