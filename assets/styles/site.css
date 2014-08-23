@@ -77,7 +77,7 @@ article.info-container {
 
 .info-overlay {
   order: 0;
-  flex: 6 1 auto;
+  flex: 16 1 auto;
 }
 
 .btn.node-create {
