@@ -1,7 +1,6 @@
-body {
-  overflow: hidden;
-  background-color: #34495E;
-}
+/*
+  Uncategorized
+*/
 
 .disable-pointer-events {
   pointer-events: none;
@@ -24,29 +23,87 @@ body {
   user-select: none;
 }
 
+.signin-form {
+  max-width: 500px;
+  margin-top: 200px;
+}
+
+/*
+  Main layout
+*/
+html, body {
+  height:100%;
+  width:100%;
+  display: flex;
+}
+
+article {
+  flex: 1 1 auto;
+  display: flex;
+}
+
+section.graph-container {
+  flex: 1 1 auto;
+  order: 1;
+  display: flex;
+  background-color: #34495E;
+}
+
+section.info-container {
+  order: 0;
+
+  display: flex;
+  height:100%;
+  width:100%;
+  position: absolute;
+  padding:2em;
+}
+
+/*
+  HTML Info view styles
+*/
+
+.info-panel {
+  order: 1;
+  flex: 1 1 auto;
+
+  pointer-events:auto;
+  background-color: rgba(255,255,255,.95);
+  white-space:nowrap;
+  padding:2em;
+  box-shadow:0 .05em .2em rgba(0,0,0,.15);
+  border:1px solid #eee;
+}
+
+.info-overlay {
+  order: 0;
+  flex: 6 1 auto;
+}
+
 .btn.node-create {
   float:right;
 }
 
-.container-overlay {
-  overflow: hidden;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  padding: 2em;
+.node-data
+{
+  pointer-events:auto;
+  background-color: rgba(255,255,255,.95);
+  white-space:nowrap;
+  padding:2em;
+  height:100%;
+  box-shadow:0 .05em .2em rgba(0,0,0,.1);
+  border:1px solid #eee;
+  border-radius:0;
+  display:inline-block;
 }
 
-.hypergraph {
-  fill: #666;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
 
-.signin-form {
-  max-width: 500px;
-  margin-top: 200px;
+/* 
+  Graph view styles
+*/
+
+.graph-container > svg {
+  flex: 1 1 auto;
 }
 
 .link {
@@ -58,20 +115,6 @@ body {
 .link:hover {
   opacity: .6;
   stroke-width:.7em;
-}
-
-.overlay
-{
-  pointer-events: auto;
-  background-color: #fff;
-  opacity: 0;
-  filter: alpha(opacity=0);
-  position: absolute; 
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%;
-  z-index: 1;
 }
 
 .node-circle
@@ -93,19 +136,6 @@ body {
 
 .node-label {
   fill:#ecf0f1;
-}
-
-.node-data
-{
-  pointer-events:auto;
-  background-color: rgba(255,255,255,.95);
-  white-space:nowrap;
-  padding:2em;
-  height:100%;
-  box-shadow:0 .05em .2em rgba(0,0,0,.1);
-  border:1px solid #eee;
-  border-radius:0;
-  display:inline-block;
 }
 
 .node-menu
@@ -141,8 +171,4 @@ body {
   letter-spacing: 0em;
   stroke-width: 0;
   fill:#ecf0f1;
-}
-
-.info-card ul {
-  margin:0;
 }

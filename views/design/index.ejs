@@ -1,36 +1,53 @@
-<svg class="hypergraph" id="graph-view" v-attr="width:width, height:height">
-	<defs>
-		<filter id="dropShadow" width="1.5" height="1.5" x="-0.1" y="-0.1" primitiveUnits="objectBoundingBox">
-    	<feGaussianBlur in="SourceAlpha" stdDeviation=".04" />
-    	<feOffset dx="0" dy=".04" />
-    	<feColorMatrix type="matrix" values="0 0 0 0 0
-																					 0 0 0 0 0		
-																					 0 0 0 0 0
-																					 0 0 0 .1 0" />
-    	<feMerge>
-        <feMergeNode />
-        <feMergeNode in="SourceGraphic" />
-    	</feMerge>
-  	</filter>
-	</defs>
+<style>
+	html, body {
+		height:100%;
+		width:100%;
+		display: flex;
+	}
 
-	<g v-component="hg-link" v-repeat="links"></g>
-	<g v-component="hg-node" v-repeat="nodes"></g>
-</svg>
+	article {
+		flex: 1 1 auto;
+		display: flex;
+	}
 
-<script id="link-template" type="text/x-template">
-	<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y" class="link"></line>
-</script>
+	section.graph-container {
+		order: 1;
+		background-color:tomato;
+		flex: 1 1 auto;
+	}
 
-<script id="node-template" type="text/x-template">
-	<circle v-attr="transform:circleTranslation, r:radius"
-					v-on="click:pin( $event )"
-					filter="url(#dropShadow)"
-					class="node">
-		<title>{{id}}</title>
-	</circle>
-	<text v-attr="transform:labelTranslation"
-				class="node-label">
-		Label
-	</text>
-</script>
+	section.info-container {
+		order: 0;
+		height:100%;
+		width:100%;
+		position: absolute;
+		display: flex;
+		padding:2em;
+	}
+
+	.info-panel {
+	  pointer-events:auto;
+	  background-color: rgba(255,255,255,.95);
+	  white-space:nowrap;
+	  padding:2em;
+	  box-shadow:0 .05em .2em rgba(0,0,0,.15);
+	  border:1px solid #eee;
+		flex: 1 1 auto;
+	}
+
+	.info-overlay {
+		background-color: rgba(255,255,255,.05);
+		flex: 6 1 auto;
+	}
+</style>
+
+
+<article>
+	<section class="graph-container">
+		<div>graph</div>
+	</section>
+	<section class="info-container">
+		<div class="info-panel">info panel</div>
+		<div class="info-overlay">info overlay</div>
+	</section>
+</article>

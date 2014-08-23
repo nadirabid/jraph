@@ -1,3 +1,7 @@
+/*
+	General global stuff
+*/
+
 var HALF_PI = Math.PI / 2;
 var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
@@ -220,6 +224,10 @@ Vue.directive('svg-events', {
 
 });
 
+/*
+	Graph view
+*/
+
 Vue.component('x-radial-button', {
 
 	template: '#template-radial-button',
@@ -234,11 +242,11 @@ Vue.component('x-radial-button', {
 
 		highlightDistance: 2,
 
-		highlightThickness: 4,
+		highlightThickness: 3,
 
-		radiusInner: 40,
+		radiusInner: 35,
 
-		radiusOuter: 80,
+		radiusOuter: 75,
 
 		startAngle: 0,
 
@@ -722,10 +730,16 @@ Vue.component('x-graph', {
 	methods: {
 
 		resize: function() {
-			this.$data.width = $( window ).innerWidth();
-			this.$data.height = $( window ).innerHeight();
+			var newWidth = this.$el.clientWidth,
+					newHeight = this.$el.clientHeight;
 
-			this._force.size( [ this.width, this.height ] );
+			if ( this.width == newWidth && this.height == newHeight ) 
+				return;
+
+			this.width = newWidth
+			this.height = newHeight
+
+			this._force.size( [ newWidth, newHeight ] );
 			this._forceResume();
 		},
 
@@ -780,8 +794,8 @@ Vue.component('x-graph', {
 	created: function() {
 		var self = this;
 
-		this.width = $( window ).innerWidth();
-		this.height = $( window ).innerHeight();
+		this.width = this.$el.clientWidth;
+		this.height = this.$el.clientHeight;
 		
 		this._force = d3.layout.force()
 				.size( [ this.width , this.height ] )
@@ -826,6 +840,10 @@ Vue.component('x-graph', {
 	}
 
 });
+
+/*
+	Info view
+*/
 
 Vue.component('x-node-data', {
 
@@ -960,6 +978,10 @@ Vue.component('x-node-create', {
 	}
 
 });
+
+/*
+	Main application code
+*/
 
 var app = new Vue({
 
