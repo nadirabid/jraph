@@ -1,7 +1,7 @@
-<article id="application">
+<main id="application">
 
-	<section class="info-container" v-class="disable-pointer-events:!displayNodeData">
-		<div class="info-overlay"></div>
+	<article class="info-container" v-class="disable-pointer-events:!displayNodeData">
+		<section class="info-overlay"></section>
 
 		
 		<span class="default-pointer-events" v-component="x-node-create">
@@ -57,9 +57,9 @@
 			<button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">Cancel</button>
 		</aside>
 
-	</section>
+	</article>
 
-	<section class="graph-container">
+	<article class="graph-container">
 		<svg v-component="x-graph">
 			<g class="link"
 				 v-bind="x-mouseenter:freezePosition,
@@ -104,9 +104,9 @@
 				</g>
 			</g>
 		</svg>
-	</section>
+	</article>
 
-</article>
+</main>
 
 <script id="template-radial-button" type="text/x-template">
 	<g class="node-menu">

@@ -37,19 +37,19 @@ html, body {
   display: flex;
 }
 
-article {
+main {
   flex: 1 1 auto;
   display: flex;
 }
 
-section.graph-container {
+article.graph-container {
   flex: 1 1 auto;
   order: 1;
   display: flex;
   background-color: #34495E;
 }
 
-section.info-container {
+article.info-container {
   order: 0;
 
   display: flex;
