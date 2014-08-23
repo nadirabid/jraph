@@ -1,26 +1,36 @@
 <main id="application">
-	<article class="info-container" v-class="disable-pointer-events:!displayNodeData">
-		<section class="info-overlay"></section>
-		<aside class="info-panel default-pointer-events" v-component="x-node-create" v-if="displayNodeCreate" >	 		
-	 		<div class="info-panel" v-if="displayNodeCreate">
-	 			<div v-if="data">
-		 			<ul class="list-unstyled">
-		 				<li v-repeat="data"><b>{{$key}}</b>:{{$value}}</li>
-		 			</ul>
-	 			</div>
 
-				<form class="form-inline">
-					<div class="form-group" v-class="has-error:keyHasError">
-						<input class="form-control" placeholder="Key" type="text" v-model="key">
-					</div>
-					<div class="form-group" v-class="has-error:valueHasError">
-						<input class="form-control" placeholder="Value" type="text" v-model="value">
-					</div>
-					<button class="btn btn-default" type="button" v-on="click:addPropertyHandler()">Add</button>
-				</form>
-				<button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler()">Create</button>
-	 		</div>
+	<article class="info-container" v-class="disable-pointer-events:!displayNodeData">
+		
+		<nav class="enable-pointer-events">
+	 		<button class="btn btn-default node-create"
+	 						v-class="hidden:displayNodeCreate || displayNodeData" 
+	 						v-on="click:displayNodeCreate=true">
+	 	  	<span class="glyphicon glyphicon-plus"></span>
+	 		</button>
+		</nav>
+		
+		<section class="info-overlay"></section>
+
+		<aside class="info-panel default-pointer-events" v-component="x-node-create" v-if="displayNodeCreate" >	 		
+ 			<div v-if="data">
+	 			<ul class="list-unstyled">
+	 				<li v-repeat="data"><b>{{$key}}</b>:{{$value}}</li>
+	 			</ul>
+ 			</div>
+
+			<form class="form-inline">
+				<div class="form-group" v-class="has-error:keyHasError">
+					<input class="form-control" placeholder="Key" type="text" v-model="key">
+				</div>
+				<div class="form-group" v-class="has-error:valueHasError">
+					<input class="form-control" placeholder="Value" type="text" v-model="value">
+				</div>
+				<button class="btn btn-default" type="button" v-on="click:addPropertyHandler">Add</button>
+			</form>
+			<button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler">Create</button>
 		</aside>
+
 		<aside class="info-panel" v-component="x-node-data" v-if="displayNodeData">
 			<ul class="list-unstyled">
 				<li v-repeat="nodeDataList">
@@ -47,10 +57,11 @@
 			<button class="btn btn-default" v-class="hidden:addProperty" v-on="click:addProperty=true">Add</button>
 			<button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">Cancel</button>
 		</aside>
+
 	</article>
 
 	<article class="graph-container">
-		<svg v-component="x-graph">
+		<svg v-component="x-graph" class="disable-user-selection">
 			<g class="link"
 				 v-bind="x-mouseenter:freezePosition,
 				 				 x-mouseleave:releasePosition,
@@ -85,7 +96,7 @@
 												  x-dragend[state=default]:dragEnd"
 				 			 		v-svg-events>
 			 		</circle>
-					<text class="node-label disable-user-selection disable-pointer-events"
+					<text class="node-label disable-pointer-events"
 								text-anchor="middle"
 								v-attr="transform:'translate('+labelX+','+labelY+')'"
 								v-class="invisible:menu">
@@ -95,6 +106,7 @@
 			</g>
 		</svg>
 	</article>
+
 </main>
 
 <script id="template-radial-button" type="text/x-template">
@@ -102,9 +114,7 @@
 		<path v-attr="d:backgroundPath"></path>
 		<path class="node-menu-highlight" v-attr="d:highlightPath"></path>
 		<path id="{{id}}" opacity="0" fill="none" v-attr="d:textPath"></path>
-		<text class="node-menu-item-label disable-user-selection disable-pointer-events"
-					text-anchor="middle"
-					v-attr="x:x, dy:dy">
+		<text class="node-menu-item-label disable-pointer-events" text-anchor="middle" v-attr="x:x, dy:dy">
 			<textPath xlink:href="#{{id}}">
 				<content></content>
 			</textPath>
@@ -114,7 +124,7 @@
 
 <script id="template-radial-menu" type="text/x-template">
 	<g>
-		<circle class="disable-user-selection" fill-opacity="0" r="80"></circle>
+		<circle fill-opacity="0" r="80"></circle>
 		<g class="content">
 			<content></content>
 		</g>

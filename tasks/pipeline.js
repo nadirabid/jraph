@@ -30,7 +30,6 @@ var jsFilesToInject = [
   'js/dependencies/d3.js',
   'js/dependencies/lodash.js',
   'js/dependencies/vue.js',
-  'js/dependencies/q.js',
   'js/dependencies/mousetrap.js',
   //'js/dependencies/**/*.js',
 

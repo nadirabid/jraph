@@ -129,6 +129,7 @@ Vue.directive('svg-events', {
 		}
 
 		function _mousemove( e ) {
+
 			if ( !dragFlag ) {
 				var dx = Math.abs( e.x - mdx );
 				var dy = Math.abs( e.y - mdy );
@@ -141,6 +142,7 @@ Vue.directive('svg-events', {
 				}
 			}
 			else {
+				
 				var xEvent = new CustomEvent( X_DRAG, _extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
 			}
@@ -558,6 +560,7 @@ Vue.component('x-node', {
 		},
 
 		dragStart: function( e ) {
+			console.log('dragStart');
 			this.px = this.x = e.detail.x;
 			this.py = this.y = e.detail.y;
 
@@ -566,6 +569,7 @@ Vue.component('x-node', {
 		},
 
 		drag: function( e ) {
+			console.log('drag');
 			this.px = this.x = e.detail.x;
 			this.py = this.y = e.detail.y;
 
@@ -723,15 +727,19 @@ Vue.component('x-graph', {
 
 		nodes: [ ], 
 
-		links: [ ]
+		links: [ ],
+
+		width: 0,
+
+		height: 0
 
 	},
 
 	methods: {
 
 		resize: function() {
-			var newWidth = this.$el.clientWidth,
-					newHeight = this.$el.clientHeight;
+			var newWidth = $( this.$el ).width(),
+					newHeight = $( this.$el ).height();
 
 			if ( this.width == newWidth && this.height == newHeight ) 
 				return;
@@ -794,11 +802,7 @@ Vue.component('x-graph', {
 	created: function() {
 		var self = this;
 
-		this.width = this.$el.clientWidth;
-		this.height = this.$el.clientHeight;
-		
 		this._force = d3.layout.force()
-				.size( [ this.width , this.height ] )
 				.theta( .1 )
 				.friction( .5 )
 				.gravity( .6 )
@@ -811,8 +815,6 @@ Vue.component('x-graph', {
 
 		var forceResume = this._force.resume.bind( this._force );
 		this._forceResume  = _.throttle( forceResume, 1200 );
-
-		window.addEventListener( 'resize', this.resize.bind( this ) );
 
 		this.$on('data', function( nodes, links ) {
 			self.nodes = nodes;
@@ -837,6 +839,11 @@ Vue.component('x-graph', {
 				self._forceStart();
 			}
 		});
+	},
+
+	ready: function() {
+		this.resize();
+		window.addEventListener( 'resize', this.resize.bind( this ) );
 	}
 
 });
@@ -956,25 +963,11 @@ Vue.component('x-node-create', {
 					self.data = null;
 					self.key = self.value = "";
 					self.keyHasError = self.valueHasError = false;
-					self.displayNodeCreate = false;
+					self.$parent.displayNodeCreate = false;
 				}
 			});
 		}
 
-	},
-
-	created: function() {
-		var self = this;
-		
-		this.$watch('displayNodeCreate', function( value ) {
-			if ( !value )
-				return;
-
-			Mousetrap.bind('esc', function() {
-				self.displayNodeCreate = false;
-				Mousetrap.unbind('esc');
-			});
-		});
 	}
 
 });
@@ -991,7 +984,9 @@ var app = new Vue({
 
 		nodes: [ ],
 		
-		links: [ ]
+		links: [ ],
+
+		displayNodeCreate: false
 	
 	},
 
@@ -1074,6 +1069,16 @@ var app = new Vue({
 		});
 
 		this.$on( 'showNodeData', this.showNodeData.bind( this ) );
+
+		this.$watch('displayNodeCreate', function( value ) {
+			if ( !value )
+				return;
+
+			Mousetrap.bind('esc', function() {
+				self.displayNodeCreate = false;
+				Mousetrap.unbind('esc');
+			});
+		});
 	}
 
 });
