@@ -1,6 +1,6 @@
 <main id="application">
 
-	<article class="info-container" v-class="disable-pointer-events:!displayNodeData">
+	<article class="info-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
 		
 		<nav class="enable-pointer-events">
 	 		<button class="btn btn-default node-create"
@@ -96,7 +96,7 @@
 												  x-dragend[state=default]:dragEnd"
 				 			 		v-svg-events>
 			 		</circle>
-					<text class="node-label disable-pointer-events"
+					<text class="node-label"
 								text-anchor="middle"
 								v-attr="transform:'translate('+labelX+','+labelY+')'"
 								v-class="invisible:menu">
@@ -114,7 +114,7 @@
 		<path v-attr="d:backgroundPath"></path>
 		<path class="node-menu-highlight" v-attr="d:highlightPath"></path>
 		<path id="{{id}}" opacity="0" fill="none" v-attr="d:textPath"></path>
-		<text class="node-menu-item-label disable-pointer-events" text-anchor="middle" v-attr="x:x, dy:dy">
+		<text class="node-menu-item-label" text-anchor="middle" v-attr="x:x, dy:dy">
 			<textPath xlink:href="#{{id}}">
 				<content></content>
 			</textPath>
