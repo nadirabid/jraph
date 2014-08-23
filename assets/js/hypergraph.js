@@ -114,8 +114,8 @@ Vue.directive('svg-events', {
 		var mouseOnElFlag = false;
 
 		function _extractEventDetail( e ) {
-			var x = e.x,
-					y = e.y;
+			var x = e.clientX,
+					y = e.clientY;
 
 			var detail = {
 				x: x,
@@ -131,24 +131,25 @@ Vue.directive('svg-events', {
 		function _mousemove( e ) {
 
 			if ( !dragFlag ) {
-				var dx = Math.abs( e.x - mdx );
-				var dy = Math.abs( e.y - mdy );
+				var dx = Math.abs( e.clientX - mdx );
+				var dy = Math.abs( e.clientY - mdy );
 				var distSqrd = dx*dx + dy*dy;
-
+				
 				if ( distSqrd > 2 ) {
+
 					var xDragStartEvent = new CustomEvent( X_DRAGSTART, _extractEventDetail( e ) );
 					el.dispatchEvent( xDragStartEvent );
 					dragFlag = true;
 				}
 			}
 			else {
-				
+
 				var xEvent = new CustomEvent( X_DRAG, _extractEventDetail( e ) );
 				el.dispatchEvent( xEvent );
 			}
 
-			px = e.x;
-			py = e.y;
+			px = e.clientX;
+			py = e.clientY;
 		}
 
 		function _mouseup( e ) {
@@ -158,8 +159,8 @@ Vue.directive('svg-events', {
 			if ( !dragFlag )
 				return;
 
-			var x = e.x;
-			var y = e.y;
+			var x = e.clientX;
+			var y = e.clientY;
 
 			if ( !mouseOnElFlag || x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight ) {
 				dragFlag = false;
@@ -193,8 +194,8 @@ Vue.directive('svg-events', {
 			if ( e.button != MOUSE_LEFT_BUTTON ) 
 				return;
 
-			px = mdx = e.x;
-			py = mdy = e.y;
+			px = mdx = e.clientX;
+			py = mdy = e.clientY;
 
 			document.addEventListener( 'mousemove', _mousemove );
 			document.addEventListener( 'mouseup', _mouseup );

@@ -83,8 +83,8 @@
 				 v-repeat="nodes"
 				 v-svg-events>
 				<x-radial-menu v-if="menu">
-					<x-radial-button v-bind="click[state=default]:setLinkSource">link</x-radial-button>
-					<x-radial-button v-bind="click[state=default]:deleteNode">delete</x-radial-button>
+					<x-radial-button v-bind="x-click[state=default]:setLinkSource">link</x-radial-button>
+					<x-radial-button v-bind="x-click[state=default]:deleteNode">delete</x-radial-button>
 				</x-radial-menu>
 				<g>
 					<circle class="node-circle"
