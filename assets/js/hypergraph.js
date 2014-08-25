@@ -370,15 +370,122 @@ Vue.component('x-radial-menu', {
 
 });
 
-function StateEvents() {
+function StateEventHandlers() {
 	this.mouseover = noop;
 	this.mouseout = noop;
 	this.drag = noop;
-	this.dragStart = noop;
-	this.dragEnd = noop;
+	this.dragstart = noop;
+	this.dragend = noop;
 };
 
-var NodeDefaultEvents = extendClass(StateEvents, function() {
+var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
+	//show menu
+	this.mouseover = function() {
+		// check shared.activeNode to make sure that we aren't 
+		// already displaying a menu on another node
+		if ( ctx.shared.activeNode && ctx.shared.activeNode != ctx.id )
+			return;
+		
+		ctx.px = ctx.x;
+		ctx.py = ctx.y;
+		ctx.fixed = true;
+		ctx.menu = true;
+		ctx.shared.activeNode = ctx.id;
+
+		//move node to front to make sure menu is not 
+		//hidden by overlapping elements
+		var nodes = ctx.$parent.nodes;
+
+		if ( ctx.$index < ( nodes.length - 1 ) )
+			nodes.push( nodes.$remove( ctx.$index ) );
+	};
+
+	//hide menu
+	this.mouseout = function() {
+		if ( ctx.shared.activeNode && ctx.shared.activeNode != this.id )
+			return;
+
+		ctx.fixed = false;
+		ctx.menu = false;
+		ctx.shared.activeNode = false;
+	};
+
+	//pin node
+	this.click = function() {
+		var $node = d3.select( ctx.$el );
+		var transitionDuration = 200;
+
+		ctx.state = 'pinned';
+		ctx.menu = false;
+		ctx.radius += 12;
+		ctx.labelDistance += 12;
+
+		var nx = ( ctx.$parent.width / 2 ) + 10,
+				ny = ctx.$parent.height / 2 - 10;
+		var iX = d3.interpolateRound( ctx.x, nx ),
+				iY = d3.interpolateRound( ctx.y, ny );
+
+		$node
+				.transition()
+				.duration( transitionDuration )
+				.attrTween('transform' , function() {
+					return function( t ) {
+						var x = ctx.x = ctx.px = iX( t ),
+								y = ctx.y = ctx.py = iY( t );
+
+						ctx._forceResume();
+						return 'translate(' + x + ',' + y + ')';
+					};
+				});
+
+		ctx.$dispatch( 'showNodeData', ctx.$data );
+		ctx._forceResume();
+
+		Mousetrap.bind('esc', function() {
+			ctx.shared.activeNode = false;
+			ctx.state = 'default';
+			ctx.fixed = false;
+			ctx.radius -= 12;
+			ctx.labelDistance -= 12;
+
+			Mousetrap.unbind( 'esc' );
+			ctx.$dispatch( 'hideNodeData' );
+		});
+	};
+
+	//drag node
+	this.drag = function( e ) {
+		ctx.px = ctx.x = e.detail.x;
+		ctx.py = ctx.y = e.detail.y;
+
+		ctx._forceResume();
+	};
+
+	this.dragstart = function( e ) {
+		ctx.px = ctx.x = e.detail.x;
+		ctx.py = ctx.y = e.detail.y;
+
+		ctx.menu = false;
+		ctx.fixed = true;
+	};
+
+	this.dragend = function() {
+		ctx.menu = true;
+	};
+});
+
+var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
+	//select node target
+	this.mouseover = function() {
+		ctx.px = ctx.x;
+		ctx.py = ctx.y;
+		ctx.fixed = true;
+	};
+
+	//unselect node target
+	this.mouseout = function() {
+		ctx.fixed = false;
+	};
 
 });
 
@@ -413,10 +520,6 @@ Vue.component('x-node', {
 	},
 
 	methods: {
-
-		mouseover: function() {
-			this.state.mouseover( e );
-		},
 
 		updateLable: function() {
 			var self = this;
@@ -553,7 +656,6 @@ Vue.component('x-node', {
 		},
 
 		pin: function( e ) {
-			console.log( 'pin' );
 			var self = this;
 			var $node = d3.select( self.$el );
 			var transitionDuration = 200;
@@ -600,6 +702,12 @@ Vue.component('x-node', {
 
 	created: function() {
 		this._forceResume = this.$parent._forceResume;
+
+		this._states = {
+
+			initial: = new InitialNodeState( this )
+
+		};
 	},
 
 	ready: function() {
