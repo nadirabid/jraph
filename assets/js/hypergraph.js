@@ -487,6 +487,32 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 		ctx.fixed = false;
 	};
 
+	this.click = function() {
+		if ( !ctx.shared.link )
+			throw new 'Trying to set link target without setting source';
+
+		var link = ctx.shared.link;
+		var linkFromId = ctx.shared.activeNode;
+
+		link.target = ctx;
+
+		ctx.$parent.$.nodeVms.forEach(function( vm ) {
+			if ( linkFromId == vm.id ) {
+				vm.$el.classList.remove( 'node-circle-link-source' );
+				vm.fixed = false;
+				vm.shared.activeNode = false;
+				vm.shared.link = null;
+			}
+			else {
+				vm.$el.classList.remove( 'node-circle-link-hover' );
+			}
+
+			vm.state = 'default';
+		});
+
+		ctx.$parent.createLink( link );
+	};
+
 });
 
 Vue.component('x-node', {
@@ -545,159 +571,8 @@ Vue.component('x-node', {
 
 			self.labelX = tX + shiftX;
 			self.labelY = tY + shiftY;
-		},
-
-		freezePosition: function() {
-			this.px = this.x;
-			this.py = this.y;
-			this.fixed = true;
-		},
-
-		releasePosition: function() {
-			this.fixed = false;
-		},
-
-		setLinkSource: function() {
-			var id = this.id;
-
-			this.menu = false;
-			this.fixed = true;
-			this.shared.activeNode = this.id;
-			this.state = 'link_source';
-			this.shared.link = { source: this };
-
-			this.$parent.$.nodeVms.forEach(function( vm ) {
-				if ( id == vm.id ) {
-					vm.$el.classList.add( 'node-circle-link-source' );
-				}
-				else {
-					vm.state = 'link_target';
-					vm.$el.classList.add( 'node-circle-link-hover' );
-				}
-			});
-		},
-
-		setLinkTarget: function() {
-			if ( !this.shared.link )
-				throw new 'Trying to set link target without setting source';
-
-			var link = this.shared.link;
-			var linkFromId = this.shared.activeNode;
-
-			link.target = this;
-
-			this.$parent.$.nodeVms.forEach(function( vm ) {
-				if ( linkFromId == vm.id ) {
-					vm.$el.classList.remove( 'node-circle-link-source' );
-					vm.fixed = false;
-					vm.shared.activeNode = false;
-					vm.shared.link = null;
-				}
-				else {
-					vm.$el.classList.remove( 'node-circle-link-hover' );
-				}
-
-				vm.state = 'default';
-			});
-
-			this.$parent.createLink( link );
-		},
-
-		showMenu: function() {
-			// check shared.activeNode to make sure that we aren't 
-			// already displaying a menu on another node
-			if ( this.shared.activeNode && this.shared.activeNode != this.id )
-				return;
-			
-			this.px = this.x;
-			this.py = this.y;
-			this.fixed = true;
-			this.menu = true;
-			this.shared.activeNode = this.id;
-
-			//move node to front to make sure menu is not 
-			//hidden by overlapping elements
-			var nodes = this.$parent.nodes;
-
-			if ( this.$index < ( nodes.length - 1 ) )
-				nodes.push( nodes.$remove( this.$index ) );
-		},
-
-		hideMenu: function() {
-			if ( this.shared.activeNode && this.shared.activeNode != this.id )
-				return;
-
-			this.fixed = false;
-			this.menu = false;
-			this.shared.activeNode = false;
-		},
-
-		dragStart: function( e ) {
-			this.px = this.x = e.detail.x;
-			this.py = this.y = e.detail.y;
-
-			this.menu = false;
-			this.fixed = true;
-		},
-
-		drag: function( e ) {
-			this.px = this.x = e.detail.x;
-			this.py = this.y = e.detail.y;
-
-			this._forceResume();
-		},
-
-		dragEnd: function() {
-			this.menu = true;
-		},
-
-		deleteNode: function() {
-			this.$parent.deleteNode( this.id );
-		},
-
-		pin: function( e ) {
-			var self = this;
-			var $node = d3.select( self.$el );
-			var transitionDuration = 200;
-
-			this.state = 'pinned';
-			this.menu = false;
-			this.radius += 12;
-			this.labelDistance += 12;
-
-			var nx = ( this.$parent.width / 2 ) + 10,
-					ny = this.$parent.height / 2 - 10;
-			var iX = d3.interpolateRound( this.x, nx ),
-					iY = d3.interpolateRound( this.y, ny );
-
-			$node
-					.transition()
-					.duration( transitionDuration )
-					.attrTween('transform' , function() {
-						return function( t ) {
-							var x = self.x = self.px = iX( t ),
-									y = self.y = self.py = iY( t );
-
-							self._forceResume();
-							return 'translate(' + x + ',' + y + ')';
-						};
-					});
-
-			this.$dispatch( 'showNodeData', this.$data );
-			this._forceResume();
-
-			Mousetrap.bind('esc', function() {
-				self.shared.activeNode = false;
-				self.state = 'default';
-				self.fixed = false;
-				self.radius -= 12;
-				self.labelDistance -= 12;
-
-				Mousetrap.unbind( 'esc' );
-				self.$dispatch( 'hideNodeData' );
-			});
 		}
-
+		
 	},
 
 	created: function() {
@@ -705,9 +580,13 @@ Vue.component('x-node', {
 
 		this._states = {
 
-			initial: = new InitialNodeState( this )
+			initial: new InitialNodeState( this ),
+
+			linking: new LinkingNodeState( this )
 
 		};
+
+		this._state = this._states.initial;
 	},
 
 	ready: function() {
