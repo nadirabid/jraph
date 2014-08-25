@@ -571,8 +571,32 @@ Vue.component('x-node', {
 
 			self.labelX = tX + shiftX;
 			self.labelY = tY + shiftY;
+		},
+
+		mouseover: function() {
+			this._state.mouseover.apply( this._state, arguments );
+		},
+
+		mouseout: function() {
+			this._state.mouseout.apply( this._state, arguments );
+		},
+
+		click: function() {
+			this._state.click.apply( this._state, arguments );
+		},
+
+		drag: function() {
+			this._state.drag.apply( this._state, arguments );
+		},
+
+		dragstart: function() {
+			this._state.dragstart.apply( this._state, arguments );
 		}
-		
+
+		dragend: function() {
+			this._state.dragend.apply( this._state, arguments );
+		}
+
 	},
 
 	created: function() {
