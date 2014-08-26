@@ -34,8 +34,8 @@
 		<aside class="info-panel" v-component="x-node-data" v-if="displayNodeData">
 			<ul class="list-unstyled">
 				<li v-repeat="nodeDataList">
-					<span v-if="typeof(value)!='object'"><b>{{key}}</b>:{{value}}</span>
-					<span v-if="typeof(value)=='object'">
+					<span v-if="typeof(value)!='object' && key.charAt(0)!='_'"><b>{{key}}</b>:{{value}}</span>
+					<span v-if="typeof(value)=='object' && key.charAt(0)!='_'">
 						<b>{{key}}</b>:
 						<ul>
 							<li v-repeat="value"><b>{{$key}}</b>:{{$value}}</li>

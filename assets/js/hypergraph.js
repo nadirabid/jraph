@@ -385,7 +385,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 		// already displaying a menu on another node
 		if ( ctx.shared.activeNode && ctx.shared.activeNode != ctx.id )
 			return;
-		
+
 		ctx.px = ctx.x;
 		ctx.py = ctx.y;
 		ctx.fixed = true;
@@ -402,7 +402,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//hide menu
 	this.mouseout = function() {
-		if ( ctx.shared.activeNode && ctx.shared.activeNode != this.id )
+		if ( ctx.shared.activeNode && ctx.shared.activeNode != ctx.id )
 			return;
 
 		ctx.fixed = false;
@@ -488,31 +488,42 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 	};
 
 	this.click = function() {
-		if ( !ctx.shared.link )
-			throw new 'Trying to set link target without setting source';
+		if ( !source )
+			return;
 
-		var link = ctx.shared.link;
-		var linkFromId = ctx.shared.activeNode;
-
-		link.target = ctx;
+		var sourceId = source.id;
+		var link = { 
+			source: source,
+			target: ctx
+		};
 
 		ctx.$parent.$.nodeVms.forEach(function( vm ) {
-			if ( linkFromId == vm.id ) {
+			if ( sourceId == vm.id ) {
 				vm.$el.classList.remove( 'node-circle-link-source' );
 				vm.fixed = false;
-				vm.shared.activeNode = false;
-				vm.shared.link = null;
+				vm._state = vm._states.initial;
 			}
 			else {
 				vm.$el.classList.remove( 'node-circle-link-hover' );
+				vm._state.reset();
+				vm._state = vm._states.initial;
 			}
-
-			vm.state = 'default';
 		});
 
 		ctx.$parent.createLink( link );
 	};
 
+	var source = null;
+
+	// initialize
+	this.initialize = function( node ) {
+		source = node;
+	};
+
+	// reset
+	this.reset = function() {
+		source = null;
+	};
 });
 
 Vue.component('x-node', {
@@ -573,6 +584,28 @@ Vue.component('x-node', {
 			self.labelY = tY + shiftY;
 		},
 
+		setLinkSource: function() {
+			var self = this;
+			var id = this.id;
+
+			this.menu = false;
+			this.fixed = true;
+			this._state = this._states.linking;
+
+			this.$parent.$.nodeVms.forEach(function( vm ) {
+				if ( id == vm.id ) {
+					vm.$el.classList.add( 'node-circle-link-source' );
+				}
+				else {
+					vm.state = 'link_target';
+					vm.$el.classList.add( 'node-circle-link-hover' );
+
+					vm._state = this._states.linking;
+					vm._state.initial( self );
+				}
+			});
+		},
+
 		mouseover: function() {
 			this._state.mouseover.apply( this._state, arguments );
 		},
@@ -591,7 +624,7 @@ Vue.component('x-node', {
 
 		dragstart: function() {
 			this._state.dragstart.apply( this._state, arguments );
-		}
+		},
 
 		dragend: function() {
 			this._state.dragend.apply( this._state, arguments );
