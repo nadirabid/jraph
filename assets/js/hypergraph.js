@@ -7,6 +7,13 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
+
+// Utils 
+
+function noop() {
+
+}
+
 function extendClass( parentClass, childClass ) {
 	function childClassWrapper() {
 		parentClass.apply( this, arguments );
@@ -32,13 +39,20 @@ function chainEvalVm( vm, varName ) {
 		return chainEvalVm( vm.$parent, varName );
 }
 
-function noop() {
+// Setup
 
-}
+document.mouse = {
+
+	state: 'initial',
+
+	data: { }
+
+};
 
 Vue.config({ silent: true });
 
-// click:state(false)=pin
+// Definitions
+
 Vue.directive('bind', {
 
 	update: function() {
@@ -114,7 +128,7 @@ Vue.directive('bind', {
 
 });
 
-Vue.directive('snap-events', {
+Vue.directive('xevents', {
 
 	isEmpty: true,
 
@@ -378,19 +392,16 @@ function StateEventHandlers() {
 	this.dragend = noop;
 };
 
+var DisabledNodeState = extendClass(StateEventHandlers, function() { });
+
 var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	//show menu
 	this.mouseover = function() {
-		// check shared.activeNode to make sure that we aren't 
-		// already displaying a menu on another node
-		if ( ctx.shared.activeNode && ctx.shared.activeNode != ctx.id )
-			return;
-
+		console.log('InitialNodeState:mouseover');
 		ctx.px = ctx.x;
 		ctx.py = ctx.y;
 		ctx.fixed = true;
 		ctx.menu = true;
-		ctx.shared.activeNode = ctx.id;
 
 		//move node to front to make sure menu is not 
 		//hidden by overlapping elements
@@ -402,12 +413,10 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//hide menu
 	this.mouseout = function() {
-		if ( ctx.shared.activeNode && ctx.shared.activeNode != ctx.id )
-			return;
+		console.log('InitialNodeState:mouseout');
 
 		ctx.fixed = false;
 		ctx.menu = false;
-		ctx.shared.activeNode = false;
 	};
 
 	//pin node
@@ -415,7 +424,6 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 		var $node = d3.select( ctx.$el );
 		var transitionDuration = 200;
 
-		ctx.state = 'pinned';
 		ctx.menu = false;
 		ctx.radius += 12;
 		ctx.labelDistance += 12;
@@ -438,16 +446,17 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 					};
 				});
 
+		document.mouse.state = 'disabled';
+
 		ctx.$dispatch( 'showNodeData', ctx.$data );
 		ctx._forceResume();
 
 		Mousetrap.bind('esc', function() {
-			ctx.shared.activeNode = false;
-			ctx.state = 'default';
 			ctx.fixed = false;
 			ctx.radius -= 12;
 			ctx.labelDistance -= 12;
-
+			document.mouse.state = 'initial';
+			
 			Mousetrap.unbind( 'esc' );
 			ctx.$dispatch( 'hideNodeData' );
 		});
@@ -477,6 +486,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 	//select node target
 	this.mouseover = function() {
+		console.log('LinkingNodeState:mouseover');
 		ctx.px = ctx.x;
 		ctx.py = ctx.y;
 		ctx.fixed = true;
@@ -484,59 +494,37 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 
 	//unselect node target
 	this.mouseout = function() {
+		console.log('LinkingNodeState:mouseout');
 		ctx.fixed = false;
 	};
 
+	//set link target
 	this.click = function() {
-		if ( !source )
+		var source = document.mouse.data.source;
+		if ( source.id == ctx.id )
 			return;
 
+		document.mouse.state = 'initial';
+		document.mouse.data.source = null;
 		var sourceId = source.id;
-		var link = { 
-			source: source,
-			target: ctx
-		};
 
 		ctx.$parent.$.nodeVms.forEach(function( vm ) {
 			if ( sourceId == vm.id ) {
 				vm.$el.classList.remove( 'node-circle-link-source' );
 				vm.fixed = false;
-				vm._state = vm._states.initial;
 			}
 			else {
 				vm.$el.classList.remove( 'node-circle-link-hover' );
-				vm._state.reset();
-				vm._state = vm._states.initial;
 			}
 		});
 
-		ctx.$parent.createLink( link );
-	};
-
-	var source = null;
-
-	// initialize
-	this.initialize = function( node ) {
-		source = node;
-	};
-
-	// reset
-	this.reset = function() {
-		source = null;
+		ctx.$parent.createLink( { source: source, target: ctx } );
 	};
 });
 
 Vue.component('x-node', {
 
 	data: {
-
-		shared: {
-
-			activeNode: false
-
-		},
-
-		state: 'default',
 
 		menu: false,
 
@@ -590,44 +578,47 @@ Vue.component('x-node', {
 
 			this.menu = false;
 			this.fixed = true;
-			this._state = this._states.linking;
+			document.mouse.state = 'linking';
+			document.mouse.data.source = this;
 
 			this.$parent.$.nodeVms.forEach(function( vm ) {
 				if ( id == vm.id ) {
 					vm.$el.classList.add( 'node-circle-link-source' );
 				}
 				else {
-					vm.state = 'link_target';
 					vm.$el.classList.add( 'node-circle-link-hover' );
-
-					vm._state = this._states.linking;
-					vm._state.initial( self );
 				}
 			});
 		},
 
 		mouseover: function() {
-			this._state.mouseover.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.mouseover.apply( state, arguments );
 		},
 
 		mouseout: function() {
-			this._state.mouseout.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.mouseout.apply( state, arguments );
 		},
 
 		click: function() {
-			this._state.click.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.click.apply( state, arguments );
 		},
 
 		drag: function() {
-			this._state.drag.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.drag.apply( state, arguments );
 		},
 
 		dragstart: function() {
-			this._state.dragstart.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.dragstart.apply( state, arguments );
 		},
 
 		dragend: function() {
-			this._state.dragend.apply( this._state, arguments );
+			var state = this._states[ document.mouse.state ];
+			state.dragend.apply( state, arguments );
 		}
 
 	},
@@ -639,11 +630,11 @@ Vue.component('x-node', {
 
 			initial: new InitialNodeState( this ),
 
-			linking: new LinkingNodeState( this )
+			linking: new LinkingNodeState( this ),
+
+			disabled: new DisabledNodeState( this )
 
 		};
-
-		this._state = this._states.initial;
 	},
 
 	ready: function() {
@@ -660,8 +651,6 @@ Vue.component('x-node', {
 	beforeDestroy: function() {
 		this.menu = false;
 		this.fixed = false;
-		this.state = 'default';
-		this.shared.activeNode = false;
 	}
 
 });
@@ -765,6 +754,9 @@ Vue.component('x-graph', {
 				targetId: link.target.id
 			};
 
+			console.log( linkJson );
+			this._forceResume();
+			/*
 			$.ajax({
 				url: '/hyperlink/',
 				type: 'POST',
@@ -781,6 +773,7 @@ Vue.component('x-graph', {
 					self.links.push( createdLink );
 				}
 			});
+			*/
 		},
 
 		deleteNode: function( nodeId ) {

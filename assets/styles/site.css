@@ -128,7 +128,7 @@ article.info-container {
 
 .link:hover {
   opacity: .6;
-  stroke-width:.7em;
+  stroke-width:.9em;
 }
 
 .node-circle

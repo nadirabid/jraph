@@ -69,33 +69,27 @@
 				 				 x-drag:drag"
 				 v-component="x-link"
 				 v-repeat="links"
-				 v-snap-events>
+				 v-xevents>
 				<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 			</g>
-			<g class="node"
-				 v-attr="transform:'translate('+x+','+y+')'"
-				 v-on="x-mouseenter:mouseover, x-mouseleave:mouseout"
-				 v-component="x-node"
-				 v-ref="nodeVms"
-				 v-repeat="nodes"
-				 v-snap-events>
-				<x-radial-menu v-if="menu">
-					<x-radial-button>link</x-radial-button>
-					<x-radial-button>delete</x-radial-button>
-				</x-radial-menu>
-				<g>
+			<g class="node" v-attr="transform:'translate('+x+','+y+')'" v-component="x-node" v-ref="nodeVms" v-repeat="nodes">
+				<g v-on="x-mouseenter:mouseover, x-mouseleave:mouseout" v-xevents>
+					<x-radial-menu v-if="menu">
+						<x-radial-button v-on="click:setLinkSource">link</x-radial-button>
+						<x-radial-button>delete</x-radial-button>
+					</x-radial-menu>
 					<circle class="node-circle"
 									v-attr="r:radius"
 									v-on="x-click:click, x-drag:drag, x-dragstart: dragstart, x-dragend:dragend"
-				 			 		v-snap-events>
+				 			 		v-xevents>
 			 		</circle>
-					<text class="node-label"
-								text-anchor="middle"
-								v-attr="transform:'translate('+labelX+','+labelY+')'"
-								v-class="invisible:menu">
-						Label {{$index}}
-					</text>
 				</g>
+				<text class="node-label"
+							text-anchor="middle"
+							v-attr="transform:'translate('+labelX+','+labelY+')'"
+							v-class="invisible:menu">
+					Label {{$index}}
+				</text>
 			</g>
 		</svg>
 	</article>
