@@ -128,6 +128,10 @@ Vue.directive('bind', {
 
 });
 
+(function() {
+
+var dragFlag = false;
+
 Vue.directive('xevents', {
 
 	isEmpty: true,
@@ -136,7 +140,6 @@ Vue.directive('xevents', {
 		var el = this.el;
 		var $$el = this.$$el = Snap( this.el );
 		var mouseOver = false;
-		var dragFlag = false;
 
 		this._drag = function( dx, dy, x, y ) {
 			dragFlag = true;
@@ -193,6 +196,8 @@ Vue.directive('xevents', {
 	}
 
 });
+
+})();
 
 /*
 	Graph view
@@ -456,7 +461,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 			ctx.radius -= 12;
 			ctx.labelDistance -= 12;
 			document.mouse.state = 'initial';
-			
+
 			Mousetrap.unbind( 'esc' );
 			ctx.$dispatch( 'hideNodeData' );
 		});
@@ -504,8 +509,6 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 		if ( source.id == ctx.id )
 			return;
 
-		document.mouse.state = 'initial';
-		document.mouse.data.source = null;
 		var sourceId = source.id;
 
 		ctx.$parent.$.nodeVms.forEach(function( vm ) {
@@ -518,7 +521,14 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 			}
 		});
 
-		ctx.$parent.createLink( { source: source, target: ctx } );
+		ctx.$parent
+				.createLink( { source: source, target: ctx } )
+				.then(function() {
+					ctx._forceResume();
+				});
+
+		document.mouse.state = 'initial';
+		document.mouse.data.source = null;
 	};
 });
 
@@ -591,33 +601,37 @@ Vue.component('x-node', {
 			});
 		},
 
+		getState: function() {
+			return this._states[ document.mouse.state ];
+		},
+
 		mouseover: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.mouseover.apply( state, arguments );
 		},
 
 		mouseout: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.mouseout.apply( state, arguments );
 		},
 
 		click: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.click.apply( state, arguments );
 		},
 
 		drag: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.drag.apply( state, arguments );
 		},
 
 		dragstart: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.dragstart.apply( state, arguments );
 		},
 
 		dragend: function() {
-			var state = this._states[ document.mouse.state ];
+			var state = this.getState();
 			state.dragend.apply( state, arguments );
 		}
 
@@ -753,11 +767,8 @@ Vue.component('x-graph', {
 				sourceId: link.source.id,
 				targetId: link.target.id
 			};
-
-			console.log( linkJson );
-			this._forceResume();
-			/*
-			$.ajax({
+			
+			return $.ajax({
 				url: '/hyperlink/',
 				type: 'POST',
 				contentType: 'application/json; charset=utf-8',
@@ -773,7 +784,6 @@ Vue.component('x-graph', {
 					self.links.push( createdLink );
 				}
 			});
-			*/
 		},
 
 		deleteNode: function( nodeId ) {
