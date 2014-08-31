@@ -14,6 +14,13 @@ function noop() {
 
 }
 
+function setCTM(element, matrix) {
+	var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + ","
+										+ matrix.d + "," + matrix.e + "," + matrix.f + ")";
+
+	element.setAttribute("transform", s);
+}
+
 function extendClass( parentClass, childClass ) {
 	function childClassWrapper() {
 		parentClass.apply( this, arguments );
@@ -730,6 +737,8 @@ Vue.component('x-link', {
 
 });
 
+
+
 Vue.component('x-graph', {
 
 	data: {
@@ -758,6 +767,34 @@ Vue.component('x-graph', {
 
 			this._force.size( [ newWidth, newHeight ] );
 			this._forceResume();
+		},
+
+		panOrigin: function( e ) {
+			var $el = this.$el;
+			
+			this._panOriginCTM = $el.getCTM();
+
+			var panFrom = $el.createSVGPoint();
+
+			panFrom.x = e.x;
+			panFrom.y = e.y;
+
+			this._panFrom = panFrom.matrixTransform( this._panOriginCTM.inverse() );
+		},
+
+		pan: function( e ) {
+			var $el = this.$el;
+			var ctm = $el.getCTM();
+
+			var panFrom = this._panFrom();
+			var panTo = this.$el.createSVGPoint();
+
+			panTo.x = e.x;
+			panTo.y = e.y;
+
+			panTo = panTo.matrixTransform( this._panOriginCTM.inverse() );
+
+			setCTM( $el, ctm.translate( panTo.x - panFrom.x, panTo.y - panFrom.y ) );
 		},
 
 		createLink: function( link ) {
