@@ -159,24 +159,52 @@ Vue.directive('xevents', {
 
 		this._drag = function( dx, dy, x, y, e ) {
 			dragFlag = true;
-			var eventData = { dx: dx, dy: dy, x: x, y: y };
-			el.dispatchEvent( new CustomEvent( 'x-drag', { detail: eventData } ) );
+
+			var xevent = new CustomEvent('x-drag', {				
+				
+				bubbles: true,
+				
+				cancellable: true,
+				
+				detail: { dx: dx, dy: dy, x: x, y: y }
+			
+			});
+
+			el.dispatchEvent( xevent );
 		};
 
-		this._dragStart = function( x, y ) {			
-			var eventData = { dx: 0, dy: 0, x: x, y: y };
-			el.dispatchEvent( new CustomEvent( 'x-dragstart', { detail: eventData } ) );
+		this._dragStart = function( x, y ) {
+			var xevent = new CustomEvent('x-dragstart', {
+
+				bubbles: true,
+
+				cancellable: true,
+
+				detail: { dx: 0, dy: 0, x: x, y: y }
+
+			});
+
+			el.dispatchEvent( xevent );
 		};
 
 		this._dragEnd = function() {
 			if ( !mouseoverFlag ) {
 				dragFlag = false;
 
-				var eventData = { mousedownFlag: mousedownFlag };
-				el.dispatchEvent( new CustomEvent( 'x-mouseout', { detail: eventData } ) );
+				var xevent = new CustomEvent('x-dragend', {
+
+					bubbles: true,
+
+					cancellable: true,
+
+					detail: { mousedownFlag: mousedownFlag }
+
+				});
+
+				el.dispatchEvent( xevent );
 			}
 
-			el.dispatchEvent( new Event( 'x-dragend' ) );
+			el.dispatchEvent( new CustomEvent( 'x-dragend', { bubbles: true, cancellable: true } ) );
 		};
 
 		this._mouseover = function( e ) {
@@ -185,8 +213,17 @@ Vue.directive('xevents', {
 			if ( dragFlag )
 				return;
 
-			var eventData = { mousedownFlag: mousedownFlag };
-			el.dispatchEvent( new CustomEvent( 'x-mouseover', { detail: eventData } ) );
+			var xevent = new CustomEvent('x-mouseover', {
+
+				bubbles: true,
+
+				cancellable: true,
+
+				detail: { mousedownFlag: mousedownFlag }
+
+			});
+			
+			el.dispatchEvent( xevent );
 		};
 
 		this._mouseout = function() {
@@ -195,15 +232,24 @@ Vue.directive('xevents', {
 			if ( dragFlag )
 				return;
 
-			var eventData = { mousedownFlag: mousedownFlag };
-			el.dispatchEvent( new CustomEvent( 'x-mouseout', { detail: eventData } ) );
+			var xevent = new CustomEvent('x-mouseout', {
+
+				bubbles: true,
+
+				cancellable: true,
+
+				detail: { mousedownFlag: mousedownFlag }
+
+			});
+
+			el.dispatchEvent( xevent );
 		};
 
 		this._click = function() {
 			if ( dragFlag )
 				return dragFlag = false;
 
-			el.dispatchEvent( new Event( 'x-click' ) );
+			el.dispatchEvent( new CustomEvent( 'x-click', { bubbles: true, cancellable: true } ) );
 		};
 
 		$$el.drag( this._drag, this._dragStart, this._dragEnd );
@@ -496,6 +542,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//drag node
 	this.drag = function( e ) {
+		console.log( 'drag', e );
 		ctx.px = ctx.x = e.detail.x;
 		ctx.py = ctx.y = e.detail.y;
 
@@ -728,7 +775,7 @@ Vue.component('x-link', {
 			this.target.fixed = false;
 		},
 
-		dragStart: function( e ) {
+		dragstart: function( e ) {
 			var source = this.source,
 					target = this.target;
 

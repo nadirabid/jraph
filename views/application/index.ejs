@@ -61,9 +61,9 @@
 	</article>
 
 	<article class="graph-container">
-		<svg v-component="x-graph" class="disable-user-selection" v-on="x-dragstart:panOrigin, x-drag:pan" v-xevents>
+		<svg v-component="x-graph" class="disable-user-selection">
 			<g class="link"
-				 v-bind="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragStart, x-drag:drag"
+				 v-bind="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
 				 v-component="x-link"
 				 v-repeat="links"
 				 v-xevents>
