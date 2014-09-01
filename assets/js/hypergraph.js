@@ -137,7 +137,15 @@ Vue.directive('bind', {
 
 (function() {
 
-var dragFlag = false;
+var mousedownFlag = false;
+
+document.documentElement.addEventListener('mousedown', function() {
+	mousedownFlag = true;
+});
+
+document.documentElement.addEventListener('mouseup', function() {
+	mousedownFlag = false;
+});
 
 Vue.directive('xevents', {
 
@@ -146,9 +154,10 @@ Vue.directive('xevents', {
 	bind: function() {
 		var el = this.el;
 		var $$el = this.$$el = Snap( this.el );
-		var mouseOver = false;
+		var dragFlag = false;
+		var mouseoverFlag = false;
 
-		this._drag = function( dx, dy, x, y ) {
+		this._drag = function( dx, dy, x, y, e ) {
 			dragFlag = true;
 			var eventData = { dx: dx, dy: dy, x: x, y: y };
 			el.dispatchEvent( new CustomEvent( 'x-drag', { detail: eventData } ) );
@@ -160,26 +169,34 @@ Vue.directive('xevents', {
 		};
 
 		this._dragEnd = function() {
-			if ( !mouseOver ) {
+			if ( !mouseoverFlag ) {
 				dragFlag = false;
-				el.dispatchEvent( new Event( 'x-mouseleave' ) );
+
+				var eventData = { mousedownFlag: mousedownFlag };
+				el.dispatchEvent( new CustomEvent( 'x-mouseout', { detail: eventData } ) );
 			}
 
 			el.dispatchEvent( new Event( 'x-dragend' ) );
 		};
 
-		this._mouseover = function() {
-			mouseOver = true;
+		this._mouseover = function( e ) {
+			mouseoverFlag = true;
 
-			if ( !dragFlag )
-				el.dispatchEvent( new Event( 'x-mouseenter' ) );
+			if ( dragFlag )
+				return;
+
+			var eventData = { mousedownFlag: mousedownFlag };
+			el.dispatchEvent( new CustomEvent( 'x-mouseover', { detail: eventData } ) );
 		};
 
 		this._mouseout = function() {
-			mouseOver = false;
+			mouseoverFlag = false;
 
-			if ( !dragFlag )
-				el.dispatchEvent( new Event( 'x-mouseleave' ) );
+			if ( dragFlag )
+				return;
+
+			var eventData = { mousedownFlag: mousedownFlag };
+			el.dispatchEvent( new CustomEvent( 'x-mouseout', { detail: eventData } ) );
 		};
 
 		this._click = function() {
@@ -408,8 +425,10 @@ var DisabledNodeState = extendClass(StateEventHandlers, function() { });
 
 var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	//show menu
-	this.mouseover = function() {
-		console.log('InitialNodeState:mouseover');
+	this.mouseover = function( e ) {
+		if ( e.detail.mousedownFlag )
+			return;
+
 		ctx.px = ctx.x;
 		ctx.py = ctx.y;
 		ctx.fixed = true;
@@ -424,8 +443,9 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	};
 
 	//hide menu
-	this.mouseout = function() {
-		console.log('InitialNodeState:mouseout');
+	this.mouseout = function( e ) {
+		if ( e.detail.mousedownFlag )
+			return;
 
 		ctx.fixed = false;
 		ctx.menu = false;
@@ -497,16 +517,20 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 	//select node target
-	this.mouseover = function() {
-		console.log('LinkingNodeState:mouseover');
+	this.mouseover = function( e ) {
+		if ( e.detail.mousedownFlag )
+			return;
+
 		ctx.px = ctx.x;
 		ctx.py = ctx.y;
 		ctx.fixed = true;
 	};
 
 	//unselect node target
-	this.mouseout = function() {
-		console.log('LinkingNodeState:mouseout');
+	this.mouseout = function( e ) {
+		if ( e.detail.mousedownFlag )
+			return;
+
 		ctx.fixed = false;
 	};
 
@@ -680,7 +704,10 @@ Vue.component('x-link', {
 
 	methods: {
 
-		freezePosition: function() {
+		freezePosition: function( e ) {
+			if ( e.detail.mousedownFlag )
+				return;
+
 			var source = this.source,
 					target = this.target;
 
@@ -693,7 +720,10 @@ Vue.component('x-link', {
 			target.fixed = true;
 		},
 
-		releasePosition: function() {
+		releasePosition: function( e ) {
+			if ( e.detail.mousedownFlag )
+				return;
+
 			this.source.fixed = false;
 			this.target.fixed = false;
 		},
@@ -770,6 +800,9 @@ Vue.component('x-graph', {
 		},
 
 		panOrigin: function( e ) {
+			console.log( 'panOrigin' );
+
+			/*
 			var $el = this.$el;
 			
 			this._panOriginCTM = $el.getCTM();
@@ -780,9 +813,13 @@ Vue.component('x-graph', {
 			panFrom.y = e.y;
 
 			this._panFrom = panFrom.matrixTransform( this._panOriginCTM.inverse() );
+			*/
 		},
 
 		pan: function( e ) {
+			console.log( 'pan' );
+
+			/*
 			var $el = this.$el;
 			var ctm = $el.getCTM();
 
@@ -795,6 +832,7 @@ Vue.component('x-graph', {
 			panTo = panTo.matrixTransform( this._panOriginCTM.inverse() );
 
 			setCTM( $el, ctm.translate( panTo.x - panFrom.x, panTo.y - panFrom.y ) );
+			*/
 		},
 
 		createLink: function( link ) {
@@ -826,6 +864,7 @@ Vue.component('x-graph', {
 		deleteNode: function( nodeId ) {
 			var self = this;
 
+			
 			$.ajax({
 				url: '/hypernode/?id=' + nodeId,
 				type: 'DELETE',
