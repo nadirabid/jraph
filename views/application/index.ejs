@@ -61,7 +61,8 @@
 	</article>
 
 	<article class="graph-container">
-		<svg v-component="x-graph" class="disable-user-selection">
+		<svg class="disable-user-selection" v-component="x-graph" v-on="x-dragstart:panOrigin, x-drag:pan" v-xevents>
+			<g>
 			<g class="link"
 				 v-bind="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
 				 v-component="x-link"
@@ -87,6 +88,7 @@
 							v-class="invisible:menu">
 					Label {{$index}}
 				</text>
+			</g>
 			</g>
 		</svg>
 	</article>

@@ -18,7 +18,7 @@ function setCTM(element, matrix) {
 	var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + ","
 										+ matrix.d + "," + matrix.e + "," + matrix.f + ")";
 
-	element.setAttribute("transform", s);
+	element.setAttributeNS( null, "transform", s );
 }
 
 function extendClass( parentClass, childClass ) {
@@ -542,7 +542,6 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//drag node
 	this.drag = function( e ) {
-		console.log( 'drag', e );
 		ctx.px = ctx.x = e.detail.x;
 		ctx.py = ctx.y = e.detail.y;
 
@@ -849,37 +848,32 @@ Vue.component('x-graph', {
 		panOrigin: function( e ) {
 			console.log( 'panOrigin' );
 
-			/*
 			var $el = this.$el;
 			
 			this._panOriginCTM = $el.getCTM();
 
 			var panFrom = $el.createSVGPoint();
-
-			panFrom.x = e.x;
-			panFrom.y = e.y;
-
+			panFrom.x = e.detail.x;
+			panFrom.y = e.detail.y;
+			
 			this._panFrom = panFrom.matrixTransform( this._panOriginCTM.inverse() );
-			*/
 		},
 
 		pan: function( e ) {
 			console.log( 'pan' );
 
-			/*
 			var $el = this.$el;
 			var ctm = $el.getCTM();
 
-			var panFrom = this._panFrom();
-			var panTo = this.$el.createSVGPoint();
+			var panFrom = this._panFrom;
 
-			panTo.x = e.x;
-			panTo.y = e.y;
+			var panTo = this.$el.createSVGPoint();
+			panTo.x = e.detail.x;
+			panTo.y = e.detail.y;
 
 			panTo = panTo.matrixTransform( this._panOriginCTM.inverse() );
 
-			setCTM( $el, ctm.translate( panTo.x - panFrom.x, panTo.y - panFrom.y ) );
-			*/
+			setCTM( $el.querySelector( 'g' ), ctm.translate( panTo.x - panFrom.x, panTo.y - panFrom.y ) );
 		},
 
 		createLink: function( link ) {
@@ -910,13 +904,11 @@ Vue.component('x-graph', {
 
 		deleteNode: function( nodeId ) {
 			var self = this;
-
 			
 			$.ajax({
 				url: '/hypernode/?id=' + nodeId,
 				type: 'DELETE',
 				contentType: 'application/json; charset=utf-8',
-				data: JSON.stringify( ),
 				success: function( response ) {
 					self.links = self.links.filter(function( l ) {
 						return l.sourceId != nodeId && l.targetId != nodeId;
