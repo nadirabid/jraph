@@ -61,7 +61,7 @@ passport.use(new LocalStrategy(
 ));
 
 module.exports = {
-	express: {
+	http: {
 	  customMiddleware: function( app ) {
 	    app.use( passport.initialize() );
 	    app.use( passport.session() );

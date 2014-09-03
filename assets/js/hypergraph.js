@@ -164,7 +164,7 @@ Vue.directive('xevents', {
 				
 				bubbles: true,
 				
-				cancellable: true,
+				cancelable: true,
 				
 				detail: { dx: dx, dy: dy, x: x, y: y }
 			
@@ -178,7 +178,7 @@ Vue.directive('xevents', {
 
 				bubbles: true,
 
-				cancellable: true,
+				cancelable: true,
 
 				detail: { dx: 0, dy: 0, x: x, y: y }
 
@@ -195,7 +195,7 @@ Vue.directive('xevents', {
 
 					bubbles: true,
 
-					cancellable: true,
+					cancelable: true,
 
 					detail: { mousedownFlag: mousedownFlag }
 
@@ -204,7 +204,7 @@ Vue.directive('xevents', {
 				el.dispatchEvent( xevent );
 			}
 
-			el.dispatchEvent( new CustomEvent( 'x-dragend', { bubbles: true, cancellable: true } ) );
+			el.dispatchEvent( new CustomEvent( 'x-dragend', { bubbles: true, cancelable: true } ) );
 		};
 
 		this._mouseover = function( e ) {
@@ -217,7 +217,7 @@ Vue.directive('xevents', {
 
 				bubbles: true,
 
-				cancellable: true,
+				cancelable: true,
 
 				detail: { mousedownFlag: mousedownFlag }
 
@@ -236,7 +236,7 @@ Vue.directive('xevents', {
 
 				bubbles: true,
 
-				cancellable: true,
+				cancelable: true,
 
 				detail: { mousedownFlag: mousedownFlag }
 
@@ -249,7 +249,7 @@ Vue.directive('xevents', {
 			if ( dragFlag )
 				return dragFlag = false;
 
-			el.dispatchEvent( new CustomEvent( 'x-click', { bubbles: true, cancellable: true } ) );
+			el.dispatchEvent( new CustomEvent( 'x-click', { bubbles: true, cancelable: true } ) );
 		};
 
 		$$el.drag( this._drag, this._dragStart, this._dragEnd );
@@ -542,6 +542,8 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//drag node
 	this.drag = function( e ) {
+		e.preventDefault();
+
 		ctx.px = ctx.x = e.detail.x;
 		ctx.py = ctx.y = e.detail.y;
 
@@ -549,6 +551,8 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	};
 
 	this.dragstart = function( e ) {
+		e.preventDefault();
+
 		ctx.px = ctx.x = e.detail.x;
 		ctx.py = ctx.y = e.detail.y;
 
@@ -556,7 +560,9 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 		ctx.fixed = true;
 	};
 
-	this.dragend = function() {
+	this.dragend = function( e ) {
+		e.preventDefault();
+
 		ctx.menu = true;
 	};
 });
@@ -684,32 +690,32 @@ Vue.component('x-node', {
 
 		mouseover: function() {
 			var state = this.getState();
-			state.mouseover.apply( state, arguments );
+			return state.mouseover.apply( state, arguments );
 		},
 
 		mouseout: function() {
 			var state = this.getState();
-			state.mouseout.apply( state, arguments );
+			return state.mouseout.apply( state, arguments );
 		},
 
 		click: function() {
 			var state = this.getState();
-			state.click.apply( state, arguments );
+			return state.click.apply( state, arguments );
 		},
 
 		drag: function() {
 			var state = this.getState();
-			state.drag.apply( state, arguments );
+			return state.drag.apply( state, arguments );
 		},
 
 		dragstart: function() {
 			var state = this.getState();
-			state.dragstart.apply( state, arguments );
+			return state.dragstart.apply( state, arguments );
 		},
 
 		dragend: function() {
 			var state = this.getState();
-			state.dragend.apply( state, arguments );
+			return state.dragend.apply( state, arguments );
 		}
 
 	},
@@ -825,7 +831,11 @@ Vue.component('x-graph', {
 
 		width: 0,
 
-		height: 0
+		height: 0,
+
+		originX: 0,
+
+		originY: 0
 
 	},
 
@@ -845,35 +855,20 @@ Vue.component('x-graph', {
 			this._forceResume();
 		},
 
-		panOrigin: function( e ) {
-			console.log( 'panOrigin' );
+		panStart: function( e ) {
 
-			var $el = this.$el;
-			
-			this._panOriginCTM = $el.getCTM();
+			this.pOriginX = this.originX;
+			this.pOriginY = this.originY;
 
-			var panFrom = $el.createSVGPoint();
-			panFrom.x = e.detail.x;
-			panFrom.y = e.detail.y;
-			
-			this._panFrom = panFrom.matrixTransform( this._panOriginCTM.inverse() );
 		},
 
 		pan: function( e ) {
-			console.log( 'pan' );
 
-			var $el = this.$el;
-			var ctm = $el.getCTM();
+			this.originX = this.pOriginX - e.detail.dx;
+			this.originY = this.pOriginY - e.detail.dy;
 
-			var panFrom = this._panFrom;
+			console.log( 'panTest', this.originX, this.originY );
 
-			var panTo = this.$el.createSVGPoint();
-			panTo.x = e.detail.x;
-			panTo.y = e.detail.y;
-
-			panTo = panTo.matrixTransform( this._panOriginCTM.inverse() );
-
-			setCTM( $el.querySelector( 'g' ), ctm.translate( panTo.x - panFrom.x, panTo.y - panFrom.y ) );
 		},
 
 		createLink: function( link ) {
@@ -1110,7 +1105,9 @@ var app = new Vue({
 		
 		links: [ ],
 
-		displayNodeCreate: false
+		displayNodeCreate: false,
+
+		displayNodeData: false
 	
 	},
 

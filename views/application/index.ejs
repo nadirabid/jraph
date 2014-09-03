@@ -61,34 +61,37 @@
 	</article>
 
 	<article class="graph-container">
-		<svg class="disable-user-selection" v-component="x-graph" v-on="x-dragstart:panOrigin, x-drag:pan" v-xevents>
-			<g>
-			<g class="link"
-				 v-bind="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
-				 v-component="x-link"
-				 v-repeat="links"
-				 v-xevents>
-				<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-			</g>
-			<g class="node" v-attr="transform:'translate('+x+','+y+')'" v-component="x-node" v-ref="nodeVms" v-repeat="nodes">
-				<g v-on="x-mouseover:mouseover, x-mouseout:mouseout" v-xevents>
-					<x-radial-menu v-if="menu">
-						<x-radial-button v-on="click:setLinkSource">link</x-radial-button>
-						<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
-					</x-radial-menu>
-					<circle class="node-circle"
-									v-attr="r:radius"
-									v-on="x-click:click, x-drag:drag, x-dragstart: dragstart, x-dragend:dragend"
-				 			 		v-xevents>
-			 		</circle>
+		<svg class="disable-user-selection" viewBox="{{originX}} {{originY}} {{width}} {{height}}"
+																				v-component="x-graph"
+																				v-on="x-dragstart:panStart, x-drag:pan"
+																				v-xevents>
+			<g class="viewport">
+				<g class="link"
+					 v-bind="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
+					 v-component="x-link"
+					 v-repeat="links"
+					 v-xevents>
+					<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 				</g>
-				<text class="node-label"
-							text-anchor="middle"
-							v-attr="transform:'translate('+labelX+','+labelY+')'"
-							v-class="invisible:menu">
-					Label {{$index}}
-				</text>
-			</g>
+				<g class="node" v-attr="transform:'translate('+x+','+y+')'" v-component="x-node" v-ref="nodeVms" v-repeat="nodes">
+					<g v-on="x-mouseover:mouseover, x-mouseout:mouseout" v-xevents>
+						<x-radial-menu v-if="menu">
+							<x-radial-button v-on="click:setLinkSource">link</x-radial-button>
+							<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
+						</x-radial-menu>
+						<circle class="node-circle"
+										v-attr="r:radius"
+										v-on="x-click:click, x-drag:drag, x-dragstart: dragstart, x-dragend:dragend"
+					 			 		v-xevents>
+				 		</circle>
+					</g>
+					<text class="node-label"
+								text-anchor="middle"
+								v-attr="transform:'translate('+labelX+','+labelY+')'"
+								v-class="invisible:menu">
+						Label {{$index}}
+					</text>
+				</g>
 			</g>
 		</svg>
 	</article>
