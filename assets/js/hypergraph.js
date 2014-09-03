@@ -58,82 +58,7 @@ document.mouse = {
 
 Vue.config({ silent: true });
 
-// Definitions
-
-Vue.directive('bind', {
-
-	update: function() {
-		var self = this;
-
-		this.reset();
-
-		var reqToks = this.expression.match( /^\s*([\-\w]+)\s*(?=\[|:)(?:[^:]*:\s*)(\w+)/ );
-		var optToks = this.expression.match( /\[\s*([.\w]+)(?:\s*=\s*)(\w+)(?:\s*)(?=\])/ );
-
-		var eventName = reqToks[ 1 ];
-		var handlerName = reqToks[ 2 ];
-
-		var handlerVm = chainEvalVm( this.vm, handlerName );
-		var handler = handlerVm[ handlerName ];
-
-		if ( typeof handler !== 'function' || !reqToks ) {
-			console.error( 'Directive expects a function for event handler.', handler );
-			return;
-		}
-
-		handler = handler.bind( handlerVm );
-		this.eventName = eventName;
-
-		if ( !optToks ) {
-			this.el.addEventListener( eventName, handler );
-			this.handler = handler;
-		}
-		else {
-			var varName = optToks[ 1 ];
-			var watchValue = optToks[ 2 ];
-			var watchVm = chainEvalVm( this.vm, varName );
-
-			this.watchVm = watchVm;
-			this.varName = varName;
-
-			if ( watchVm[ varName ] == watchValue ) {
-				this.el.addEventListener( eventName, handler );
-				this.handler = handler;
-			}
-
-			this.watcher = function( val ) {
-				if ( val == watchValue && !self.handler ) {
-					self.el.addEventListener( eventName, handler );
-					self.handler = handler;
-				}
-				else if ( val != watchValue && self.handler ) {
-					self.el.removeEventListener( eventName, handler );
-					delete self.handler;
-				}
-			};
-
-			watchVm.$watch( varName, this.watcher );
-		}
-
-	},
-
-	unbind: function() {
-		this.reset();
-	},
-
-	reset: function() {
-		if ( this.watchVm ) {
-			this.watchVm.$unwatch( this.varName, this.watcher );	
-			delete this.watcher;
-		}
-		
-		if ( this.handler ) {
-			this.el.removeEventListener( this.eventName, this.handler );
-			delete this.handler;
-		}
-	}
-
-});
+//Definitions
 
 (function() {
 
@@ -856,19 +781,13 @@ Vue.component('x-graph', {
 		},
 
 		panStart: function( e ) {
-
 			this.pOriginX = this.originX;
 			this.pOriginY = this.originY;
-
 		},
 
 		pan: function( e ) {
-
 			this.originX = this.pOriginX - e.detail.dx;
 			this.originY = this.pOriginY - e.detail.dy;
-
-			console.log( 'panTest', this.originX, this.originY );
-
 		},
 
 		createLink: function( link ) {
