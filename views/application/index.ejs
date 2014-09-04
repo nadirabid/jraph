@@ -63,25 +63,26 @@
 	<article class="graph-container">
 		<svg class="disable-user-selection" viewBox="{{originX}} {{originY}} {{width}} {{height}}"
 																				v-component="x-graph"
-																				v-on="x-dragstart:panStart, x-drag:pan"
-																				v-xevents>
+																				v-xon="x-dragstart:panStart, x-drag:pan">
 			<g class="link"
-				 v-on="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
+				 v-xon="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
 				 v-component="x-link"
-				 v-repeat="links"
-				 v-xevents>
+				 v-repeat="links">
 				<line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
 			</g>
-			<g class="node" v-attr="transform:'translate('+x+','+y+')'" v-component="x-node" v-ref="nodeVms" v-repeat="nodes">
-				<g v-on="x-mouseover:mouseover, x-mouseout:mouseout" v-xevents>
+			<g class="node"
+				 v-attr="transform:'translate('+x+','+y+')'"
+				 v-component="x-node"
+				 v-ref="nodeVms"
+				 v-repeat="nodes">
+				<g v-xon="x-mouseover:mouseover, x-mouseout:mouseout">
 					<x-radial-menu v-if="menu">
 						<x-radial-button v-on="click:setLinkSource">link</x-radial-button>
 						<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
 					</x-radial-menu>
 					<circle class="node-circle"
 									v-attr="r:radius"
-									v-on="x-click:click, x-drag:drag, x-dragstart: dragstart, x-dragend:dragend"
-				 			 		v-xevents>
+									v-xon="x-click:click">
 			 		</circle>
 				</g>
 				<text class="node-label"

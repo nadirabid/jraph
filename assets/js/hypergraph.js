@@ -64,19 +64,16 @@ Vue.config({ silent: true });
 
 var mousedownFlag = false;
 
-document.documentElement.addEventListener('mousedown', function() {
-	mousedownFlag = true;
-});
+document.documentElement.addEventListener('mousedown', function() { mousedownFlag = true; }, true);
+document.documentElement.addEventListener('mouseup', function() { mousedownFlag = false; }, true);
 
-document.documentElement.addEventListener('mouseup', function() {
-	mousedownFlag = false;
-});
+Vue.directive('xon', {
 
-Vue.directive('xevents', {
+	isFn: true,
 
-	isEmpty: true,
-
-	bind: function() {
+	initializeEvents: function() {
+		var self = this;
+		var ctx = this.context;
 		var el = this.el;
 		var $$el = this.$$el = Snap( this.el );
 		var dragFlag = false;
@@ -84,52 +81,19 @@ Vue.directive('xevents', {
 
 		this._drag = function( dx, dy, x, y, e ) {
 			dragFlag = true;
-
-			var xevent = new CustomEvent('x-drag', {				
-				
-				bubbles: true,
-				
-				cancelable: true,
-				
-				detail: { dx: dx, dy: dy, x: x, y: y }
-			
-			});
-
-			el.dispatchEvent( xevent );
+			ctx.$emit( 'x-drag', dx, dy, x, y, e );
 		};
 
-		this._dragStart = function( x, y ) {
-			var xevent = new CustomEvent('x-dragstart', {
-
-				bubbles: true,
-
-				cancelable: true,
-
-				detail: { dx: 0, dy: 0, x: x, y: y }
-
-			});
-
-			el.dispatchEvent( xevent );
+		this._dragStart = function( x, y, e ) {
+			ctx.$emit( 'x-dragstart', x, y, e );
 		};
 
-		this._dragEnd = function() {
-			if ( !mouseoverFlag ) {
+		this._dragEnd = function( e ) {
+			if ( !mouseoverFlag )
 				dragFlag = false;
 
-				var xevent = new CustomEvent('x-dragend', {
-
-					bubbles: true,
-
-					cancelable: true,
-
-					detail: { mousedownFlag: mousedownFlag }
-
-				});
-
-				el.dispatchEvent( xevent );
-			}
-
-			el.dispatchEvent( new CustomEvent( 'x-dragend', { bubbles: true, cancelable: true } ) );
+			e.mousedownFlag = mousedownFlag;
+			ctx.$emit( 'x-dragend', e );
 		};
 
 		this._mouseover = function( e ) {
@@ -138,43 +102,25 @@ Vue.directive('xevents', {
 			if ( dragFlag )
 				return;
 
-			var xevent = new CustomEvent('x-mouseover', {
-
-				bubbles: true,
-
-				cancelable: true,
-
-				detail: { mousedownFlag: mousedownFlag }
-
-			});
-			
-			el.dispatchEvent( xevent );
+			e.mousedownFlag = mousedownFlag;
+			ctx.$emit( 'x-mouseover', e );
 		};
 
-		this._mouseout = function() {
+		this._mouseout = function( e ) {
 			mouseoverFlag = false;
 
 			if ( dragFlag )
 				return;
 
-			var xevent = new CustomEvent('x-mouseout', {
-
-				bubbles: true,
-
-				cancelable: true,
-
-				detail: { mousedownFlag: mousedownFlag }
-
-			});
-
-			el.dispatchEvent( xevent );
+			e.mousedownFlag = mousedownFlag;
+			ctx.$emit( 'x-mouseout', e );
 		};
 
-		this._click = function() {
+		this._click = function( e ) {
 			if ( dragFlag )
 				return dragFlag = false;
 
-			el.dispatchEvent( new CustomEvent( 'x-click', { bubbles: true, cancelable: true } ) );
+			ctx.$emit( 'x-click', e );
 		};
 
 		$$el.drag( this._drag, this._dragStart, this._dragEnd );
@@ -183,11 +129,36 @@ Vue.directive('xevents', {
 		$$el.click( this._click );
 	},
 
+	bind: function() {
+		var ctx = this.context = this.binding.isExp	? this.vm :
+																									this.binding.compiler.vm;
+
+		if ( ctx._xon ) return;
+
+		this.initializeEvents();
+		ctx._xon = true;
+	},
+
+	update: function( handler ) {
+		var ctx = this.context;
+
+		if ( this.currHandler )
+			ctx.$off( this.arg, this.currHandler )
+
+		this.currHandler = handler.bind( ctx );
+		ctx.$on( this.arg, this.currHandler );
+	},
+
 	unbind: function() {
+		var $$el = this.$$el;
+		var ctx = this.context;
+
 		$$el.undrag();
 		$$el.unmouseover( this._mouseover );
 		$$el.unmouseout( this._mouseout );
 		$$el.unclick( this._click );
+
+		ctx.$off( this.arg, this.currHandler )
 	}
 
 });
@@ -385,6 +356,7 @@ Vue.component('x-radial-menu', {
 });
 
 function StateEventHandlers() {
+	this.click = noop;
 	this.mouseover = noop;
 	this.mouseout = noop;
 	this.drag = noop;
@@ -397,7 +369,7 @@ var DisabledNodeState = extendClass(StateEventHandlers, function() { });
 var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	//show menu
 	this.mouseover = function( e ) {
-		if ( e.detail.mousedownFlag )
+		if ( e.mousedownFlag )
 			return;
 
 		ctx.px = ctx.x;
@@ -415,7 +387,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//hide menu
 	this.mouseout = function( e ) {
-		if ( e.detail.mousedownFlag )
+		if ( e.mousedownFlag )
 			return;
 
 		ctx.fixed = false;
@@ -466,27 +438,27 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	};
 
 	//drag node
-	this.drag = function( e ) {
-		e.preventDefault();
+	this.drag = function( dx, dy, x, y, e ) {
+		e.stopPropagation();
 
-		ctx.px = ctx.x = e.detail.x;
-		ctx.py = ctx.y = e.detail.y;
+		ctx.px = ctx.x = x;
+		ctx.py = ctx.y = y;
 
 		ctx._forceResume();
 	};
 
-	this.dragstart = function( e ) {
-		e.preventDefault();
+  this.dragstart = function( x, y, e ) {
+		e.stopPropagation();
 
-		ctx.px = ctx.x = e.detail.x;
-		ctx.py = ctx.y = e.detail.y;
+		ctx.px = ctx.x = x;
+		ctx.py = ctx.y = y;
 
 		ctx.menu = false;
 		ctx.fixed = true;
 	};
 
 	this.dragend = function( e ) {
-		e.preventDefault();
+		e.stopPropagation();
 
 		ctx.menu = true;
 	};
@@ -495,7 +467,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 	//select node target
 	this.mouseover = function( e ) {
-		if ( e.detail.mousedownFlag )
+		if ( e.mousedownFlag )
 			return;
 
 		ctx.px = ctx.x;
@@ -505,7 +477,7 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 
 	//unselect node target
 	this.mouseout = function( e ) {
-		if ( e.detail.mousedownFlag )
+		if ( e.mousedownFlag )
 			return;
 
 		ctx.fixed = false;
@@ -657,6 +629,10 @@ Vue.component('x-node', {
 			disabled: new DisabledNodeState( this )
 
 		};
+
+		var $snapped = Snap( this.$el );
+
+		$snapped.drag( this.drag.bind( this ), this.dragstart.bind( this ), this.dragend.bind( this ) );
 	},
 
 	ready: function() {
@@ -682,7 +658,7 @@ Vue.component('x-link', {
 	methods: {
 
 		freezePosition: function( e ) {
-			if ( e.detail.mousedownFlag )
+			if ( e.mousedownFlag )
 				return;
 
 			var source = this.source,
@@ -698,14 +674,14 @@ Vue.component('x-link', {
 		},
 
 		releasePosition: function( e ) {
-			if ( e.detail.mousedownFlag )
+			if ( e.mousedownFlag )
 				return;
 
 			this.source.fixed = false;
 			this.target.fixed = false;
 		},
 
-		dragstart: function( e ) {
+		dragstart: function( x, y, e ) {
 			var source = this.source,
 					target = this.target;
 
@@ -721,9 +697,7 @@ Vue.component('x-link', {
 			this.target_y = target.y;
 		},
 
-		drag: function( e ) {
-			var dx = e.detail.dx,
-					dy = e.detail.dy;
+		drag: function( dx, dy, x, y, e ) {
 			var source = this.source,
 					target = this.target;
 
@@ -744,7 +718,7 @@ Vue.component('x-link', {
 
 });
 
-
+var currentEvent = null;
 
 Vue.component('x-graph', {
 
@@ -780,14 +754,14 @@ Vue.component('x-graph', {
 			this._forceResume();
 		},
 
-		panStart: function( e ) {
+		panStart: function( x, y, e ) {
 			this.pOriginX = this.originX;
 			this.pOriginY = this.originY;
 		},
 
-		pan: function( e ) {
-			this.originX = this.pOriginX - e.detail.dx;
-			this.originY = this.pOriginY - e.detail.dy;
+		pan: function( dx, dy, x, y, e ) {
+			this.originX = this.pOriginX - dx;
+			this.originY = this.pOriginY - dy;
 		},
 
 		createLink: function( link ) {
@@ -882,6 +856,10 @@ Vue.component('x-graph', {
 	ready: function() {
 		this.resize();
 		window.addEventListener( 'resize', this.resize.bind( this ) );
+
+		var $snapped = Snap( this.$el );
+
+		//$snapped.drag( this.pan.bind( this ), this.panStart.bind( this ) );
 	}
 
 });
