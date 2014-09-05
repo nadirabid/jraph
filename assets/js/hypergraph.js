@@ -367,6 +367,21 @@ Vue.component('x-radial-menu', {
 
 });
 
+function transformPointToEl( x, y, el ) {
+	var viewportEl = el.nearestViewportElement;
+
+	var transToEl = el.getTransformToElement( viewportEl ).inverse();
+	transToEl.e = transToEl.f = 0;
+
+	var svgPoint = viewportEl.createSVGPoint();
+	svgPoint.x = x;
+	svgPoint.y = y;
+	svgPoint = svgPoint.matrixTransform( viewportEl.getScreenCTM().inverse() );
+	svgPoint = svgPoint.matrixTransform( transToEl );
+
+	return svgPoint;
+}
+
 function StateEventHandlers() {
 	this.click = noop;
 	this.mouseover = noop;
@@ -451,23 +466,25 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//drag node
 	this.drag = function( dx, dy, x, y, e ) {
-		ctx.px = ctx.x = x;
-		ctx.py = ctx.y = y;
+  	var svgPt = transformPointToEl( x, y, ctx.$el );
+
+		ctx.px = ctx.x = svgPt.x;
+		ctx.py = ctx.y = svgPt.y;
 
 		ctx._forceResume();
 	};
 
   this.dragstart = function( dx, dy, x, y, e ) {
-		ctx.px = ctx.x = x;
-		ctx.py = ctx.y = y;
+  	var svgPt = transformPointToEl( x, y, ctx.$el );
+
+		ctx.px = ctx.x = svgPt.x;
+		ctx.py = ctx.y = svgPt.y;
 
 		ctx.menu = false;
 		ctx.fixed = true;
 	};
 
 	this.dragend = function( e ) {
-		//e.stopPropagation();
-
 		ctx.menu = true;
 	};
 });
