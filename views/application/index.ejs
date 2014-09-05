@@ -61,7 +61,7 @@
 	</article>
 
 	<article class="graph-container">
-		<svg class="disable-user-selection" viewBox="{{originX}} {{originY}} {{width}} {{height}}"
+		<svg class="disable-user-selection" viewBox="{{minX}} {{minY}} {{width}} {{height}}"
 																				v-component="x-graph"
 																				v-xon="x-dragstart:panStart, x-drag:pan">
 			<g class="link"
@@ -82,7 +82,7 @@
 					</x-radial-menu>
 					<circle class="node-circle"
 									v-attr="r:radius"
-									v-xon="x-click:click">
+									v-xon="x-click:click, x-dragstart:dragstart, x-drag:drag, x-dragend:dragend">
 			 		</circle>
 				</g>
 				<text class="node-label"

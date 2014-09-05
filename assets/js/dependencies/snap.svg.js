@@ -7285,7 +7285,7 @@ Snap.plugin(function (Snap, Element, Paper, glob) {
             this._drag.y = y;
             this._drag.id = e.identifier;
             !drag.length && Snap.mousemove(dragMove).mouseup(dragUp);
-            drag.push({el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
+            drag.splice(0, 0, {el: this, move_scope: move_scope, start_scope: start_scope, end_scope: end_scope});
             onstart && eve.on("snap.drag.start." + this.id, onstart);
             onmove && eve.on("snap.drag.move." + this.id, onmove);
             onend && eve.on("snap.drag.end." + this.id, onend);

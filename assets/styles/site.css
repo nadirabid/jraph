@@ -126,7 +126,7 @@ article.info-container {
   stroke-width:.5em;
 }
 
-.link:hover {
+.link.hover {
   opacity: .6;
   stroke-width:.9em;
 }
@@ -138,14 +138,14 @@ article.info-container {
   stroke:#fff;
 }
 
-.node-circle-link-source circle
-{
-  fill:#03a9f4;
-}
-
-.node-circle-link-hover circle:hover
+.node-linking-target.hover
 {
   fill:#00bcd4;
+}
+
+.node-linking-source
+{
+  fill:#03a9f4;
 }
 
 .node-label {
