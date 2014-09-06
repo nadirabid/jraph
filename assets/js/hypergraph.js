@@ -369,15 +369,36 @@ Vue.component('x-radial-menu', {
 
 function transformPointToEl( x, y, el ) {
 	var viewportEl = el.nearestViewportElement;
-
-	var transToEl = el.getTransformToElement( viewportEl ).inverse();
-	transToEl.e = transToEl.f = 0;
+	var ctm = viewportEl.getScreenCTM().inverse();
+	var etm = el.getTransformToElement( viewportEl ).inverse();
+	etm.e = etm.f = 0;
 
 	var svgPoint = viewportEl.createSVGPoint();
+
 	svgPoint.x = x;
 	svgPoint.y = y;
-	svgPoint = svgPoint.matrixTransform( viewportEl.getScreenCTM().inverse() );
-	svgPoint = svgPoint.matrixTransform( transToEl );
+
+	svgPoint = svgPoint.matrixTransform( ctm );
+	svgPoint = svgPoint.matrixTransform( etm );
+
+	return svgPoint;
+}
+
+function transformVectorToEl( x, y, el ) {
+	var viewportEl = el.nearestViewportElement;
+	var ctm = viewportEl.getScreenCTM().inverse();
+	ctm.e = ctm.f = 0;
+	
+	var etm = el.getTransformToElement( viewportEl ).inverse();
+	etm.e = etm.f = 0;
+
+	var svgPoint = viewportEl.createSVGPoint();
+
+	svgPoint.x = x;
+	svgPoint.y = y;
+
+	svgPoint = svgPoint.matrixTransform( ctm );
+	svgPoint = svgPoint.matrixTransform( etm );
 
 	return svgPoint;
 }
@@ -466,19 +487,19 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	//drag node
 	this.drag = function( dx, dy, x, y, e ) {
-  	var svgPt = transformPointToEl( x, y, ctx.$el );
+  	var pt = transformPointToEl( x, y, ctx.$el );
 
-		ctx.px = ctx.x = svgPt.x;
-		ctx.py = ctx.y = svgPt.y;
+		ctx.px = ctx.x = pt.x;
+		ctx.py = ctx.y = pt.y;
 
 		ctx._forceResume();
 	};
 
   this.dragstart = function( dx, dy, x, y, e ) {
-  	var svgPt = transformPointToEl( x, y, ctx.$el );
+  	var pt = transformPointToEl( x, y, ctx.$el );
 
-		ctx.px = ctx.x = svgPt.x;
-		ctx.py = ctx.y = svgPt.y;
+		ctx._x = ctx.px = ctx.x = pt.x;
+		ctx._y = ctx.py = ctx.y = pt.y;
 
 		ctx.menu = false;
 		ctx.fixed = true;
@@ -705,11 +726,13 @@ Vue.component('x-link', {
 			target.menu = false;
 			target.fixed = true;
 
-			
-			this.source_x = source.px = source.x = source.x + dx;
-			this.source_y = source.py = source.y = source.y + dy;
-			this.target_x = target.px = target.x = target.x + dx;
-			this.target_y = target.py = target.y = target.y + dy;
+			var v = transformVectorToEl( dx, dy, this.$el.querySelector( 'line' ) );
+
+			this.source_x = source.px = source.x = source.x + v.x;
+			this.source_y = source.py = source.y = source.y + v.y;
+
+			this.target_x = target.px = target.x = target.x + v.x;
+			this.target_y = target.py = target.y = target.y + v.y;
 		},
 
 		drag: function( dx, dy, x, y, e ) {
@@ -719,11 +742,13 @@ Vue.component('x-link', {
 			var source = this.source,
 					target = this.target;
 
-			source.px = source.x = this.source_x + dx;
-			source.py = source.y = this.source_y + dy;
+			var v = transformVectorToEl( dx, dy, this.$el.querySelector( 'line' ) );
 
-			target.px = target.x = this.target_x + dx;
-			target.py = target.y = this.target_y + dy;
+			source.px = source.x = this.source_x + v.x;
+			source.py = source.y = this.source_y + v.y;
+
+			target.px = target.x = this.target_x + v.x;
+			target.py = target.y = this.target_y + v.y;
 
 			this._forceResume();
 		}
