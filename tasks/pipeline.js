@@ -35,6 +35,9 @@ var jsFilesToInject = [
 
   // All of the rest of your client-side js files
   // will be injected here in no particular order.
+  'js/util.js',
+  'js/directives.js',
+  'js/components.js',
   'js/hypergraph.js'
   //'js/**/*.js'
 ];
