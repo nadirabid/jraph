@@ -4,7 +4,7 @@ function noop() {
 
 }
 
-function setCTM(element, matrix) {
+function setCTM( element, matrix ) {
 	var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + ","
 										+ matrix.d + "," + matrix.e + "," + matrix.f + ")";
 
@@ -12,6 +12,9 @@ function setCTM(element, matrix) {
 }
 
 function extendClass( parentClass, childClass ) {
+	if ( !childClass )
+		childClass = function() { };
+
 	function childClassWrapper() {
 		parentClass.apply( this, arguments );
 		return childClass.apply( this, arguments );

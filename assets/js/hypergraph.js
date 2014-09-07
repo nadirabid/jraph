@@ -7,15 +7,7 @@ var TWO_PI = Math.PI * 2;
 var E_MINUS_1 = Math.E - 1;
 var MOUSE_LEFT_BUTTON = 0;
 
-// Setup
-
-document.mouse = {
-
-	state: 'initial',
-
-	data: { }
-
-};
+document.mouse = { state: 'initial', data: { } };
 
 /*
 	Graph view
@@ -30,7 +22,7 @@ function StateEventHandlers() {
 	this.dragend = noop;
 };
 
-var DisabledNodeState = extendClass(StateEventHandlers, function() { });
+var DisabledNodeState = extendClass( StateEventHandlers );
 
 var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 	//show menu
@@ -60,64 +52,75 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 		ctx.menu = false;
 	};
 
-	//pin node
+	// shift viewport to center node
 	this.click = function() {
-		var $node = d3.select( ctx.$el );
-		var transitionDuration = 200;
+		var parent = ctx.$parent;
+
+		var width = ctx.$parent.width;
+				height = ctx.$parent.height;
+
+		var minX = ctx.$parent.minX,
+				minY = ctx.$parent.minY;
+
+		var p = transformPointToEl( width / 2, height / 2, ctx.$el );
+
+		var dx = p.x - ctx.x,
+				dy = p.y - ctx.y;
+
+		var iX = d3.interpolateRound( minX, minX - dx ),
+				iY = d3.interpolateRound( minY, minY - dy );
+
+		var animDuration = 250;
+		var ease = d3.ease( 'quad' );
+
+		d3.timer(function( elapsed ) {
+			var t = elapsed / animDuration;
+			var easedT = ease( t );
+			
+			ctx.$parent.minX = iX( easedT );
+			ctx.$parent.minY = iY( easedT );
+
+			return t > 1;
+		});
 
 		ctx.menu = false;
 		ctx.radius += 12;
 		ctx.labelDistance += 12;
 
-		var nx = ( ctx.$parent.width / 2 ) + 10,
-				ny = ctx.$parent.height / 2 - 10;
-		var iX = d3.interpolateRound( ctx.x, nx ),
-				iY = d3.interpolateRound( ctx.y, ny );
-
-		$node
-				.transition()
-				.duration( transitionDuration )
-				.attrTween('transform' , function() {
-					return function( t ) {
-						var x = ctx.x = ctx.px = iX( t ),
-								y = ctx.y = ctx.py = iY( t );
-
-						ctx._forceResume();
-						return 'translate(' + x + ',' + y + ')';
-					};
-				});
-
 		document.mouse.state = 'disabled';
 
-		ctx.$dispatch( 'showNodeData', ctx.$data );
 		ctx._forceResume();
+		
+		ctx.$dispatch( 'showNodeData', ctx.$data );
 
 		Mousetrap.bind('esc', function() {
+			document.mouse.state = 'initial';
+
 			ctx.fixed = false;
 			ctx.radius -= 12;
 			ctx.labelDistance -= 12;
-			document.mouse.state = 'initial';
 
 			Mousetrap.unbind( 'esc' );
+
 			ctx.$dispatch( 'hideNodeData' );
 		});
 	};
 
 	//drag node
 	this.drag = function( dx, dy, x, y, e ) {
-  	var pt = transformPointToEl( x, y, ctx.$el );
+  	var p = transformPointToEl( x, y, ctx.$el );
 
-		ctx.px = ctx.x = pt.x;
-		ctx.py = ctx.y = pt.y;
+		ctx.px = ctx.x = p.x;
+		ctx.py = ctx.y = p.y;
 
 		ctx._forceResume();
 	};
 
   this.dragstart = function( dx, dy, x, y, e ) {
-  	var pt = transformPointToEl( x, y, ctx.$el );
+  	var p = transformPointToEl( x, y, ctx.$el );
 
-		ctx._x = ctx.px = ctx.x = pt.x;
-		ctx._y = ctx.py = ctx.y = pt.y;
+		ctx.px = ctx.x = p.x;
+		ctx.py = ctx.y = p.y;
 
 		ctx.menu = false;
 		ctx.fixed = true;
@@ -203,7 +206,7 @@ Vue.component('x-node', {
 					dy = self.y - ( self.$parent.height / 2 );
 
 			var theta = Math.atan( dy / dx );
-			var ratio = E_MINUS_1 * ( 1 - Math.abs( theta % HALF_PI / HALF_PI ) );
+			var ratio = E_MINUS_1 * ( 1 - Math.abs( ( theta % HALF_PI ) / HALF_PI ) );
 			
 			var shiftX = bBox.width * Math.log( ratio + 1 ) * ( ( dx > 0 ) ? 0.5 : -0.5 ),
 					shiftY = bBox.y * -0.5;
