@@ -4,6 +4,7 @@ var uuid = require('node-uuid');
 var moment = require('moment');
 
 var mockUserId = 'c53303e1-0287-4e5a-8020-1026493c6e37';
+var dbUrl = 'http://localhost:7474/db/data/transaction/commit';
 
 var HyperlinkController = {
 
@@ -51,29 +52,34 @@ var HyperlinkController = {
 		var hyperlinkId = req.param( 'id' );
 
 		var options = {
-			'url': 'http://localhost:7474/db/data/cypher',
+			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8'
 		};
 
 		if ( _.isString( hyperlinkId ) ) {
 			options.json = {
-				'query': 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id:  {hyperlinkId} }]->(:Hypernode) '
-							 + 'RETURN hyperlink;',
-				'params': {
-					'hyperlinkId': hyperlinkId
-				}
-			};
+				'statements': [{
+					'statement': 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id:  {hyperlinkId} }]->(:Hypernode) '
+							 			 + 'RETURN hyperlink;',
+		 			'parameters': {
+	 					'hyperlinkId': hyperlinkId
+		 			}
+				}]
+			}
 		}
 		else {
+			//TODO: optimize query so we dont return tons of duplicates
 			options.json = {
-				'query': 'MATCH (u:User { id: {userId} }), (u)-[:OWNS]->(hypernode:Hypernode),  '
-							 + 'OPTIONAL MATCH (hypernode)-[hyperlink:HYPERLINK]->(:Hypernode) '
-							 + 'RETURN hyperlink;',
-				'params': {
-					'userId': userId
-				}
-			}
+				'statements': [{
+					'statement': 'MATCH (u:User { id: {userId} }), (u)-[:OWNS]->(hypernode:Hypernode),  '
+										 + 'OPTIONAL MATCH (hypernode)-[hyperlink:HYPERLINK]->(:Hypernode) '
+										 + 'RETURN hyperlink;',
+					'parameters': {
+						'userId': userId
+					}
+				}]
+			};
 		}
 
 		request.post(options, function( e, r ) {

@@ -1,3 +1,5 @@
+'use strict';
+
 // Utils 
 
 function noop() {
@@ -41,7 +43,7 @@ function chainEvalVm( vm, varName ) {
 
 
 function transformPointToEl( x, y, el ) {
-	var viewportEl = el.nearestViewportElement;
+	var viewportEl = el.nearestViewportElement || el;
 	var ctm = viewportEl.getScreenCTM().inverse();
 	var etm = el.getTransformToElement( viewportEl ).inverse();
 	etm.e = etm.f = 0;

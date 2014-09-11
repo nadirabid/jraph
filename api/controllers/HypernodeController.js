@@ -4,6 +4,7 @@ var uuid = require('node-uuid');
 var moment = require('moment');
 
 var mockUserId = 'c53303e1-0287-4e5a-8020-1026493c6e37';
+var dbUrl = 'http://localhost:7474/db/data/transaction/commit';
 
 var HypernodeController = {
 
@@ -24,17 +25,19 @@ var HypernodeController = {
 		};
 
 		var options = {
-			'url': 'http://localhost:7474/db/data/cypher',
+			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
 			'json': {
-				'query': 'MATCH (user:User { id: {userId} }) '
-							+	 'CREATE (hypernode:Hypernode {hypernode}), (user)-[owns:OWNS]->(hypernode) '
-							+  'RETURN hypernode;',
-				'params': {
-					'userId': userId,
-					'hypernode': hypernode
-				}
+				statements: [{
+					'statement': 'MATCH (user:User { id: {userId} }) '
+										 + 'CREATE (hypernode:Hypernode {hypernode}), (user)-[owns:OWNS]->(hypernode) '
+										 + 'RETURN hypernode;',
+					'parameters': {
+						'userId': userId,
+						'hypernode': hypernode
+					}
+				}]
 			}
 		};
 
@@ -52,27 +55,31 @@ var HypernodeController = {
   	}
 
   	var options = {
-  		'url': 'http://localhost:7474/db/data/cypher',
+  		'url': dbUrl,
   		'Content-Type': 'application/json',
   		'Accept': 'application/json; charset=UTF-8',
   	};
 
   	if ( _.isString( hypernodeId ) ) {
   		options.json = {
-  			'query': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
-  						 + 'RETURN hypernode;',
-				 'params': {
-				 		'hypernodeId': hypernodeId
-				 }
+  			'statements': [{
+  				'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
+  						 			 + 'RETURN hypernode;',
+		 			'parameters': {
+		 				'hypernodeId': hypernodeId
+		 			}
+  			}]
   		};
   	}
   	else {
   		options.json = {
-  			'query': 'MATCH (user:User { id: {userId} }), (user)-[:OWNS]->(hypernode:Hypernode) '
-  				     + 'RETURN hypernode;',
-		    'params': {
-		    	'userId': userId
-		    }
+  			'statements': [{
+  				'statement': 'MATCH (user:User { id: {userId} }), (user)-[:OWNS]->(hypernode:Hypernode) '
+  				     			 + 'RETURN hypernode;',
+     			'parameters': {
+     				'userId': userId
+     			}
+  			}]
   		};
   	}
 

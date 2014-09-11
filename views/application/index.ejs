@@ -1,7 +1,6 @@
 <main id="application">
 
 	<article class="info-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
-		
 		<nav class="enable-pointer-events">
 	 		<button class="btn btn-default node-create"
 	 						v-class="hidden:displayNodeCreate || displayNodeData" 
@@ -9,16 +8,13 @@
 	 	  	<span class="glyphicon glyphicon-plus"></span>
 	 		</button>
 		</nav>
-		
 		<section class="info-overlay"></section>
-
 		<aside class="info-panel default-pointer-events" v-component="x-node-create" v-if="displayNodeCreate" >	 		
  			<div v-if="data">
 	 			<ul class="list-unstyled">
 	 				<li v-repeat="data"><b>{{$key}}</b>:{{$value}}</li>
 	 			</ul>
  			</div>
-
 			<form class="form-inline">
 				<div class="form-group" v-class="has-error:keyHasError">
 					<input class="form-control" placeholder="Key" type="text" v-model="key">
@@ -30,7 +26,6 @@
 			</form>
 			<button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler">Create</button>
 		</aside>
-
 		<aside class="info-panel" v-component="x-node-data" v-if="displayNodeData">
 			<ul class="list-unstyled">
 				<li v-repeat="nodeDataList">
@@ -57,11 +52,10 @@
 			<button class="btn btn-default" v-class="hidden:addProperty" v-on="click:addProperty=true">Add</button>
 			<button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">Cancel</button>
 		</aside>
-
 	</article>
 
 	<article class="graph-container">
-		<svg class="disable-user-selection" viewBox="{{minX}} {{minY}} {{width}} {{height}}"
+		<svg class="disable-user-selection" v-attr="viewBox:viewBox"
 																				v-component="x-graph"
 																				v-xon="x-dragstart:panStart, x-drag:pan">
 			<g class="link"
@@ -73,7 +67,6 @@
 			<g class="node"
 				 v-attr="transform:'translate('+x+','+y+')'"
 				 v-component="x-node"
-				 v-ref="nodeVms"
 				 v-repeat="nodes">
 				<g v-xon="x-mouseover:mouseover, x-mouseout:mouseout">
 					<x-radial-menu v-if="menu">
@@ -92,6 +85,10 @@
 					Label {{$index}}
 				</text>
 			</g>
+			<x-radial-menu v-attr="transform:'translate('+cmX+','+cmY+')'" v-if="displayContextMenu">
+				<x-radial-button>create node</x-radial-button>
+				<x-radial-button>calculate force</x-radial-button>
+			</x-radial-menu>
 		</svg>
 	</article>
 

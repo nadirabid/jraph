@@ -1,5 +1,7 @@
 (function() {
 
+'use strict';
+
 var mousedownFlag = false;
 
 document.documentElement.addEventListener('mousedown', function() { mousedownFlag = true; }, true);

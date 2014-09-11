@@ -1,3 +1,5 @@
+'use strict';
+
 Vue.component('x-radial-button', {
 
 	template: '#template-radial-button',

@@ -1,3 +1,5 @@
+'use strict';
+
 /*
 	General global stuff
 */
@@ -54,15 +56,12 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 	// shift viewport to center node
 	this.click = function() {
-		var parent = ctx.$parent;
+		var xgraph = ctx.$parent;
 
-		var width = ctx.$parent.width;
-				height = ctx.$parent.height;
+		var minX = xgraph.minX,
+				minY = xgraph.minY;
 
-		var minX = ctx.$parent.minX,
-				minY = ctx.$parent.minY;
-
-		var p = transformPointToEl( width / 2, height / 2, ctx.$el );
+		var p = transformPointToEl( xgraph.width / 2, xgraph.height / 2, ctx.$el );
 
 		var dx = p.x - ctx.x,
 				dy = p.y - ctx.y;
@@ -77,8 +76,8 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 			var t = elapsed / animDuration;
 			var easedT = ease( t );
 			
-			ctx.$parent.minX = iX( easedT );
-			ctx.$parent.minY = iY( easedT );
+			xgraph.minX = iX( easedT );
+			xgraph.minY = iY( easedT );
 
 			return t > 1;
 		});
@@ -89,7 +88,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 
 		document.mouse.state = 'disabled';
 
-		ctx._forceResume();
+		ctx.forceResume();
 		
 		ctx.$dispatch( 'showNodeData', ctx.$data );
 
@@ -113,7 +112,7 @@ var InitialNodeState = extendClass(StateEventHandlers, function( ctx ) {
 		ctx.px = ctx.x = p.x;
 		ctx.py = ctx.y = p.y;
 
-		ctx._forceResume();
+		ctx.forceResume();
 	};
 
   this.dragstart = function( dx, dy, x, y, e ) {
@@ -160,11 +159,11 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 			ctx.$parent
 					.createLink( { source: source, target: ctx } )
 					.then(function() {
-						ctx._forceResume();
+						ctx.forceResume();
 					});
 		}
 		else {
-			ctx._forceResume();
+			ctx.forceResume();
 		}
 
 		document.mouse.state = 'initial';
@@ -198,12 +197,11 @@ Vue.component('x-node', {
 	methods: {
 
 		updateLable: function() {
-			var self = this;
-			var labelDistance = self.radius + self.labelDistance;
-			var bBox = self._textElement.getBBox();
+			var labelDistance = this.radius + this.labelDistance;
+			var bBox = this._textElement.getBBox();
 
-			var dx = self.x - ( self.$parent.width  / 2 ),
-					dy = self.y - ( self.$parent.height / 2 );
+			var dx = this.x - ( this.$parent.width  / 2 ),
+					dy = this.y - ( this.$parent.height / 2 );
 
 			var theta = Math.atan( dy / dx );
 			var ratio = E_MINUS_1 * ( 1 - Math.abs( ( theta % HALF_PI ) / HALF_PI ) );
@@ -219,19 +217,24 @@ Vue.component('x-node', {
 				tY *= -1;
 			}
 
-			self.labelX = tX + shiftX;
-			self.labelY = tY + shiftY;
+			this.labelX = tX + shiftX;
+			this.labelY = tY + shiftY;
 		},
 
 		setLinkSource: function( e ) {
+			e.stopPropagation();
+
 			this.$el.querySelector( '.node-circle' ).classList.add( 'node-linking-source' );
 
 			this.menu = false;
 			this.fixed = true;
+
 			document.mouse.state = 'linking';
 			document.mouse.data.source = this;
+		},
 
-			e.stopPropagation();
+		forceResume: function() {
+			this.$parent.forceResume();
 		},
 
 		getState: function() {
@@ -266,13 +269,23 @@ Vue.component('x-node', {
 		dragend: function() {
 			var state = this.getState();
 			return state.dragend.apply( state, arguments );
+		},
+
+		toJSON: function() {
+			var json = this.data;
+
+			json.clientDisplay = {
+				x: json.x,
+				y: json.y,
+				fixed: json.fixed
+			};
+
+			return json;
 		}
 
 	},
 
 	created: function() {
-		this._forceResume = this.$parent._forceResume;
-
 		this._states = {
 
 			initial: new InitialNodeState( this ),
@@ -282,16 +295,13 @@ Vue.component('x-node', {
 			disabled: new DisabledNodeState( this )
 
 		};
-	},
 
-	ready: function() {
-		var self = this;
-
-		//can we get by with not watching y
 		this.$watch( 'x', this.updateLable.bind( this ) );
 		this.$watch( 'labelDistance', this.updateLable.bind( this ) );
 		this.$watch( 'radius', this.updateLable.bind( this ) );
+	},
 
+	ready: function() {
 		this._textElement = this.$el.querySelector( '.node-label' );
 	},
 
@@ -371,18 +381,16 @@ Vue.component('x-link', {
 			target.px = target.x = this.target_x + v.x;
 			target.py = target.y = this.target_y + v.y;
 
-			this._forceResume();
+			this.forceResume();
+		},
+
+		forceResume: function() {
+			this.$parent.forceResume();
 		}
 
-	},
-
-	created: function() {
-		this._forceResume  = this.$parent._forceResume;
 	}
 
 });
-
-var currentEvent = null;
 
 Vue.component('x-graph', {
 
@@ -398,7 +406,21 @@ Vue.component('x-graph', {
 
 		minX: 0,
 
-		minY: 0
+		minY: 0,
+
+		displayContextMenu: false,
+
+		cmX: 0,
+
+		cmY: 0
+
+	},
+
+	computed: {
+
+		viewBox: function() {
+			return this.minX + ' ' + this.minY + ' ' + this.width + ' ' + this.height;
+		}
 
 	},
 
@@ -412,18 +434,18 @@ Vue.component('x-graph', {
 				return;
 
 			this._force.size( [ newWidth, newHeight ] );
-			this._forceResume();
+			this.forceResume();
 
 			this.width = newWidth;
 			this.height = newHeight;
 		},
 
-		panStart: function( dx, dy, x, y, e ) {
+		panStart: function() {
 			this.pMinX = this.minX;
 			this.pMinY = this.minY;
 		},
 
-		pan: function( dx, dy, x, y, e ) {
+		pan: function( dx, dy ) {
 			this.minX = this.pMinX - dx;
 			this.minY = this.pMinY - dy;
 		},
@@ -471,6 +493,43 @@ Vue.component('x-graph', {
 					});
 				}
 			});
+		},
+
+		forceStart: function() {
+			if ( !this._forceStart )
+				this._forceStart = _.throttle( this._force.start.bind( this._force ), 1200 );
+
+			this._forceStart();
+		},
+
+		forceResume: function() {
+			if ( !this._forceResume )
+				this._forceResume = _.throttle( this._force.resume.bind( this._force ), 1200 );
+
+			this._forceResume();
+		},
+
+		contextMenu: function( e ) {
+			var self = this;
+
+			if ( e.target != this.$el )
+				return;
+
+			e.preventDefault();
+
+			this.displayContextMenu = true;
+
+			var p = transformPointToEl( e.x, e.y, this.$el );
+
+			this.cmX = p.x;
+			this.cmY = p.y;
+
+			var closeContextMenu = function() {
+				self.displayContextMenu = false;
+				window.removeEventListener( 'click', closeContextMenu );
+			};
+
+			window.addEventListener( 'click', closeContextMenu );
 		}
 
 	},
@@ -481,16 +540,9 @@ Vue.component('x-graph', {
 		this._force = d3.layout.force()
 				.theta( .1 )
 				.friction( .5 )
-				.gravity( .6 )
-				.charge( -8000 )
-				.linkDistance( 50 )
-				.chargeDistance( 3000 );
-
-		var forceStart = this._force.start.bind( this._force );
-		this._forceStart = _.throttle( forceStart, 1200 );
-
-		var forceResume = this._force.resume.bind( this._force );
-		this._forceResume  = _.throttle( forceResume, 1200 );
+				.gravity( .5 )
+				.charge( -6000 )
+				.linkDistance( 50 );
 
 		this.$on('data', function( nodes, links ) {
 			self.nodes = nodes;
@@ -502,24 +554,28 @@ Vue.component('x-graph', {
 					.start();
 		});
 
-		this.$compiler.observer.on('change:nodes', function( value, mutation ) {
-			if ( mutation ) {
-				self._force.nodes( value );
-				self._forceStart();
-			}
+		var observer = this.$compiler.observer;
+
+		observer.on('change:nodes', function( value, mutation ) {
+			if ( !mutation )
+				return;
+
+			self._force.nodes( value );
+			self.forceStart();
 		});
 
-		this.$compiler.observer.on('change:links', function( value, mutation ) {
-			if ( mutation ) {
-				self._force.links( value );
-				self._forceStart();
-			}
-		});
-	},
+		observer.on('change:links', function( value, mutation ) {
+			if ( !mutation )
+				return;
 
-	ready: function() {
+			self._force.links( value );
+			self.forceStart();
+		});
+
 		this.resize();
+
 		window.addEventListener( 'resize', this.resize.bind( this ) );
+		window.addEventListener( 'contextmenu', this.contextMenu.bind( this ) );
 	}
 
 });
@@ -634,10 +690,12 @@ Vue.component('x-node-create', {
 				success: function( response ) {
 					var data = response.data[0][0].data;
 					data.data = JSON.parse( data.data );
+					
 					self.$parent.nodes.push( data );
 
+					self.key = "";
+					self.value = "";
 					self.data = null;
-					self.key = self.value = "";
 					self.keyHasError = self.valueHasError = false;
 					self.$parent.displayNodeCreate = false;
 				}
@@ -671,56 +729,48 @@ var app = new Vue({
 	methods: {
 
 		showNodeData: function( data ) {
-			var self = this;
-			self.displayNodeData = true;
-			self.nodeData = data;
+			this.nodeData = data;
+			this.displayNodeData = true;
 
-			self.$on( 'hideNodeData', function() {
+			this.$on( 'hideNodeData', function() {
 				Mousetrap.unbind( 'esc' );
 				this.displayNodeData = false;
 			});
 		},
 
 		fetchNodes: function() {
-			var self = this;
+			var nodesXhr = $.getJSON( '/hypernode' )
+					.then(function( response ) {
+						var nodes = _( response.results[0].data )
+								.map(function( datum ) {
+									var row = datum.row[0];
+									row.data = JSON.parse( row.data || null );
+									return row;
+								})
+								.value();
 
-			var nodesXhr = $.getJSON( '/hypernode' ).then(function( response ) {
-				var nodes = _( response.data )
-						.filter(function( datum ) {
-							return datum[0] != null;
-						})
-						.map(function( datum ) {
-							var data = datum[0].data;
-							data.data = JSON.parse( data.data );
-							return data;
-						})
-						.value();
-
-				return nodes;
-			});
+						return nodes;
+					});
 
 			return nodesXhr;
 		},
 
 		fetchLinks: function() {
-			var self = this;
+			var linksXhr = $.getJSON( '/hyperlink' )
+					.then(function( response ) {
+						var links = _( response.results[0].data )
+								.map(function( datum ) {
+									var row = datum.row[0];
+									row.data = JSON.parse( row.data || null );
+									return row;
+								})
+								.uniq(function( row ) {
+									return row.id;
+								})
+								.value();
 
-			var linksXhr = $.getJSON( '/hyperlink' ).then(function( response ) {
-				var links = _( response.data )
-						.filter(function( datum ) {
-							return datum[0] != null;
-						})
-						.uniq(function( datum ) {
-							return datum[0].data.id;
-						})
-						.map(function( datum ) {
-							var data = datum[0].data;
-							return data;
-						})
-						.value();
-
-				return links;
-			});
+						return links;
+					});
 
 			return linksXhr;
 		}	
@@ -732,19 +782,20 @@ var app = new Vue({
 		this._nodesPromise = this.fetchNodes();
 		this._linksPromise = this.fetchLinks();
 
-		$.when( this._nodesPromise, this._linksPromise ).done(function( nodes, links ) {
-			nodes.forEach(function( n ) {
-				links.forEach(function( l ) {
-					if ( l.sourceId == n.id ) l.source = n;
-					if ( l.targetId == n.id ) l.target = n;
+		$.when( this._nodesPromise, this._linksPromise )
+				.done(function( nodes, links ) {
+					nodes.forEach(function( n ) {
+						links.forEach(function( l ) {
+							if ( l.sourceId == n.id ) l.source = n;
+							if ( l.targetId == n.id ) l.target = n;
+						});
+					});
+
+					self.nodes = nodes;
+					self.links = links;
+
+					self.$broadcast( 'data', nodes, links );
 				});
-			});
-
-			self.nodes = nodes;
-			self.links = links;
-
-			self.$broadcast( 'data', nodes, links );
-		});
 
 		this.$on( 'showNodeData', this.showNodeData.bind( this ) );
 
@@ -754,7 +805,7 @@ var app = new Vue({
 
 			Mousetrap.bind('esc', function() {
 				self.displayNodeCreate = false;
-				Mousetrap.unbind('esc');
+				Mousetrap.unbind( 'esc' );
 			});
 		});
 	}
