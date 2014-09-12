@@ -96,21 +96,23 @@ var HypernodeController = {
 			res.json( { error: 'You must specify a valid hypernodeId douch. You specified: ' + hypernodeId } );
 		}
 
-  	var options = {
-  		'url': 'http://localhost:7474/db/data/cypher',
+		var options = {
+  		'url': dbUrl,
   		'Content-Type': 'application/json',
   		'Accept': 'application/json; charset=UTF-8',
   		'json': {
-  			'query': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
+  			'statements': [{
+  				'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
   						 + 'SET hypernode.data = {data}, hypernode.updatedAt = {updatedAt} '
   						 + 'RETURN hypernode;',
-				'params': {
-					'hypernodeId': hypernodeId,
-					'updatedAt': moment.utc().toISOString(),
-					'data': data
-				}
+					'parameters': {
+						'hypernodeId': hypernodeId,
+						'updatedAt': moment.utc().toISOString(),
+						'data': data
+					}
+  			}]
   		}
-  	};
+		};
 
   	request.post(options, function ( e, r ) {
   		res.json( r.body );
@@ -126,17 +128,19 @@ var HypernodeController = {
 		}
 
 		var options = {
-			'url': 'http://localhost:7474/db/data/cypher',
+			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
 			'json': {
-				'query': 'MATCH (hypernode:Hypernode { id: {hypernodeId} })-[rels]-(), '
-							 +      ' (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
-							 + 'DELETE owns, rels, hypernode;',
-			  'params': {
-			  	'userId': userId,
-			  	'hypernodeId': hypernodeId
-			  }
+				'statements': [{
+					'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} })-[rels]-() '
+								 		 + 'MATCH (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
+								 		 + 'DELETE owns, rels, hypernode;',
+				  'parameters': {
+				  	'userId': userId,
+				  	'hypernodeId': hypernodeId
+				  }
+				}]
 			}
 		};
 

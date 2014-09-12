@@ -476,14 +476,17 @@ Vue.component('x-graph', {
 			});
 		},
 
-		deleteNode: function( nodeId ) {
+		deleteNode: function( e, nodeId ) {
 			var self = this;
 			
+			e.stopPropagation();
+
 			$.ajax({
 				url: '/hypernode/?id=' + nodeId,
 				type: 'DELETE',
 				contentType: 'application/json; charset=utf-8',
 				success: function( response ) {
+					console.log( response );
 					self.links = self.links.filter(function( l ) {
 						return l.sourceId != nodeId && l.targetId != nodeId;
 					});
@@ -688,15 +691,16 @@ Vue.component('x-node-create', {
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify( { data: self.data } ),
 				success: function( response ) {
-					var data = response.data[0][0].data;
-					data.data = JSON.parse( data.data );
+					var row = response.results[0].data[0].row[0];
+					row.data = JSON.parse( row.data || null );
 					
-					self.$parent.nodes.push( data );
+					self.$parent.nodes.push( row );
 
 					self.key = "";
 					self.value = "";
 					self.data = null;
-					self.keyHasError = self.valueHasError = false;
+					self.keyHasError = false;
+					self.valueHasError = false;
 					self.$parent.displayNodeCreate = false;
 				}
 			});

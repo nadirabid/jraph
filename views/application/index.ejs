@@ -71,7 +71,7 @@
 				<g v-xon="x-mouseover:mouseover, x-mouseout:mouseout">
 					<x-radial-menu v-if="menu">
 						<x-radial-button v-on="click:setLinkSource">link</x-radial-button>
-						<x-radial-button v-on="click:deleteNode">delete</x-radial-button>
+						<x-radial-button v-on="click:deleteNode( $event, id )">delete</x-radial-button>
 					</x-radial-menu>
 					<circle class="node-circle"
 									v-attr="r:radius"
@@ -98,9 +98,9 @@
 	<g class="node-menu">
 		<path v-attr="d:backgroundPath"></path>
 		<path class="node-menu-highlight" v-attr="d:highlightPath"></path>
-		<path id="{{id}}" opacity="0" fill="none" v-attr="d:textPath"></path>
+		<path id="{{textPathId}}" opacity="0" fill="none" v-attr="d:textPath"></path>
 		<text class="node-menu-item-label" text-anchor="middle" v-attr="x:x, dy:dy">
-			<textPath xlink:href="#{{id}}">
+			<textPath xlink:href="#{{textPathId}}">
 				<content></content>
 			</textPath>
 		</text>

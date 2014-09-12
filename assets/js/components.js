@@ -138,7 +138,8 @@ Vue.component('x-radial-button', {
 	},
 
 	created: function() {
-		this.id = _.uniqueId( 'radial_button_' );
+		//use id to identify the textpath for label
+		this.textPathId = _.uniqueId( 'radial_button_' );
 	},
 
 	ready: function() {

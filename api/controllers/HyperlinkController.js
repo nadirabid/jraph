@@ -27,18 +27,20 @@ var HyperlinkController = {
 		}
 
 		var options = {
-			'url': 'http://localhost:7474/db/data/cypher',
+			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
 			'json': {
-				'query': 'MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} }) '
-							 + 'CREATE UNIQUE (source)-[hyperlink:HYPERLINK {hyperlink}]->(target) '
-							 + 'RETURN hyperlink;',
-				'params': {
-					'hyperlink': hyperlink,
-					'sourceId': sourceId,
-					'targetId': targetId
-				}
+				statements: [{
+					statement: 'MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} }) '
+							 		 + 'CREATE UNIQUE (source)-[hyperlink:HYPERLINK {hyperlink}]->(target) '
+							 		 + 'RETURN hyperlink;',
+					parameters: {
+						hyperlink: hyperlink,
+						sourceId: sourceId,
+						targetId: targetId
+					}
+				}]
 			}
 		};
 
@@ -59,11 +61,11 @@ var HyperlinkController = {
 
 		if ( _.isString( hyperlinkId ) ) {
 			options.json = {
-				'statements': [{
-					'statement': 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id:  {hyperlinkId} }]->(:Hypernode) '
-							 			 + 'RETURN hyperlink;',
-		 			'parameters': {
-	 					'hyperlinkId': hyperlinkId
+				statements: [{
+					statement: 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id:  {hyperlinkId} }]->(:Hypernode) '
+							 		 + 'RETURN hyperlink;',
+		 			parameters: {
+	 					hyperlinkId: hyperlinkId
 		 			}
 				}]
 			}
@@ -71,12 +73,12 @@ var HyperlinkController = {
 		else {
 			//TODO: optimize query so we dont return tons of duplicates
 			options.json = {
-				'statements': [{
-					'statement': 'MATCH (u:User { id: {userId} }), (u)-[:OWNS]->(hypernode:Hypernode),  '
-										 + 'OPTIONAL MATCH (hypernode)-[hyperlink:HYPERLINK]->(:Hypernode) '
-										 + 'RETURN hyperlink;',
-					'parameters': {
-						'userId': userId
+				statements: [{
+					statement: 'MATCH (u:User { id: {userId} }), (u)-[:OWNS]->(hypernode:Hypernode),  '
+									 + 'OPTIONAL MATCH (hypernode)-[hyperlink:HYPERLINK]->(:Hypernode) '
+									 + 'RETURN hyperlink;',
+					parameters: {
+						userId: userId
 					}
 				}]
 			};
@@ -96,18 +98,20 @@ var HyperlinkController = {
 		}
 
   	var options = {
-  		'url': 'http://localhost:7474/db/data/cypher',
+  		'url': dbUrl,
   		'Content-Type': 'application/json',
   		'Accept': 'application/json; charset=UTF-8',
   		'json': {
-  			'query': 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id: {hyperlinkId} }]->(:Hypernode) '
-  						 + 'SET hyperlink.data = {data}, hyperlink.updatedAt = {updatedAt} '
-  						 + 'RETURN hyperlink;',
-				'params': {
-					'hyperlinkId': hyperlinkId,
-					'updatedAt': moment.utc().toISOString(),
-					'data': data
-				}
+  			statements: [{
+	  			statement: 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id: {hyperlinkId} }]->(:Hypernode) '
+	  						 	 + 'SET hyperlink.data = {data}, hyperlink.updatedAt = {updatedAt} '
+	  						 	 + 'RETURN hyperlink;',
+					parameters: {
+						hyperlinkId: hyperlinkId,
+						updatedAt: moment.utc().toISOString(),
+						data: data
+					}
+				}]
   		}
   	};
 
@@ -124,15 +128,17 @@ var HyperlinkController = {
 		}
 
 		var options = {
-			'url': 'http://localhost:7474/db/data/cypher',
+			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
 			'json': {
-				'query': 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id: {hyperlinkId} }]-(:Hypernode) '
-							 + 'DELETE hyperlink;',
-				'params': {
-			 		'hyperlinkId': hyperlinkId
-				}
+				statements: [{
+					statement: 'MATCH (:Hypernode)-[hyperlink:HYPERLINK { id: {hyperlinkId} }]-(:Hypernode) '
+								   + 'DELETE hyperlink;',
+					parameters: {
+				 		hyperlinkId: hyperlinkId
+					}
+				}]
 			}
 		};
 
