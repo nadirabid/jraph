@@ -27,18 +27,19 @@ var HypernodeController = {
 		var options = {
 			'url': dbUrl,
 			'Content-Type': 'application/json',
-			'Accept': 'application/json; charset=UTF-8',
-			'json': {
-				statements: [{
-					'statement': 'MATCH (user:User { id: {userId} }) '
-										 + 'CREATE (hypernode:Hypernode {hypernode}), (user)-[owns:OWNS]->(hypernode) '
-										 + 'RETURN hypernode;',
-					'parameters': {
-						'userId': userId,
-						'hypernode': hypernode
-					}
-				}]
-			}
+			'Accept': 'application/json; charset=UTF-8'
+		};
+
+		options.json = {
+			statements: [{
+				'statement': 'MATCH (user:User { id: {userId} }) '
+									 + 'CREATE (hypernode:Hypernode {hypernode}), (user)-[owns:OWNS]->(hypernode) '
+									 + 'RETURN hypernode;',
+				'parameters': {
+					'userId': userId,
+					'hypernode': hypernode
+				}
+			}]
 		};
 
 		request.post(options, function( e, r ) {
@@ -89,30 +90,50 @@ var HypernodeController = {
   },
 
 	update: function( req, res ) {
+		var userId = mockUserId || req.user.id;
 		var hypernodeId = req.param( 'id' );
 		var data = JSON.stringify( req.body.data );
 
-		if ( !_.isString( hypernodeId ) ) {
-			res.json( { error: 'You must specify a valid hypernodeId douch. You specified: ' + hypernodeId } );
-		}
-
-		var options = {
+  	var options = {
   		'url': dbUrl,
   		'Content-Type': 'application/json',
   		'Accept': 'application/json; charset=UTF-8',
-  		'json': {
-  			'statements': [{
-  				'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
-  						 + 'SET hypernode.data = {data}, hypernode.updatedAt = {updatedAt} '
-  						 + 'RETURN hypernode;',
+  	};
+
+  	if ( _.isString( hypernodeId ) ) {
+			options.json = {
+				'statements': [{
+					'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
+										 + 'SET hypernode.data = {data}, hypernode.updatedAt = {updatedAt} '
+										 + 'RETURN hypernode;',
 					'parameters': {
 						'hypernodeId': hypernodeId,
 						'updatedAt': moment.utc().toISOString(),
 						'data': data
 					}
-  			}]
-  		}
-		};
+				}]
+			};
+		}
+		else {
+			var updatedAt = moment.utc.toISOString();
+
+			var statements = _.map(data, function( datum ) {
+				var statement = {
+					statement: 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
+									 + 'SET hypernode.data = {data}, hypernode.updatedAt = {updatedAt} '
+									 + 'RETURN hypernode;',
+				  parameters: {
+				  	hypernodeId: datum.id,
+				  	updatedAt: updatedAt,
+				  	data: datum.data
+				  }
+				};
+
+				return statement;
+			});
+
+			options.json = { statments: statements };
+		}
 
   	request.post(options, function ( e, r ) {
   		res.json( r.body );
@@ -131,17 +152,18 @@ var HypernodeController = {
 			'url': dbUrl,
 			'Content-Type': 'application/json',
 			'Accept': 'application/json; charset=UTF-8',
-			'json': {
-				'statements': [{
-					'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} })-[rels]-() '
-								 		 + 'MATCH (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
-								 		 + 'DELETE owns, rels, hypernode;',
-				  'parameters': {
-				  	'userId': userId,
-				  	'hypernodeId': hypernodeId
-				  }
-				}]
-			}
+		};
+
+		options.json = {
+			'statements': [{
+				'statement': 'MATCH (hypernode:Hypernode { id: {hypernodeId} })-[rels]-() '
+							 		 + 'MATCH (user:User { id: {userId} })-[owns:OWNS]->(hypernode) '
+							 		 + 'DELETE owns, rels, hypernode;',
+			  'parameters': {
+			  	'userId': userId,
+			  	'hypernodeId': hypernodeId
+			  }
+			}]
 		};
 
 		request.post(options, function( e, r ) {

@@ -11,6 +11,9 @@ var MOUSE_LEFT_BUTTON = 0;
 
 document.mouse = { state: 'initial', data: { } };
 
+var nodesAry = [];
+var linksAry = [];
+
 /*
 	Graph view
 */
@@ -269,18 +272,6 @@ Vue.component('x-node', {
 		dragend: function() {
 			var state = this.getState();
 			return state.dragend.apply( state, arguments );
-		},
-
-		toJSON: function() {
-			var json = this.data;
-
-			json.clientDisplay = {
-				x: json.x,
-				y: json.y,
-				fixed: json.fixed
-			};
-
-			return json;
 		}
 
 	},
@@ -299,6 +290,8 @@ Vue.component('x-node', {
 		this.$watch( 'x', this.updateLable.bind( this ) );
 		this.$watch( 'labelDistance', this.updateLable.bind( this ) );
 		this.$watch( 'radius', this.updateLable.bind( this ) );
+
+		
 	},
 
 	ready: function() {
@@ -486,7 +479,6 @@ Vue.component('x-graph', {
 				type: 'DELETE',
 				contentType: 'application/json; charset=utf-8',
 				success: function( response ) {
-					console.log( response );
 					self.links = self.links.filter(function( l ) {
 						return l.sourceId != nodeId && l.targetId != nodeId;
 					});
@@ -631,7 +623,7 @@ Vue.component('x-node-data', {
 			self.addProperty = false;
 
 			$.ajax({
-				url: '/hypernode/'+self.nodeData.id,
+				url: '/hypernode/' + self.nodeData.id,
 				type: 'PUT',
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify( { data: self.nodeData.data } ),
@@ -711,6 +703,26 @@ Vue.component('x-node-create', {
 });
 
 /*
+	Models
+*/
+
+function Node( data ) {
+	_.assign( this, data );
+}
+
+Node.prototype.toJSON = function() {
+	var json = _.clone( this.data );
+
+	json.clientDisplay = {
+		x: this.x,
+		y: this.y,
+		fixed: this.fixed
+	};
+
+	return json;	
+};
+
+/*
 	Main application code
 */
 
@@ -749,11 +761,11 @@ var app = new Vue({
 								.map(function( datum ) {
 									var row = datum.row[0];
 									row.data = JSON.parse( row.data || null );
-									return row;
+									return new Node( row );
 								})
 								.value();
 
-						return nodes;
+						return nodesAry = nodes;
 					});
 
 			return nodesXhr;
@@ -773,11 +785,19 @@ var app = new Vue({
 								})
 								.value();
 
-						return links;
+						return linksAry = links;
 					});
 
 			return linksXhr;
-		}	
+		},
+
+		saveNodes: function() {
+			var nodesJson = _.map(nodesAry, function( node ) {
+				return Node.prototype.toJSON.call( node );
+			});
+
+			console.log( nodesJson )
+		}
 
 	},
 
@@ -799,6 +819,8 @@ var app = new Vue({
 					self.links = links;
 
 					self.$broadcast( 'data', nodes, links );
+
+					self.saveNodes();
 				});
 
 		this.$on( 'showNodeData', this.showNodeData.bind( this ) );
