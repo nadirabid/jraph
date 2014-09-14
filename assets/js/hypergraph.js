@@ -289,9 +289,7 @@ Vue.component('x-node', {
 
 		this.$watch( 'x', this.updateLable.bind( this ) );
 		this.$watch( 'labelDistance', this.updateLable.bind( this ) );
-		this.$watch( 'radius', this.updateLable.bind( this ) );
-
-		
+		this.$watch( 'radius', this.updateLable.bind( this ) );		
 	},
 
 	ready: function() {
@@ -711,15 +709,10 @@ function Node( data ) {
 }
 
 Node.prototype.toJSON = function() {
-	var json = _.clone( this.data );
+	var json = { id: this.id };
+	json.data = _.clone( this.data );
 
-	json.clientDisplay = {
-		x: this.x,
-		y: this.y,
-		fixed: this.fixed
-	};
-
-	return json;	
+	return json;
 };
 
 /*
@@ -796,7 +789,15 @@ var app = new Vue({
 				return Node.prototype.toJSON.call( node );
 			});
 
-			console.log( nodesJson )
+			$.ajax({
+				url: '/hypernode/',
+				type: 'PUT',
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify( { data: nodesJson } ),
+				success: function( response ) {
+					console.log( 'response', response );
+				}
+			});
 		}
 
 	},
@@ -819,8 +820,6 @@ var app = new Vue({
 					self.links = links;
 
 					self.$broadcast( 'data', nodes, links );
-
-					self.saveNodes();
 				});
 
 		this.$on( 'showNodeData', this.showNodeData.bind( this ) );

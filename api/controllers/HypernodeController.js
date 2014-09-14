@@ -92,7 +92,6 @@ var HypernodeController = {
 	update: function( req, res ) {
 		var userId = mockUserId || req.user.id;
 		var hypernodeId = req.param( 'id' );
-		var data = JSON.stringify( req.body.data );
 
   	var options = {
   		'url': dbUrl,
@@ -109,15 +108,15 @@ var HypernodeController = {
 					'parameters': {
 						'hypernodeId': hypernodeId,
 						'updatedAt': moment.utc().toISOString(),
-						'data': data
+						'data': JSON.stringify( req.body.data )
 					}
 				}]
 			};
 		}
 		else {
-			var updatedAt = moment.utc.toISOString();
+			var updatedAt = moment.utc().toISOString();
 
-			var statements = _.map(data, function( datum ) {
+			var statements = _.map(req.body.data, function( datum ) {
 				var statement = {
 					statement: 'MATCH (hypernode:Hypernode { id: {hypernodeId} }) '
 									 + 'SET hypernode.data = {data}, hypernode.updatedAt = {updatedAt} '
@@ -125,16 +124,16 @@ var HypernodeController = {
 				  parameters: {
 				  	hypernodeId: datum.id,
 				  	updatedAt: updatedAt,
-				  	data: datum.data
+				  	data: JSON.stringify( datum.data )
 				  }
 				};
 
 				return statement;
 			});
 
-			options.json = { statments: statements };
+			options.json = { statements: statements };
 		}
-
+		
   	request.post(options, function ( e, r ) {
   		res.json( r.body );
   	});
