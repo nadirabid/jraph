@@ -278,13 +278,9 @@ Vue.component('x-node', {
 
 	created: function() {
 		this._states = {
-
 			initial: new InitialNodeState( this ),
-
 			linking: new LinkingNodeState( this ),
-
 			disabled: new DisabledNodeState( this )
-
 		};
 
 		this.$watch( 'x', this.updateLable.bind( this ) );
@@ -399,11 +395,13 @@ Vue.component('x-graph', {
 
 		minY: 0,
 
-		displayContextMenu: false,
-
 		cmX: 0,
 
-		cmY: 0
+		cmY: 0,
+
+		displayContextMenu: false,
+
+		enableForceLayout: true
 
 	},
 
@@ -416,6 +414,17 @@ Vue.component('x-graph', {
 	},
 
 	methods: {
+
+		toggleForce: function() {
+			if ( this.enableForceLayout ) {
+				this.enableForceLayout = false;
+				this._force.stop();
+			}
+			else {
+				this.enableForceLayout = true;
+				this._force.resume();
+			}
+		},
 
 		resize: function() {
 			var newWidth = $( this.$el ).width(),
@@ -489,6 +498,9 @@ Vue.component('x-graph', {
 		},
 
 		forceStart: function() {
+			if ( !this.enableForceLayout )
+				return;
+
 			if ( !this._forceStart )
 				this._forceStart = _.throttle( this._force.start.bind( this._force ), 1200 );
 
@@ -496,6 +508,9 @@ Vue.component('x-graph', {
 		},
 
 		forceResume: function() {
+			if ( !this.enableForceLayout )
+				return;
+
 			if ( !this._forceResume )
 				this._forceResume = _.throttle( this._force.resume.bind( this._force ), 1200 );
 
@@ -536,6 +551,10 @@ Vue.component('x-graph', {
 				.gravity( .5 )
 				.charge( -6000 )
 				.linkDistance( 50 );
+
+		this._force.on('end', function() {
+			self.$parent.saveNodes();
+		});
 
 		this.$on('data', function( nodes, links ) {
 			self.nodes = nodes;
@@ -693,6 +712,7 @@ Vue.component('x-node-create', {
 					self.valueHasError = false;
 					self.$parent.displayNodeCreate = false;
 				}
+
 			});
 		}
 
@@ -711,6 +731,11 @@ function Node( data ) {
 Node.prototype.toJSON = function() {
 	var json = { id: this.id };
 	json.data = _.clone( this.data );
+	json.data.clientDisplay = {
+		x: this.x,
+		y: this.y,
+		fixed: this.fixed
+	};
 
 	return json;
 };
@@ -754,6 +779,12 @@ var app = new Vue({
 								.map(function( datum ) {
 									var row = datum.row[0];
 									row.data = JSON.parse( row.data || null );
+
+									var clientDisplay = row.data.clientDisplay;
+									row.x = clientDisplay ? ( clientDisplay.x || 0 ) : 0;
+									row.y = clientDisplay ? ( clientDisplay.y || 0 ) : 0;
+									row.fixed = clientDisplay ? ( clientDisplay.fixed || false ) : false;
+
 									return new Node( row );
 								})
 								.value();
