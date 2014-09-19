@@ -1,12 +1,9 @@
 <main id="application">
 
 	<article class="info-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
-		<nav class="enable-pointer-events">
-	 		<button class="btn btn-default node-create"
-	 						v-class="hidden:displayNodeCreate || displayNodeData" 
-	 						v-on="click:displayNodeCreate=true">
-	 	  	<span class="glyphicon glyphicon-plus"></span>
-	 		</button>
+		<nav class="enable-pointer-events" v-class="hidden:(displayNodeCreate || displayNodeData)">
+	 		<button class="btn btn-default node-create" v-on="click:displayNodeCreate=true">Create Node</button>
+	 		<button class="btn btn-default" v-on="click:toggleForce">Toggle Force</button>
 		</nav>
 		<section class="info-overlay"></section>
 		<aside class="info-panel default-pointer-events" v-component="x-node-create" v-if="displayNodeCreate" >	 		
@@ -57,7 +54,8 @@
 	<article class="graph-container">
 		<svg class="disable-user-selection" v-attr="viewBox:viewBox"
 																				v-component="x-graph"
-																				v-xon="x-dragstart:panStart, x-drag:pan">
+																				v-xon="x-dragstart:panStart, x-drag:pan"
+																				v-ref="graph">
 			<g class="link"
 				 v-xon="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
 				 v-component="x-link"

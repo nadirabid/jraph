@@ -53,7 +53,6 @@ article.graph-container {
   -webkit-order: 1;
   display: flex;
   display: -webkit-flex;
-
   background-color: #34495E;
 }
 

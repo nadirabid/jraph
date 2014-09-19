@@ -156,11 +156,11 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 
 	//set link target
 	this.click = function() {
-		var source = document.mouse.data.source;
+		var sourceCtx = document.mouse.data.source;
 
-		if ( source.id != ctx.id ) {
+		if ( sourceCtx.id != ctx.id ) {
 			ctx.$parent
-					.createLink( { source: source, target: ctx } )
+					.createLink( { source: sourceCtx, target: ctx } )
 					.then(function() {
 						ctx.forceResume();
 					});
@@ -169,9 +169,13 @@ var LinkingNodeState = extendClass(InitialNodeState, function( ctx ) {
 			ctx.forceResume();
 		}
 
+		ctx.$el.querySelector( '.node-circle' ).classList.remove( 'node-linking-target', 'hover' );
+		sourceCtx.$el.querySelector( '.node-circle' ).classList.remove( 'node-linking-source' );
+
+		sourceCtx.fixed = false;
+
 		document.mouse.state = 'initial';
 		document.mouse.data.source = null;
-		ctx.$el.querySelector( '.node-circle' ).classList.remove( 'node-linking-source' );
 	};
 });
 
@@ -464,7 +468,7 @@ Vue.component('x-graph', {
 				contentType: 'application/json; charset=utf-8',
 				data: JSON.stringify( linkJson ),
 				success: function( response ) {
-					var createdLink = response.data[0][0].data;
+					var createdLink = response.results[0].data[0].row[0];
 
 					self.nodes.forEach(function( n ) {
 						if ( n.id == createdLink.sourceId ) createdLink.source = n;
@@ -762,6 +766,10 @@ var app = new Vue({
 
 	methods: {
 
+		toggleForce: function () {
+			this.$.graph.toggleForce();
+		},
+
 		showNodeData: function( data ) {
 			this.nodeData = data;
 			this.displayNodeData = true;
@@ -826,7 +834,7 @@ var app = new Vue({
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify( { data: nodesJson } ),
 				success: function( response ) {
-					console.log( 'response', response );
+					//console.log( 'response', response );
 				}
 			});
 		}
