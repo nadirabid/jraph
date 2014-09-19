@@ -34,15 +34,13 @@ Vue.directive('xon', {
 		};
 
 		this._dragEnd = function( e ) {
-			if ( !mouseoverFlag ) {
-				dragFlag = false;
-
-				e.mousedownFlag = mousedownFlag;
-				ctx.$emit( 'x-mouseout', e );
-			}
-
 			e.mousedownFlag = mousedownFlag;
 			ctx.$emit( 'x-dragend', e );
+
+			if ( !mouseoverFlag ) {
+				dragFlag = false;
+				ctx.$emit( 'x-mouseout', e );
+			}
 		};
 
 		this._mouseover = function( e ) {
