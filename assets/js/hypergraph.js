@@ -549,14 +549,14 @@ Vue.component('x-graph', {
 	created: function() {
 		var self = this;
 
-		this._force = d3.layout.force()
+		var force = this._force = d3.layout.force()
 				.theta( .1 )
 				.friction( .5 )
 				.gravity( .5 )
 				.charge( -6000 )
 				.linkDistance( 50 );
 
-		this._force.on('end', function() {
+		force.on('end', function() {
 			self.$parent.saveNodes();
 		});
 
@@ -564,7 +564,7 @@ Vue.component('x-graph', {
 			self.nodes = nodes;
 			self.links = links;
 
-			self._force
+			force
 					.nodes( self.nodes )
 					.links( self.links )
 					.start();
@@ -576,7 +576,7 @@ Vue.component('x-graph', {
 			if ( !mutation )
 				return;
 
-			self._force.nodes( value );
+			force.nodes( value );
 			self.forceStart();
 		});
 
@@ -584,7 +584,7 @@ Vue.component('x-graph', {
 			if ( !mutation )
 				return;
 
-			self._force.links( value );
+			force.links( value );
 			self.forceStart();
 		});
 
@@ -716,7 +716,6 @@ Vue.component('x-node-create', {
 					self.valueHasError = false;
 					self.$parent.displayNodeCreate = false;
 				}
-
 			});
 		}
 

@@ -36,6 +36,8 @@ Vue.directive('xon', {
 		this._dragEnd = function( e ) {
 			if ( !mouseoverFlag ) {
 				dragFlag = false;
+
+				e.mousedownFlag = mousedownFlag;
 				ctx.$emit( 'x-mouseout', e );
 			}
 
@@ -96,6 +98,9 @@ Vue.directive('xon', {
 
 		if ( this.currHandler )
 			ctx.$off( this.arg, this.currHandler )
+
+		if ( typeof handler !== 'function' )
+			throw 'Directive "xon" requires a valid function';
 
 		this.currHandler = handler.bind( ctx );
 		ctx.$on( this.arg, this.currHandler );
