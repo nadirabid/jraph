@@ -92,10 +92,6 @@ article.info-container {
   -webkit-flex: 16 1 auto;
 }
 
-.btn.node-create {
-  float:right;
-}
-
 .node-data
 {
   pointer-events:auto;
