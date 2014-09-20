@@ -21,26 +21,7 @@ var cssFilesToInject = [
 
 // Client-side javascript files to inject in order
 // (uses Grunt-style wildcard/glob/splat expressions)
-var jsFilesToInject = [
-
-  // Dependencies like sails.io.js, jQuery, or Angular
-  // are brought in here
-  'js/dependencies/jquery-2.1.1.js',
-  'js/dependencies/snap.svg.js',
-  'js/dependencies/d3.js',
-  'js/dependencies/lodash.js',
-  'js/dependencies/vue.js',
-  'js/dependencies/mousetrap.js',
-  //'js/dependencies/**/*.js',
-
-  // All of the rest of your client-side js files
-  // will be injected here in no particular order.
-  'js/util.js',
-  'js/directives.js',
-  'js/components.js',
-  'js/hypergraph.js'
-  //'js/**/*.js'
-];
+var jsFilesToInject = [ ];
 
 
 // Client-side HTML templates are injected using the sources below

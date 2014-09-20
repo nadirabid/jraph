@@ -1,16 +1,5 @@
 'use strict';
 
-/*
-	General global stuff
-*/
-
-var HALF_PI = Math.PI / 2;
-var TWO_PI = Math.PI * 2;
-var E_MINUS_1 = Math.E - 1;
-var MOUSE_LEFT_BUTTON = 0;
-
-document.mouse = { state: 'initial', data: { } };
-
 var nodesAry = [];
 var linksAry = [];
 
@@ -727,20 +716,65 @@ Vue.component('x-node-create', {
 	Models
 */
 
-function Node( data ) {
-	_.assign( this, data );
-}
+var Link = {};
 
-Node.prototype.toJSON = function() {
-	var json = { id: this.id };
-	json.data = _.clone( this.data );
+Link.parseJSON = function( datum ) {
+	var row = datum.row[0];
+	row.data = JSON.parse( row.data || null );
+
+	return row;
+};
+
+Link.fetchAll = function() {
+	var xhr = $.getJSON( '/hyperlink' )
+			.then(function( response ) {
+				var links = _( response.results[0].data )
+						.uniq(function( datum ) { return datum.row[0].id; })
+						.map( Link.parseJSON )
+						.value();
+
+				return linksAry = links;
+			});
+
+	return xhr;
+};
+
+var Node = {};
+
+Node.parseJSON = function( datum ) {
+	var row = datum.row[0];
+	row.data = JSON.parse( row.data || null );
+
+	var clientDisplay = row.data.clientDisplay;
+	row.x = clientDisplay ? ( clientDisplay.x || 0 ) : 0;
+	row.y = clientDisplay ? ( clientDisplay.y || 0 ) : 0;
+	row.fixed = clientDisplay ? ( clientDisplay.fixed || false ) : false;
+
+	return row;
+};
+
+Node.toJSON = function( node ) {
+	var json = { id: node.id };
+	json.data = _.clone( node.data );
 	json.data.clientDisplay = {
-		x: this.x,
-		y: this.y,
-		fixed: this.fixed
+		x: node.x,
+		y: node.y,
+		fixed: node.fixed
 	};
 
 	return json;
+};
+
+Node.fetchAll = function() {
+	var xhr = $.getJSON( '/hypernode' )
+			.then(function( response ) {
+				if ( response.errors.length )
+					throw 'Unable to fetchNodes: ' + JSON.stringify( response.errors );
+
+				return nodesAry = _.map( response.results[0].data, Node.parseJSON );
+			});
+
+	return xhr;
 };
 
 /*
@@ -779,52 +813,9 @@ var app = new Vue({
 			});
 		},
 
-		fetchNodes: function() {
-			var nodesXhr = $.getJSON( '/hypernode' )
-					.then(function( response ) {
-						var nodes = _( response.results[0].data )
-								.map(function( datum ) {
-									var row = datum.row[0];
-									row.data = JSON.parse( row.data || null );
-
-									var clientDisplay = row.data.clientDisplay;
-									row.x = clientDisplay ? ( clientDisplay.x || 0 ) : 0;
-									row.y = clientDisplay ? ( clientDisplay.y || 0 ) : 0;
-									row.fixed = clientDisplay ? ( clientDisplay.fixed || false ) : false;
-
-									return new Node( row );
-								})
-								.value();
-
-						return nodesAry = nodes;
-					});
-
-			return nodesXhr;
-		},
-
-		fetchLinks: function() {
-			var linksXhr = $.getJSON( '/hyperlink' )
-					.then(function( response ) {
-						var links = _( response.results[0].data )
-								.map(function( datum ) {
-									var row = datum.row[0];
-									row.data = JSON.parse( row.data || null );
-									return row;
-								})
-								.uniq(function( row ) {
-									return row.id;
-								})
-								.value();
-
-						return linksAry = links;
-					});
-
-			return linksXhr;
-		},
-
 		saveNodes: function() {
 			var nodesJson = _.map(nodesAry, function( node ) {
-				return Node.prototype.toJSON.call( node );
+				return Node.toJSON( node );
 			});
 
 			$.ajax({
@@ -842,10 +833,8 @@ var app = new Vue({
 
 	created: function() {
 		var self = this;
-		this._nodesPromise = this.fetchNodes();
-		this._linksPromise = this.fetchLinks();
 
-		$.when( this._nodesPromise, this._linksPromise )
+		$.when( Node.fetchAll(), Link.fetchAll() )
 				.done(function( nodes, links ) {
 					nodes.forEach(function( n ) {
 						links.forEach(function( l ) {
