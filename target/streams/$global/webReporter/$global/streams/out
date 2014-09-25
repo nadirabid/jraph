@@ -1,4 +1,0 @@
-[error] /Users/nadirmuzaffar/projects/graphapp2/app/assets/js/hypergraph.js:778: Did you mean to return a conditional instead of an assignment?
-[error]         return nodesAry = _.map(response.results[0].data, Node.parseJSON);
-[error]                          ^
-[error] one error found
