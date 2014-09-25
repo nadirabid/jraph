@@ -79,7 +79,7 @@ Vue.directive('xon', {
 	bind: function() {
 		var ctx = this.binding.isExp	? this.vm : this.binding.compiler.vm;
 
-		this.$$el = Snap( this.el );
+		this.$$el = new Snap( this.el );
 		this.context = ctx;
 
 		if ( ctx._xon ) {
