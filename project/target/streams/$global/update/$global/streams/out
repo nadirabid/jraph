@@ -1,11 +1,11 @@
-[info] Updating {file:/Users/nadirmuzaffar/projects/graphapp2/project/}graphapp2-build...
-[debug] :: resolving dependencies :: default#graphapp2-build;0.1-SNAPSHOT
+[info] Updating {file:/Users/nadirmuzaffar/projects/graphapp/project/}graphapp-build...
+[debug] :: resolving dependencies :: default#graphapp-build;0.1-SNAPSHOT
 [debug] 	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool]
 [debug] 	validate = true
 [debug] 	refresh = false
 [debug] resolving dependencies for configuration 'compile'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-echo;0.1.5 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-echo;0.1.5 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-echo;0.1.5
@@ -20,7 +20,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [info] Resolving com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0
@@ -71,14 +71,14 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
 [info] Resolving com.github.mpeltonen#sbt-idea;1.5.2 ...
 [debug] sbt-chain: Checking cache for: dependency: com.github.mpeltonen#sbt-idea;1.5.2 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.github.mpeltonen#sbt-idea;1.5.2
 [debug] 	typesafe-ivy-releases: revision in cache: com.github.mpeltonen#sbt-idea;1.5.2
 [debug] 	found com.github.mpeltonen#sbt-idea;1.5.2 in sbt-chain
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [info] Resolving commons-io#commons-io;2.0.1 ...
 [debug] sbt-chain: Checking cache for: dependency: commons-io#commons-io;2.0.1 {compile=[compile(*), master(*)], runtime=[runtime(*)]}
@@ -90,8 +90,8 @@
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [info] Resolving com.typesafe.play#sbt-plugin;2.3.4 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.play#sbt-plugin;2.3.4 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.play#sbt-plugin;2.3.4
@@ -2374,7 +2374,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-coffeescript;1.0.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-coffeescript;1.0.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-coffeescript;1.0.0
@@ -2400,7 +2400,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-less;1.0.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-less;1.0.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-less;1.0.0
@@ -2441,7 +2441,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-jshint;1.0.2 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-jshint;1.0.2 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-jshint;1.0.2
@@ -2480,7 +2480,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-rjs;1.0.1 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-rjs;1.0.1 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-rjs;1.0.1
@@ -2497,7 +2497,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-digest;1.0.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-digest;1.0.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-digest;1.0.0
@@ -2505,7 +2505,7 @@
 [debug] 	found com.typesafe.sbt#sbt-digest;1.0.0 in sbt-chain
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [info] Resolving com.typesafe.sbt#sbt-mocha;1.0.0 ...
 [debug] sbt-chain: Checking cache for: dependency: com.typesafe.sbt#sbt-mocha;1.0.0 {compile=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: com.typesafe.sbt#sbt-mocha;1.0.0
@@ -2545,14 +2545,14 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'runtime'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0->com.typesafe.sbteclipse#sbteclipse-core;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->runtime]
@@ -2574,15 +2574,15 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->compile]
@@ -4164,7 +4164,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->compile]
@@ -4175,7 +4175,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->compile]
@@ -4194,7 +4194,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->compile]
@@ -4209,17 +4209,17 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->compile]
@@ -4235,15 +4235,15 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'test'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [test]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [test]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0->com.typesafe.sbteclipse#sbteclipse-core;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->runtime]
@@ -4265,15 +4265,15 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->compile]
@@ -5855,7 +5855,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->compile]
@@ -5866,7 +5866,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->compile]
@@ -5885,7 +5885,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->compile]
@@ -5900,17 +5900,17 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->compile]
@@ -5926,12 +5926,12 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'provided'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
 [info] Resolving org.scala-sbt#sbt;0.13.5 ...
 [debug] sbt-chain: Checking cache for: dependency: org.scala-sbt#sbt;0.13.5 {provided=[default(compile)]}
 [debug] sbt-chain: module revision found in cache: org.scala-sbt#sbt;0.13.5
@@ -6462,16 +6462,16 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-sbt#interface;0.13.5 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'optional'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [optional]
 [debug] resolving dependencies for configuration 'compile-internal'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile-internal]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile-internal]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0->com.typesafe.sbteclipse#sbteclipse-core;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->runtime]
@@ -6499,15 +6499,15 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.4 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.4 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->compile]
@@ -8089,7 +8089,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->compile]
@@ -8100,7 +8100,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->compile]
@@ -8119,7 +8119,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->compile]
@@ -8134,17 +8134,17 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->compile]
@@ -8159,13 +8159,13 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [optional]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->runtime]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->compile]
@@ -8474,15 +8474,15 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-sbt#interface;0.13.5 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'runtime-internal'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [runtime-internal]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [runtime-internal]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0->com.typesafe.sbteclipse#sbteclipse-core;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->runtime]
@@ -8504,15 +8504,15 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.1 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->compile]
@@ -10094,7 +10094,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->compile]
@@ -10105,7 +10105,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->compile]
@@ -10124,7 +10124,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->compile]
@@ -10139,17 +10139,17 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->compile]
@@ -10164,18 +10164,18 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [optional]
 [debug] resolving dependencies for configuration 'test-internal'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [test-internal]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [test]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [runtime]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [test-internal]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [test]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [runtime]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-echo;0.1.5 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-echo;0.1.5->org.aspectj#aspectjtools;1.7.3 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-plugin;2.3.0->com.typesafe.sbteclipse#sbteclipse-core;2.3.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-core_2.10;7.0.2 [compile->runtime]
@@ -10203,15 +10203,15 @@
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.4 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scalaz#scalaz-effect_2.10;7.0.2->org.scala-lang#scala-library;2.10.4 [runtime->compile]
 [debug] == resolving dependencies com.typesafe.sbteclipse#sbteclipse-core;2.3.0->org.scalaz#scalaz-effect_2.10;7.0.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->compile]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->master(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [compile->compile(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->runtime(*)]
 [debug] == resolving dependencies com.github.mpeltonen#sbt-idea;1.5.2->commons-io#commons-io;2.0.1 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.github.mpeltonen#sbt-idea;1.5.2 [compile->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.play#sbt-plugin;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.play#sbt-plugin;2.3.4->com.typesafe.play#build-link;2.3.4 [compile->compile]
@@ -11793,7 +11793,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe#webdriver_2.10;1.0.0 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-webdriver;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-coffeescript;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#coffee-script-node;1.7.1 [compile->compile]
@@ -11804,7 +11804,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-coffeescript;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-less;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#less-node;1.6.0-1 [compile->compile]
@@ -11823,7 +11823,7 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->org.webjars#mkdirp;0.3.5 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-less;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-jshint;1.0.2 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->compile]
@@ -11838,17 +11838,17 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->org.webjars#jshint-node;2.4.3 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-jshint;1.0.2->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-rjs;1.0.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->compile]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->org.webjars#rjs;2.1.11-1-trireme [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-rjs;1.0.1->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-digest;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-digest;1.0.0->com.typesafe.sbt#sbt-web;1.0.2 [compile->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->com.typesafe.sbt#sbt-mocha;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->runtime]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->compile]
@@ -11863,13 +11863,13 @@
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->org.webjars#mocha;1.17.1 [compile->master]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.0 [compile->default(compile)]
 [debug] == resolving dependencies com.typesafe.sbt#sbt-mocha;1.0.0->com.typesafe.sbt#sbt-js-engine;1.0.1 [compile->default(compile)]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [optional]
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [provided]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [optional]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [provided]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->default(compile)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [provided->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-sbt#sbt;0.13.5 [provided->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->default(compile)]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->runtime]
 [debug] == resolving dependencies org.scala-sbt#sbt;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->compile]
@@ -12178,18 +12178,18 @@
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-lang#scala-library;2.10.4 [compile->master]
 [debug] == resolving dependencies org.scala-sbt#precompiled-2_9_3;0.13.5->org.scala-sbt#interface;0.13.5 [compile->default(compile)]
 [debug] resolving dependencies for configuration 'plugin'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [plugin]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [plugin]
 [debug] resolving dependencies for configuration 'sources'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [sources]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [sources]
 [debug] resolving dependencies for configuration 'docs'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [docs]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [docs]
 [debug] resolving dependencies for configuration 'pom'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [pom]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [pom]
 [debug] resolving dependencies for configuration 'scala-tool'
-[debug] == resolving dependencies for default#graphapp2-build;0.1-SNAPSHOT [scala-tool]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->default]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->compile]
+[debug] == resolving dependencies for default#graphapp-build;0.1-SNAPSHOT [scala-tool]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->default]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->compile]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.4->org.scala-lang#scala-library;2.10.4 [compile->master(*)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.4->org.scala-lang#scala-library;2.10.4 [compile->compile(*)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.4->org.scala-lang#scala-library;2.10.4 [compile->default]
@@ -12207,8 +12207,8 @@
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.4->org.scala-lang#scala-reflect;2.10.4 [runtime->compile]
 [debug] == resolving dependencies org.scala-lang#scala-reflect;2.10.4->org.scala-lang#scala-library;2.10.4 [runtime->runtime(*)]
 [debug] == resolving dependencies org.scala-lang#scala-reflect;2.10.4->org.scala-lang#scala-library;2.10.4 [runtime->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->optional(default)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-compiler;2.10.4 [scala-tool->optional(default)]
 [debug] == resolving dependencies org.scala-lang#scala-compiler;2.10.4->org.scala-lang#jline;2.10.4 [optional->master(*)]
 [info] Resolving org.scala-lang#jline;2.10.4 ...
 [debug] sbt-chain: Checking cache for: dependency: org.scala-lang#jline;2.10.4 {optional=[compile(*), master(*)]}
@@ -12223,11 +12223,11 @@
 [debug] 	typesafe-ivy-releases: revision in cache: org.fusesource.jansi#jansi;1.4
 [debug] 	found org.fusesource.jansi#jansi;1.4 in sbt-chain
 [debug] == resolving dependencies org.scala-lang#jline;2.10.4->org.fusesource.jansi#jansi;1.4 [compile->compile(*)]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->default]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->runtime]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->compile]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->master]
-[debug] == resolving dependencies default#graphapp2-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->optional(default)]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->default]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->runtime]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->compile]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->master]
+[debug] == resolving dependencies default#graphapp-build;0.1-SNAPSHOT->org.scala-lang#scala-library;2.10.4 [scala-tool->optional(default)]
 [debug] 	resolved ivy file produced in cache
 [debug] :: downloading artifacts ::
 [debug] 	[NOT REQUIRED] com.typesafe.sbt#sbt-echo;0.1.5!sbt-echo.jar
@@ -12418,19 +12418,19 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.5!apply-macro.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.4!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 3224ms :: artifacts dl 69ms
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT compile produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-compile.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT runtime produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-runtime.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT test produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-test.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT provided produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-provided.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT optional produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-optional.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT compile-internal produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-compile-internal.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT runtime-internal produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-runtime-internal.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT test-internal produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-test-internal.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT plugin produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-plugin.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT sources produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-sources.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT docs produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-docs.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT pom produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-pom.xml
-[debug] 	report for default#graphapp2-build;0.1-SNAPSHOT scala-tool produced in /Users/nadirmuzaffar/projects/graphapp2/project/target/resolution-cache/reports/default-graphapp2-build-scala-tool.xml
-[debug] 	resolve done (3224ms resolve - 69ms download)
+[debug] :: resolution report :: resolve 3415ms :: artifacts dl 72ms
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT compile produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-compile.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT runtime produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-runtime.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT test produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-test.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT provided produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-provided.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT optional produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-optional.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT compile-internal produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-compile-internal.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT runtime-internal produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-runtime-internal.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT test-internal produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-test-internal.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT plugin produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-plugin.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT sources produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-sources.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT docs produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-docs.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT pom produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-pom.xml
+[debug] 	report for default#graphapp-build;0.1-SNAPSHOT scala-tool produced in /Users/nadirmuzaffar/projects/graphapp/project/target/resolution-cache/reports/default-graphapp-build-scala-tool.xml
+[debug] 	resolve done (3415ms resolve - 72ms download)
 [info] Done updating.
