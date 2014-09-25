@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Vendor: Typesafe Inc.
+Implementation-Title: trace-sigar-libs
+Implementation-Version: 0.1.6
+Implementation-Vendor-Id: com.typesafe.trace
+Specification-Vendor: Typesafe Inc.
+Specification-Title: trace-sigar-libs
+Specification-Version: 0.1.6
+
