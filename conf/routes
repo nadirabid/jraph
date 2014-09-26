@@ -2,10 +2,10 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET           /                       controllers.Application.index
-
 # API
+GET           /                       controllers.Application.index
+GET           /*path/                 controllers.Application.trimTrailingForwardSlash(path: String)
+
 POST          /hypernode              controllers.Hypernode.create
 GET           /hypernode/:uuid        controllers.Hypernode.read(uuid: java.util.UUID)
 GET           /hypernode              controllers.Hypernode.all

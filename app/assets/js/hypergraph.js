@@ -453,7 +453,7 @@ Vue.component('x-graph', {
       };
 
       return $.ajax({
-        url: '/hyperlink/',
+        url: '/hyperlink',
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(linkJson),
@@ -476,7 +476,7 @@ Vue.component('x-graph', {
       e.stopPropagation();
 
       $.ajax({
-        url: '/hypernode/?id=' + nodeId,
+        url: '/hypernode/' + nodeId,
         type: 'DELETE',
         contentType: 'application/json; charset=utf-8',
         success: function (response) {
@@ -689,7 +689,7 @@ Vue.component('x-node-create', {
       var self = this;
 
       $.ajax({
-        url: '/hypernode/',
+        url: '/hypernode',
         type: 'POST',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({ data: self.data }),
@@ -824,7 +824,7 @@ var app = new Vue({
       });
 
       $.ajax({
-        url: '/hypernode/',
+        url: '/hypernode',
         type: 'PUT',
         contentType: "application/json; charset=utf-8",
         data: JSON.stringify({ data: nodesJson }),

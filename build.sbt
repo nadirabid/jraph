@@ -1,4 +1,4 @@
-name := """graphapp2"""
+name := """graphapp"""
 
 version := "1.0-SNAPSHOT"
 
