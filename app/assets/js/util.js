@@ -1,16 +1,18 @@
 // Utils
 define(function() {
-  var Utils = {};
+  var Util = {};
 
-  Utils.noop = function() { };
+  Util.noop = function() {
+    //do nothing
+  };
 
-  Utils.setCTM = function( element, matrix ) {
+  Util.setCTM = function( element, matrix ) {
     var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + "," + matrix.d + "," + matrix.e + "," + matrix.f + ")";
 
     element.setAttributeNS( null, "transform", s );
   };
 
-  Utils.extendClass = function( parentClass, childClass ) {
+  Util.extendClass = function( parentClass, childClass ) {
     if ( !childClass )
       childClass = function() { };
 
@@ -26,19 +28,19 @@ define(function() {
     return childClassWrapper;
   };
 
-  Utils.deepResolveIndex = function( obj, index ) {
+  Util.deepResolveIndex = function( obj, index ) {
     var resolve = function( o, i ) { return o ? o[i] : o; };
     return index.split( '.' ).reduce( resolve, obj );
   };
 
-  Utils.chainEvalVm = function( vm, varName ) {
+  Util.chainEvalVm = function( vm, varName ) {
     if ( !vm.$parent || deepResolveIndex( vm, varName ) )
       return vm;
     else
       return chainEvalVm( vm.$parent, varName );
   };
 
-  Utils.transformPointToEl = function( x, y, el ) {
+  Util.transformPointToEl = function( x, y, el ) {
     var viewportEl = el.nearestViewportElement || el;
     var ctm = viewportEl.getScreenCTM().inverse();
     var etm = el.getTransformToElement( viewportEl ).inverse();
@@ -55,7 +57,7 @@ define(function() {
     return svgPoint;
   };
 
-  Utils.transformVectorToEl = function( x, y, el ) {
+  Util.transformVectorToEl = function( x, y, el ) {
     var viewportEl = el.nearestViewportElement;
     var ctm = viewportEl.getScreenCTM().inverse();
     ctm.e = ctm.f = 0;
@@ -74,5 +76,5 @@ define(function() {
     return svgPoint;
   };
 
-  return Utils;
+  return Util;
 });

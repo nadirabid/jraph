@@ -1,7 +1,13 @@
 // Globals - with a shared nature
 
-var HALF_PI = Math.PI / 2;
-var TWO_PI = Math.PI * 2;
-var E_MINUS_1 = Math.E - 1;
-
-document.mouse = { state: 'initial', data: { } };
+define(function() {
+  return {
+    HALF_PI: Math.PI / 2,
+    TWO_PI: Math.PI * 2,
+    E_MINUS_1: Math.E -1,
+    mouse: {
+      state: 'initial',
+      data: { }
+    }
+  };
+});

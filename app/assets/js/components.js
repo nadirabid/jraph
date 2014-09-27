@@ -2,9 +2,13 @@ define([
     'jquery',
     'lodash',
     'vue',
-    'd3'
-], function($, _, Vue, d3) {
+    'd3',
+    'globals'
+], function($, _, Vue, d3, glob) {
   'use strict';
+
+  var HALF_PI = glob.HALF_PI;
+  var TWO_PI = glob.TWO_PI;
 
   Vue.component('x-radial-button', {
 

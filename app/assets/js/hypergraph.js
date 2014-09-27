@@ -5,11 +5,16 @@ define([
   'd3',
   'vue',
   'util',
+  'globals',
   'directives',
   'components'
-], function($, _, Mousetrap, d3, Vue, Util) {
+], function($, _, Mousetrap, d3, Vue, Util, glob) {
   'use strict';
 
+  var HALF_PI = glob.HALF_PI;
+  var E_MINUS_1 = glob.E_MINUS_1;
+
+  var mouse = glob.mouse;
   var nodesAry = [];
   var linksAry = [];
 
@@ -88,14 +93,14 @@ define([
       ctx.radius += 12;
       ctx.labelDistance += 12;
 
-      document.mouse.state = 'disabled';
+      mouse.state = 'disabled';
 
       ctx.forceResume();
 
       ctx.$dispatch('showNodeData', ctx.$data);
 
       Mousetrap.bind('esc', function () {
-        document.mouse.state = 'initial';
+        mouse.state = 'initial';
 
         ctx.fixed = false;
         ctx.radius -= 12;
@@ -135,7 +140,7 @@ define([
   var LinkingNodeState = Util.extendClass(InitialNodeState, function (ctx) {
     //select node target
     this.mouseover = function (e) {
-      if (e.mousedownFlag || ctx.id == document.mouse.data.source.id)
+      if (e.mousedownFlag || ctx.id == mouse.data.source.id)
         return;
 
       ctx.$el.querySelector('.node-circle').classList.add('node-linking-target', 'hover');
@@ -146,7 +151,7 @@ define([
 
     //unselect node target
     this.mouseout = function (e) {
-      if (e.mousedownFlag || ctx.id == document.mouse.data.source.id)
+      if (e.mousedownFlag || ctx.id == mouse.data.source.id)
         return;
 
       ctx.$el.querySelector('.node-circle').classList.remove('node-linking-target', 'hover');
@@ -155,7 +160,7 @@ define([
 
     //set link target
     this.click = function () {
-      var sourceCtx = document.mouse.data.source;
+      var sourceCtx = mouse.data.source;
 
       if (sourceCtx.id != ctx.id) {
         ctx.$parent
@@ -173,8 +178,8 @@ define([
 
       sourceCtx.fixed = false;
 
-      document.mouse.state = 'initial';
-      document.mouse.data.source = null;
+      mouse.state = 'initial';
+      mouse.data.source = null;
     };
   });
 
@@ -235,8 +240,8 @@ define([
         this.menu = false;
         this.fixed = true;
 
-        document.mouse.state = 'linking';
-        document.mouse.data.source = this;
+        mouse.state = 'linking';
+        mouse.data.source = this;
       },
 
       forceResume: function () {
@@ -244,7 +249,7 @@ define([
       },
 
       getState: function () {
-        return this._states[ document.mouse.state ];
+        return this._states[ mouse.state ];
       },
 
       mouseover: function () {
@@ -307,7 +312,7 @@ define([
     methods: {
 
       freezePosition: function (e) {
-        if (e.mousedownFlag || document.mouse.state != 'initial')
+        if (e.mousedownFlag || mouse.state != 'initial')
           return;
 
         var source = this.source,
@@ -325,7 +330,7 @@ define([
       },
 
       releasePosition: function (e) {
-        if (e.mousedownFlag || document.mouse.state != 'initial')
+        if (e.mousedownFlag || mouse.state != 'initial')
           return;
 
         this.source.fixed = false;
@@ -335,7 +340,7 @@ define([
       },
 
       dragstart: function (dx, dy, x, y, e) {
-        if (document.mouse.state != 'initial')
+        if (mouse.state != 'initial')
           return;
 
         var source = this.source,
@@ -357,7 +362,7 @@ define([
       },
 
       drag: function (dx, dy, x, y, e) {
-        if (document.mouse.state != 'initial')
+        if (mouse.state != 'initial')
           return;
 
         var source = this.source,
