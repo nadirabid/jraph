@@ -1,4 +1,4 @@
-@main("Data Visualization") {
+@layout("Data Visualization") {
 
     <main id="application">
 
@@ -10,7 +10,9 @@
                 </span>
             </nav>
             <section class="info-overlay"></section>
-            <aside class="info-panel default-pointer-events" v-component="x-node-create" v-if="displayNodeCreate" >
+            <aside class="info-panel default-pointer-events"
+                   v-component="x-node-create"
+                   v-if="displayNodeCreate">
                 <div v-if="data">
                     <ul class="list-unstyled">
                         <li v-repeat="data"><b>{{$key}}</b>:{{$value}}</li>
@@ -23,14 +25,20 @@
                     <div class="form-group" v-class="has-error:valueHasError">
                         <input class="form-control" placeholder="Value" type="text" v-model="value">
                     </div>
-                    <button class="btn btn-default" type="button" v-on="click:addPropertyHandler">Add</button>
+                    <button class="btn btn-default" type="button" v-on="click:addPropertyHandler">
+                        Add
+                    </button>
                 </form>
-                <button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler">Create</button>
+                <button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler">
+                    Create
+                </button>
             </aside>
             <aside class="info-panel" v-component="x-node-data" v-if="displayNodeData">
                 <ul class="list-unstyled">
                     <li v-repeat="nodeDataList">
-                        <span v-if="typeof(value)!='object' && key.charAt(0)!='_'"><b>{{key}}</b>:{{value}}</span>
+                        <span v-if="typeof(value)!='object' && key.charAt(0)!='_'">
+                            <b>{{key}}</b>:{{value}}
+                        </span>
                         <span v-if="typeof(value)=='object' && key.charAt(0)!='_'">
                             <b>{{key}}</b>:
                             <ul>
@@ -47,11 +55,17 @@
                         <div class="form-group" v-class="has-error:valueHasError">
                             <input class="form-control" placeholder="Value" type="text" v-model="value">
                         </div>
-                        <button class="btn btn-default" type="button" v-on="click:savePropertyHandler()">Save</button>
+                        <button class="btn btn-default" type="button" v-on="click:savePropertyHandler">
+                            Save
+                        </button>
                     </form>
                 </div>
-                <button class="btn btn-default" v-class="hidden:addProperty" v-on="click:addProperty=true">Add</button>
-                <button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">Cancel</button>
+                <button class="btn btn-default" v-class="hidden:addProperty" v-on="click:addProperty=true">
+                    Add
+                </button>
+                <button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">
+                    Cancel
+                </button>
             </aside>
         </article>
 
@@ -61,7 +75,10 @@
                  v-xon="x-dragstart:panStart, x-drag:pan"
                  v-ref="graph">
                 <g class="link"
-                   v-xon="x-mouseover:freezePosition, x-mouseout:releasePosition, x-dragstart:dragstart, x-drag:drag"
+                   v-xon="x-mouseover:freezePosition,
+                          x-mouseout:releasePosition,
+                          x-dragstart:dragstart,
+                          x-drag:drag"
                    v-component="x-link"
                    v-repeat="links">
                     <line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>

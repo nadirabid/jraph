@@ -17,8 +17,8 @@ object Hyperlink extends Controller {
                      "RETURN hl;"
 
   def create = Action.async(parse.json) { req =>
-    val sourceId = UUID.fromString((req.body \ "sourceId").toString)
-    val targetId = UUID.fromString((req.body \ "targetId").toString)
+    val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
+    val targetId = UUID.fromString((req.body \ "targetId").as[String])
 
     val timestamp = System.currentTimeMillis
 
@@ -49,7 +49,9 @@ object Hyperlink extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherRead =  "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode) " +
@@ -74,13 +76,15 @@ object Hyperlink extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherAll = "MATCH (user:User { id: {userId} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode) " +
                   "RETURN rels;"
 
-  def all = Action.async { req =>
+  def readAll = Action.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -99,7 +103,9 @@ object Hyperlink extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherUpdate = "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode) " +
@@ -127,7 +133,9 @@ object Hyperlink extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherDelete = "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]-(:Hypernode) " +
@@ -152,6 +160,8 @@ object Hyperlink extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 }

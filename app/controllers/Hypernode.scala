@@ -13,12 +13,11 @@ object Hypernode extends Controller {
   val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
 
   val cypherCreate = "MATCH (user:User { id: {userId} }) " +
-                     "CREATE (hn:Hypernode {hn}) (user)-[owns:OWNS]->(hn) " +
+                     "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
                      "RETURN hn;"
 
   def create = Action.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
-    val test: UUID = null
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
@@ -69,13 +68,15 @@ object Hypernode extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json)}
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherAll = "MATCH (user:User { id: {userId} }), (user)-[:OWNS]->(hn:Hypernode) " +
                   "RETURN hn;"
 
-  def all = Action.async { req =>
+  def readAll = Action.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -94,7 +95,9 @@ object Hypernode extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherUpdate = "MATCH (hn { id: {uuid} }) " +
@@ -107,6 +110,7 @@ object Hypernode extends Controller {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
+            "uuid" -> uuid,
             "data" -> Json.stringify(req.body \ "data"),
             "updatedAt" -> System.currentTimeMillis
           )
@@ -121,25 +125,26 @@ object Hypernode extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   def batchUpdate = Action.async(parse.json) { req =>
 
-    val statements = new JsArray
-
-    (req.body \ "data").as[Seq[JsObject]].foreach{ jsObj =>
-      statements.append(Json.obj(
-        "statement" -> cypherUpdate,
-        "parameters" -> Json.obj(
-          "data" -> jsObj,
-          "updatedAt" -> System.currentTimeMillis
-        )
-      ))
-    }
+    val nodes = (req.body \ "data").as[Seq[JsObject]]
 
     val neo4jReq = Json.obj(
-      "statements" -> statements
+      "statements" -> nodes.map{ node =>
+        Json.obj(
+          "statement" -> cypherUpdate,
+          "parameters" -> Json.obj(
+            "uuid" -> UUID.fromString((node \ "id").as[String]),
+            "data" -> Json.stringify(node \ "data"),
+            "updatedAt" -> System.currentTimeMillis
+          )
+        )
+      }
     )
 
     val holder = WS
@@ -149,14 +154,16 @@ object Hypernode extends Controller {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes => Ok(neo4jRes.json) }
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
   }
 
   val cypherDelete = "MATCH (hn:Hypernode { id: {uuid} })-[rels]-() " +
-                     "MATCH (user:User { id: {userId} })-[owns:OWNS]->(hypernode) " +
-                     "DELETE owns, rels, hypernode;"
+                     "MATCH (user:User { id: {userId} })-[owns:OWNS]->(hn) " +
+                     "DELETE owns, rels, hn;"
 
-  def delete(uuid: UUID) = Action.async(parse.json) { req =>
+  def delete(uuid: UUID) = Action.async(parse.empty) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
