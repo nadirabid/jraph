@@ -1,0 +1,23 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# API
+GET           /                       controllers.Application.index
+GET           /*path/                 controllers.Application.trimTrailingForwardSlash(path: String)
+
+POST          /hypernode              controllers.Hypernode.create
+GET           /hypernode/:uuid        controllers.Hypernode.read(uuid: java.util.UUID)
+GET           /hypernode              controllers.Hypernode.readAll
+PUT           /hypernode/:uuid        controllers.Hypernode.update(uuid: java.util.UUID)
+PUT           /hypernode              controllers.Hypernode.batchUpdate
+DELETE        /hypernode/:uuid        controllers.Hypernode.delete(uuid: java.util.UUID)
+
+POST          /hyperlink              controllers.Hyperlink.create
+GET           /hyperlink/:uuid        controllers.Hyperlink.read(uuid: java.util.UUID)
+GET           /hyperlink              controllers.Hyperlink.readAll
+PUT           /hyperlink/:uuid        controllers.Hyperlink.update(uuid: java.util.UUID)
+DELETE        /hyperlink/:uuid        controllers.Hyperlink.delete(uuid: java.util.UUID)
+
+# Map static resources from the /public folder to the /assets URL path
+GET           /assets/*file           controllers.Assets.at(path="/public", file)
