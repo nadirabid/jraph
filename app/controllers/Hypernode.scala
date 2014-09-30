@@ -12,6 +12,8 @@ object Hypernode extends Controller {
 
   val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
 
+  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+
   val cypherCreate = "MATCH (user:User { id: {userId} }) " +
                      "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
                      "RETURN hn;"
@@ -37,7 +39,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -62,7 +64,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -89,7 +91,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -119,7 +121,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -148,7 +150,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -177,7 +179,7 @@ object Hypernode extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
