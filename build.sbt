@@ -10,3 +10,5 @@ libraryDependencies ++= Seq(
   cache,
   ws
 )
+
+MochaKeys.requires ++= Seq("./Setup.js")
