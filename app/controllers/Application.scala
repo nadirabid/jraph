@@ -12,4 +12,8 @@ object Application extends Controller {
   def trimTrailingForwardSlash(path: String) = Action {
     MovedPermanently("/" + path)
   }
+
+  def test = Action {
+    Ok(views.html.test())
+  }
 }

@@ -8,7 +8,7 @@ define([
   'globals',
   'directives',
   'components'
-], function($, _, Mousetrap, d3, Vue, Util, glob) {
+], function ($, _, Mousetrap, d3, Vue, Util, glob) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -417,11 +417,11 @@ define([
 
       nodes: {
 
-        $get: function() {
+        $get: function () {
           return this.$parent.nodes;
         },
 
-        $set: function(value) {
+        $set: function (value) {
           this.$parent.nodes = value;
         }
 
@@ -574,7 +574,7 @@ define([
           .linkDistance(50);
 
       force.on('end', function () {
-        _.defer(function() {
+        _.defer(function () {
           self.$parent.saveNodes();
         });
       });

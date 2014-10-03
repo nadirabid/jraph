@@ -1,7 +1,7 @@
 define([
   'vue',
   'util'
-], function (Vue, Util) {
+], function (Vue, util) {
   'use strict';
 
   Vue.directive('xon', {
@@ -11,7 +11,7 @@ define([
     bind: function () {
       var ctx = this.binding.isExp ? this.vm : this.binding.compiler.vm;
 
-      var $$el = this.$$el = new Util(this.el);
+      var $$el = this.$$el = util(this.el);
       this.context = ctx;
 
       if (ctx._xon) {

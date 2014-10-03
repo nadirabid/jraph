@@ -1,6 +1,10 @@
-describe('Directives', function() {
-  it('should be some test',function() {
-    var ary = [];
-    ary.length.should.be.exactly(0);
+var Util = require('util');
+
+describe('Util', function() {
+  describe('Custom events', function() {
+    it('first test', function () {
+      var ary = [];
+      ary.length.should.be.exactly(0);
+    });
   });
 });
