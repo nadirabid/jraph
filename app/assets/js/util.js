@@ -59,7 +59,6 @@ define(function () {
       }
 
       var args = slice.call(arguments, 1, arguments.length);
-      console.log('trigger', eventName, args);
       callbacks.forEach(function (callback) {
         callback.apply(Util, args);
       });
@@ -243,7 +242,7 @@ define(function () {
       });
     };
 
-    function registerEvents(util, el) {
+    function registerEvents($util, el) {
       var mdx, mdy = 0;
       var px, py = 0;
       var dragFlag = false;
@@ -259,12 +258,12 @@ define(function () {
           var distSquared = dx * dx + dy * dy;
 
           if (distSquared > 2) {
-            util.trigger('dragstart', dx, dy, x, y, e);
+            $util.trigger('dragstart', dx, dy, x, y, e);
             dragFlag = true;
           }
         }
         else {
-          util.trigger('drag', dx, dy, x, y, e);
+          $util.trigger('drag', dx, dy, x, y, e);
         }
 
         px = e.x;
@@ -273,22 +272,21 @@ define(function () {
 
       function mouseup(e) {
         Util.off('mousemove', mousemove);
-        Util.off('mouseup', mouseup);
 
-        if (!dragFlag)
-          return;
+        if (dragFlag) {
+          var x = e.x;
+          var y = e.y;
 
-        var x = e.x;
-        var y = e.y;
+          e.mousedownFlag = mousedownFlag;
+          $util.trigger('dragend', e);
 
-        e.mousedownFlag = mousedownFlag;
-        util.trigger('dragend', e);
-
-        if (!mouseOnElFlag || x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight) {
-          dragFlag = false;
-          util.trigger('mouseup', e);
-          util.trigger('mouseout', e);
+          if (!mouseOnElFlag || x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight) {
+            dragFlag = false;
+            $util.trigger('mouseout', e);
+          }
         }
+
+        $util.trigger('mouseup', e);
       }
 
       function mouseover(e) {
@@ -297,7 +295,7 @@ define(function () {
           return;
 
         e.mousedownFlag = mousedownFlag;
-        util.trigger('mouseover', e);
+        $util.trigger('mouseover', e);
       }
 
       function mouseout(e) {
@@ -306,7 +304,7 @@ define(function () {
           return;
 
         e.mousedownFlag = mousedownFlag;
-        util.trigger('mouseout', e);
+        $util.trigger('mouseout', e);
       }
 
       function mousedown(e) {
@@ -317,6 +315,8 @@ define(function () {
         //memory leak if we don't removeEventListener?
         Util.on('mousemove', mousemove);
         Util.on('mouseup', mouseup);
+
+        $util.trigger('mousedown', e);
       }
 
       function click(e) {
@@ -324,13 +324,14 @@ define(function () {
           dragFlag = false;
         }
         else {
-          util.trigger('click', e);
+          $util.trigger('click', e);
         }
       }
 
       el.addEventListener('mouseover', mouseover);
       el.addEventListener('mouseout', mouseout);
       el.addEventListener('mousedown', mousedown);
+      el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
     }
 

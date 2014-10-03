@@ -1,7 +1,7 @@
 define([
   'js/util',
   'testHelpers'
-],function (util, testHelpers) {
+], function (util, testHelpers) {
 
   describe('Util', function () {
     describe('custom events', function () {
@@ -13,8 +13,9 @@ define([
         'mousemove', 'drag', 'dragstart', 'dragend', 'click'
       ];
 
-      beforeEach(function() {
+      beforeEach(function () {
         svgEl = document.createElementNS(xmlns, 'svg');
+        svgEl.style.visibility = 'hidden';
         svgEl.setAttributeNS(null, 'width', '500');
         svgEl.setAttributeNS(null, 'height', '500');
 
@@ -24,51 +25,98 @@ define([
         circleEl.setAttributeNS(null, 'r', '50');
 
         svgEl.appendChild(circleEl);
+        //document.body.appendChild(svgEl);
 
         $circleEl = util(circleEl);
       });
 
+      afterEach(function() {
+        //document.body.removeChild(svgEl);
+      });
+
       it('should trigger mouseover event when DOM based mouseover event is dispatched', function () {
-        var spy = jasmine.createSpy('mouseoverSpy');
-        $circleEl.on('mouseover', spy);
+        var mouseEventName = 'mouseover';
+        var spy = jasmine.createSpy(mouseEventName + 'Spy');
+        $circleEl.on(mouseEventName, spy);
 
         var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
         customEvents
-            .filter(function(eventName) {
-              return eventName != 'mouseover'
-            }).forEach(function(eventName) {
+            .filter(function (eventName) {
+              return eventName != mouseEventName;
+            }).forEach(function (eventName) {
               $circleEl.on(eventName, otherEventsSpy);
             });
 
         var mouseEvent = document.createEvent('MouseEvents');
-        testHelpers.initMouseEvent(mouseEvent, { type: 'mouseover', view: window });
+        testHelpers.initMouseEvent(mouseEvent, { type: mouseEventName, view: window });
         circleEl.dispatchEvent(mouseEvent);
 
-        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: 'mouseover' }));
+        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: mouseEventName }));
         expect(otherEventsSpy.calls.any()).toEqual(false);
       });
 
-      it('should trigger mouseout event when DOM based mouseout event is dispatched', function() {
-        var spy = jasmine.createSpy('mouseoutSpy');
-        $circleEl.on('mouseout', spy);
+      it('should trigger mouseout event when DOM based mouseout event is dispatched', function () {
+        var mouseEventName = 'mouseout';
+        var spy = jasmine.createSpy(mouseEventName + 'Spy');
+        $circleEl.on(mouseEventName, spy);
 
         var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
         customEvents
-            .filter(function(eventName) {
-              return eventName != 'mouseout'
-            }).forEach(function(eventName) {
+            .filter(function (eventName) {
+              return eventName != mouseEventName;
+            }).forEach(function (eventName) {
               $circleEl.on(eventName, otherEventsSpy);
             });
 
         var mouseEvent = document.createEvent('MouseEvents');
-        testHelpers.initMouseEvent(mouseEvent, { type: 'mouseout', view: window });
+        testHelpers.initMouseEvent(mouseEvent, { type: mouseEventName, view: window });
         circleEl.dispatchEvent(mouseEvent);
 
-        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: 'mouseout' }));
+        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: mouseEventName }));
         expect(otherEventsSpy.calls.any()).toEqual(false);
       });
 
+      it('should trigger mousedown event when DOM mousedown event is dispatched', function () {
+        var mouseEventName = 'mousedown';
+        var spy = jasmine.createSpy(mouseEventName + 'Spy');
+        $circleEl.on(mouseEventName, spy);
 
+        var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
+        customEvents
+            .filter(function (eventName) {
+              return eventName != mouseEventName;
+            }).forEach(function (eventName) {
+              $circleEl.on(eventName, otherEventsSpy);
+            });
+
+        var mouseEvent = document.createEvent('MouseEvents');
+        testHelpers.initMouseEvent(mouseEvent, { type: mouseEventName, view: window });
+        circleEl.dispatchEvent(mouseEvent);
+
+        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: mouseEventName }));
+        expect(otherEventsSpy.calls.any()).toEqual(false);
+      });
+
+      it('should trigger mouseup event when DOM mouseup event is dispatched', function () {
+        var mouseEventName = 'mouseup';
+        var spy = jasmine.createSpy(mouseEventName + 'Spy');
+        $circleEl.on(mouseEventName, spy);
+
+        var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
+        customEvents
+            .filter(function (eventName) {
+              return eventName != mouseEventName;
+            }).forEach(function (eventName) {
+              $circleEl.on(eventName, otherEventsSpy);
+            });
+
+        var mouseEvent = document.createEvent('MouseEvents');
+        testHelpers.initMouseEvent(mouseEvent, { type: mouseEventName, view: window });
+        circleEl.dispatchEvent(mouseEvent);
+
+        expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({ type: mouseEventName }));
+        expect(otherEventsSpy.calls.any()).toEqual(false);
+      });
 
     });
   });
