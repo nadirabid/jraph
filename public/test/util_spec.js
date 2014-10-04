@@ -215,8 +215,8 @@ define([
             var eventName = 'dragstart';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
-            var x = bBox.top + 0;
-            var y = bBox.left + 0;
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
 
             $circleEl.on(eventName, spy);
 
@@ -258,8 +258,8 @@ define([
             var eventName = 'drag';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
-            var x = bBox.top + 0;
-            var y = bBox.left + 0;
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
 
             $circleEl.on(eventName, spy);
 
@@ -383,6 +383,92 @@ define([
             expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({
               type: 'mouseup'
             }));
+          });
+
+      it('should NOT fire dragend when mouse is being dragged ' +
+              'outside of the browser window',
+          function() {
+            var bBox = circleEl.getBoundingClientRect();
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
+
+            var dragendSpy = jasmine.createSpy('dragendSpy');
+            $circleEl.on('dragend', dragendSpy);
+
+            var mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousedown',
+              view: window,
+              clientX: x,
+              clientY: y
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            for(var i = 0; i < 3; i++) {
+              mouseEvent = document.createEvent('MouseEvents');
+              testHelpers.initMouseEvent(mouseEvent, {
+                type: 'mousemove',
+                view: window,
+                clientX: x + 5*i,
+                clientY: y + 5*i
+              });
+              circleEl.dispatchEvent(mouseEvent);
+            }
+
+            //simulate the mouse moving outside of the browser window
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousemove',
+              view: window,
+              clientX: window.innerWidth + 100,
+              clientY: window.innerHeight + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            expect(dragendSpy.calls.count()).toEqual(0);
+          });
+
+      it('should NOT fire mouseout if, while dragging, the mouse is ' +
+              'no longer over the original dragged element',
+          function() {
+            var bBox = circleEl.getBoundingClientRect();
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
+
+            var mouseoutSpy = jasmine.createSpy('mouseoutSpy');
+            $circleEl.on('mouseout', mouseoutSpy);
+
+            var mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousedown',
+              view: window,
+              clientX: x,
+              clientY: y
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            for(var i = 0; i < 3; i++) {
+              mouseEvent = document.createEvent('MouseEvents');
+              testHelpers.initMouseEvent(mouseEvent, {
+                type: 'mousemove',
+                view: window,
+                clientX: x + 5*i,
+                clientY: y + 5*i
+              });
+              circleEl.dispatchEvent(mouseEvent);
+            }
+
+            //simulate the mouse moving outside of the browser window
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousemove',
+              view: window,
+              clientX: window.innerWidth + 100,
+              clientY: window.innerHeight + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            expect(mouseoutSpy.calls.count()).toEqual(0);
           });
     });
   });
