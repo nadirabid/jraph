@@ -30,7 +30,7 @@ define([
         $circleEl = util(circleEl);
       });
 
-      afterEach(function() {
+      afterEach(function () {
         document.body.removeChild(svgEl);
         $circleEl.destroy();
       });
@@ -211,7 +211,7 @@ define([
           });
 
       it('should fire dragstart after mousedown and mousemove events',
-          function() {
+          function () {
             var eventName = 'dragstart';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
@@ -232,13 +232,13 @@ define([
             circleEl.dispatchEvent(mouseEvent);
 
             // signal two mousemove events to fire dragstart event
-            for(var i = 0; i < 2; i++) {
+            for (var i = 0; i < 2; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + i*5,
-                clientY: y + i*5
+                clientX: x + i * 5,
+                clientY: y + i * 5
               });
               circleEl.dispatchEvent(mouseEvent);
 
@@ -254,7 +254,7 @@ define([
           });
 
       it('should fire drag event after mousedown, mousemove and dragstart',
-          function() {
+          function () {
             var eventName = 'drag';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
@@ -275,13 +275,13 @@ define([
             circleEl.dispatchEvent(mouseEvent);
 
             // signal three mousemove events to fire drag event
-            for(var i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + i*5,
-                clientY: y + i*5
+                clientX: x + i * 5,
+                clientY: y + i * 5
               });
               circleEl.dispatchEvent(mouseEvent);
 
@@ -297,7 +297,7 @@ define([
           });
 
       it('should fire dragend event immediately after dragstart and mouseup',
-          function() {
+          function () {
             var eventName = 'dragend';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
@@ -318,13 +318,13 @@ define([
             circleEl.dispatchEvent(mouseEvent);
 
             // signal two mousemove events to fire dragstart event
-            for(var i = 0; i < 2; i++) {
+            for (var i = 0; i < 2; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + i*5,
-                clientY: y + i*5
+                clientX: x + i * 5,
+                clientY: y + i * 5
               });
               circleEl.dispatchEvent(mouseEvent);
             }
@@ -342,7 +342,7 @@ define([
           });
 
       it('should fire dragend event immediately after drag and mouseup',
-          function() {
+          function () {
             var eventName = 'dragend';
             var spy = jasmine.createSpy(eventName + 'Spy');
             var bBox = circleEl.getBoundingClientRect();
@@ -362,13 +362,13 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            for(var i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + i*5,
-                clientY: y + i*5
+                clientX: x + i * 5,
+                clientY: y + i * 5
               });
               circleEl.dispatchEvent(mouseEvent);
             }
@@ -387,7 +387,7 @@ define([
 
       it('should NOT fire dragend when mouse is being dragged ' +
               'outside of the browser window',
-          function() {
+          function () {
             var bBox = circleEl.getBoundingClientRect();
             var x = bBox.left + 0;
             var y = bBox.top + 0;
@@ -404,13 +404,13 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            for(var i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + 5*i,
-                clientY: y + 5*i
+                clientX: x + 5 * i,
+                clientY: y + 5 * i
               });
               circleEl.dispatchEvent(mouseEvent);
             }
@@ -430,7 +430,7 @@ define([
 
       it('should NOT fire mouseout if, while dragging, the mouse is ' +
               'no longer over the original dragged element',
-          function() {
+          function () {
             var bBox = circleEl.getBoundingClientRect();
             var x = bBox.left + 0;
             var y = bBox.top + 0;
@@ -447,13 +447,13 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            for(var i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++) {
               mouseEvent = document.createEvent('MouseEvents');
               testHelpers.initMouseEvent(mouseEvent, {
                 type: 'mousemove',
                 view: window,
-                clientX: x + 5*i,
-                clientY: y + 5*i
+                clientX: x + 5 * i,
+                clientY: y + 5 * i
               });
               circleEl.dispatchEvent(mouseEvent);
             }
@@ -469,6 +469,114 @@ define([
             circleEl.dispatchEvent(mouseEvent);
 
             expect(mouseoutSpy.calls.count()).toEqual(0);
+          });
+
+      it('should fire dragend when mouse is dragged and ' +
+              'released out side of browser window',
+          function () {
+            var bBox = circleEl.getBoundingClientRect();
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
+
+            var dragendSpy = jasmine.createSpy('dragendSpy');
+            $circleEl.on('dragend', dragendSpy);
+
+            var mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousedown',
+              view: window,
+              clientX: x,
+              clientY: y
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            for (var i = 0; i < 3; i++) {
+              mouseEvent = document.createEvent('MouseEvents');
+              testHelpers.initMouseEvent(mouseEvent, {
+                type: 'mousemove',
+                view: window,
+                clientX: x + 5 * i,
+                clientY: y + 5 * i
+              });
+              circleEl.dispatchEvent(mouseEvent);
+            }
+
+            //simulate the mouse moving outside of the browser window
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousemove',
+              view: window,
+              clientX: window.innerWidth + 100,
+              clientY: window.innerHeight + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mouseup',
+              view: window,
+              clientX: window.innerHeight + 100,
+              clientY: window.innerWidth + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            expect(dragendSpy).toHaveBeenCalledWith(jasmine.objectContaining({
+              type: 'mouseup'
+            }));
+          });
+
+      it('should fire mouseout when mouse is dragged and ' +
+              'released out side of browser window',
+          function () {
+            var bBox = circleEl.getBoundingClientRect();
+            var x = bBox.left + 0;
+            var y = bBox.top + 0;
+
+            var mouseoutSpy = jasmine.createSpy('mouseoutSpy');
+            $circleEl.on('mouseout', mouseoutSpy);
+
+            var mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousedown',
+              view: window,
+              clientX: x,
+              clientY: y
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            for (var i = 0; i < 3; i++) {
+              mouseEvent = document.createEvent('MouseEvents');
+              testHelpers.initMouseEvent(mouseEvent, {
+                type: 'mousemove',
+                view: window,
+                clientX: x + 5 * i,
+                clientY: y + 5 * i
+              });
+              circleEl.dispatchEvent(mouseEvent);
+            }
+
+            //simulate the mouse moving outside of the browser window
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousemove',
+              view: window,
+              clientX: window.innerWidth + 100,
+              clientY: window.innerHeight + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mouseup',
+              view: window,
+              clientX: window.innerHeight + 100,
+              clientY: window.innerWidth + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            expect(mouseoutSpy).toHaveBeenCalledWith(jasmine.objectContaining({
+              type: 'mouseup'
+            }));
           });
     });
   });
