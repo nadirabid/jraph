@@ -1,7 +1,6 @@
 // Utils
 define(function () {
   'use strict';
-  var events = {};
 
   var slice = Array.prototype.slice;
   var push = Array.prototype.push;
@@ -17,14 +16,23 @@ define(function () {
     }
   }
 
+  var counter = 0;
   function WrappedUtil(value) {
+    // DO NOT use these properties as part
+    // of the client API as that can lead to
+    // memory leaks
+
+    this.__id__ = counter++;
     this.__object__ = value;
+    this.__destroy__ = [];
   }
 
   WrappedUtil.prototype = Util.prototype;
 
   //Unwrapped definitions
   (function() {
+    var events = {};
+
     function animationFrame(callback) {
       defer(callback, 0);
     }
@@ -191,7 +199,7 @@ define(function () {
       var events = this.__events__;
       if (!events) {
         events = this.__events__ = {};
-        registerEvents(this, el);
+        this.__destroy__.push(registerEvents(this, el));
       }
 
       var callbacks = events[eventName];
@@ -200,6 +208,7 @@ define(function () {
       }
 
       callbacks.push(callback);
+
       return callback;
     };
 
@@ -242,51 +251,81 @@ define(function () {
       });
     };
 
+    var destroy = function (el) {
+      var self = this;
+      this.__destroy__.forEach(function(destroyCallback) {
+        destroyCallback.call(self);
+      });
+
+      this.__events__ = null;
+    };
+
     function registerEvents($util, el) {
-      var mdx, mdy = 0;
       var px, py = 0;
       var dragFlag = false;
       var mouseOnElFlag = false;
 
-      function mousemove(e) {
+      function drag_mousemove(e) {
         var x = e.x;
         var y = e.y;
-        var dx = e.x - mdx;
-        var dy = e.y - mdy;
+        var dx = x - px;
+        var dy = y - py;
 
         if (!dragFlag) {
           var distSquared = dx * dx + dy * dy;
 
-          if (distSquared > 2) {
-            $util.trigger('dragstart', dx, dy, x, y, e);
+          if (distSquared > 4) {
+            e.dx = dx;
+            e.dy = dy;
+            $util.trigger('dragstart', e);
             dragFlag = true;
           }
         }
         else {
-          $util.trigger('drag', dx, dy, x, y, e);
+          e.dx = dx;
+          e.dy = dy;
+          $util.trigger('drag', e);
         }
+      }
 
+      function drag_mouseup(e) {
+        Util.off('mouseup', drag_mouseup);
+        Util.off('mousemove', drag_mousemove);
+
+        if (!dragFlag)
+          return;
+
+        var x = e.x;
+        var y = e.y;
+
+        e.mousedownFlag = mousedownFlag;
+        $util.trigger('dragend', e);
+
+        if ((!mouseOnElFlag && mouseoutEventIgnored) ||
+            (x < 0 || y < 0) ||
+            (x > window.innerWidth || y > window.innerHeight)) {
+          dragFlag = false;
+          mouseoutEventIgnored = false;
+          $util.trigger('mouseout', e);
+        }
+      }
+
+      function drag_mousedown(e) {
+        e.stopPropagation();
         px = e.x;
         py = e.y;
+
+        //memory leak if we don't removeEventListener?
+        Util.on('mousemove', drag_mousemove);
+        Util.on('mouseup', drag_mouseup);
       }
 
       function mouseup(e) {
-        Util.off('mousemove', mousemove);
-
-        if (dragFlag) {
-          var x = e.x;
-          var y = e.y;
-
-          e.mousedownFlag = mousedownFlag;
-          $util.trigger('dragend', e);
-
-          if (!mouseOnElFlag || x < 0 || y < 0 || x > window.innerWidth || y > window.innerHeight) {
-            dragFlag = false;
-            $util.trigger('mouseout', e);
-          }
-        }
-
         $util.trigger('mouseup', e);
+      }
+
+      function mousedown(e) {
+        $util.trigger('mousedown', e);
       }
 
       function mouseover(e) {
@@ -298,25 +337,16 @@ define(function () {
         $util.trigger('mouseover', e);
       }
 
+      var mouseoutEventIgnored = false;
       function mouseout(e) {
         mouseOnElFlag = false;
-        if (dragFlag || mousedownFlag)
+        if (dragFlag || mousedownFlag) {
+          mouseoutEventIgnored = true;
           return;
+        }
 
         e.mousedownFlag = mousedownFlag;
         $util.trigger('mouseout', e);
-      }
-
-      function mousedown(e) {
-        e.stopPropagation();
-        px = mdx = e.x;
-        py = mdy = e.y;
-
-        //memory leak if we don't removeEventListener?
-        Util.on('mousemove', mousemove);
-        Util.on('mouseup', mouseup);
-
-        $util.trigger('mousedown', e);
       }
 
       function click(e) {
@@ -328,16 +358,35 @@ define(function () {
         }
       }
 
+      el.addEventListener('mousedown', drag_mousedown);
+      el.addEventListener('mousedown', mousedown);
       el.addEventListener('mouseover', mouseover);
       el.addEventListener('mouseout', mouseout);
-      el.addEventListener('mousedown', mousedown);
       el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
+
+      return function() {
+        Util.off('mouseup', drag_mouseup);
+        Util.off('mousemove', drag_mousemove);
+
+        // can't assume that when the UtilWrapper object is
+        // explicitly destroyed that its wrapped DOM element
+        // will destroyed as well. thus we explicitly remove
+        // the events listeners to avoid lost handles back to the
+        // UtilWrapper that was requested to be destroyed
+        el.removeEventListener('mousedown', drag_mousedown);
+        el.removeEventListener('mousedown', mousedown);
+        el.removeEventListener('mouseover', mouseover);
+        el.removeEventListener('mouseout', mouseout);
+        el.removeEventListener('mouseup', mouseup);
+        el.removeEventListener('click', click);
+      };
     }
 
     Util.mixin('on', on);
     Util.mixin('off', off);
     Util.mixin('trigger', trigger);
+    Util.mixin('destroy', destroy);
   })();
 
   return Util;

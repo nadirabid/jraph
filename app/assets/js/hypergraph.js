@@ -113,8 +113,8 @@ define([
     };
 
     //drag node
-    this.drag = function (dx, dy, x, y, e) {
-      var p = Util.transformPointToEl(x, y, ctx.$el);
+    this.drag = function (e) {
+      var p = Util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -122,8 +122,8 @@ define([
       ctx.forceResume();
     };
 
-    this.dragstart = function (dx, dy, x, y, e) {
-      var p = Util.transformPointToEl(x, y, ctx.$el);
+    this.dragstart = function (e) {
+      var p = Util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -201,7 +201,7 @@ define([
 
       labelY: 0,
 
-      fixed: false //d3.force doesn't pick it up if not explicity linked
+      fixed: false //d3.force doesn't pick it up if not explicitly linked
 
     },
 
@@ -339,7 +339,7 @@ define([
         this.$el.classList.remove('hover');
       },
 
-      dragstart: function (dx, dy, x, y, e) {
+      dragstart: function (e) {
         if (mouse.state != 'initial')
           return;
 
@@ -352,7 +352,7 @@ define([
         target.menu = false;
         target.fixed = true;
 
-        var v = Util.transformVectorToEl(dx, dy, this.$el);
+        var v = Util.transformVectorToEl(e.dx, e.dy, this.$el);
 
         this.source_x = source.px = source.x = source.x + v.x;
         this.source_y = source.py = source.y = source.y + v.y;
@@ -361,14 +361,14 @@ define([
         this.target_y = target.py = target.y = target.y + v.y;
       },
 
-      drag: function (dx, dy, x, y, e) {
+      drag: function (e) {
         if (mouse.state != 'initial')
           return;
 
         var source = this.source,
             target = this.target;
 
-        var v = Util.transformVectorToEl(dx, dy, this.$el);
+        var v = Util.transformVectorToEl(e.dx, e.dy, this.$el);
 
         source.px = source.x = this.source_x + v.x;
         source.py = source.y = this.source_y + v.y;
@@ -465,9 +465,9 @@ define([
         this.pMinY = this.minY;
       },
 
-      pan: function (dx, dy) {
-        this.minX = this.pMinX - dx;
-        this.minY = this.pMinY - dy;
+      pan: function (e) {
+        this.minX = this.pMinX - e.dx;
+        this.minY = this.pMinY - e.dy;
       },
 
       createLink: function (link) {

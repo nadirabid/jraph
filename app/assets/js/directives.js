@@ -9,9 +9,10 @@ define([
     isFn: true,
 
     bind: function () {
-      var ctx = this.binding.isExp ? this.vm : this.binding.compiler.vm;
+      var ctx = this.binding.isExp ?
+                    this.vm : this.binding.compiler.vm;
 
-      var $$el = this.$$el = util(this.el);
+      var $util = this.$util = util(this.el);
       this.context = ctx;
 
       if (ctx._xon) {
@@ -19,28 +20,28 @@ define([
         return;
       }
 
-      this.__dragstart__ = $$el.on('dragstart', function (dx, dy, x, y, e) {
+      $util.on('dragstart', function (e) {
         e.stopPropagation();
-        ctx.$emit('x-dragstart', dx, dy, x, y, e);
+        ctx.$emit('x-dragstart', e);
       });
 
-      this.__drag__ = $$el.on('drag', function (dx, dy, x, y, e) {
-        ctx.$emit('x-drag', dx, dy, x, y, e);
+      $util.on('drag', function (e) {
+        ctx.$emit('x-drag', e);
       });
 
-      this.__dragend__ = $$el.on('dragend', function (e) {
+      $util.on('dragend', function (e) {
         ctx.$emit('x-dragend', e);
       });
 
-      this.__mouseover__ = $$el.on('mouseover', function (e) {
+      $util.on('mouseover', function (e) {
         ctx.$emit('x-mouseover', e);
       });
 
-      this.__mouseout__ = $$el.on('mouseout', function (e) {
+      $util.on('mouseout', function (e) {
         ctx.$emit('x-mouseout', e);
       });
 
-      this.__click__ = $$el.on('click', function (e) {
+      $util.on('click', function (e) {
         ctx.$emit('x-click', e);
       });
 
@@ -61,16 +62,11 @@ define([
     },
 
     unbind: function () {
-      var $$el = this.$$el;
+      var $util = this.$util;
 
       this.vm._xon--;
 
-      $$el.off('dragstart', this.__dragstart__);
-      $$el.off('drag', this.__drag__);
-      $$el.off('dragend', this.__dragend__);
-      $$el.off('mouseover', this.__mouseover__);
-      $$el.off('mouseout', this.__mouseout__);
-      $$el.off('click', this.__click__);
+      $util.destroy();
 
       this.context.$off(this.arg, this.currHandler);
     }
