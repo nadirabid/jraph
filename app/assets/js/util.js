@@ -301,12 +301,15 @@ define(function () {
         e.mousedownFlag = mousedownFlag;
         $util.trigger('dragend', e);
 
-        if ((!mouseOnElFlag && mouseoutEventIgnored) ||
+        if ((!mouseOnElFlag) ||
             (x < 0 || y < 0) ||
             (x > window.innerWidth || y > window.innerHeight)) {
           dragFlag = false;
-          mouseoutEventIgnored = false;
-          $util.trigger('mouseout', e);
+
+          if (mouseoutEventIgnored) {
+            mouseoutEventIgnored = false;
+            $util.trigger('mouseout', e);
+          }
         }
       }
 

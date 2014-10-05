@@ -12,61 +12,46 @@ define([
       var ctx = this.binding.isExp ?
                     this.vm : this.binding.compiler.vm;
 
-      var $util = this.$util = util(this.el);
       this.context = ctx;
+      this.$util = ctx.__$util__;
 
-      if (ctx._xon) {
-        ctx._xon++;
+      if (ctx.__xon__) {
+        ctx.__xon__++;
         return;
       }
 
-      $util.on('dragstart', function (e) {
-        e.stopPropagation();
-        ctx.$emit('x-dragstart', e);
-      });
+      if (ctx.__$util__ !== undefined) {
+        throw 'Util already initialized';
+      }
 
-      $util.on('drag', function (e) {
-        ctx.$emit('x-drag', e);
-      });
-
-      $util.on('dragend', function (e) {
-        ctx.$emit('x-dragend', e);
-      });
-
-      $util.on('mouseover', function (e) {
-        ctx.$emit('x-mouseover', e);
-      });
-
-      $util.on('mouseout', function (e) {
-        ctx.$emit('x-mouseout', e);
-      });
-
-      $util.on('click', function (e) {
-        ctx.$emit('x-click', e);
-      });
-
-      ctx._xon = 1;
+      this.$util = ctx.__$util__ = util(this.el);
+      ctx.__xon__ = 1;
     },
 
     update: function (handler) {
       var ctx = this.context;
+      var $util = this.$util;
 
-      if (this.currHandler)
-        ctx.$off(this.arg, this.currHandler);
+      if (this.currHandler) {
+        $util.off(this.arg, this.currHandler);
+      }
 
-      if (typeof handler !== 'function')
+      if (typeof handler !== 'function') {
         throw 'Directive "xon" requires a valid function';
+      }
 
       this.currHandler = handler.bind(ctx);
-      ctx.$on(this.arg, this.currHandler);
+      $util.on(this.arg, this.currHandler);
     },
 
     unbind: function () {
       var $util = this.$util;
 
-      this.vm._xon--;
+      this.vm.__xon__ -= 1;
 
-      $util.destroy();
+      if (this.vm.__xon__ === 0) {
+        $util.destroy();
+      }
 
       this.context.$off(this.arg, this.currHandler);
     }

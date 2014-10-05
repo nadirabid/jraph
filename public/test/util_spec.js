@@ -567,6 +567,15 @@ define([
 
             mouseEvent = document.createEvent('MouseEvents');
             testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mouseout',
+              view: window,
+              clientX: window.innerHeight + 100,
+              clientY: window.innerWidth + 100
+            });
+            circleEl.dispatchEvent(mouseEvent);
+
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
               type: 'mouseup',
               view: window,
               clientX: window.innerHeight + 100,

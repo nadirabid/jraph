@@ -71,36 +71,31 @@
 
         <article class="graph-container">
             <svg class="disable-user-selection" v-attr="viewBox:viewBox"
-                v-component="x-graph"
-                v-xon="x-dragstart:panStart, x-drag:pan"
-                v-ref="graph">
+                 v-component="x-graph"
+                 v-ref="graph">
                 <g class="link"
-                   v-xon="x-mouseover:freezePosition,
-                          x-mouseout:releasePosition,
-                          x-dragstart:dragstart,
-                          x-drag:drag"
                    v-component="x-link"
                    v-repeat="links">
                     <line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
                 </g>
                 <g class="node"
-                    v-attr="transform:'translate('+x+','+y+')'"
-                    v-component="x-node"
-                    v-repeat="nodes">
-                    <g v-xon="x-mouseover:mouseover, x-mouseout:mouseout">
+                   v-attr="transform:'translate('+x+','+y+')'"
+                   v-component="x-node"
+                   v-repeat="nodes">
+                    <g class="node-group" v-xon="mouseover:mouseover, mouseout:mouseout">
                         <x-radial-menu v-if="menu">
                             <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
-                            <x-radial-button v-on="click:deleteNode( $event, id )">delete</x-radial-button>
+                            <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
                         </x-radial-menu>
                         <circle class="node-circle"
-                            v-attr="r:radius"
-                            v-xon="x-click:click, x-dragstart:dragstart, x-drag:drag, x-dragend:dragend">
+                                v-attr="r:radius"
+                                v-xon="click:click, dragstart:dragstart, drag:drag, dragend:dragend">
                         </circle>
                     </g>
                     <text class="node-label"
-                        text-anchor="middle"
-                        v-attr="transform:'translate('+labelX+','+labelY+')'"
-                        v-class="invisible:menu">
+                          text-anchor="middle"
+                          v-attr="transform:'translate('+labelX+','+labelY+')'"
+                          v-class="invisible:menu">
                         Label {{$index}}
                     </text>
                 </g>

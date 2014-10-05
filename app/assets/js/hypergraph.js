@@ -132,7 +132,7 @@ define([
       ctx.fixed = true;
     };
 
-    this.dragend = function (e) {
+    this.dragend = function () {
       ctx.menu = true;
     };
   });
