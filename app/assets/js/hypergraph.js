@@ -54,7 +54,6 @@ define([
 
     //hide menu
     this.mouseout = function (e) {
-      console.log('mouseout');
       if (e.mousedownFlag)
         return;
 
@@ -623,9 +622,9 @@ define([
     },
 
     ready: function() {
-      //var $svg = util(this.$el);
-      //$svg.on('dragstart', this.panStart.bind(this));
-      //$svg.on('drag', this.pan.bind(this));
+      var $svg = util(this.$el);
+      $svg.on('dragstart', this.panStart.bind(this));
+      $svg.on('drag', this.pan.bind(this));
     }
 
   });

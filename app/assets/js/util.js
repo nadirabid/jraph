@@ -301,16 +301,15 @@ define(function () {
         e.mousedownFlag = mousedownFlag;
         $util.trigger('dragend', e);
 
-        console.log('util:drag_mouseup', mouseOnElFlag);
         if ((!mouseOnElFlag) ||
             (x < 0 || y < 0) ||
             (x > window.innerWidth || y > window.innerHeight)) {
           dragFlag = false;
 
-          //if (mouseoutEventIgnored) {
+          if (mouseoutEventIgnored) {
             mouseoutEventIgnored = false;
             $util.trigger('mouseout', e);
-          //}
+          }
         }
       }
 
@@ -343,7 +342,6 @@ define(function () {
 
       var mouseoutEventIgnored = false;
       function mouseout(e) {
-        console.log('util:mouseout', dragFlag, mousedownFlag);
         mouseOnElFlag = false;
         if (dragFlag || mousedownFlag) {
           mouseoutEventIgnored = true;
@@ -355,7 +353,6 @@ define(function () {
       }
 
       function click(e) {
-        console.log('util:click', dragFlag);
         if (dragFlag) {
           dragFlag = false;
         }
