@@ -125,8 +125,8 @@ define([
       e.stopPropagation();
       var p = util.transformPointToEl(e.x, e.y, ctx.$el);
 
-      ctx.px = ctx.x = p.x;
-      ctx.py = ctx.y = p.y;
+      ctx.px = ctx.x;
+      ctx.py = ctx.y;
 
       ctx.menu = false;
       ctx.fixed = true;
@@ -300,10 +300,10 @@ define([
       this._textElement = this.$el.querySelector('.node-label');
 
       var $nodeGroup = util(this.$el.querySelector('.node-group'));
-      
+
+      $nodeGroup.on('click', this.click.bind(this));
       $nodeGroup.on('mouseover', this.mouseover.bind(this));
       $nodeGroup.on('mouseout', this.mouseout.bind(this));
-      $nodeGroup.on('click', this.click.bind(this));
       $nodeGroup.on('dragstart', this.dragstart.bind(this));
       $nodeGroup.on('drag', this.drag.bind(this));
       $nodeGroup.on('dragend', this.dragend.bind(this));

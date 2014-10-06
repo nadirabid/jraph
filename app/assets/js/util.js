@@ -269,6 +269,8 @@ define(function () {
         var dx = e.x - px;
         var dy = e.y - py;
 
+        dragFlag = true;
+
         e.dx = dx;
         e.dy = dy;
         $util.trigger('drag', e);
@@ -303,7 +305,6 @@ define(function () {
         px = e.x;
         py = e.y;
 
-        dragFlag = true;
         $util.trigger('dragstart', e);
 
         //memory leak if we don't removeEventListener?
