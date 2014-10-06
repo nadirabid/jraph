@@ -8,7 +8,7 @@ define([
   'globals',
   'directives',
   'components'
-], function ($, _, Mousetrap, d3, Vue, Util, glob) {
+], function ($, _, Mousetrap, d3, Vue, util, glob) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -23,17 +23,17 @@ define([
    */
 
   function StateEventHandlers() {
-    this.click = Util.noop;
-    this.mouseover = Util.noop;
-    this.mouseout = Util.noop;
-    this.drag = Util.noop;
-    this.dragstart = Util.noop;
-    this.dragend = Util.noop;
+    this.click = util.noop;
+    this.mouseover = util.noop;
+    this.mouseout = util.noop;
+    this.drag = util.noop;
+    this.dragstart = util.noop;
+    this.dragend = util.noop;
   }
 
-  var DisabledNodeState = Util.extendClass(StateEventHandlers);
+  var DisabledNodeState = util.extendClass(StateEventHandlers);
 
-  var InitialNodeState = Util.extendClass(StateEventHandlers, function (ctx) {
+  var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
     //show menu
     this.mouseover = function (e) {
       if (e.mousedownFlag)
@@ -54,6 +54,7 @@ define([
 
     //hide menu
     this.mouseout = function (e) {
+      console.log('mouseout');
       if (e.mousedownFlag)
         return;
 
@@ -68,7 +69,7 @@ define([
       var minX = xgraph.minX,
           minY = xgraph.minY;
 
-      var p = Util.transformPointToEl(xgraph.width / 2, xgraph.height / 2, ctx.$el);
+      var p = util.transformPointToEl(xgraph.width / 2, xgraph.height / 2, ctx.$el);
 
       var dx = p.x - ctx.x,
           dy = p.y - ctx.y;
@@ -114,7 +115,7 @@ define([
 
     //drag node
     this.drag = function (e) {
-      var p = Util.transformPointToEl(e.x, e.y, ctx.$el);
+      var p = util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -123,7 +124,7 @@ define([
     };
 
     this.dragstart = function (e) {
-      var p = Util.transformPointToEl(e.x, e.y, ctx.$el);
+      var p = util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -137,7 +138,7 @@ define([
     };
   });
 
-  var LinkingNodeState = Util.extendClass(InitialNodeState, function (ctx) {
+  var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
     //select node target
     this.mouseover = function (e) {
       if (e.mousedownFlag || ctx.id == mouse.data.source.id)
@@ -298,6 +299,15 @@ define([
 
     ready: function () {
       this._textElement = this.$el.querySelector('.node-label');
+
+      var $nodeGroup = util(this.$el.querySelector('.node-group'));
+
+      $nodeGroup.on('mouseover', this.mouseover.bind(this));
+      $nodeGroup.on('mouseout', this.mouseout.bind(this));
+      $nodeGroup.on('click', this.click.bind(this));
+      $nodeGroup.on('dragstart', this.dragstart.bind(this));
+      $nodeGroup.on('drag', this.drag.bind(this));
+      $nodeGroup.on('dragend', this.dragend.bind(this));
     },
 
     beforeDestroy: function () {
@@ -352,7 +362,7 @@ define([
         target.menu = false;
         target.fixed = true;
 
-        var v = Util.transformVectorToEl(e.dx, e.dy, this.$el);
+        var v = util.transformVectorToEl(e.dx, e.dy, this.$el);
 
         this.source_x = source.px = source.x = source.x + v.x;
         this.source_y = source.py = source.y = source.y + v.y;
@@ -368,7 +378,7 @@ define([
         var source = this.source,
             target = this.target;
 
-        var v = Util.transformVectorToEl(e.dx, e.dy, this.$el);
+        var v = util.transformVectorToEl(e.dx, e.dy, this.$el);
 
         source.px = source.x = this.source_x + v.x;
         source.py = source.y = this.source_y + v.y;
@@ -548,7 +558,7 @@ define([
 
         this.displayContextMenu = true;
 
-        var p = Util.transformPointToEl(e.x, e.y, this.$el);
+        var p = util.transformPointToEl(e.x, e.y, this.$el);
 
         this.cmX = p.x;
         this.cmY = p.y;
@@ -610,6 +620,12 @@ define([
 
       window.addEventListener('resize', this.resize.bind(this));
       window.addEventListener('contextmenu', this.contextMenu.bind(this));
+    },
+
+    ready: function() {
+      //var $svg = util(this.$el);
+      //$svg.on('dragstart', this.panStart.bind(this));
+      //$svg.on('drag', this.pan.bind(this));
     }
 
   });

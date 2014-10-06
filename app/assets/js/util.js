@@ -301,15 +301,16 @@ define(function () {
         e.mousedownFlag = mousedownFlag;
         $util.trigger('dragend', e);
 
+        console.log('util:drag_mouseup', mouseOnElFlag);
         if ((!mouseOnElFlag) ||
             (x < 0 || y < 0) ||
             (x > window.innerWidth || y > window.innerHeight)) {
           dragFlag = false;
 
-          if (mouseoutEventIgnored) {
+          //if (mouseoutEventIgnored) {
             mouseoutEventIgnored = false;
             $util.trigger('mouseout', e);
-          }
+          //}
         }
       }
 
@@ -342,6 +343,7 @@ define(function () {
 
       var mouseoutEventIgnored = false;
       function mouseout(e) {
+        console.log('util:mouseout', dragFlag, mousedownFlag);
         mouseOnElFlag = false;
         if (dragFlag || mousedownFlag) {
           mouseoutEventIgnored = true;
@@ -353,6 +355,7 @@ define(function () {
       }
 
       function click(e) {
+        console.log('util:click', dragFlag);
         if (dragFlag) {
           dragFlag = false;
         }
@@ -363,8 +366,8 @@ define(function () {
 
       el.addEventListener('mousedown', drag_mousedown);
       el.addEventListener('mousedown', mousedown);
-      el.addEventListener('mouseover', mouseover);
-      el.addEventListener('mouseout', mouseout);
+      el.addEventListener('mouseenter', mouseover);
+      el.addEventListener('mouseleave', mouseout);
       el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
 

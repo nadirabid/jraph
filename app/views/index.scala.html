@@ -82,15 +82,12 @@
                    v-attr="transform:'translate('+x+','+y+')'"
                    v-component="x-node"
                    v-repeat="nodes">
-                    <g class="node-group" v-xon="mouseover:mouseover, mouseout:mouseout">
-                        <x-radial-menu v-if="menu">
+                    <g class="node-group">
+                        <x-radial-menu v-class="hidden:!menu">
                             <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
                             <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
                         </x-radial-menu>
-                        <circle class="node-circle"
-                                v-attr="r:radius"
-                                v-xon="click:click, dragstart:dragstart, drag:drag, dragend:dragend">
-                        </circle>
+                        <circle class="node-circle" v-attr="r:radius"></circle>
                     </g>
                     <text class="node-label"
                           text-anchor="middle"
