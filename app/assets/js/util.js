@@ -266,26 +266,12 @@ define(function () {
       var mouseOnElFlag = false;
 
       function drag_mousemove(e) {
-        var x = e.x;
-        var y = e.y;
-        var dx = x - px;
-        var dy = y - py;
+        var dx = e.x - px;
+        var dy = e.y - py;
 
-        if (!dragFlag) {
-          var distSquared = dx * dx + dy * dy;
-
-          if (distSquared > 4) {
-            e.dx = dx;
-            e.dy = dy;
-            $util.trigger('dragstart', e);
-            dragFlag = true;
-          }
-        }
-        else {
-          e.dx = dx;
-          e.dy = dy;
-          $util.trigger('drag', e);
-        }
+        e.dx = dx;
+        e.dy = dy;
+        $util.trigger('drag', e);
       }
 
       function drag_mouseup(e) {
@@ -314,9 +300,11 @@ define(function () {
       }
 
       function drag_mousedown(e) {
-        e.stopPropagation();
         px = e.x;
         py = e.y;
+
+        dragFlag = true;
+        $util.trigger('dragstart', e);
 
         //memory leak if we don't removeEventListener?
         Util.on('mousemove', drag_mousemove);
@@ -343,6 +331,7 @@ define(function () {
       var mouseoutEventIgnored = false;
       function mouseout(e) {
         mouseOnElFlag = false;
+
         if (dragFlag || mousedownFlag) {
           mouseoutEventIgnored = true;
           return;

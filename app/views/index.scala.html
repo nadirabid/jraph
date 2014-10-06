@@ -70,12 +70,8 @@
         </article>
 
         <article class="graph-container">
-            <svg class="disable-user-selection" v-attr="viewBox:viewBox"
-                 v-component="x-graph"
-                 v-ref="graph">
-                <g class="link"
-                   v-component="x-link"
-                   v-repeat="links">
+            <svg class="disable-user-selection" v-attr="viewBox:viewBox" v-component="x-graph" v-ref="graph">
+                <g class="link" v-component="x-link" v-repeat="links">
                     <line v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
                 </g>
                 <g class="node"

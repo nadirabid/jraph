@@ -6,7 +6,6 @@ define([
   'vue',
   'util',
   'globals',
-  'directives',
   'components'
 ], function ($, _, Mousetrap, d3, Vue, util, glob) {
   'use strict';
@@ -123,6 +122,7 @@ define([
     };
 
     this.dragstart = function (e) {
+      e.stopPropagation();
       var p = util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
@@ -300,7 +300,7 @@ define([
       this._textElement = this.$el.querySelector('.node-label');
 
       var $nodeGroup = util(this.$el.querySelector('.node-group'));
-
+      
       $nodeGroup.on('mouseover', this.mouseover.bind(this));
       $nodeGroup.on('mouseout', this.mouseout.bind(this));
       $nodeGroup.on('click', this.click.bind(this));
@@ -352,6 +352,8 @@ define([
         if (mouse.state != 'initial')
           return;
 
+        e.stopPropagation();
+
         var source = this.source,
             target = this.target;
 
@@ -361,13 +363,11 @@ define([
         target.menu = false;
         target.fixed = true;
 
-        var v = util.transformVectorToEl(e.dx, e.dy, this.$el);
+        this.source_x = source.px = source.x;
+        this.source_y = source.py = source.y;
 
-        this.source_x = source.px = source.x = source.x + v.x;
-        this.source_y = source.py = source.y = source.y + v.y;
-
-        this.target_x = target.px = target.x = target.x + v.x;
-        this.target_y = target.py = target.y = target.y + v.y;
+        this.target_x = target.px = target.x;
+        this.target_y = target.py = target.y;
       },
 
       drag: function (e) {
@@ -392,6 +392,14 @@ define([
         this.$parent.forceResume();
       }
 
+    },
+
+    ready: function() {
+      var $g = util(this.$el);
+      $g.on('mouseover', this.freezePosition.bind(this));
+      $g.on('mouseout', this.releasePosition.bind(this));
+      $g.on('dragstart', this.dragstart.bind(this));
+      $g.on('drag', this.drag.bind(this));
     }
 
   });
