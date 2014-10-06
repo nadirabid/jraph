@@ -4,7 +4,7 @@ define([
 ], function (util, testHelpers) {
 
   describe('Util', function () {
-    describe('for DOM based events', function () {
+    describe('wrapper for custom event', function () {
       var xmlns = 'http://www.w3.org/2000/svg';
       var svgEl, circleEl, $circleEl;
 
@@ -66,28 +66,27 @@ define([
 
       it('should fire mouseover event',
           function () {
-            var mouseEventName = 'mouseover';
-            var spy = jasmine.createSpy(mouseEventName + 'Spy');
+            var spy = jasmine.createSpy('mouseenterSpy');
 
-            $circleEl.on(mouseEventName, spy);
+            $circleEl.on('mouseover', spy);
 
             var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
             customEvents
                 .filter(function (eventName) {
-                  return eventName != mouseEventName;
+                  return eventName != 'mouseover';
                 }).forEach(function (eventName) {
                   $circleEl.on(eventName, otherEventsSpy);
                 });
 
             var mouseEvent = document.createEvent('MouseEvents');
             testHelpers.initMouseEvent(mouseEvent, {
-              type: mouseEventName,
+              type: 'mouseenter',
               view: window
             });
             circleEl.dispatchEvent(mouseEvent);
 
             expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({
-              type: mouseEventName
+              type: 'mouseenter'
             }));
 
             expect(otherEventsSpy.calls.any()).toEqual(false);
@@ -95,28 +94,27 @@ define([
 
       it('should fire mouseout event',
           function () {
-            var mouseEventName = 'mouseout';
-            var spy = jasmine.createSpy(mouseEventName + 'Spy');
+            var spy = jasmine.createSpy('mouseoutSpy');
 
-            $circleEl.on(mouseEventName, spy);
+            $circleEl.on('mouseout', spy);
 
             var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
             customEvents
                 .filter(function (eventName) {
-                  return eventName != mouseEventName;
+                  return eventName != 'mouseout';
                 }).forEach(function (eventName) {
                   $circleEl.on(eventName, otherEventsSpy);
                 });
 
             var mouseEvent = document.createEvent('MouseEvents');
             testHelpers.initMouseEvent(mouseEvent, {
-              type: mouseEventName,
+              type: 'mouseleave',
               view: window
             });
             circleEl.dispatchEvent(mouseEvent);
 
             expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({
-              type: mouseEventName
+              type: 'mouseleave'
             }));
 
             expect(otherEventsSpy.calls.any()).toEqual(false);
@@ -132,7 +130,7 @@ define([
             var otherEventsSpy = jasmine.createSpy('otherEventsSpy');
             customEvents
                 .filter(function (eventName) {
-                  return eventName != mouseEventName;
+                  return eventName != mouseEventName && eventName != 'dragstart';
                 }).forEach(function (eventName) {
                   $circleEl.on(eventName, otherEventsSpy);
                 });
@@ -210,7 +208,7 @@ define([
             expect(otherEventsSpy.calls.any()).toEqual(false);
           });
 
-      it('should fire dragstart after mousedown and mousemove events',
+      it('should fire dragstart immediately after mousedown',
           function () {
             var eventName = 'dragstart';
             var spy = jasmine.createSpy(eventName + 'Spy');
@@ -231,25 +229,8 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            // signal two mousemove events to fire dragstart event
-            for (var i = 0; i < 2; i++) {
-              mouseEvent = document.createEvent('MouseEvents');
-              testHelpers.initMouseEvent(mouseEvent, {
-                type: 'mousemove',
-                view: window,
-                clientX: x + i * 5,
-                clientY: y + i * 5
-              });
-              circleEl.dispatchEvent(mouseEvent);
-
-              if (i < 1) {
-                // only the final mousemove should fire drag
-                expect(spy.calls.count()).toEqual(0);
-              }
-            }
-
             expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({
-              type: 'mousemove'
+              type: 'mousedown'
             }));
           });
 
@@ -274,22 +255,14 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            // signal three mousemove events to fire drag event
-            for (var i = 0; i < 3; i++) {
-              mouseEvent = document.createEvent('MouseEvents');
-              testHelpers.initMouseEvent(mouseEvent, {
-                type: 'mousemove',
-                view: window,
-                clientX: x + i * 5,
-                clientY: y + i * 5
-              });
-              circleEl.dispatchEvent(mouseEvent);
-
-              if (i < 2) {
-                // only the final mousemove should fire drag
-                expect(spy.calls.count()).toEqual(0);
-              }
-            }
+            mouseEvent = document.createEvent('MouseEvents');
+            testHelpers.initMouseEvent(mouseEvent, {
+              type: 'mousemove',
+              view: window,
+              clientX: x + 5,
+              clientY: y + 5
+            });
+            circleEl.dispatchEvent(mouseEvent);
 
             expect(spy).toHaveBeenCalledWith(jasmine.objectContaining({
               type: 'mousemove'
@@ -544,17 +517,6 @@ define([
             });
             circleEl.dispatchEvent(mouseEvent);
 
-            for (var i = 0; i < 3; i++) {
-              mouseEvent = document.createEvent('MouseEvents');
-              testHelpers.initMouseEvent(mouseEvent, {
-                type: 'mousemove',
-                view: window,
-                clientX: x + 5 * i,
-                clientY: y + 5 * i
-              });
-              circleEl.dispatchEvent(mouseEvent);
-            }
-
             //simulate the mouse moving outside of the browser window
             mouseEvent = document.createEvent('MouseEvents');
             testHelpers.initMouseEvent(mouseEvent, {
@@ -567,7 +529,7 @@ define([
 
             mouseEvent = document.createEvent('MouseEvents');
             testHelpers.initMouseEvent(mouseEvent, {
-              type: 'mouseout',
+              type: 'mouseleave',
               view: window,
               clientX: window.innerHeight + 100,
               clientY: window.innerWidth + 100
