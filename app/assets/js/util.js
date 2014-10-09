@@ -198,6 +198,8 @@ define([
     }, true);
 
     document.addEventListener('mousemove', function (e) {
+      glob.mouse.x = e.x;
+      glob.mouse.y = e.y;
       Util.trigger('mousemove', e);
     });
 

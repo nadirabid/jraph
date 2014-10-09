@@ -111,9 +111,7 @@
                         Label {{$index}}
                     </text>
                 </g>
-                <g class="dynamic-content">
-
-                </g>
+                <g class="dynamic-content"></g>
                 <x-radial-menu v-attr="transform:'translate('+cmX+','+cmY+')'" v-if="displayContextMenu">
                     <x-radial-button>create node</x-radial-button>
                     <x-radial-button>calculate force</x-radial-button>
@@ -147,8 +145,7 @@
 
     <script id="template-ghost-link" type="text/x-template">
         <g>
-            <line class="ghost-link"
-                  marker-end="url(#marker-ghost-link)"
+            <line class="ghost-link link"
                   v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y">
             </line>
         </g>

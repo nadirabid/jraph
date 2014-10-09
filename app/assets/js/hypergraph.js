@@ -188,16 +188,13 @@ define([
     };
   });
 
-  Vue.component('x-ghost-link', {
+  var GhostLinkComponent = Vue.extend({
 
-    template:'#x-ghost-link',
+    template:'#template-ghost-link',
+
+    replace: true,
 
     data: {
-
-      source: {
-        x: 0,
-        y: 0
-      },
 
       target: {
         x: 0,
@@ -206,8 +203,32 @@ define([
 
     },
 
+    methods: {
+
+      mousemove: function(e) {
+        this.target.x = e.x;
+        this.target.y = e.y;
+      }
+
+    },
+
     created: function() {
-      // constructor options to determine source
+      this.source = {
+        x: this.linkSource.x,
+        y: this.linkSource.y
+      };
+
+      this.target = {
+        x: mouse.x,
+        y: mouse.y
+      };
+      
+      this._mousemove = this.mousemove.bind(this);
+      util.on('mousemove', this._mousemove);
+    },
+
+    beforeDestroy: function() {
+      util.off('mousemove', this._mousemove);
     }
 
   });
@@ -273,6 +294,17 @@ define([
 
         mouse.state = 'linking';
         mouse.data.source = this;
+
+        var ghostLink = new GhostLinkComponent({
+          data: {
+            linkSource: this
+          }
+        });
+
+        var dynamicContentEl = this.$parent.$el
+            .querySelector('.dynamic-content');
+
+        ghostLink.$appendTo(dynamicContentEl);
       },
 
       forceResume: function () {
