@@ -249,10 +249,6 @@ define([
 
         mouse.state = 'linking';
         mouse.data.source = this;
-
-        util.on('mousemove', function(e) {
-
-        });
       },
 
       forceResume: function () {
@@ -318,18 +314,6 @@ define([
       $nodeGroup.on('dragstart', this.dragstart.bind(this));
       $nodeGroup.on('drag', this.drag.bind(this));
       $nodeGroup.on('dragend', this.dragend.bind(this));
-
-      $nodeGroup.on('dragenter', function(e) {
-        console.log('dragenter', e);
-      });
-
-      $nodeGroup.on('dragleave', function(e) {
-        console.log('dragleave', e);
-      });
-
-      $nodeGroup.on('drop', function(e) {
-        console.log('drop', e);
-      });
     },
 
     beforeDestroy: function () {
