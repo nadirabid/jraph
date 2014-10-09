@@ -188,6 +188,30 @@ define([
     };
   });
 
+  Vue.component('x-ghost-link', {
+
+    template:'#x-ghost-link',
+
+    data: {
+
+      source: {
+        x: 0,
+        y: 0
+      },
+
+      target: {
+        x: 0,
+        y: 0
+      }
+
+    },
+
+    created: function() {
+      // constructor options to determine source
+    }
+
+  });
+
   Vue.component('x-node', {
 
     data: {

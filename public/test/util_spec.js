@@ -1,5 +1,5 @@
 define([
-  'js/util',
+  'util',
   'testHelpers'
 ], function (util, testHelpers) {
 

@@ -20,19 +20,19 @@
                 'use strict';
 
                 requirejs.config({
-                    baseUrl: 'assets',
+                    baseUrl: 'assets/js',
                     paths: {
-                        'd3': 'js/dependencies/d3',
-                        'jquery': 'js/dependencies/jquery-2.1.1',
-                        'lodash': 'js/dependencies/lodash',
-                        'mousetrap': 'js/dependencies/mousetrap',
-                        'q': 'js/dependencies/q',
-                        'snap': 'js/dependencies/snap.svg',
-                        'vue': 'js/dependencies/vue',
-                        'jasmine': 'test/jasmine/jasmine',
-                        'jasmine-html': 'test/jasmine/jasmine-html',
-                        'boot': 'test/jasmine/boot',
-                        'testHelpers': 'test/test_helpers'
+                        'd3': 'dependencies/d3',
+                        'jquery': 'dependencies/jquery-2.1.1',
+                        'lodash': 'dependencies/lodash',
+                        'mousetrap': 'dependencies/mousetrap',
+                        'q': 'dependencies/q',
+                        'snap': 'dependencies/snap.svg',
+                        'vue': 'dependencies/vue',
+                        'jasmine': '../test/jasmine/jasmine',
+                        'jasmine-html': '../test/jasmine/jasmine-html',
+                        'boot': '../test/jasmine/boot',
+                        'testHelpers': '../test/test_helpers'
                     },
                     shim: {
                         'jasmine': {
@@ -51,7 +51,7 @@
 
                 // Define all of your specs here. These are RequireJS modules.
                 var specs = [
-                    'test/util_spec'
+                    '../test/util_spec'
                 ];
 
                 require(['boot', 'testHelpers'], function () {

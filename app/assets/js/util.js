@@ -346,7 +346,7 @@ define([
 
         var x = e.x;
         var y = e.y;
-        
+
         dragState.state = DRAG_STATES.NONE;
 
         $util.trigger('dragend', e);
