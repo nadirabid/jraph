@@ -35,9 +35,6 @@ define([
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
     //show menu
     this.mouseover = function (e) {
-      if (e.mousedownFlag)
-        return;
-
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
@@ -53,9 +50,6 @@ define([
 
     //hide menu
     this.mouseout = function (e) {
-      if (e.mousedownFlag)
-        return;
-
       ctx.fixed = false;
       ctx.menu = false;
     };
@@ -89,7 +83,7 @@ define([
       });
 
       ctx.menu = false;
-      ctx.radius += 12;
+      ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
       mouse.state = 'disabled';
@@ -102,7 +96,7 @@ define([
         mouse.state = 'initial';
 
         ctx.fixed = false;
-        ctx.radius -= 12;
+        ctx.radius -= 0.5;
         ctx.labelDistance -= 12;
 
         Mousetrap.unbind('esc');
@@ -140,10 +134,13 @@ define([
   var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
     //select node target
     this.mouseover = function (e) {
-      if (e.mousedownFlag || ctx.id == mouse.data.source.id)
+      if (ctx.id == mouse.data.source.id)
         return;
 
-      ctx.$el.querySelector('.node-circle').classList.add('node-linking-target', 'hover');
+      ctx.$el.querySelector('.node-circle')
+          .classList
+          .add('node-linking-target', 'hover');
+
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
@@ -151,10 +148,13 @@ define([
 
     //unselect node target
     this.mouseout = function (e) {
-      if (e.mousedownFlag || ctx.id == mouse.data.source.id)
+      if (ctx.id == mouse.data.source.id)
         return;
 
-      ctx.$el.querySelector('.node-circle').classList.remove('node-linking-target', 'hover');
+      ctx.$el.querySelector('.node-circle')
+          .classList
+          .remove('node-linking-target', 'hover');
+
       ctx.fixed = false;
     };
 
@@ -173,8 +173,13 @@ define([
         ctx.forceResume();
       }
 
-      ctx.$el.querySelector('.node-circle').classList.remove('node-linking-target', 'hover');
-      sourceCtx.$el.querySelector('.node-circle').classList.remove('node-linking-source');
+      ctx.$el.querySelector('.node-circle')
+          .classList
+          .remove('node-linking-target', 'hover');
+
+      sourceCtx.$el.querySelector('.node-circle')
+          .classList
+          .remove('node-linking-source');
 
       sourceCtx.fixed = false;
 
@@ -191,7 +196,7 @@ define([
 
       labelDistance: 15,
 
-      radius: 20,
+      radius: 1.5,
 
       x: 0,
 
@@ -208,7 +213,7 @@ define([
     methods: {
 
       updateLable: function () {
-        var labelDistance = this.radius + this.labelDistance;
+        var labelDistance = (this.radius * 12) + this.labelDistance;
         var bBox = this._textElement.getBBox();
 
         var dx = this.x - (this.$parent.width / 2),
@@ -235,13 +240,19 @@ define([
       setLinkSource: function (e) {
         e.stopPropagation();
 
-        this.$el.querySelector('.node-circle').classList.add('node-linking-source');
+        this.$el.querySelector('.node-circle')
+            .classList
+            .add('node-linking-source');
 
         this.menu = false;
         this.fixed = true;
 
         mouse.state = 'linking';
         mouse.data.source = this;
+
+        util.on('mousemove', function(e) {
+
+        });
       },
 
       forceResume: function () {
@@ -307,6 +318,18 @@ define([
       $nodeGroup.on('dragstart', this.dragstart.bind(this));
       $nodeGroup.on('drag', this.drag.bind(this));
       $nodeGroup.on('dragend', this.dragend.bind(this));
+
+      $nodeGroup.on('dragenter', function(e) {
+        console.log('dragenter', e);
+      });
+
+      $nodeGroup.on('dragleave', function(e) {
+        console.log('dragleave', e);
+      });
+
+      $nodeGroup.on('drop', function(e) {
+        console.log('drop', e);
+      });
     },
 
     beforeDestroy: function () {
@@ -321,7 +344,7 @@ define([
     methods: {
 
       freezePosition: function (e) {
-        if (e.mousedownFlag || mouse.state != 'initial')
+        if (mouse.state != 'initial')
           return;
 
         var source = this.source,
@@ -335,17 +358,21 @@ define([
         target.py = target.y;
         target.fixed = true;
 
-        this.$el.classList.add('hover');
+        this.$el.querySelector('.link')
+            .classList
+            .add('hover');
       },
 
       releasePosition: function (e) {
-        if (e.mousedownFlag || mouse.state != 'initial')
+        if (mouse.state != 'initial')
           return;
 
         this.source.fixed = false;
         this.target.fixed = false;
 
-        this.$el.classList.remove('hover');
+        this.$el.querySelector('.link')
+            .classList
+            .remove('hover');
       },
 
       dragstart: function (e) {
@@ -595,6 +622,8 @@ define([
           self.$parent.saveNodes();
         });
       });
+
+      this.markerArrow =
 
       this.$on('data', function (nodes, links) {
         self.links = links;

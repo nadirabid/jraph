@@ -115,15 +115,20 @@ article.info-container {
   -webkit-flex: 1 1 auto;
 }
 
+.marker-arrow {
+    fill:rgba(255,255,255,1);
+    stroke-opacity:0;
+    stroke-width:.25em;
+}
+
 .link {
   opacity: .3;
   stroke: #eee;
-  stroke-width:.5em;
+  stroke-width:.25em;
 }
 
 .link.hover {
   opacity: .6;
-  stroke-width:.9em;
 }
 
 .node-circle

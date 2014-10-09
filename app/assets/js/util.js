@@ -1,6 +1,18 @@
 // Utils
-define(function () {
+define([
+  'globals'
+], function (glob) {
   'use strict';
+
+  var DRAG_STATES = Object.freeze({
+    'NONE': 0,
+    'DRAG_START': 1,
+    'DRAG': 2
+  });
+
+  var dragState = glob.mouse.dragState = {
+    state: DRAG_STATES.NONE
+  };
 
   var slice = Array.prototype.slice;
   var push = Array.prototype.push;
@@ -16,13 +28,11 @@ define(function () {
     }
   }
 
-  var counter = 0;
   function WrappedUtil(value) {
     // DO NOT use these properties as part
     // of the client API as that can lead to
     // memory leaks
 
-    this.__id__ = counter++;
     this.__object__ = value;
     this.__destroy__ = [];
   }
@@ -260,19 +270,70 @@ define(function () {
       this.__events__ = null;
     };
 
+    function registerDropEvents($util, el) {
+      // todo: how to check if the drop element is
+      // a valid target
+      function drop_mouseover(e) {
+        if (dragState.state == DRAG_STATES.NONE) {
+          return;
+        }
+
+        $util.trigger('dragenter', e);
+      }
+
+      function drop_mouseout(e) {
+        if (dragState.state == DRAG_STATES.NONE) {
+          return;
+        }
+
+        $util.trigger('dragleave', e);
+      }
+
+      function drop_click(e) {
+        if (dragState.state == DRAG_STATES.NONE) {
+          return;
+        }
+
+        $util.trigger('drop', e);
+      }
+
+      el.addEventListener('mouseover', drop_mouseover);
+      el.addEventListener('mouseout', drop_mouseout);
+      el.addEventListener('click', drop_click);
+
+      return function() {
+        el.removeEventListener('mouseover', drop_mouseover);
+        el.removeEventListener('mouseout', drop_mouseout);
+        el.removeEventListener('click', drop_click);
+      };
+    }
+
     function registerEvents($util, el) {
       var px, py = 0;
       var dragFlag = false;
       var mouseOnElFlag = false;
 
+      function drag_mousedown(e) {
+        dragState.state = DRAG_STATES.DRAG_START;
+        dragState.element = el;
+        px = e.x;
+        py = e.y;
+
+        $util.trigger('dragstart', e);
+
+        //memory leak if we don't removeEventListener?
+        Util.on('mousemove', drag_mousemove);
+        Util.on('mouseup', drag_mouseup);
+      }
+
       function drag_mousemove(e) {
-        var dx = e.x - px;
-        var dy = e.y - py;
+        if (!dragFlag) {
+          dragFlag = true;
+          dragState.state = DRAG_STATES.DRAG;
+        }
 
-        dragFlag = true;
-
-        e.dx = dx;
-        e.dy = dy;
+        e.dx = e.x - px;
+        e.dy = e.y - py;
         $util.trigger('drag', e);
       }
 
@@ -286,7 +347,9 @@ define(function () {
         var x = e.x;
         var y = e.y;
 
-        e.mousedownFlag = mousedownFlag;
+        dragState.element = el;
+        dragState.state = DRAG_STATES.NONE;
+
         $util.trigger('dragend', e);
 
         if ((!mouseOnElFlag) ||
@@ -299,17 +362,6 @@ define(function () {
             $util.trigger('mouseout', e);
           }
         }
-      }
-
-      function drag_mousedown(e) {
-        px = e.x;
-        py = e.y;
-
-        $util.trigger('dragstart', e);
-
-        //memory leak if we don't removeEventListener?
-        Util.on('mousemove', drag_mousemove);
-        Util.on('mouseup', drag_mouseup);
       }
 
       function mouseup(e) {
@@ -325,7 +377,6 @@ define(function () {
         if (dragFlag || mousedownFlag)
           return;
 
-        e.mousedownFlag = mousedownFlag;
         $util.trigger('mouseover', e);
       }
 
@@ -338,7 +389,6 @@ define(function () {
           return;
         }
 
-        e.mousedownFlag = mousedownFlag;
         $util.trigger('mouseout', e);
       }
 
@@ -358,6 +408,8 @@ define(function () {
       el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
 
+      var removeDropEventListeners = registerDropEvents($util, el);
+
       return function() {
         Util.off('mouseup', drag_mouseup);
         Util.off('mousemove', drag_mousemove);
@@ -373,6 +425,8 @@ define(function () {
         el.removeEventListener('mouseout', mouseout);
         el.removeEventListener('mouseup', mouseup);
         el.removeEventListener('click', click);
+
+        removeDropEventListeners();
       };
     }
 
