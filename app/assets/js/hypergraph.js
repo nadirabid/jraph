@@ -177,6 +177,9 @@ define([
           .classList
           .remove('node-linking-target', 'hover');
 
+      sourceCtx._ghostLink.$destroy();
+      sourceCtx._ghostLink = null;
+
       sourceCtx.$el.querySelector('.node-circle')
           .classList
           .remove('node-linking-source');
@@ -206,23 +209,20 @@ define([
     methods: {
 
       mousemove: function(e) {
-        this.target.x = e.x;
-        this.target.y = e.y;
+        this.target = util.transformPointToEl(e.x, e.y, this.$el);
       }
 
     },
 
-    created: function() {
-      this.source = {
-        x: this.linkSource.x,
-        y: this.linkSource.y
-      };
+    attached: function() {
+      this.source = util.transformPointToEl(this.linkSource.x,
+                                            this.linkSource.y,
+                                            this.$el);
 
-      this.target = {
-        x: mouse.x,
-        y: mouse.y
-      };
-      
+      this.target = util.transformPointToEl(mouse.x,
+                                            mouse.y,
+                                            this.$el);
+
       this._mousemove = this.mousemove.bind(this);
       util.on('mousemove', this._mousemove);
     },
@@ -285,6 +285,7 @@ define([
       setLinkSource: function (e) {
         e.stopPropagation();
 
+        console.log('x-node:setLinkSource');
         this.$el.querySelector('.node-circle')
             .classList
             .add('node-linking-source');
@@ -295,7 +296,7 @@ define([
         mouse.state = 'linking';
         mouse.data.source = this;
 
-        var ghostLink = new GhostLinkComponent({
+        var ghostLink = this._ghostLink = new GhostLinkComponent({
           data: {
             linkSource: this
           }
@@ -607,7 +608,7 @@ define([
           return;
 
         if (!this._forceStart)
-          this._forceStart = _.throttle(this._force.start.bind(this._force), 1200);
+          this._forceStart = _.throttle(this._force.start.bind(this._force), 700);
 
         this._forceStart();
       },
@@ -617,7 +618,7 @@ define([
           return;
 
         if (!this._forceResume)
-          this._forceResume = _.throttle(this._force.resume.bind(this._force), 1200);
+          this._forceResume = _.throttle(this._force.resume.bind(this._force), 700);
 
         this._forceResume();
       },
@@ -662,8 +663,6 @@ define([
           self.$parent.saveNodes();
         });
       });
-
-      this.markerArrow =
 
       this.$on('data', function (nodes, links) {
         self.links = links;

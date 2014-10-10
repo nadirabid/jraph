@@ -81,11 +81,8 @@
                             markerUnits="strokeWidth">
                         <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
                     </marker>
-
-                    <marker id="def-marker-ghost-link">
-                        <circle></circle>
-                    </marker>
                 </defs>
+                <g class="dynamic-content"></g>
                 <g v-component="x-link" v-repeat="links">
                     <line class="link"
                           v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
@@ -111,7 +108,6 @@
                         Label {{$index}}
                     </text>
                 </g>
-                <g class="dynamic-content"></g>
                 <x-radial-menu v-attr="transform:'translate('+cmX+','+cmY+')'" v-if="displayContextMenu">
                     <x-radial-button>create node</x-radial-button>
                     <x-radial-button>calculate force</x-radial-button>
