@@ -316,6 +316,10 @@ define([
       var mouseOnElFlag = false;
 
       function drag_mousedown(e) {
+        if (e.button !== 0) {
+          return;
+        }
+
         dragState.state = DRAG_STATES.DRAG_START;
         dragState.element = el;
         px = e.x;
@@ -396,10 +400,9 @@ define([
       }
 
       function click(e) {
-        console.log('util:click');
+        console.log('util:click', e);
         if (dragFlag) {
           dragFlag = false;
-          console.log('util:click cancelled');
         }
         else {
           $util.trigger('click', e);

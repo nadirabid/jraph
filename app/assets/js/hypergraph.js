@@ -193,41 +193,52 @@ define([
 
   var GhostLinkComponent = Vue.extend({
 
-    template:'#template-ghost-link',
-
     replace: true,
 
-    data: {
+    template: function () {
+      return '#template-ghost-link';
+    },
 
-      target: {
-        x: 0,
-        y: 0
-      }
+    data: function () {
+      return {
 
+        source: {
+          x: 0,
+          y: 0
+        },
+
+        target: {
+          x: 0,
+          y: 0
+        }
+
+      };
     },
 
     methods: {
 
-      mousemove: function(e) {
+      mousemove: function (e) {
         this.target = util.transformPointToEl(e.x, e.y, this.$el);
       }
 
     },
 
-    attached: function() {
-      this.source = util.transformPointToEl(this.linkSource.x,
-                                            this.linkSource.y,
-                                            this.$el);
+    attached: function () {
+      this.source = util.transformPointToEl(
+          this.linkSource.x,
+          this.linkSource.y,
+          this.$el);
 
-      this.target = util.transformPointToEl(mouse.x,
-                                            mouse.y,
-                                            this.$el);
+      this.target = util.transformPointToEl(
+          mouse.x,
+          mouse.y,
+          this.$el);
 
       this._mousemove = this.mousemove.bind(this);
       util.on('mousemove', this._mousemove);
     },
 
-    beforeDestroy: function() {
+    beforeDestroy: function () {
       util.off('mousemove', this._mousemove);
     }
 
@@ -235,24 +246,26 @@ define([
 
   Vue.component('x-node', {
 
-    data: {
+    data: function () {
+      return {
 
-      menu: false,
+        menu: false,
 
-      labelDistance: 15,
+        labelDistance: 15,
 
-      radius: 1.5,
+        radius: 1.5,
 
-      x: 0,
+        x: 0,
 
-      y: 0,
+        y: 0,
 
-      labelX: 0,
+        labelX: 0,
 
-      labelY: 0,
+        labelY: 0,
 
-      fixed: false //d3.force doesn't pick it up if not explicitly linked
+        fixed: false //d3.force doesn't pick it up if not explicitly linked
 
+      };
     },
 
     methods: {
@@ -285,7 +298,6 @@ define([
       setLinkSource: function (e) {
         e.stopPropagation();
 
-        console.log('x-node:setLinkSource');
         this.$el.querySelector('.node-circle')
             .classList
             .add('node-linking-source');
@@ -462,7 +474,7 @@ define([
 
     },
 
-    ready: function() {
+    ready: function () {
       var $g = util(this.$el);
       $g.on('mouseover', this.freezePosition.bind(this));
       $g.on('mouseout', this.releasePosition.bind(this));
@@ -474,42 +486,30 @@ define([
 
   Vue.component('x-graph', {
 
-    data: {
-
-      nodes: [ ],
-
-      links: [ ],
-
-      width: 0,
-
-      height: 0,
-
-      minX: 0,
-
-      minY: 0,
-
-      cmX: 0,
-
-      cmY: 0,
-
-      displayContextMenu: false,
-
-      enableForceLayout: true
-
+    data: function () {
+      return {
+        nodes: [ ],
+        links: [ ],
+        width: 0,
+        height: 0,
+        minX: 0,
+        minY: 0,
+        cmX: 0,
+        cmY: 0,
+        displayContextMenu: false,
+        enableForceLayout: true
+      };
     },
 
     computed: {
 
       nodes: {
-
-        $get: function () {
+        get: function () {
           return this.$parent.nodes;
         },
-
-        $set: function (value) {
+        set: function (value) {
           this.$parent.nodes = value;
         }
-
       },
 
       viewBox: function () {
@@ -673,17 +673,16 @@ define([
             .start();
       });
 
-      var parentObserver = this.$parent.$compiler.observer;
-
-      parentObserver.on('change:nodes', function (value, mutation) {
+      // todo: unwatch when component is destroyed
+      this.$parent.$watch('nodes', function (value, mutation) {
         if (!mutation)
           return;
 
         force.nodes(value);
         self.forceStart();
-      });
+      }, false, true);
 
-      parentObserver.on('change:links', function (value, mutation) {
+      this.$parent.$watch('links', function (value, mutation) {
         if (!mutation)
           return;
 
@@ -697,7 +696,7 @@ define([
       window.addEventListener('contextmenu', this.contextMenu.bind(this));
     },
 
-    ready: function() {
+    ready: function () {
       var $svg = util(this.$el);
       $svg.on('dragstart', this.panStart.bind(this));
       $svg.on('drag', this.pan.bind(this));
@@ -711,18 +710,14 @@ define([
 
   Vue.component('x-node-data', {
 
-    data: {
-
-      nodeData: { },
-
-      key: '',
-
-      value: '',
-
-      valueHasError: false,
-
-      keyHasError: false
-
+    data: function () {
+      return {
+        nodeData: { },
+        key: '',
+        value: '',
+        valueHasError: false,
+        keyHasError: false
+      };
     },
 
     computed: {
@@ -776,18 +771,16 @@ define([
 
   Vue.component('x-node-create', {
 
-    data: {
+    data: function () {
+      return {
 
-      key: "",
+        key: "",
+        value: "",
+        valueHasError: false,
+        keyHasError: false,
+        data: null
 
-      value: "",
-
-      valueHasError: false,
-
-      keyHasError: false,
-
-      data: null
-
+      };
     },
 
     methods: {
@@ -909,18 +902,22 @@ define([
 
   var app = new Vue({
 
-    el: '#application',
+    el: function () {
+      return '#application';
+    },
 
-    data: {
+    data: function () {
+      return {
 
-      nodes: [ ],
+        nodes: [ ],
 
-      links: [ ],
+        links: [ ],
 
-      displayNodeCreate: false,
+        displayNodeCreate: false,
 
-      displayNodeData: false
+        displayNodeData: false
 
+      };
     },
 
     methods: {

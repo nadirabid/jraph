@@ -95,11 +95,11 @@
                    v-component="x-node"
                    v-repeat="nodes">
                     <g class="node-group">
+                        <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
                         <x-radial-menu v-class="hidden:!menu">
-                            <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
+                            <x-radial-button v-on="click:setLinkSource($event)">link</x-radial-button>
                             <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
                         </x-radial-menu>
-                        <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
                     </g>
                     <text class="node-label"
                           text-anchor="middle"
@@ -123,7 +123,7 @@
             <path class="node-menu-highlight" v-attr="d:highlightPath"></path>
             <path id="{{textPathId}}" opacity="0" fill="none" v-attr="d:textPath"></path>
             <text class="node-menu-item-label" text-anchor="middle" v-attr="x:x, dy:dy">
-            <textPath xlink:href="#{{textPathId}}">
+            <textPath v-attr="href:textPathId">
                 <content></content>
             </textPath>
             </text>
