@@ -18,27 +18,16 @@ define([
 
     data: function () {
       return {
-
         x: 0,
-
         dy: 0,
-
         highlightDistance: 2,
-
         highlightThickness: 3,
-
         radiusInner: 35,
-
         radiusOuter: 75,
-
         startAngle: 0,
-
         endAngle: 0,
-
-        textPathId: _.uniqueId('radial_button_'),
-
-        label: 'None'
-
+        label: 'None',
+        textPathId: _.uniqueId('radial_button_')
       };
     },
 
@@ -141,8 +130,8 @@ define([
             radiusInner = this.radiusInner,
             radiusOuter = this.radiusOuter;
 
-        this.x = ( ( endAngle - startAngle ) / 2 ) *
-                 ( radiusInner + ( ( radiusOuter - radiusInner ) / 2 ) );
+        this.x = ((endAngle - startAngle) / 2) *
+                 (radiusInner + ((radiusOuter - radiusInner) / 2));
       },
 
       updateY: function () {
@@ -195,8 +184,12 @@ define([
 
     },
 
-    ready: function () {
-      this.calcButtonAngles();
+    events: {
+
+      'hook:compiled': function() {
+        this.calcButtonAngles();
+      }
+
     }
 
   });

@@ -333,7 +333,6 @@ define([
       }
 
       function drag_mousemove(e) {
-        console.log('util:drag_mousemove');
         if (!dragFlag) {
           dragFlag = true;
           dragState.state = DRAG_STATES.DRAG;
@@ -345,8 +344,8 @@ define([
       }
 
       function drag_mouseup(e) {
-        Util.off('mouseup', drag_mouseup);
         Util.off('mousemove', drag_mousemove);
+        Util.off('mouseup', drag_mouseup);
 
         if (!dragFlag) {
           return;
@@ -400,7 +399,6 @@ define([
       }
 
       function click(e) {
-        console.log('util:click', e);
         if (dragFlag) {
           dragFlag = false;
         }

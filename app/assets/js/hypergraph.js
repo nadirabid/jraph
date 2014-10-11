@@ -12,6 +12,7 @@ define([
 
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
+  var FORCE_THROTTLE_TIME = 500;
 
   var mouse = glob.mouse;
   var nodesAry = [];
@@ -61,7 +62,10 @@ define([
       var minX = xgraph.minX,
           minY = xgraph.minY;
 
-      var p = util.transformPointToEl(xgraph.width / 2, xgraph.height / 2, ctx.$el);
+      var p = util.transformPointToEl(
+              xgraph.width / 2,
+              xgraph.height / 2,
+              ctx.$el);
 
       var dx = p.x - ctx.x,
           dy = p.y - ctx.y;
@@ -117,7 +121,6 @@ define([
 
     this.dragstart = function (e) {
       e.stopPropagation();
-      var p = util.transformPointToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x;
       ctx.py = ctx.y;
@@ -201,17 +204,14 @@ define([
 
     data: function () {
       return {
-
         source: {
           x: 0,
           y: 0
         },
-
         target: {
           x: 0,
           y: 0
         }
-
       };
     },
 
@@ -248,23 +248,14 @@ define([
 
     data: function () {
       return {
-
         menu: false,
-
         labelDistance: 15,
-
         radius: 1.5,
-
         x: 0,
-
         y: 0,
-
         labelX: 0,
-
         labelY: 0,
-
         fixed: false //d3.force doesn't pick it up if not explicitly linked
-
       };
     },
 
@@ -360,34 +351,40 @@ define([
 
     },
 
-    created: function () {
-      this._states = {
-        initial: new InitialNodeState(this),
-        linking: new LinkingNodeState(this),
-        disabled: new DisabledNodeState(this)
-      };
+    events: {
 
-      this.$watch('x', this.updateLable.bind(this));
-      this.$watch('labelDistance', this.updateLable.bind(this));
-      this.$watch('radius', this.updateLable.bind(this));
-    },
+      'hook:created': function () {
+        this._states = {
+          initial: new InitialNodeState(this),
+          linking: new LinkingNodeState(this),
+          disabled: new DisabledNodeState(this)
+        };
 
-    ready: function () {
-      this._textElement = this.$el.querySelector('.node-label');
+        this.$watch('x', this.updateLable.bind(this));
+        this.$watch('labelDistance', this.updateLable.bind(this));
+        this.$watch('radius', this.updateLable.bind(this));
+      },
 
-      var $nodeGroup = util(this.$el.querySelector('.node-group'));
+      'hook:compiled': function () {
+        this._textElement = this.$el.querySelector('.node-label');
 
-      $nodeGroup.on('click', this.click.bind(this));
-      $nodeGroup.on('mouseover', this.mouseover.bind(this));
-      $nodeGroup.on('mouseout', this.mouseout.bind(this));
-      $nodeGroup.on('dragstart', this.dragstart.bind(this));
-      $nodeGroup.on('drag', this.drag.bind(this));
-      $nodeGroup.on('dragend', this.dragend.bind(this));
-    },
+        var $nodeGroup = util(this.$el.querySelector('.node-group'));
 
-    beforeDestroy: function () {
-      this.menu = false;
-      this.fixed = false;
+        $nodeGroup.on('click', this.click.bind(this));
+        $nodeGroup.on('mouseover', this.mouseover.bind(this));
+        $nodeGroup.on('mouseout', this.mouseout.bind(this));
+        $nodeGroup.on('dragstart', this.dragstart.bind(this));
+        $nodeGroup.on('drag', this.drag.bind(this));
+        $nodeGroup.on('dragend', this.dragend.bind(this));
+
+        this.updateLable();
+      },
+
+      'hook:beforeDestroyed': function () {
+        this.menu = false;
+        this.fixed = false;
+      }
+
     }
 
   });
@@ -474,7 +471,7 @@ define([
 
     },
 
-    ready: function () {
+    compiled: function () {
       var $g = util(this.$el);
       $g.on('mouseover', this.freezePosition.bind(this));
       $g.on('mouseout', this.releasePosition.bind(this));
@@ -546,13 +543,13 @@ define([
       },
 
       panStart: function () {
-        this.pMinX = this.minX;
-        this.pMinY = this.minY;
+        this._pMinX = this.minX;
+        this._pMinY = this.minY;
       },
 
       pan: function (e) {
-        this.minX = this.pMinX - e.dx;
-        this.minY = this.pMinY - e.dy;
+        this.minX = this._pMinX - e.dx;
+        this.minY = this._pMinY - e.dy;
       },
 
       createLink: function (link) {
@@ -572,8 +569,12 @@ define([
             var createdLink = response.results[0].data[0].row[0];
 
             self.nodes.forEach(function (n) {
-              if (n.id == createdLink.sourceId) createdLink.source = n;
-              if (n.id == createdLink.targetId) createdLink.target = n;
+              if (n.id == createdLink.sourceId) {
+                createdLink.source = n;
+              }
+              if (n.id == createdLink.targetId) {
+                createdLink.target = n;
+              }
             });
 
             self.links.push(createdLink);
@@ -604,21 +605,27 @@ define([
       },
 
       forceStart: function () {
-        if (!this.enableForceLayout)
+        if (!this.enableForceLayout) {
           return;
+        }
 
-        if (!this._forceStart)
-          this._forceStart = _.throttle(this._force.start.bind(this._force), 700);
+        if (!this._forceStart) {
+          var forceStart = this._force.start.bind(this._force);
+          this._forceStart = _.throttle(forceStart, FORCE_THROTTLE_TIME);
+        }
 
         this._forceStart();
       },
 
       forceResume: function () {
-        if (!this.enableForceLayout)
+        if (!this.enableForceLayout) {
           return;
+        }
 
-        if (!this._forceResume)
-          this._forceResume = _.throttle(this._force.resume.bind(this._force), 700);
+        if (!this._forceResume) {
+          var forceResume = this._force.resume.bind(this._force);
+          this._forceResume = _.throttle(forceResume, FORCE_THROTTLE_TIME);
+        }
 
         this._forceResume();
       },
@@ -648,58 +655,64 @@ define([
 
     },
 
-    created: function () {
-      var self = this;
+    events: {
 
-      var force = this._force = d3.layout.force()
-          .theta(0.1)
-          .friction(0.5)
-          .gravity(0.5)
-          .charge(-6000)
-          .linkDistance(50);
+      'hook:created': function () {
+        var self = this;
 
-      force.on('end', function () {
-        _.defer(function () {
-          self.$parent.saveNodes();
+        var force = this._force = d3.layout.force()
+            .theta(0.1)
+            .friction(0.5)
+            .gravity(0.5)
+            .charge(-6000)
+            .linkDistance(50);
+
+        force.on('end', function () {
+          _.defer(function () {
+            self.$parent.saveNodes();
+          });
         });
-      });
 
-      this.$on('data', function (nodes, links) {
-        self.links = links;
+        this.$on('data', function (nodes, links) {
+          self.links = links;
 
-        force
-            .nodes(self.nodes)
-            .links(self.links)
-            .start();
-      });
+          force
+              .nodes(self.nodes)
+              .links(self.links)
+              .start();
+        });
 
-      // todo: unwatch when component is destroyed
-      this.$parent.$watch('nodes', function (value, mutation) {
-        if (!mutation)
-          return;
+        // todo: unwatch when component is destroyed
+        this.$parent.$watch('nodes', function (value, mutation) {
+          if (!mutation)
+            return;
 
-        force.nodes(value);
-        self.forceStart();
-      }, false, true);
+          force.nodes(value);
+          self.forceStart();
+        }, false, true);
 
-      this.$parent.$watch('links', function (value, mutation) {
-        if (!mutation)
-          return;
+        this.$parent.$watch('links', function (value, mutation) {
+          if (!mutation)
+            return;
 
-        force.links(value);
-        self.forceStart();
-      });
+          force.links(value);
+          self.forceStart();
+        });
 
-      this.resize();
+        window.addEventListener('resize', this.resize.bind(this));
+        window.addEventListener('contextmenu', this.contextMenu.bind(this));
+      },
 
-      window.addEventListener('resize', this.resize.bind(this));
-      window.addEventListener('contextmenu', this.contextMenu.bind(this));
-    },
+      'hook:compiled': function () {
+        var $svg = util(this.$el);
+        $svg.on('dragstart', this.panStart.bind(this));
+        $svg.on('drag', this.pan.bind(this));
+      },
 
-    ready: function () {
-      var $svg = util(this.$el);
-      $svg.on('dragstart', this.panStart.bind(this));
-      $svg.on('drag', this.pan.bind(this));
+      'hook:ready': function () {
+        this.resize();
+      }
+
     }
 
   });
@@ -716,7 +729,8 @@ define([
         key: '',
         value: '',
         valueHasError: false,
-        keyHasError: false
+        keyHasError: false,
+        addProperty: false
       };
     },
 
@@ -763,8 +777,12 @@ define([
 
     },
 
-    created: function () {
-      this.nodeData = this.$parent.nodeData;
+    events: {
+
+      'hook:created': function () {
+        this.nodeData = this.$parent.nodeData;
+      }
+
     }
 
   });
@@ -773,13 +791,11 @@ define([
 
     data: function () {
       return {
-
         key: "",
         value: "",
         valueHasError: false,
         keyHasError: false,
         data: null
-
       };
     },
 
@@ -908,15 +924,10 @@ define([
 
     data: function () {
       return {
-
         nodes: [ ],
-
         links: [ ],
-
         displayNodeCreate: false,
-
         displayNodeData: false
-
       };
     },
 
@@ -954,35 +965,39 @@ define([
 
     },
 
-    created: function () {
-      var self = this;
+    events: {
 
-      $.when(Node.fetchAll(), Link.fetchAll())
-          .done(function (nodes, links) {
-            nodes.forEach(function (n) {
-              links.forEach(function (l) {
-                if (l.sourceId == n.id) l.source = n;
-                if (l.targetId == n.id) l.target = n;
+      'hook:created': function () {
+        var self = this;
+
+        $.when(Node.fetchAll(), Link.fetchAll())
+            .done(function (nodes, links) {
+              nodes.forEach(function (n) {
+                links.forEach(function (l) {
+                  if (l.sourceId == n.id) l.source = n;
+                  if (l.targetId == n.id) l.target = n;
+                });
               });
+
+              self.nodes = nodes;
+              self.links = links;
+
+              self.$broadcast('data', nodes, links);
             });
 
-            self.nodes = nodes;
-            self.links = links;
+        this.$on('showNodeData', this.showNodeData.bind(this));
 
-            self.$broadcast('data', nodes, links);
+        this.$watch('displayNodeCreate', function (value) {
+          if (!value)
+            return;
+
+          Mousetrap.bind('esc', function () {
+            self.displayNodeCreate = false;
+            Mousetrap.unbind('esc');
           });
-
-      this.$on('showNodeData', this.showNodeData.bind(this));
-
-      this.$watch('displayNodeCreate', function (value) {
-        if (!value)
-          return;
-
-        Mousetrap.bind('esc', function () {
-          self.displayNodeCreate = false;
-          Mousetrap.unbind('esc');
         });
-      });
+      }
+
     }
 
   });
