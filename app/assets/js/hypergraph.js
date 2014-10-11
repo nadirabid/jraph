@@ -50,7 +50,7 @@ define([
     };
 
     //hide menu
-    this.mouseout = function (e) {
+    this.mouseout = function () {
       ctx.fixed = false;
       ctx.menu = false;
     };
@@ -204,14 +204,8 @@ define([
 
     data: function () {
       return {
-        source: {
-          x: 0,
-          y: 0
-        },
-        target: {
-          x: 0,
-          y: 0
-        }
+        source: { x: 0, y: 0 },
+        target: { x: 0, y: 0 }
       };
     },
 
@@ -223,23 +217,27 @@ define([
 
     },
 
-    attached: function () {
-      this.source = util.transformPointToEl(
-          this.linkSource.x,
-          this.linkSource.y,
-          this.$el);
+    events: {
 
-      this.target = util.transformPointToEl(
-          mouse.x,
-          mouse.y,
-          this.$el);
+      'hook:attached': function () {
+        this.source = util.transformPointToEl(
+            this.linkSource.x,
+            this.linkSource.y,
+            this.$el);
 
-      this._mousemove = this.mousemove.bind(this);
-      util.on('mousemove', this._mousemove);
-    },
+        this.target = util.transformPointToEl(
+            mouse.x,
+            mouse.y,
+            this.$el);
 
-    beforeDestroy: function () {
-      util.off('mousemove', this._mousemove);
+        this._mousemove = this.mousemove.bind(this);
+        util.on('mousemove', this._mousemove);
+      },
+
+      'hook:beforeDestroy': function () {
+        util.off('mousemove', this._mousemove);
+      }
+
     }
 
   });
@@ -471,12 +469,16 @@ define([
 
     },
 
-    compiled: function () {
-      var $g = util(this.$el);
-      $g.on('mouseover', this.freezePosition.bind(this));
-      $g.on('mouseout', this.releasePosition.bind(this));
-      $g.on('dragstart', this.dragstart.bind(this));
-      $g.on('drag', this.drag.bind(this));
+    events: {
+
+      'hook:compiled': function () {
+        var $g = util(this.$el);
+        $g.on('mouseover', this.freezePosition.bind(this));
+        $g.on('mouseout', this.releasePosition.bind(this));
+        $g.on('dragstart', this.dragstart.bind(this));
+        $g.on('drag', this.drag.bind(this));
+      }
+
     }
 
   });
