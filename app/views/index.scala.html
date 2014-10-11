@@ -95,10 +95,10 @@
                    v-component="x-node"
                    v-repeat="nodes">
                     <g class="node-group">
-                        <x-radial-menu v-if="menu">
-                            <x-radial-button v-on="click:setLinkSource($event)">link</x-radial-button>
-                            <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
-                        </x-radial-menu>
+                        <g v-component="x-radial-menu" v-if="menu">
+                            <g v-component="x-radial-button" v-on="click:setLinkSource($event)">link</g>
+                            <g v-component="x-radial-button" v-on="click:deleteNode($event, id)">delete</g>
+                        </g>
                         <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
                     </g>
                     <text class="node-label"

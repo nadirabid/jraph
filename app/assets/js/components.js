@@ -14,8 +14,6 @@ define([
 
     replace: true,
 
-    inherit: true,
-
     template: '#template-radial-button',
 
     data: function () {
