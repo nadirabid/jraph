@@ -399,6 +399,7 @@ define([
       }
 
       function click(e) {
+        console.log('util:click', e);
         if (dragFlag) {
           dragFlag = false;
         }
@@ -414,7 +415,7 @@ define([
       el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
 
-      var removeDropEventListeners = registerDropEvents($util, el);
+      //var removeDropEventListeners = registerDropEvents($util, el);
 
       return function() {
         Util.off('mouseup', drag_mouseup);
@@ -432,7 +433,7 @@ define([
         el.removeEventListener('mouseup', mouseup);
         el.removeEventListener('click', click);
 
-        removeDropEventListeners();
+        //removeDropEventListeners();
       };
     }
 

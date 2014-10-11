@@ -12,6 +12,8 @@ define([
 
   Vue.component('x-radial-button', {
 
+    inherit: true,
+
     replace: true,
 
     template: '#template-radial-button',
@@ -82,6 +84,24 @@ define([
 
     directives: {
 
+      'click': {
+        isFn: true,
+        update: function(handler) {
+          if (this.__handler__) {
+            this.el.removeEventListener('click', handler);
+            this.__handler__ = handler;
+          }
+          this.el.addEventListener('click', handler);
+        },
+
+        unbind: function() {
+          if (this.__handler__) {
+            this.el.removeEventListener('click', this.__handler__);
+            this.__handler__ = undefined;
+          }
+        }
+      },
+
       //val is considered to be in pixels
       'radius-inner': function (val) {
         val = Number.isInteger(val) ? val : parseInt(this.expression, 10);
@@ -135,7 +155,7 @@ define([
       },
 
       updateY: function () {
-        var fontSize = window.getComputedStyle(this._textElement)
+        var fontSize = window.getComputedStyle(this.$$.textElement)
             .getPropertyValue('font-size');
 
         this.dy = parseInt(fontSize, 10) / 3;
@@ -143,21 +163,27 @@ define([
 
     },
 
-    compiled: function () {
-      this._textElement = this.$el.querySelector('.node-menu-item-label');
-      this.label = this._textElement.textContent.trim();
+    events: {
 
-      this.$parent.buttonVms.push(this);
-    },
+      'hook:compiled': function() {
+        this.$$.textElement = this.$el.querySelector('.node-menu-item-label');
+        this.label = this.$$.textElement.textContent.trim();
 
-    attached: function () {
-      this.updateY();
-      this.updateX();
+        this.$parent.buttonVms.push(this);
+      },
+
+      'hook:attached': function() {
+        this.updateX();
+        this.updateY();
+      }
+
     }
 
   });
 
   Vue.component('x-radial-menu', {
+
+    inherit: true,
 
     replace: true,
 

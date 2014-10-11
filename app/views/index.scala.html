@@ -95,9 +95,11 @@
                    v-component="x-node"
                    v-repeat="nodes">
                     <g class="node-group">
-                        <g v-component="x-radial-menu" v-if="menu">
-                            <g v-component="x-radial-button" v-on="click:setLinkSource($event)">link</g>
-                            <g v-component="x-radial-button" v-on="click:deleteNode($event, id)">delete</g>
+                        <g v-if="menu">
+                            <x-radial-menu>
+                                <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
+                                <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
+                            </x-radial-menu>
                         </g>
                         <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
                     </g>
@@ -118,10 +120,10 @@
     </main>
 
     <script id="template-radial-button" type="text/x-template">
-        <g class="node-menu">
-            <path v-attr="d:backgroundPath"></path>
-            <path class="node-menu-highlight" v-attr="d:highlightPath"></path>
+        <g class="node-menu enable-pointer-events">
             <path id="{{textPathId}}" opacity="0" fill="none" v-attr="d:textPath"></path>
+            <path class="node-menu-highlight" v-attr="d:highlightPath"></path>
+            <path v-attr="d:backgroundPath"></path>
             <text class="node-menu-item-label" text-anchor="middle" v-attr="x:x, dy:dy">
                 <textPath v-attr="'xlink:href':'#' + textPathId">
                     <content></content>

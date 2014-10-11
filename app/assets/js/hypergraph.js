@@ -57,6 +57,7 @@ define([
 
     // shift viewport to center node
     this.click = function () {
+      console.log('InitialNodeState:click');
       var xgraph = ctx.$parent;
 
       var minX = xgraph.minX,
@@ -86,7 +87,7 @@ define([
         return t > 1;
       });
 
-      ctx.menu = false;
+      //ctx.menu = false;
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
@@ -115,6 +116,7 @@ define([
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
+      ctx.menu = false;
 
       ctx.forceResume();
     };
@@ -125,7 +127,6 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
 
-      ctx.menu = false;
       ctx.fixed = true;
     };
 
@@ -180,7 +181,7 @@ define([
           .classList
           .remove('node-linking-target', 'hover');
 
-      sourceCtx._ghostLink.$destroy();
+      sourceCtx._ghostLink.$destroy(true);
       sourceCtx._ghostLink = null;
 
       sourceCtx.$el.querySelector('.node-circle')
@@ -198,9 +199,7 @@ define([
 
     replace: true,
 
-    template: function () {
-      return '#template-ghost-link';
-    },
+    template: '#template-ghost-link',
 
     data: function () {
       return {
@@ -261,7 +260,7 @@ define([
 
       updateLable: function () {
         var labelDistance = (this.radius * 12) + this.labelDistance;
-        var bBox = this._textElement.getBBox();
+        var bBox = this.$$.nodeLabel.getBBox();
 
         var dx = this.x - (this.$parent.width / 2),
             dy = this.y - (this.$parent.height / 2);
@@ -301,7 +300,7 @@ define([
           data: {
             linkSource: this
           }
-        });
+        }).$mount();
 
         var dynamicContentEl = this.$parent.$el
             .querySelector('.dynamic-content');
@@ -363,8 +362,8 @@ define([
         this.$watch('radius', this.updateLable.bind(this));
       },
 
-      'hook:compiled': function () {
-        this._textElement = this.$el.querySelector('.node-label');
+      'hook:ready': function () {
+        this.$$.nodeLabel = this.$el.querySelector('.node-label');
 
         var $nodeGroup = util(this.$el.querySelector('.node-group'));
 
@@ -391,9 +390,10 @@ define([
 
     methods: {
 
-      freezePosition: function (e) {
-        if (mouse.state != 'initial')
+      freezePosition: function () {
+        if (mouse.state != 'initial') {
           return;
+        }
 
         var source = this.source,
             target = this.target;
@@ -412,8 +412,9 @@ define([
       },
 
       releasePosition: function (e) {
-        if (mouse.state != 'initial')
+        if (mouse.state != 'initial') {
           return;
+        }
 
         this.source.fixed = false;
         this.target.fixed = false;
@@ -424,8 +425,9 @@ define([
       },
 
       dragstart: function (e) {
-        if (mouse.state != 'initial')
+        if (mouse.state != 'initial') {
           return;
+        }
 
         e.stopPropagation();
 
