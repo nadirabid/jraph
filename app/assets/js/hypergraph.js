@@ -200,7 +200,7 @@ define([
 
     replace: true,
 
-    template: '#template-ghost-link',
+    template: document.getElementById('template-ghost-link').innerHTML,
 
     data: function () {
       return {

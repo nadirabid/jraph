@@ -15,7 +15,7 @@ define([
 
     replace: true,
 
-    template: '#template-radial-button',
+    template: document.getElementById('template-radial-button').innerHTML,
 
     data: function () {
       return {
@@ -186,7 +186,7 @@ define([
 
     replace: true,
 
-    template: '#template-radial-menu',
+    template: document.getElementById('template-radial-menu').innerHTML,
 
     data: function() {
       return {

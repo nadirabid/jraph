@@ -128,7 +128,7 @@
 
     </main>
 
-    <script id="template-radial-button" type="text/x-template">
+    <template id="template-radial-button">
         <g class="node-menu enable-pointer-events">
             <path id="{{textPathId}}" opacity="0" fill="none" v-attr="d:textPath"></path>
             <path class="node-menu-highlight" v-attr="d:highlightPath"></path>
@@ -139,23 +139,23 @@
                 </textPath>
             </text>
         </g>
-    </script>
+    </template>
 
-    <script id="template-radial-menu" type="text/x-template">
+    <template id="template-radial-menu">
         <g>
             <circle fill-opacity="0" r="80"></circle>
             <g class="content">
                 <content></content>
             </g>
         </g>
-    </script>
+    </template>
 
-    <script id="template-ghost-link" type="text/x-template">
+    <template id="template-ghost-link">
         <g>
             <line class="ghost-link link"
                   marker-end="url(#def-marker-ghost-arrow)"
                   v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y">
             </line>
         </g>
-    </script>
+    </template>
 }
