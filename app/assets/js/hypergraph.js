@@ -1,5 +1,4 @@
 define([
-  'jquery',
   'lodash',
   'mousetrap',
   'd3',
@@ -7,7 +6,7 @@ define([
   'util',
   'globals',
   'components'
-], function ($, _, Mousetrap, d3, Vue, util, glob) {
+], function (_, Mousetrap, d3, Vue, util, glob) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -45,8 +44,9 @@ define([
       //hidden by overlapping elements
       var nodes = ctx.$parent.nodes;
 
-      if (ctx.$index < ( nodes.length - 1 ))
+      if (ctx.$index < ( nodes.length - 1 )) {
         nodes.push(nodes.$remove(ctx.$index));
+      }
     };
 
     //hide menu
@@ -57,7 +57,6 @@ define([
 
     // shift viewport to center node
     this.click = function () {
-      console.log('InitialNodeState:click');
       var xgraph = ctx.$parent;
 
       var minX = xgraph.minX,
@@ -87,7 +86,7 @@ define([
         return t > 1;
       });
 
-      //ctx.menu = false;
+      ctx.menu = false;
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
@@ -138,8 +137,9 @@ define([
   var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
     //select node target
     this.mouseover = function (e) {
-      if (ctx.id == mouse.data.source.id)
+      if (ctx.id == mouse.data.source.id) {
         return;
+      }
 
       ctx.$el.querySelector('.node-circle')
           .classList
@@ -152,8 +152,9 @@ define([
 
     //unselect node target
     this.mouseout = function (e) {
-      if (ctx.id == mouse.data.source.id)
+      if (ctx.id == mouse.data.source.id) {
         return;
+      }
 
       ctx.$el.querySelector('.node-circle')
           .classList
@@ -448,8 +449,9 @@ define([
       },
 
       drag: function (e) {
-        if (mouse.state != 'initial')
+        if (mouse.state != 'initial') {
           return;
+        }
 
         var source = this.source,
             target = this.target;
@@ -533,11 +535,12 @@ define([
       },
 
       resize: function () {
-        var newWidth = $(this.$el).width(),
-            newHeight = $(this.$el).height();
+        var newWidth = util.width(this.$el),
+            newHeight = util.height(this.$el);
 
-        if (this.width == newWidth && this.height == newHeight)
+        if (this.width == newWidth && this.height == newHeight) {
           return;
+        }
 
         this._force.size([ newWidth, newHeight ]);
         this.forceResume();
@@ -564,7 +567,7 @@ define([
           targetId: link.target.id
         };
 
-        return $.ajax({
+        return util.ajax({
           url: '/hyperlink',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
@@ -591,7 +594,7 @@ define([
 
         e.stopPropagation();
 
-        $.ajax({
+        util.ajax({
           url: '/hypernode/' + nodeId,
           type: 'DELETE',
           success: function (response) {
@@ -637,8 +640,9 @@ define([
       contextMenu: function (e) {
         var self = this;
 
-        if (e.target != this.$el)
+        if (e.target != this.$el) {
           return;
+        }
 
         e.preventDefault();
 
@@ -688,16 +692,18 @@ define([
 
         // todo: unwatch when component is destroyed
         this.$parent.$watch('nodes', function (value, mutation) {
-          if (!mutation)
+          if (!mutation) {
             return;
+          }
 
           force.nodes(value);
           self.forceStart();
         }, false, true);
 
         this.$parent.$watch('links', function (value, mutation) {
-          if (!mutation)
+          if (!mutation) {
             return;
+          }
 
           force.links(value);
           self.forceStart();
@@ -759,13 +765,14 @@ define([
           return;
         }
 
-        if (!self.nodeData.data)
+        if (!self.nodeData.data) {
           self.nodeData.data = { };
+        }
 
         self.nodeData.data[ self.key ] = self.value;
         self.addProperty = false;
 
-        $.ajax({
+        util.ajax({
           url: '/hypernode/' + self.nodeData.id,
           type: 'PUT',
           contentType: "application/json; charset=utf-8",
@@ -822,7 +829,7 @@ define([
       createNodeHandler: function () {
         var self = this;
 
-        $.ajax({
+        util.ajax({
           url: '/hypernode',
           type: 'POST',
           contentType: "application/json; charset=utf-8",
@@ -861,7 +868,7 @@ define([
   };
 
   Link.fetchAll = function () {
-    var xhr = $.getJSON('/hyperlink')
+    var xhr = util.getJSON('/hyperlink')
         .then(function (response) {
           var links = _(response.results[0].data)
               .uniq(function (datum) {
@@ -904,10 +911,11 @@ define([
   };
 
   Node.fetchAll = function () {
-    var xhr = $.getJSON('/hypernode')
+    var xhr = util.getJSON('/hypernode')
         .then(function (response) {
-          if (response.errors.length)
+          if (response.errors.length) {
             throw 'Unable to fetchNodes: ' + JSON.stringify(response.errors);
+          }
 
           nodesAry = _.map(response.results[0].data, Node.parseJSON);
           return nodesAry;
@@ -956,7 +964,7 @@ define([
           return Node.toJSON(node);
         });
 
-        $.ajax({
+        util.ajax({
           url: '/hypernode',
           type: 'PUT',
           contentType: "application/json; charset=utf-8",
@@ -974,12 +982,16 @@ define([
       'hook:created': function () {
         var self = this;
 
-        $.when(Node.fetchAll(), Link.fetchAll())
+        util.when(Node.fetchAll(), Link.fetchAll())
             .done(function (nodes, links) {
               nodes.forEach(function (n) {
                 links.forEach(function (l) {
-                  if (l.sourceId == n.id) l.source = n;
-                  if (l.targetId == n.id) l.target = n;
+                  if (l.sourceId == n.id) {
+                    l.source = n;
+                  }
+                  if (l.targetId == n.id) {
+                    l.target = n;
+                  }
                 });
               });
 
@@ -992,8 +1004,9 @@ define([
         this.$on('showNodeData', this.showNodeData.bind(this));
 
         this.$watch('displayNodeCreate', function (value) {
-          if (!value)
+          if (!value) {
             return;
+          }
 
           Mousetrap.bind('esc', function () {
             self.displayNodeCreate = false;

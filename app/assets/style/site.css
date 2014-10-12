@@ -56,7 +56,7 @@ article.graph-container {
   background-color: #34495E;
 }
 
-article.info-container {
+article.overlay-container {
   order: 0;
   -webkit-order: 0;
   display: flex;

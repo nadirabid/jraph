@@ -1,10 +1,9 @@
 define([
-  'jquery',
   'lodash',
   'vue',
   'd3',
   'globals'
-], function ($, _, Vue, d3, glob) {
+], function (_, Vue, d3, glob) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;

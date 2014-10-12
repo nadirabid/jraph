@@ -1,7 +1,8 @@
 // Utils
 define([
+  'jquery',
   'globals'
-], function (glob) {
+], function (jquery, glob) {
   'use strict';
 
   var DRAG_STATES = Object.freeze({
@@ -38,6 +39,35 @@ define([
   }
 
   WrappedUtil.prototype = Util.prototype;
+
+  // jQuery forwarding methods
+  (function() {
+    function ajax() {
+      return jquery.ajax.apply(jquery, arguments);
+    }
+
+    function getJSON() {
+      return jquery.getJSON.apply(jquery, arguments);
+    }
+
+    function when() {
+      return jquery.when.apply(jquery, arguments);
+    }
+
+    function width() {
+      return jquery.apply(jquery, arguments).width();
+    }
+
+    function height() {
+      return jquery.apply(jquery, arguments).height();
+    }
+
+    Util.ajax = ajax;
+    Util.getJSON = getJSON;
+    Util.when = when;
+    Util.width = width;
+    Util.height = height;
+  })();
 
   //Unwrapped definitions
   (function() {
@@ -399,7 +429,6 @@ define([
       }
 
       function click(e) {
-        console.log('util:click', e);
         if (dragFlag) {
           dragFlag = false;
         }
