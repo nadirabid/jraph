@@ -6,7 +6,7 @@ import play.api.mvc._
 object Application extends Controller {
 
   def index = Action {
-    Ok(views.html.index())
+    Ok(views.html.graph.index())
   }
 
   def trimTrailingForwardSlash(path: String) = Action {

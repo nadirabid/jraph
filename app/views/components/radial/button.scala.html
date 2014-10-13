@@ -1,0 +1,12 @@
+<template id="radial.button">
+    <g class="node-menu enable-pointer-events">
+        <path id="{{textPathId}}" opacity="0" fill="none" v-attr="d:textPath"></path>
+        <path class="node-menu-highlight" v-attr="d:highlightPath"></path>
+        <path v-attr="d:backgroundPath"></path>
+        <text class="node-menu-item-label" text-anchor="middle" v-attr="x:x, dy:dy">
+            <textPath v-attr="'xlink:href':'#' + textPathId">
+                <content></content>
+            </textPath>
+        </text>
+    </g>
+</template>

@@ -200,7 +200,7 @@ define([
 
     replace: true,
 
-    template: document.getElementById('template-ghost-link').innerHTML,
+    template: document.getElementById('graph.ghostLink').innerHTML,
 
     data: function () {
       return {
