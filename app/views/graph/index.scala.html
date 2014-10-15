@@ -2,133 +2,18 @@
 
     <main id="application">
 
-        <article class="overlay-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
-            <nav class="disable-pointer-events" v-class="hidden:(displayNodeCreate || displayNodeData)">
-                <span class="enable-pointer-events">
-                    <button class="btn btn-default" v-on="click:displayNodeCreate=true">Create Node</button>
-                    <button class="btn btn-default" v-on="click:toggleForce">Toggle Force</button>
-                </span>
-            </nav>
-            <section class="info-overlay">
-                <!-- Dynamic information overlay -->
-            </section>
-            <aside class="info-panel default-pointer-events"
-                   v-component="x-node-create"
-                   v-if="displayNodeCreate">
-                <div v-if="data">
-                    <ul class="list-unstyled">
-                        <li v-repeat="data"><b>{{$key}}</b>:{{$value}}</li>
-                    </ul>
-                </div>
-                <form class="form-inline">
-                    <div class="form-group" v-class="has-error:keyHasError">
-                        <input class="form-control" placeholder="Key" type="text" v-model="key">
-                    </div>
-                    <div class="form-group" v-class="has-error:valueHasError">
-                        <input class="form-control" placeholder="Value" type="text" v-model="value">
-                    </div>
-                    <button class="btn btn-default" type="button" v-on="click:addPropertyHandler">
-                        Add
-                    </button>
-                </form>
-                <button class="btn btn-default" v-class="disabled:!data" v-on="click:createNodeHandler">
-                    Create
-                </button>
-            </aside>
-            <aside class="info-panel" v-component="x-node-data" v-if="displayNodeData">
-                <ul class="list-unstyled">
-                    <li v-repeat="nodeDataList">
-                        <span v-if="typeof(value)!='object' && key.charAt(0)!='_'">
-                            <b>{{key}}</b>:{{value}}
-                        </span>
-                        <span v-if="typeof(value)=='object' && key.charAt(0)!='_'">
-                            <b>{{key}}</b>:
-                            <ul>
-                                <li v-repeat="value"><b>{{$key}}</b>:{{$value}}</li>
-                            </ul>
-                        </span>
-                    </li>
-                </ul>
-                <div v-if="addProperty">
-                    <form class="form-inline">
-                        <div class="form-group" v-class="has-error:keyHasError">
-                            <input class="form-control" placeholder="Key" type="text" v-model="key">
-                        </div>
-                        <div class="form-group" v-class="has-error:valueHasError">
-                            <input class="form-control" placeholder="Value" type="text" v-model="value">
-                        </div>
-                        <button class="btn btn-default" type="button" v-on="click:savePropertyHandler">
-                            Save
-                        </button>
-                    </form>
-                </div>
-                <button class="btn btn-default" v-class="hidden:addProperty" v-on="click:addProperty=true">
-                    Add
-                </button>
-                <button class="btn btn-default" v-class="hidden:!addProperty" v-on="click:addProperty=false">
-                    Cancel
-                </button>
-            </aside>
-        </article>
+        <div class="sidebar">
+            @views.html.graph.sidebar()
+        </div>
 
-        <article class="graph-container">
-            <svg class="disable-user-selection" v-attr="viewBox:viewBox" v-component="x-graph" v-ref="graph">
-                <defs>
-                    <marker id="def-marker-arrow"
-                            markerWidth="2"
-                            markerHeight="2"
-                            refx="8"
-                            refy="1"
-                            orient="auto">
-                        <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
-                    </marker>
-                    <marker id="def-marker-ghost-arrow"
-                            markerWidth="2"
-                            markerHeight="2"
-                            refx="2"
-                            refy="1"
-                            orient="auto">
-                        <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
-                    </marker>
-                </defs>
-                <g class="dynamic-content"></g>
-                <g v-component="x-link" v-repeat="links">
-                    <line class="link"
-                          v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-                    <line class="marker-arrow"
-                          marker-end="url(#def-marker-arrow)"
-                          v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-                </g>
-                <g class="node"
-                   v-attr="transform:'translate('+x+','+y+')'"
-                   v-component="x-node"
-                   v-repeat="nodes">
-                    <g class="node-group">
-                        <g v-if="menu">
-                            <x-radial-menu>
-                                <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
-                                <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
-                            </x-radial-menu>
-                        </g>
-                        <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
-                    </g>
-                    <text class="node-label"
-                          text-anchor="middle"
-                          v-attr="transform:'translate('+labelX+','+labelY+')'"
-                          v-class="invisible:menu">
-                        Label {{$index}}
-                    </text>
-                </g>
-                <x-radial-menu v-attr="transform:'translate('+cmX+','+cmY+')'" v-if="displayContextMenu">
-                    <x-radial-button>create node</x-radial-button>
-                    <x-radial-button>calculate force</x-radial-button>
-                </x-radial-menu>
-            </svg>
-        </article>
+        <div class="overlay-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
+            <!-- views.html.graph.overlay -->
+        </div>
+
+        <div class="graph-container">
+            @views.html.graph.graph()
+        </div>
 
     </main>
 
-    @views.html.components.radial.menu()
-    @views.html.components.radial.button()
-    @graph.components.ghostlink()
 }

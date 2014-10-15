@@ -156,8 +156,48 @@ define([
       }
     }
 
-    function transformPointToEl(x, y, el) {
+    function transformPointFromViewportToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement || el;
+
+      var ctm = viewportEl.getCTM().inverse(0);
+      var etm = el.getTransformToElement(viewportEl).inverse();
+      etm.e = etm.f = 0;
+
+      console.log(viewportEl.getCTM().inverse(), viewportEl.getScreenCTM().inverse(), etm);
+
+      var svgPoint = viewportEl.createSVGPoint();
+
+      svgPoint.x = x;
+      svgPoint.y = y;
+
+      svgPoint = svgPoint.matrixTransform(ctm);
+      svgPoint = svgPoint.matrixTransform(etm);
+
+      return svgPoint;
+    }
+
+    function transformVectorFromViewportToEl(x, y, el) {
+      var viewportEl = el.nearestViewportElement;
+      var ctm = viewportEl.getCTM().inverse();
+      ctm.e = ctm.f = 0;
+
+      var etm = el.getTransformToElement(viewportEl).inverse();
+      etm.e = etm.f = 0;
+
+      var svgPoint = viewportEl.createSVGPoint();
+
+      svgPoint.x = x;
+      svgPoint.y = y;
+
+      svgPoint = svgPoint.matrixTransform(ctm);
+      svgPoint = svgPoint.matrixTransform(etm);
+
+      return svgPoint;
+    }
+
+    function transformPointFromScreenToEl(x, y, el) {
+      var viewportEl = el.nearestViewportElement || el;
+
       var ctm = viewportEl.getScreenCTM().inverse();
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
@@ -173,7 +213,7 @@ define([
       return svgPoint;
     }
 
-    function transformVectorToEl(x, y, el) {
+    function transformVectorFromScreenToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement;
       var ctm = viewportEl.getScreenCTM().inverse();
       ctm.e = ctm.f = 0;
@@ -210,8 +250,10 @@ define([
     Util.off = off;
     Util.setCTM = setCTM;
     Util.trigger = trigger;
-    Util.transformVectorToEl = transformVectorToEl;
-    Util.transformPointToEl = transformPointToEl;
+    Util.transformVectorFromScreenToEl = transformVectorFromScreenToEl;
+    Util.transformPointFromScreenToEl = transformPointFromScreenToEl;
+    Util.transformPointFromViewportToEl = transformPointFromViewportToEl;
+    Util.transformVectorFromViewportToEl = transformVectorFromViewportToEl;
   })();
 
   //Wrapper definitions
@@ -444,7 +486,7 @@ define([
       el.addEventListener('mouseup', mouseup);
       el.addEventListener('click', click);
 
-      //var removeDropEventListeners = registerDropEvents($util, el);
+      var removeDropEventListeners = registerDropEvents($util, el);
 
       return function() {
         Util.off('mouseup', drag_mouseup);

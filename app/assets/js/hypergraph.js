@@ -59,13 +59,13 @@ define([
     this.click = function () {
       var xgraph = ctx.$parent;
 
-      var minX = xgraph.minX,
-          minY = xgraph.minY;
+      var minX = xgraph.minX;
+      var minY = xgraph.minY;
 
-      var p = util.transformPointToEl(
-              xgraph.width / 2,
-              xgraph.height / 2,
-              ctx.$el);
+      var p = util.transformPointFromViewportToEl(
+          (xgraph.width / 2),
+          (xgraph.height / 2),
+          ctx.$el);
 
       var dx = p.x - ctx.x,
           dy = p.y - ctx.y;
@@ -111,7 +111,7 @@ define([
 
     //drag node
     this.drag = function (e) {
-      var p = util.transformPointToEl(e.x, e.y, ctx.$el);
+      var p = util.transformPointFromScreenToEl(e.x, e.y, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -212,7 +212,7 @@ define([
     methods: {
 
       mousemove: function (e) {
-        this.target = util.transformPointToEl(e.x, e.y, this.$el);
+        this.target = util.transformPointFromScreenToEl(e.x, e.y, this.$el);
       }
 
     },
@@ -220,12 +220,12 @@ define([
     events: {
 
       'hook:attached': function () {
-        this.source = util.transformPointToEl(
+        this.source = util.transformPointFromScreenToEl(
             this.linkSource.x,
             this.linkSource.y,
             this.$el);
 
-        this.target = util.transformPointToEl(
+        this.target = util.transformPointFromScreenToEl(
             mouse.x,
             mouse.y,
             this.$el);
@@ -456,7 +456,7 @@ define([
         var source = this.source,
             target = this.target;
 
-        var v = util.transformVectorToEl(e.dx, e.dy, this.$el);
+        var v = util.transformVectorFromScreenToEl(e.dx, e.dy, this.$el);
 
         source.px = source.x = this.source_x + v.x;
         source.py = source.y = this.source_y + v.y;
@@ -648,7 +648,7 @@ define([
 
         this.displayContextMenu = true;
 
-        var p = util.transformPointToEl(e.x, e.y, this.$el);
+        var p = util.transformPointFromScreenToEl(e.x, e.y, this.$el);
 
         this.cmX = p.x;
         this.cmY = p.y;
