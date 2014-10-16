@@ -511,15 +511,6 @@ define([
 
     computed: {
 
-      nodes: {
-        get: function () {
-          return this.$parent.nodes;
-        },
-        set: function (value) {
-          this.$parent.nodes = value;
-        }
-      },
-
       viewBox: function () {
         return this.minX + ' ' + this.minY + ' ' + this.width + ' ' + this.height;
       }
@@ -543,7 +534,8 @@ define([
         var newWidth = util.width(this.$el),
             newHeight = util.height(this.$el);
 
-        if (this.width == newWidth && this.height == newHeight) {
+        if (this.width == newWidth &&
+            this.height == newHeight) {
           return;
         }
 
@@ -681,12 +673,11 @@ define([
             .linkDistance(50);
 
         force.on('end', function () {
-          _.defer(function () {
-            self.$parent.saveNodes();
-          });
+          _.defer(function () { Node.update(nodesAry); });
         });
 
         this.$on('data', function (nodes, links) {
+          self.nodes = nodes;
           self.links = links;
 
           force
@@ -712,7 +703,7 @@ define([
 
           force.links(value);
           self.forceStart();
-        });
+        }, false, true);
 
         window.addEventListener('resize', this.resize.bind(this));
         window.addEventListener('contextmenu', this.contextMenu.bind(this));
@@ -834,23 +825,17 @@ define([
       createNodeHandler: function () {
         var self = this;
 
-        util.ajax({
-          url: '/hypernode',
-          type: 'POST',
-          contentType: "application/json; charset=utf-8",
-          data: JSON.stringify({ data: self.data }),
-          success: function (response) {
-            var node = Node.parseJSON(response.results[0].data[0]);
-            self.$parent.nodes.push(node);
+        Node.save(self.data)
+            .then(function(node) {
+              self.$parent.nodes.push(node);
 
-            self.key = "";
-            self.value = "";
-            self.data = null;
-            self.keyHasError = false;
-            self.valueHasError = false;
-            self.$parent.displayNodeCreate = false;
-          }
-        });
+              self.key = "";
+              self.value = "";
+              self.data = null;
+              self.keyHasError = false;
+              self.valueHasError = false;
+              self.$parent.displayNodeCreate = false;
+            });
       }
 
     }
@@ -890,22 +875,6 @@ define([
           Mousetrap.unbind('esc');
           this.displayNodeData = false;
         });
-      },
-
-      saveNodes: function () {
-        var nodesJson = _.map(nodesAry, function (node) {
-          return Node.toJSON(node);
-        });
-
-        util.ajax({
-          url: '/hypernode',
-          type: 'PUT',
-          contentType: "application/json; charset=utf-8",
-          data: JSON.stringify({ data: nodesJson }),
-          success: function (response) {
-            //console.log('response', response);
-          }
-        });
       }
 
     },
@@ -927,7 +896,6 @@ define([
                   }
                 });
               });
-
 
               nodesAry = self.nodes = nodes;
               linksAry = self.links = links;

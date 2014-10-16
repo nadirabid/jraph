@@ -69,6 +69,32 @@ define([
     return xhr;
   };
 
+  Node.update = function(nodes) {
+    var nodesJson = _.map(nodes, function (node) {
+      return Node.toJSON(node);
+    });
+
+    return util.ajax({
+      url: '/hypernode',
+      type: 'PUT',
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({ data: nodesJson })
+    });
+  };
+
+  Node.create = function(data) {
+    return util
+        .ajax({
+          url: '/hypernode',
+          type: 'POST',
+          contentType: 'application/json; charset=utf-8',
+          data: JSON.stringify({ data: data })
+        })
+        .then(function(response) {
+          return Node.parseJSON(response.results[0].data[0]);
+        });
+  };
+
   return {
     Node: Node,
     Link: Link
