@@ -1,13 +1,17 @@
 define([
-  'lodash',
-  'vue',
-  'd3',
-  'globals'
-], function (_, Vue, d3, glob) {
+    'lodash',
+    'vue',
+    'd3',
+    'globals',
+    'util',
+    'models'
+], function (_, Vue, d3, glob, util, models) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
   var TWO_PI = glob.TWO_PI;
+
+  var Node = models.Node;
 
   Vue.component('x-radial-button', {
 
@@ -218,4 +222,112 @@ define([
     }
 
   });
+
+  Vue.component('x-node-data', {
+
+    data: function () {
+      return {
+        nodeData: { },
+        key: '',
+        value: '',
+        valueHasError: false,
+        keyHasError: false,
+        addProperty: false
+      };
+    },
+
+    computed: {
+
+      nodeDataList: function () {
+        return _.map(this.nodeData, function (v, k) {
+          return { key: k, value: v };
+        });
+      }
+
+    },
+
+    methods: {
+
+      savePropertyHandler: function () {
+        var self = this;
+
+        if (!self.key || !self.value) {
+          self.keyHasError = !self.key;
+          self.valueHasError = !self.value;
+          return;
+        }
+
+        if (!self.nodeData.data) {
+          self.nodeData.data = { };
+        }
+
+        self.nodeData.data[ self.key ] = self.value;
+        self.addProperty = false;
+
+        Node.update(self.nodeData.data)
+            .then(function(node) {
+              self.nodeData.data = node;
+            });
+      }
+
+    },
+
+    events: {
+
+      'hook:created': function () {
+        this.nodeData = this.$parent.nodeData;
+      }
+
+    }
+
+  });
+
+  Vue.component('x-node-create', {
+
+    data: function () {
+      return {
+        key: "",
+        value: "",
+        valueHasError: false,
+        keyHasError: false,
+        data: null
+      };
+    },
+
+    methods: {
+
+      addPropertyHandler: function () {
+        var self = this;
+
+        if (!self.key || !self.value) {
+          self.keyHasError = !self.key;
+          self.valueHasError = !self.value;
+          return;
+        }
+
+        var data = self.data || { };
+        data[ self.key ] = self.value;
+        self.data = data;
+      },
+
+      createNodeHandler: function () {
+        var self = this;
+
+        Node.save(self.data)
+            .then(function(node) {
+              self.$parent.nodes.push(node);
+
+              self.key = "";
+              self.value = "";
+              self.data = null;
+              self.keyHasError = false;
+              self.valueHasError = false;
+              self.$parent.displayNodeCreate = false;
+            });
+      }
+
+    }
+
+  });
+
 });

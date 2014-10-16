@@ -74,12 +74,16 @@ define([
       return Node.toJSON(node);
     });
 
-    return util.ajax({
-      url: '/hypernode',
-      type: 'PUT',
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({ data: nodesJson })
-    });
+    return util
+        .ajax({
+          url: '/hypernode',
+          type: 'PUT',
+          contentType: "application/json; charset=utf-8",
+          data: JSON.stringify({ data: nodesJson })
+        })
+        .then(function(response) {
+          return Node.parseJSON(response.results[0].data[0]);
+        });
   };
 
   Node.create = function(data) {

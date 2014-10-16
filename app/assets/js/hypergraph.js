@@ -187,8 +187,8 @@ define([
           .classList
           .remove('node-linking-target', 'hover');
 
-      sourceCtx._ghostLink.$destroy(true);
-      sourceCtx._ghostLink = null;
+      sourceCtx.$.ghostLink.$destroy(true);
+      sourceCtx.$.ghostLink = null;
 
       sourceCtx.$el.querySelector('.node-circle')
           .classList
@@ -302,7 +302,7 @@ define([
         mouse.state = 'linking';
         mouse.data.source = this;
 
-        var ghostLink = this._ghostLink = new GhostLinkComponent({
+        var ghostLink = this.$.ghostLink = new GhostLinkComponent({
           data: {
             linkSource: this
           }
@@ -492,7 +492,7 @@ define([
 
   });
 
-  Vue.component('x-graph', {
+  var GraphComponent = Vue.extend({
 
     data: function () {
       return {
@@ -662,8 +662,20 @@ define([
 
     events: {
 
+      'data': function(nodes, links) {
+        this.nodes = nodes;
+        this.links = links;
+
+        this._force
+            .nodes(nodes)
+            .links(links)
+            .start();
+      },
+
       'hook:created': function () {
         var self = this;
+
+        console.log(this.test);
 
         var force = this._force = d3.layout.force()
             .theta(0.1)
@@ -673,21 +685,13 @@ define([
             .linkDistance(50);
 
         force.on('end', function () {
-          _.defer(function () { Node.update(nodesAry); });
-        });
-
-        this.$on('data', function (nodes, links) {
-          self.nodes = nodes;
-          self.links = links;
-
-          force
-              .nodes(self.nodes)
-              .links(self.links)
-              .start();
+          _.defer(function () {
+            //Node.update(nodesAry);
+          });
         });
 
         // todo: unwatch when component is destroyed
-        this.$parent.$watch('nodes', function (value, mutation) {
+        this.$watch('nodes', function (value, mutation) {
           if (!mutation) {
             return;
           }
@@ -696,7 +700,7 @@ define([
           self.forceStart();
         }, false, true);
 
-        this.$parent.$watch('links', function (value, mutation) {
+        this.$watch('links', function (value, mutation) {
           if (!mutation) {
             return;
           }
@@ -724,202 +728,41 @@ define([
   });
 
   /*
-   Info view
-   */
-
-  Vue.component('x-node-data', {
-
-    data: function () {
-      return {
-        nodeData: { },
-        key: '',
-        value: '',
-        valueHasError: false,
-        keyHasError: false,
-        addProperty: false
-      };
-    },
-
-    computed: {
-
-      nodeDataList: function () {
-        return _.map(this.nodeData, function (v, k) {
-          return { key: k, value: v };
-        });
-      }
-
-    },
-
-    methods: {
-
-      savePropertyHandler: function () {
-        var self = this;
-
-        if (!self.key || !self.value) {
-          self.keyHasError = !self.key;
-          self.valueHasError = !self.value;
-          return;
-        }
-
-        if (!self.nodeData.data) {
-          self.nodeData.data = { };
-        }
-
-        self.nodeData.data[ self.key ] = self.value;
-        self.addProperty = false;
-
-        util.ajax({
-          url: '/hypernode/' + self.nodeData.id,
-          type: 'PUT',
-          contentType: "application/json; charset=utf-8",
-          data: JSON.stringify({ data: self.nodeData.data }),
-          success: function (response) {
-            var row = response.results[0].data[0].row[0];
-            row.data = JSON.parse(row.data || null);
-
-            self.nodeData.data = row.data;
-          }
-        });
-      }
-
-    },
-
-    events: {
-
-      'hook:created': function () {
-        this.nodeData = this.$parent.nodeData;
-      }
-
-    }
-
-  });
-
-  Vue.component('x-node-create', {
-
-    data: function () {
-      return {
-        key: "",
-        value: "",
-        valueHasError: false,
-        keyHasError: false,
-        data: null
-      };
-    },
-
-    methods: {
-
-      addPropertyHandler: function () {
-        var self = this;
-
-        if (!self.key || !self.value) {
-          self.keyHasError = !self.key;
-          self.valueHasError = !self.value;
-          return;
-        }
-
-        var data = self.data || { };
-        data[ self.key ] = self.value;
-        self.data = data;
-      },
-
-      createNodeHandler: function () {
-        var self = this;
-
-        Node.save(self.data)
-            .then(function(node) {
-              self.$parent.nodes.push(node);
-
-              self.key = "";
-              self.value = "";
-              self.data = null;
-              self.keyHasError = false;
-              self.valueHasError = false;
-              self.$parent.displayNodeCreate = false;
-            });
-      }
-
-    }
-
-  });
-
-  /*
    Main application code
    */
 
-  var app = new Vue({
+  var app = new Vue();
+  var graphComponent = new GraphComponent({ parent: app });
 
-    el: function () {
-      return '#application';
-    },
+  //mount in reverse order so that parents are properly assigned
+  graphComponent.$mount('#graph');
+  app.$mount('#application');
 
-    data: function () {
-      return {
-        nodes: [ ],
-        links: [ ],
-        displayNodeCreate: false,
-        displayNodeData: false
-      };
-    },
-
-    methods: {
-
-      toggleForce: function () {
-        this.$.graph.toggleForce();
-      },
-
-      showNodeData: function (data) {
-        this.nodeData = data;
-        this.displayNodeData = true;
-
-        this.$on('hideNodeData', function () {
-          Mousetrap.unbind('esc');
-          this.displayNodeData = false;
-        });
-      }
-
-    },
-
-    events: {
-
-      'hook:created': function () {
-        var self = this;
-
-        util.when(Node.fetchAll(), Link.fetchAll())
-            .done(function (nodes, links) {
-              nodes.forEach(function (n) {
-                links.forEach(function (l) {
-                  if (l.sourceId == n.id) {
-                    l.source = n;
-                  }
-                  if (l.targetId == n.id) {
-                    l.target = n;
-                  }
-                });
-              });
-
-              nodesAry = self.nodes = nodes;
-              linksAry = self.links = links;
-
-              self.$broadcast('data', nodes, links);
-            });
-
-        this.$on('showNodeData', this.showNodeData.bind(this));
-
-        this.$watch('displayNodeCreate', function (value) {
-          if (!value) {
-            return;
-          }
-
-          Mousetrap.bind('esc', function () {
-            self.displayNodeCreate = false;
-            Mousetrap.unbind('esc');
+  util.when(Node.fetchAll(), Link.fetchAll())
+      .done(function (nodes, links) {
+        nodes.forEach(function (n) {
+          links.forEach(function (l) {
+            if (l.sourceId == n.id) {
+              l.source = n;
+            }
+            if (l.targetId == n.id) {
+              l.target = n;
+            }
           });
         });
-      }
 
-    }
+        nodesAry = nodes;
+        linksAry = links;
 
-  });
+        graphComponent.$add('nodes', nodes);
+        graphComponent.$add('links', links);
+        graphComponent.$emit('data', nodes, links);
+
+        app.$add('nodes', nodes);
+        app.$add('links', links);
+        app.$broadcast('data', nodes, links);
+      });
+
 
   return app;
 });
