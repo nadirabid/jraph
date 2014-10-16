@@ -1,19 +1,18 @@
 @layout("Data Visualization") {
+  <main id="application">
 
-    <main id="application">
+    <div class="sidebar">
+    @views.html.graph.sidebar()
+    </div>
 
-        <div class="sidebar">
-            @views.html.graph.sidebar()
-        </div>
+    <div class="overlay-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
+        <!-- views.html.graph.overlay -->
+    </div>
 
-        <div class="overlay-container" v-class="disable-pointer-events:!displayNodeData && !displayNodeCreate">
-            <!-- views.html.graph.overlay -->
-        </div>
+    <div class="graph-container">
+    @views.html.graph.graph()
+    </div>
 
-        <div class="graph-container">
-            @views.html.graph.graph()
-        </div>
-
-    </main>
+  </main>
 
 }

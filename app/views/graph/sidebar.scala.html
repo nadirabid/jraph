@@ -1,3 +1,16 @@
-<h4>Sidebar</h4>
-<div></div>
+<style>
+  .sidebar-menu {
+    padding:2em;
+  }
+</style>
 
+<div v-component="x-sidebar">
+  <h4>Application Sidebar</h4>
+
+  <div class="sidebar-menu">
+    <ul class="nav">
+      <li v-on="click:$trigger('addNode')">Add Node</li>
+      <li v-on="click:$trigger('toggleForce')">Toggle Force Layout</li>
+    </ul>
+  </div>
+</div>

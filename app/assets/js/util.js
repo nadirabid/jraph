@@ -504,7 +504,7 @@ define([
         el.removeEventListener('mouseup', mouseup);
         el.removeEventListener('click', click);
 
-        //removeDropEventListeners();
+        removeDropEventListeners();
       };
     }
 

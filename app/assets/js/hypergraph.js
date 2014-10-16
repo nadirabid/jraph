@@ -1,12 +1,14 @@
 define([
-  'lodash',
-  'mousetrap',
-  'd3',
-  'vue',
-  'util',
-  'globals',
-  'components'
-], function (_, Mousetrap, d3, Vue, util, glob) {
+    'lodash',
+    'mousetrap',
+    'd3',
+    'vue',
+    'util',
+    'globals',
+    'models',
+    'components',
+    'sidebar'
+], function (_, Mousetrap, d3, Vue, util, glob, models) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -16,6 +18,9 @@ define([
   var mouse = glob.mouse;
   var nodesAry = [];
   var linksAry = [];
+
+  var Node = models.Node;
+  var Link = models.Link;
 
   /*
    Graph view
@@ -853,78 +858,6 @@ define([
   });
 
   /*
-   Models
-   */
-
-  //todo: something to do with this
-
-  var Link = {};
-
-  Link.parseJSON = function (datum) {
-    var row = datum.row[0];
-    row.data = JSON.parse(row.data || null);
-
-    return row;
-  };
-
-  Link.fetchAll = function () {
-    var xhr = util.getJSON('/hyperlink')
-        .then(function (response) {
-          var links = _(response.results[0].data)
-              .uniq(function (datum) {
-                return datum.row[0].id;
-              })
-              .map(Link.parseJSON)
-              .value();
-
-          linksAry = links;
-          return links;
-        });
-
-    return xhr;
-  };
-
-  var Node = {};
-
-  Node.parseJSON = function (datum) {
-    var row = datum.row[0];
-    row.data = JSON.parse(row.data || null);
-
-    var clientDisplay = row.data.clientDisplay;
-    row.x = clientDisplay ? (clientDisplay.x || 0) : 0;
-    row.y = clientDisplay ? (clientDisplay.y || 0) : 0;
-    row.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
-
-    return row;
-  };
-
-  Node.toJSON = function (node) {
-    var json = { id: node.id };
-    json.data = _.clone(node.data);
-    json.data.clientDisplay = {
-      x: node.x,
-      y: node.y,
-      fixed: node.fixed
-    };
-
-    return json;
-  };
-
-  Node.fetchAll = function () {
-    var xhr = util.getJSON('/hypernode')
-        .then(function (response) {
-          if (response.errors.length) {
-            throw 'Unable to fetchNodes: ' + JSON.stringify(response.errors);
-          }
-
-          nodesAry = _.map(response.results[0].data, Node.parseJSON);
-          return nodesAry;
-        });
-
-    return xhr;
-  };
-
-  /*
    Main application code
    */
 
@@ -995,8 +928,9 @@ define([
                 });
               });
 
-              self.nodes = nodes;
-              self.links = links;
+
+              nodesAry = self.nodes = nodes;
+              linksAry = self.links = links;
 
               self.$broadcast('data', nodes, links);
             });
