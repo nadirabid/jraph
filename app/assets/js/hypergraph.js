@@ -1,19 +1,18 @@
 define([
     'lodash',
     'mousetrap',
-    'd3',
     'vue',
     'util',
     'globals',
     'models',
+    'state',
     'components',
     'sidebar'
-], function (_, Mousetrap, d3, Vue, util, glob, models) {
+], function (_, Mousetrap, Vue, util, glob, models, State) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
-  var FORCE_THROTTLE_TIME = 500;
 
   var mouse = glob.mouse;
   var nodesAry = [];
@@ -675,19 +674,21 @@ define([
       'hook:created': function () {
         var self = this;
 
-        console.log(this.test);
-
-        var force = this._force = d3.layout.force()
-            .theta(0.1)
-            .friction(0.5)
-            .gravity(0.5)
-            .charge(-6000)
-            .linkDistance(50);
+        var force = this.state.layout.$force;
 
         force.on('end', function () {
           _.defer(function () {
             //Node.update(nodesAry);
           });
+        });
+
+        this.$watch('state.nodes', function (value, mutation) {
+          if (!mutation) {
+            return;
+          }
+
+          force.nodes(value);
+          self.forceStart();
         });
 
         // todo: unwatch when component is destroyed
@@ -731,8 +732,16 @@ define([
    Main application code
    */
 
-  var app = new Vue();
-  var graphComponent = new GraphComponent({ parent: app });
+  var state = new State();
+
+  var app = new Vue(); //serves as global state
+
+  var graphComponent = new GraphComponent({
+    parent: app,
+    data: {
+      state: state
+    }
+  });
 
   //mount in reverse order so that parents are properly assigned
   graphComponent.$mount('#graph');
