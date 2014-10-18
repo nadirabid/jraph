@@ -114,6 +114,18 @@ define([
     };
 
     //drag node
+    this.dragstart = function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+
+      ctx.px = ctx.x;
+      ctx.py = ctx.y;
+
+      ctx.fixed = true;
+    };
+
+    var dragCursor = false;
+
     this.drag = function (e) {
       var p = util.transformPointFromScreenToEl(e.x, e.y, ctx.$el);
 
@@ -122,19 +134,20 @@ define([
       ctx.menu = false;
 
       ctx.state.$layout.resume();
+
+      if (!dragCursor) {
+        e.target.style.cursor = 'move';
+        dragCursor = true;
+      }
     };
 
-    this.dragstart = function (e) {
-      e.stopPropagation();
-
-      ctx.px = ctx.x;
-      ctx.py = ctx.y;
-
-      ctx.fixed = true;
-    };
-
-    this.dragend = function () {
+    this.dragend = function (e) {
       ctx.menu = true;
+
+      if (dragCursor) {
+        e.target.style.cursor = 'auto';
+        dragCursor = false;
+      }
     };
   });
 
@@ -433,6 +446,8 @@ define([
         }
 
         e.stopPropagation();
+        e.preventDefault(); //to stop browser from turning
+                            // the cursor into type selection
 
         var source = this.source,
             target = this.target;
@@ -467,6 +482,20 @@ define([
         target.py = target.y = this.target_y + v.y;
 
         this.state.$layout.resume();
+
+        if (!this._dragCursor) {
+          document.body.style.cursor = 'move';
+          e.target.style.cursor = 'move';
+          this._dragCursor = true;
+        }
+      },
+
+      dragend: function(e) {
+        if (this._dragCursor) {
+          document.body.style.cursor = 'auto';
+          e.target.style.cursor = 'auto';
+          this._dragCursor = false;
+        }
       }
 
     },
@@ -483,6 +512,7 @@ define([
         $g.on('mouseout', this.releasePosition.bind(this));
         $g.on('dragstart', this.dragstart.bind(this));
         $g.on('drag', this.drag.bind(this));
+        $g.on('dragend', this.dragend.bind(this));
       }
 
     }
