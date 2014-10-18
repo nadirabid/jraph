@@ -73,6 +73,14 @@ define([
   (function() {
     var events = {};
 
+    function noop() {
+      //do nothing
+    }
+
+    function isNullOrUndefined(value) {
+      return value === null || value === undefined;
+    }
+
     function animationFrame(callback) {
       defer(callback, 0);
     }
@@ -110,10 +118,6 @@ define([
       callbacks.forEach(function (callback) {
         callback.apply(Util, args);
       });
-    }
-
-    function noop() {
-      //do nothing
     }
 
     function setCTM(element, matrix) {
@@ -162,8 +166,6 @@ define([
       var ctm = viewportEl.getCTM().inverse(0);
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
-
-      console.log(viewportEl.getCTM().inverse(), viewportEl.getScreenCTM().inverse(), etm);
 
       var svgPoint = viewportEl.createSVGPoint();
 
@@ -240,6 +242,7 @@ define([
       };
     }
 
+    Util.isNullOrUndefined = isNullOrUndefined;
     Util.animationFrame = animationFrame;
     Util.chainEvalVm = chainEvalVm;
     Util.deepResolveIndex = deepResolveIndex;
