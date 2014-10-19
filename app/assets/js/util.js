@@ -200,7 +200,7 @@ define([
       return svgPoint;
     }
 
-    function transformPointFromScreenToEl(x, y, el) {
+    function transformPointFromClientToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement || el;
 
       var ctm = viewportEl.getScreenCTM().inverse();
@@ -218,7 +218,7 @@ define([
       return svgPoint;
     }
 
-    function transformVectorFromScreenToEl(x, y, el) {
+    function transformVectorFromClientToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement;
       var ctm = viewportEl.getScreenCTM().inverse();
       ctm.e = ctm.f = 0;
@@ -256,8 +256,8 @@ define([
     Util.off = off;
     Util.setCTM = setCTM;
     Util.trigger = trigger;
-    Util.transformVectorFromScreenToEl = transformVectorFromScreenToEl;
-    Util.transformPointFromScreenToEl = transformPointFromScreenToEl;
+    Util.transformVectorFromClientToEl = transformVectorFromClientToEl;
+    Util.transformPointFromClientToEl = transformPointFromClientToEl;
     Util.transformPointFromViewportToEl = transformPointFromViewportToEl;
     Util.transformVectorFromViewportToEl = transformVectorFromViewportToEl;
   })();

@@ -127,7 +127,7 @@ define([
     var dragCursor = false;
 
     this.drag = function (e) {
-      var p = util.transformPointFromScreenToEl(
+      var p = util.transformPointFromClientToEl(
           e.clientX, e.clientY, ctx.$el);
 
       ctx.px = ctx.x = p.x;
@@ -230,7 +230,7 @@ define([
     methods: {
 
       mousemove: function (e) {
-        this.target = util.transformPointFromScreenToEl(
+        this.target = util.transformPointFromClientToEl(
             e.clientX, e.clientY, this.$el);
       }
 
@@ -239,12 +239,12 @@ define([
     events: {
 
       'hook:attached': function () {
-        this.source = util.transformPointFromScreenToEl(
+        this.source = util.transformPointFromClientToEl(
             this.linkSource.x,
             this.linkSource.y,
             this.$el);
 
-        this.target = util.transformPointFromScreenToEl(
+        this.target = util.transformPointFromClientToEl(
             mouse.x,
             mouse.y,
             this.$el);
@@ -476,7 +476,7 @@ define([
         var source = this.source,
             target = this.target;
 
-        var v = util.transformVectorFromScreenToEl(e.dx, e.dy, this.$el);
+        var v = util.transformVectorFromClientToEl(e.dx, e.dy, this.$el);
 
         source.px = source.x = this.source_x + v.x;
         source.py = source.y = this.source_y + v.y;
@@ -644,7 +644,7 @@ define([
 
         this.displayContextMenu = true;
 
-        var p = util.transformPointFromScreenToEl(
+        var p = util.transformPointFromClientToEl(
             e.clientX, e.clientY, this.$el);
 
         this.cmX = p.x;
