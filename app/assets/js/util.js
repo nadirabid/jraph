@@ -29,11 +29,14 @@ define([
     }
   }
 
+  var counter = 0;
+
   function WrappedUtil(value) {
     // DO NOT use these properties as part
     // of the client API as that can lead to
     // memory leaks
 
+    this.__id__ = counter++;
     this.__object__ = value;
     this.__destroy__ = [];
   }
@@ -273,8 +276,8 @@ define([
     }, true);
 
     document.addEventListener('mousemove', function (e) {
-      glob.mouse.x = e.x;
-      glob.mouse.y = e.y;
+      glob.mouse.x = e.clientX;
+      glob.mouse.y = e.clientY;
       Util.trigger('mousemove', e);
     });
 
@@ -374,13 +377,13 @@ define([
         $util.trigger('drop', e);
       }
 
-      el.addEventListener('mouseover', drop_mouseover);
-      el.addEventListener('mouseout', drop_mouseout);
+      el.addEventListener('mouseenter', drop_mouseover);
+      el.addEventListener('mouseleave', drop_mouseout);
       el.addEventListener('click', drop_click);
 
       return function() {
-        el.removeEventListener('mouseover', drop_mouseover);
-        el.removeEventListener('mouseout', drop_mouseout);
+        el.removeEventListener('mouseenter', drop_mouseover);
+        el.removeEventListener('mouseleave', drop_mouseout);
         el.removeEventListener('click', drop_click);
       };
     }
@@ -397,8 +400,8 @@ define([
 
         dragState.state = DRAG_STATES.DRAG_START;
         dragState.element = el;
-        px = e.x;
-        py = e.y;
+        px = e.clientX;
+        py = e.clientY;
 
         $util.trigger('dragstart', e);
 
@@ -413,8 +416,8 @@ define([
           dragState.state = DRAG_STATES.DRAG;
         }
 
-        e.dx = e.x - px;
-        e.dy = e.y - py;
+        e.dx = e.clientX - px;
+        e.dy = e.clientY - py;
         $util.trigger('drag', e);
       }
 
@@ -423,11 +426,14 @@ define([
         Util.off('mouseup', drag_mouseup);
 
         if (!dragFlag) {
+          console.log('util:drag_mouseup:ignored', $util.__id__);
           return;
         }
 
-        var x = e.x;
-        var y = e.y;
+        console.log('util:drag_mouseup:executed', $util.__id__);
+
+        var x = e.clientX;
+        var y = e.clientY;
 
         dragState.state = DRAG_STATES.NONE;
 
@@ -466,21 +472,27 @@ define([
         mouseOnElFlag = false;
 
         if (dragFlag || mousedownFlag) {
+          console.log('util:mouseout:ignored', mousedownFlag, dragFlag, $util.__id__);
           mouseoutEventIgnored = true;
           return;
         }
+
+        console.log('util:mouseout:executed', $util.__id__);
 
         $util.trigger('mouseout', e);
       }
 
       function click(e) {
         if (dragFlag) {
+          console.log('util:click:ignored', $util.__id__);
           dragFlag = false;
         }
         else {
+          console.log('util:click:executed', $util.__id__);
           $util.trigger('click', e);
         }
       }
+
 
       el.addEventListener('mousedown', drag_mousedown);
       el.addEventListener('mousedown', mousedown);
@@ -500,10 +512,11 @@ define([
         // will destroyed as well. thus we explicitly remove
         // the events listeners to avoid lost handles back to the
         // UtilWrapper that was requested to be destroyed
+
         el.removeEventListener('mousedown', drag_mousedown);
         el.removeEventListener('mousedown', mousedown);
-        el.removeEventListener('mouseover', mouseover);
-        el.removeEventListener('mouseout', mouseout);
+        el.removeEventListener('mouseenter', mouseover);
+        el.removeEventListener('mouseleave', mouseout);
         el.removeEventListener('mouseup', mouseup);
         el.removeEventListener('click', click);
 

@@ -127,7 +127,8 @@ define([
     var dragCursor = false;
 
     this.drag = function (e) {
-      var p = util.transformPointFromScreenToEl(e.x, e.y, ctx.$el);
+      var p = util.transformPointFromScreenToEl(
+          e.clientX, e.clientY, ctx.$el);
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -136,7 +137,7 @@ define([
       ctx.state.$layout.resume();
 
       if (!dragCursor) {
-        e.target.style.cursor = 'move';
+        ctx.$el.style.cursor = 'move';
         dragCursor = true;
       }
     };
@@ -145,7 +146,7 @@ define([
       ctx.menu = true;
 
       if (dragCursor) {
-        e.target.style.cursor = 'auto';
+        ctx.$el.style.cursor = 'auto';
         dragCursor = false;
       }
     };
@@ -229,7 +230,8 @@ define([
     methods: {
 
       mousemove: function (e) {
-        this.target = util.transformPointFromScreenToEl(e.x, e.y, this.$el);
+        this.target = util.transformPointFromScreenToEl(
+            e.clientX, e.clientY, this.$el);
       }
 
     },
@@ -302,6 +304,7 @@ define([
       },
 
       setLinkSource: function (e) {
+        console.log('xnode:setLinkSource');
         e.stopPropagation();
 
         this.$el.querySelector('.node-circle')
@@ -485,7 +488,7 @@ define([
 
         if (!this._dragCursor) {
           document.body.style.cursor = 'move';
-          e.target.style.cursor = 'move';
+          this.$el.style.cursor = 'move';
           this._dragCursor = true;
         }
       },
@@ -493,7 +496,7 @@ define([
       dragend: function(e) {
         if (this._dragCursor) {
           document.body.style.cursor = 'auto';
-          e.target.style.cursor = 'auto';
+          this.$el.style.cursor = 'auto';
           this._dragCursor = false;
         }
       }
@@ -641,7 +644,8 @@ define([
 
         this.displayContextMenu = true;
 
-        var p = util.transformPointFromScreenToEl(e.x, e.y, this.$el);
+        var p = util.transformPointFromScreenToEl(
+            e.clientX, e.clientY, this.$el);
 
         this.cmX = p.x;
         this.cmY = p.y;
