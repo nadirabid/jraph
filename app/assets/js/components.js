@@ -176,7 +176,6 @@ define([
       },
 
       'hook:attached': function() {
-        console.log(this.$el);
         this.updateX();
         this.updateY();
       }

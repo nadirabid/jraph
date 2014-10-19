@@ -90,7 +90,7 @@ define([
         return t > 1;
       });
 
-      ctx.menu = false;
+      //ctx.menu = false;
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
@@ -113,8 +113,15 @@ define([
       });
     };
 
+    var dragStart = false;
     //drag node
     this.dragstart = function (e) {
+      if (e.target !== ctx.$$.nodeCircle) {
+        return;
+      }
+
+      dragStart = true;
+
       e.stopPropagation();
       e.preventDefault();
 
@@ -127,6 +134,10 @@ define([
     var dragCursor = false;
 
     this.drag = function (e) {
+      if (!dragStart) {
+        return;
+      }
+
       var p = util.transformPointFromClientToEl(
           e.clientX, e.clientY, ctx.$el);
 
@@ -142,7 +153,8 @@ define([
       }
     };
 
-    this.dragend = function (e) {
+    this.dragend = function () {
+      dragStart = false;
       ctx.menu = true;
 
       if (dragCursor) {
@@ -239,7 +251,7 @@ define([
     events: {
 
       'hook:attached': function () {
-        this.source = util.transformPointFromClientToEl(
+        this.source = util.transformPointFromViewportToEl(
             this.linkSource.x,
             this.linkSource.y,
             this.$el);
@@ -304,7 +316,6 @@ define([
       },
 
       setLinkSource: function (e) {
-        console.log('xnode:setLinkSource');
         e.stopPropagation();
 
         this.$el.querySelector('.node-circle')
@@ -383,6 +394,7 @@ define([
 
       'hook:ready': function () {
         this.$$.nodeLabel = this.$el.querySelector('.node-label');
+        this.$$.nodeCircle = this.$el.querySelector('.node-circle');
 
         var $nodeGroup = util(this.$el.querySelector('.node-group'));
 
@@ -714,8 +726,8 @@ define([
 
       'hook:compiled': function () {
         var $svg = util(this.$el);
-        $svg.on('dragstart', this.panStart.bind(this));
-        $svg.on('drag', this.pan.bind(this));
+        //$svg.on('dragstart', this.panStart.bind(this));
+        //$svg.on('drag', this.pan.bind(this));
       },
 
       'hook:ready': function () {

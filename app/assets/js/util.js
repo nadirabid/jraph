@@ -278,6 +278,7 @@ define([
     document.addEventListener('mousemove', function (e) {
       glob.mouse.x = e.clientX;
       glob.mouse.y = e.clientY;
+
       Util.trigger('mousemove', e);
     });
 
@@ -426,11 +427,8 @@ define([
         Util.off('mouseup', drag_mouseup);
 
         if (!dragFlag) {
-          console.log('util:drag_mouseup:ignored', $util.__id__);
           return;
         }
-
-        console.log('util:drag_mouseup:executed', $util.__id__);
 
         var x = e.clientX;
         var y = e.clientY;
@@ -472,23 +470,18 @@ define([
         mouseOnElFlag = false;
 
         if (dragFlag || mousedownFlag) {
-          console.log('util:mouseout:ignored', mousedownFlag, dragFlag, $util.__id__);
           mouseoutEventIgnored = true;
           return;
         }
-
-        console.log('util:mouseout:executed', $util.__id__);
 
         $util.trigger('mouseout', e);
       }
 
       function click(e) {
         if (dragFlag) {
-          console.log('util:click:ignored', $util.__id__);
           dragFlag = false;
         }
         else {
-          console.log('util:click:executed', $util.__id__);
           $util.trigger('click', e);
         }
       }
