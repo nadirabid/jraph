@@ -46,8 +46,9 @@ main {
     display: -webkit-flex;
 }
 
-.sidebar {
-    width: 26em;
+.sidebar-container {
+    -webkit-order:2;
+    width: 24em;
     background-color: #263238;
     color: #ffffff;
     padding: 1.5em;

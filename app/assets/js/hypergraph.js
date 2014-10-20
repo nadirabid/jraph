@@ -685,8 +685,6 @@ define([
       },
 
       'hook:created': function () {
-        var self = this;
-
         var layout = this.state.$layout;
 
         layout.on('end', function () {
@@ -726,8 +724,8 @@ define([
 
       'hook:compiled': function () {
         var $svg = util(this.$el);
-        //$svg.on('dragstart', this.panStart.bind(this));
-        //$svg.on('drag', this.pan.bind(this));
+        $svg.on('dragstart', this.panStart.bind(this));
+        $svg.on('drag', this.pan.bind(this));
       },
 
       'hook:ready': function () {

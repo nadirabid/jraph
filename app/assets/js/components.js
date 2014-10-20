@@ -87,24 +87,6 @@ define([
 
     directives: {
 
-      'click': {
-        isFn: true,
-        update: function(handler) {
-          if (this.__handler__) {
-            this.el.removeEventListener('click', handler);
-            this.__handler__ = handler;
-          }
-          this.el.addEventListener('click', handler);
-        },
-
-        unbind: function() {
-          if (this.__handler__) {
-            this.el.removeEventListener('click', this.__handler__);
-            this.__handler__ = undefined;
-          }
-        }
-      },
-
       //val is considered to be in pixels
       'radius-inner': function (val) {
         val = Number.isInteger(val) ? val : parseInt(this.expression, 10);

@@ -31,7 +31,7 @@
      v-component="x-node"
      v-repeat="nodes">
     <g class="node-group">
-      <g v-class="invisible:!menu">
+      <g v-if="menu">
         <x-radial-menu>
           <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
           <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
@@ -39,10 +39,11 @@
       </g>
       <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
     </g>
-    <text class="node-label"
+    <text class="node-label enable-pointer-events"
           text-anchor="middle"
+          contenteditable="true"
           v-attr="transform:'translate('+labelX+','+labelY+')'"
-          v-class="invisible:menu">
+          v-if="!menu">
       Label {{$index}}
     </text>
   </g>
@@ -55,3 +56,13 @@
 @views.html.components.radial.menu()
 @views.html.components.radial.button()
 @views.html.graph.ghostlink()
+
+<template id="test.label">
+  <style>
+    span {
+      position:absolute;
+      white-space: nowrap
+    }
+  </style>
+  <span class="enabled-pointer-events" contentEditable="true">Label X</span>
+</template>
