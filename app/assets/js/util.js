@@ -392,7 +392,6 @@ define([
     function registerEvents($util, el) {
       var px, py = 0;
       var dragFlag = false;
-      var mouseOnElFlag = false;
 
       function drag_mousedown(e) {
         if (e.button !== 0) {
@@ -400,7 +399,8 @@ define([
         }
 
         dragState.state = DRAG_STATES.DRAG_START;
-        dragState.element = el;
+        dragState.element = e.target;
+
         px = e.clientX;
         py = e.clientY;
 
@@ -412,13 +412,12 @@ define([
       }
 
       function drag_mousemove(e) {
-        if (!dragFlag) {
-          dragFlag = true;
-          dragState.state = DRAG_STATES.DRAG;
-        }
+        dragFlag = true;
+        dragState.state = DRAG_STATES.DRAG;
 
         e.dx = e.clientX - px;
         e.dy = e.clientY - py;
+
         $util.trigger('drag', e);
       }
 
@@ -426,27 +425,16 @@ define([
         Util.off('mousemove', drag_mousemove);
         Util.off('mouseup', drag_mouseup);
 
-        if (!dragFlag) {
-          return;
+        if (dragState.element !== e.target) {
+          dragFlag = false;
         }
 
-        var x = e.clientX;
-        var y = e.clientY;
-
-        dragState.state = DRAG_STATES.NONE;
+        console.log(dragState.element, e.target, dragState.element !== e.target);
 
         $util.trigger('dragend', e);
 
-        if ((!mouseOnElFlag) ||
-            (x < 0 || y < 0) ||
-            (x > window.innerWidth || y > window.innerHeight)) {
-          dragFlag = false;
-
-          if (mouseoutEventIgnored) {
-            mouseoutEventIgnored = false;
-            $util.trigger('mouseout', e);
-          }
-        }
+        dragState.state = DRAG_STATES.NONE;
+        dragState.element = null;
       }
 
       function mouseup(e) {
@@ -458,34 +446,21 @@ define([
       }
 
       function mouseover(e) {
-        mouseOnElFlag = true;
-        if (dragFlag || mousedownFlag)
-          return;
-
         $util.trigger('mouseover', e);
       }
 
-      var mouseoutEventIgnored = false;
       function mouseout(e) {
-        mouseOnElFlag = false;
-
-        if (dragFlag || mousedownFlag) {
-          mouseoutEventIgnored = true;
-          return;
-        }
-
         $util.trigger('mouseout', e);
       }
 
       function click(e) {
         if (dragFlag) {
+          e.preventDefault();
           dragFlag = false;
         }
-        else {
-          $util.trigger('click', e);
-        }
-      }
 
+        $util.trigger('click', e);
+      }
 
       el.addEventListener('mousedown', drag_mousedown);
       el.addEventListener('mousedown', mousedown);

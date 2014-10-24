@@ -37,6 +37,9 @@ define([
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
+
+    var dragFlag = false;
+
     //show menu
     this.mouseover = function (e) {
       ctx.px = ctx.x;
@@ -60,7 +63,11 @@ define([
     };
 
     // shift viewport to center node
-    this.click = function () {
+    this.click = function (e) {
+      if (e.defaultPrevented) {
+        return;
+      }
+
       var xgraph = ctx.$parent;
 
       var minX = xgraph.minX;
@@ -113,14 +120,11 @@ define([
       });
     };
 
-    var dragStart = false;
     //drag node
     this.dragstart = function (e) {
       if (e.target !== ctx.$$.nodeCircle) {
         return;
       }
-
-      dragStart = true;
 
       e.stopPropagation();
       e.preventDefault();
@@ -134,12 +138,10 @@ define([
     var dragCursor = false;
 
     this.drag = function (e) {
-      if (!dragStart) {
-        return;
-      }
-
       var p = util.transformPointFromClientToEl(
           e.clientX, e.clientY, ctx.$el);
+
+      dragFlag = true;
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -154,7 +156,7 @@ define([
     };
 
     this.dragend = function () {
-      dragStart = false;
+      dragFlag = false;
       ctx.menu = true;
 
       if (dragCursor) {
@@ -316,6 +318,8 @@ define([
       },
 
       setLinkSource: function (e) {
+        console.log('setLinkSource');
+        e.preventDefault();
         e.stopPropagation();
 
         this.$el.querySelector('.node-circle')
@@ -584,6 +588,7 @@ define([
       },
 
       panStart: function () {
+        console.log('panStart');
         this._pMinX = this.minX;
         this._pMinY = this.minY;
       },
@@ -626,6 +631,7 @@ define([
       deleteNode: function (e, nodeId) {
         var self = this;
 
+        e.preventDefault();
         e.stopPropagation();
 
         util.ajax({
@@ -717,9 +723,11 @@ define([
             'resize',
             this.resize.bind(this));
 
+        /*
         window.addEventListener(
             'contextmenu',
             this.contextMenu.bind(this));
+        */
       },
 
       'hook:compiled': function () {
@@ -753,7 +761,7 @@ define([
 
   //mount in reverse order so that parents are properly assigned
   graphComponent.$mount('#graph');
-  app.$mount('#application');
+  app.$mount('#main');
 
   util.when(Node.fetchAll(), Link.fetchAll())
       .done(function (nodes, links) {

@@ -34,21 +34,33 @@
 */
 html, body {
     height: 100%;
-    width: 100%;
-    display: flex;
-    display: -webkit-flex;
 }
 
-main {
-    flex: 1 1 auto;
-    -webkit-flex: 1 1 auto;
+#all {
+    height: 100%;
+
     display: flex;
+    flex-flow: column;
+    display: -webkit-flex;
+    -webkit-flex-flow: column;
+}
+
+#nav {
+    margin-bottom:0; /* bootstrap adds margin-bottom:20px for some reason */
+}
+
+#main {
+    flex: auto;
+    display: flex;
+    -webkit-flex: auto;
     display: -webkit-flex;
 }
 
 .sidebar-container {
+    order:2;
     -webkit-order:2;
-    width: 24em;
+
+    width: 22em;
     background-color: #263238;
     color: #ffffff;
     padding: 1.5em;
@@ -57,19 +69,21 @@ main {
 
 .graph-container {
     flex: auto;
-    -webkit-flex: auto;
     order: 1;
-    -webkit-order: 1;
     display: flex;
+    -webkit-flex: auto;
+    -webkit-order: 1;
     display: -webkit-flex;
+
     background-color: #34495E;
 }
 
 .overlay-container {
     order: 0;
-    -webkit-order: 0;
     display: flex;
+    -webkit-order: 0;
     display: -webkit-flex;
+
     height: 100%;
     width: 100%;
     position: absolute;
