@@ -122,12 +122,11 @@ define([
 
     //drag node
     this.dragstart = function (e) {
+      e.stopPropagation();
+      
       if (e.target !== ctx.$$.nodeCircle) {
         return;
       }
-
-      e.stopPropagation();
-      e.preventDefault();
 
       ctx.px = ctx.x;
       ctx.py = ctx.y;
@@ -318,8 +317,6 @@ define([
       },
 
       setLinkSource: function (e) {
-        console.log('setLinkSource');
-        e.preventDefault();
         e.stopPropagation();
 
         this.$el.querySelector('.node-circle')
@@ -588,7 +585,6 @@ define([
       },
 
       panStart: function () {
-        console.log('panStart');
         this._pMinX = this.minX;
         this._pMinY = this.minY;
       },
@@ -631,7 +627,6 @@ define([
       deleteNode: function (e, nodeId) {
         var self = this;
 
-        e.preventDefault();
         e.stopPropagation();
 
         util.ajax({

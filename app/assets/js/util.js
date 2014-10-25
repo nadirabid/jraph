@@ -124,7 +124,8 @@ define([
     }
 
     function setCTM(element, matrix) {
-      var s = "matrix(" + matrix.a + "," + matrix.b + "," + matrix.c + "," + matrix.d + "," + matrix.e + "," + matrix.f + ")";
+      var m = matrix;
+      var s = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")";
 
       element.setAttributeNS(null, "transform", s);
     }
@@ -428,8 +429,6 @@ define([
         if (dragState.element !== e.target) {
           dragFlag = false;
         }
-
-        console.log(dragState.element, e.target, dragState.element !== e.target);
 
         $util.trigger('dragend', e);
 
