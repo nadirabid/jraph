@@ -1,19 +1,8 @@
 // Utils
 define([
-  'jquery',
-  'globals'
-], function (jquery, glob) {
+  'jquery'
+], function (jquery) {
   'use strict';
-
-  var DRAG_STATES = Object.freeze({
-    'NONE': 0,
-    'DRAG_START': 1,
-    'DRAG': 2
-  });
-
-  var dragState = glob.mouse.dragState = {
-    state: DRAG_STATES.NONE
-  };
 
   var slice = Array.prototype.slice;
   var push = Array.prototype.push;
@@ -42,6 +31,26 @@ define([
   }
 
   WrappedUtil.prototype = Util.prototype;
+
+  // properties
+  (function() {
+    var DRAG_STATES = Object.freeze({
+      'NONE': 0,
+      'DRAG_START': 1,
+      'DRAG': 2
+    });
+
+    var mouse = {
+      state: 'initial',
+      data: { },
+      dragState: {
+        state: DRAG_STATES.NONE
+      }
+    };
+
+    Util.DRAG_STATES = DRAG_STATES;
+    Util.mouse = mouse;
+  })();
 
   // jQuery forwarding methods
   (function() {
@@ -267,6 +276,9 @@ define([
   (function() {
     var slice = Array.prototype.slice;
     var mousedownFlag = false;
+    var DRAG_STATES = Util.DRAG_STATES;
+    var mouse = Util.mouse;
+    var dragState = Util.mouse.dragState;
 
     document.addEventListener('mousedown', function () {
       mousedownFlag = true;
@@ -277,8 +289,8 @@ define([
     }, true);
 
     document.addEventListener('mousemove', function (e) {
-      glob.mouse.x = e.clientX;
-      glob.mouse.y = e.clientY;
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
 
       Util.trigger('mousemove', e);
     });

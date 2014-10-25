@@ -14,7 +14,7 @@ define([
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
 
-  var mouse = glob.mouse;
+  var mouse = util.mouse;
   var nodesAry = [];
   var linksAry = [];
 
@@ -41,7 +41,11 @@ define([
     var dragFlag = false;
 
     //show menu
-    this.mouseover = function (e) {
+    this.mouseover = function () {
+      if (mouse.dragState.state > 0) {
+        return;
+      }
+
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
@@ -64,7 +68,7 @@ define([
 
     // shift viewport to center node
     this.click = function (e) {
-      if (e.defaultPrevented) {
+      if (e.defaultPrevented) { //check if dragged
         return;
       }
 
@@ -97,7 +101,7 @@ define([
         return t > 1;
       });
 
-      //ctx.menu = false;
+      ctx.menu = false;
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
@@ -122,8 +126,12 @@ define([
 
     //drag node
     this.dragstart = function (e) {
-      e.stopPropagation();
+      // to stop cursor from default
+      e.preventDefault();
       
+      // to stop drag event from propagating to panning handler on svg
+      e.stopPropagation();
+
       if (e.target !== ctx.$$.nodeCircle) {
         return;
       }
@@ -137,13 +145,14 @@ define([
     var dragCursor = false;
 
     this.drag = function (e) {
+      dragFlag = true;
+
       var p = util.transformPointFromClientToEl(
           e.clientX, e.clientY, ctx.$el);
 
-      dragFlag = true;
-
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
+
       ctx.menu = false;
 
       ctx.state.$layout.resume();
