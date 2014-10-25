@@ -128,7 +128,7 @@ define([
     this.dragstart = function (e) {
       // to stop cursor from default
       e.preventDefault();
-      
+
       // to stop drag event from propagating to panning handler on svg
       e.stopPropagation();
 
