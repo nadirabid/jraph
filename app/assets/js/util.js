@@ -94,7 +94,7 @@ define([
     }
 
     function animationFrame(callback) {
-      defer(callback, 0);
+      return defer(callback, 0);
     }
 
     function on(eventName, callback) {

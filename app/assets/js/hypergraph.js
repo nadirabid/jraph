@@ -14,12 +14,13 @@ define([
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
 
+  var Node = models.Node;
+  var Link = models.Link;
+
+  var state = new State();
   var mouse = util.mouse;
   var nodesAry = [];
   var linksAry = [];
-
-  var Node = models.Node;
-  var Link = models.Link;
 
   /*
    Graph view
@@ -42,7 +43,7 @@ define([
 
     //show menu
     this.mouseover = function () {
-      if (mouse.dragState.state > 0) {
+      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
         return;
       }
 
@@ -62,6 +63,10 @@ define([
 
     //hide menu
     this.mouseout = function () {
+      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
+        return;
+      }
+
       ctx.fixed = false;
       ctx.menu = false;
     };
@@ -105,14 +110,14 @@ define([
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
 
-      mouse.state = 'disabled';
+      state.nodeState = 'disabled';
 
       ctx.state.$layout.resume();
 
       ctx.$dispatch('showNodeData', ctx.$data);
 
       Mousetrap.bind('esc', function () {
-        mouse.state = 'initial';
+        state.nodeState = 'initial';
 
         ctx.fixed = false;
         ctx.radius -= 0.5;
@@ -231,7 +236,7 @@ define([
 
       sourceCtx.fixed = false;
 
-      mouse.state = 'initial';
+      state.nodeState = 'initial';
       mouse.data.source = null;
     };
   });
@@ -335,7 +340,7 @@ define([
         this.menu = false;
         this.fixed = true;
 
-        mouse.state = 'linking';
+        state.nodeState = 'linking';
         mouse.data.source = this;
 
         var ghostLink = this.$.ghostLink = new GhostLinkComponent({
@@ -351,7 +356,7 @@ define([
       },
 
       getState: function () {
-        return this.$states[ mouse.state ];
+        return this.$states[ state.nodeState ];
       },
 
       mouseover: function () {
@@ -432,9 +437,12 @@ define([
     methods: {
 
       freezePosition: function () {
-        if (mouse.state != 'initial') {
+        if (state.nodeState !== 'initial' ||
+            this._dragging) {
           return;
         }
+
+        var self = this;
 
         var source = this.source,
             target = this.target;
@@ -447,26 +455,33 @@ define([
         target.py = target.y;
         target.fixed = true;
 
-        this.$el.querySelector('.link')
-            .classList
-            .add('hover');
+        util.animationFrame(function() {
+          self.$el.querySelector('.link')
+              .classList
+              .add('hover');
+        });
       },
 
-      releasePosition: function (e) {
-        if (mouse.state != 'initial') {
+      releasePosition: function () {
+        if (state.nodeState !== 'initial' ||
+            this._dragging) {
           return;
         }
+
+        var self = this;
 
         this.source.fixed = false;
         this.target.fixed = false;
 
-        this.$el.querySelector('.link')
-            .classList
-            .remove('hover');
+        util.animationFrame(function() {
+          self.$el.querySelector('.link')
+              .classList
+              .remove('hover');
+        });
       },
 
       dragstart: function (e) {
-        if (mouse.state != 'initial') {
+        if (state.nodeState != 'initial') {
           return;
         }
 
@@ -474,24 +489,27 @@ define([
         e.preventDefault(); //to stop browser from turning
                             // the cursor into type selection
 
+        var self = this;
+
         var source = this.source,
             target = this.target;
-
-        source.menu = false;
-        source.fixed = true;
-
-        target.menu = false;
-        target.fixed = true;
 
         this.source_x = source.px = source.x;
         this.source_y = source.py = source.y;
 
         this.target_x = target.px = target.x;
         this.target_y = target.py = target.y;
+
+        this._dragging = true;
+
+        util.animationFrame(function() {
+          self.$el.nearestViewportElement
+              .style.setProperty('cursor', 'move');
+        });
       },
 
       drag: function (e) {
-        if (mouse.state != 'initial') {
+        if (state.nodeState != 'initial') {
           return;
         }
 
@@ -507,20 +525,21 @@ define([
         target.py = target.y = this.target_y + v.y;
 
         this.state.$layout.resume();
-
-        if (!this._dragCursor) {
-          document.body.style.cursor = 'move';
-          this.$el.style.cursor = 'move';
-          this._dragCursor = true;
-        }
       },
 
-      dragend: function(e) {
-        if (this._dragCursor) {
-          document.body.style.cursor = 'auto';
-          this.$el.style.cursor = 'auto';
-          this._dragCursor = false;
-        }
+      dragend: function() {
+        var self = this;
+
+        this._dragging = false;
+
+        util.animationFrame(function() {
+          self.$el.querySelector('.link')
+              .classList
+              .remove('hover');
+
+          self.$el.nearestViewportElement
+              .style.setProperty('cursor', 'auto');
+        });
       }
 
     },
@@ -752,9 +771,7 @@ define([
    Main application code
    */
 
-  var state = new State();
-
-  var app = new Vue(); //serves as global state
+  var app = new Vue(); // don't know what this is for anymore
 
   var graphComponent = new GraphComponent({
     parent: app,

@@ -23,7 +23,7 @@ define([
         this._forceLayout.resume.bind(this._forceLayout),
         FORCE_THROTTLE_TIME);
 
-    this._enabled = true;
+    this._enabled = false;
   }
 
   var ForceLayoutProto = ForceLayout.prototype;
@@ -100,11 +100,12 @@ define([
 
     initData = initData || {};
 
+    this.nodeState = 'initial';
     this.links = initData.links || [];
     this.nodes = initData.nodes || [];
     this.$layout = new ForceLayout();
 
-    if (util.isNullOrUndefined(initData.layoutEnabled)) {
+    if (!util.isNullOrUndefined(initData.layoutEnabled)) {
       this.$layout.enabled = initData.layoutEnabled;
     }
   }
