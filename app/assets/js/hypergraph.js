@@ -6,9 +6,18 @@ define([
     'globals',
     'models',
     'state',
+    'navbar',
     'components',
     'sidebar'
-], function (_, Mousetrap, Vue, util, glob, models, State) {
+], function (
+    _,
+    Mousetrap,
+    Vue,
+    util,
+    glob,
+    models,
+    State,
+    NavbarComponent) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -19,6 +28,7 @@ define([
 
   var state = new State();
   var mouse = util.mouse;
+
   var nodesAry = [];
   var linksAry = [];
 
@@ -613,13 +623,29 @@ define([
       },
 
       panStart: function () {
+        var self = this;
+
         this._pMinX = this.minX;
         this._pMinY = this.minY;
+
+        util.animationFrame(function() {
+          self.$el
+              .style.setProperty('cursor', 'move');
+        });
       },
 
       pan: function (e) {
         this.minX = this._pMinX - e.dx;
         this.minY = this._pMinY - e.dy;
+      },
+
+      panEnd: function() {
+        var self = this;
+
+        util.animationFrame(function() {
+          self.$el
+              .style.setProperty('cursor', 'auto');
+        });
       },
 
       createLink: function (link) {
@@ -757,6 +783,7 @@ define([
         var $svg = util(this.$el);
         $svg.on('dragstart', this.panStart.bind(this));
         $svg.on('drag', this.pan.bind(this));
+        $svg.on('dragend', this.panEnd.bind(this));
       },
 
       'hook:ready': function () {
@@ -780,8 +807,15 @@ define([
     }
   });
 
+  var navbarComponent = new NavbarComponent({
+    data: {
+      state: state
+    }
+  });
+
   //mount in reverse order so that parents are properly assigned
   graphComponent.$mount('#graph');
+  navbarComponent.$mount('#navbar');
   app.$mount('#main');
 
   util.when(Node.fetchAll(), Link.fetchAll())

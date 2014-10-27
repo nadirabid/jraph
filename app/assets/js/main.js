@@ -10,12 +10,15 @@
       mousetrap: 'dependencies/mousetrap',
       q: 'dependencies/q',
       snap: 'dependencies/snap.svg',
-      vue: 'dependencies/vue'
+      vue: 'dependencies/vue',
+      bootstrap: 'dependencies/bootstrap'
     }
   });
 
-  require(['hypergraph'], function(app) {
-    document.app = app;
+  require(['hypergraph', 'jquery'], function(app) {
+    require(['bootstrap'], function() {
+      document.app = app;
+    });
   });
 })(requirejs);
 

@@ -5,6 +5,7 @@ define([
 ], function(_, d3, util) {
 
   var FORCE_THROTTLE_TIME = 500;
+
   var def = Object.defineProperty;
 
   function ForceLayout() {
@@ -34,7 +35,7 @@ define([
     },
     set: function(value) {
       if (value === true && !this._enabled) {
-        this._forceLayout.resume();
+        this._forceLayout.start();
         this._enabled = true;
       }
       else if (!value && this._enabled) {

@@ -1,11 +1,17 @@
-<div class="container-fluid">
-  <div>
-    <ul class="nav navbar-nav">
-      <li><a href="#">Options</a></li>
-      <li><a href="#">Layouts</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="#">Username</a></li>
-    </ul>
-  </div>
+<div id="navbar" class="container-fluid" v-cloak>
+  <ul class="nav navbar-nav">
+    <li>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        {{layout}} <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu" role="menu">
+
+        <li><a href="#" v-on="click:setLayout('Static')">Static</a></li>
+        <li><a href="#" v-on="click:setLayout('Force Directed')">Force Directed</a></li>
+      </ul>
+    </li>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <li><a href="#">Username</a></li>
+  </ul>
 </div>

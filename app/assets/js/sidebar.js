@@ -7,6 +7,12 @@ define([
 
   Vue.component('x-sidebar', {
 
+    data: function() {
+      return {
+
+      };
+    }
+
   });
 
 });
