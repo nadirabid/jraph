@@ -51,36 +51,6 @@ define([
 
     var dragFlag = false;
 
-    //show menu
-    this.mouseover = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
-        return;
-      }
-
-      ctx.px = ctx.x;
-      ctx.py = ctx.y;
-      ctx.fixed = true;
-      ctx.menu = true;
-
-      //move node to front to make sure menu is not
-      //hidden by overlapping elements
-      var nodes = ctx.$parent.nodes;
-
-      if (ctx.$index < ( nodes.length - 1 )) {
-        nodes.push(nodes.$remove(ctx.$index));
-      }
-    };
-
-    //hide menu
-    this.mouseout = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
-        return;
-      }
-
-      ctx.fixed = false;
-      ctx.menu = false;
-    };
-
     // shift viewport to center node
     this.click = function (e) {
       if (e.defaultPrevented) { //check if dragged
@@ -139,17 +109,47 @@ define([
       });
     };
 
+    //show menu
+    this.mouseover = function () {
+      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
+        return;
+      }
+
+      ctx.px = ctx.x;
+      ctx.py = ctx.y;
+      ctx.fixed = true;
+      ctx.menu = true;
+
+      //move node to front to make sure menu is not
+      //hidden by overlapping elements
+      var nodes = ctx.$parent.nodes;
+
+      if (ctx.$index < ( nodes.length - 1 )) {
+        nodes.push(nodes.$remove(ctx.$index));
+      }
+    };
+
+    //hide menu
+    this.mouseout = function () {
+      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
+        return;
+      }
+
+      ctx.fixed = false;
+      ctx.menu = false;
+    };
+
     //drag node
     this.dragstart = function (e) {
-      // to stop cursor from default
-      e.preventDefault();
-
       // to stop drag event from propagating to panning handler on svg
       e.stopPropagation();
 
       if (e.target !== ctx.$$.nodeCircle) {
         return;
       }
+
+      // to stop cursor from default
+      e.preventDefault();
 
       ctx.px = ctx.x;
       ctx.py = ctx.y;
