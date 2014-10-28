@@ -5,12 +5,6 @@ define([
 
   var NavbarComponent = Vue.extend({
 
-    data: function(){
-      return {
-        layout: 'Static'
-      };
-    },
-
     methods: {
 
       setLayout: function(layout) {
@@ -28,6 +22,19 @@ define([
           case 'Force Directed':
             $layout.enabled = true;
             break;
+        }
+      }
+
+    },
+
+    events: {
+
+      'hook:created': function() {
+        if (this.state.$layout.enabled) {
+          this.$add('layout', 'Force Directed');
+        }
+        else {
+          this.$add('layout', 'Static');
         }
       }
 
