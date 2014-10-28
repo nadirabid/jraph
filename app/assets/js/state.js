@@ -24,7 +24,7 @@ define([
         this._forceLayout.resume.bind(this._forceLayout),
         FORCE_THROTTLE_TIME);
 
-    this._enabled = false;
+    this._enabled = true;
   }
 
   var ForceLayoutProto = ForceLayout.prototype;

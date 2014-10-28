@@ -197,9 +197,11 @@ define([
         return;
       }
 
-      ctx.$el.querySelector('.node-circle')
-          .classList
-          .add('node-linking-target', 'hover');
+      util.animationFrame(function() {
+        ctx.$el.querySelector('.node-circle')
+            .classList
+            .add('node-linking-target', 'hover');
+      });
 
       ctx.px = ctx.x;
       ctx.py = ctx.y;
@@ -212,9 +214,11 @@ define([
         return;
       }
 
-      ctx.$el.querySelector('.node-circle')
-          .classList
-          .remove('node-linking-target', 'hover');
+      util.animationFrame(function() {
+        ctx.$el.querySelector('.node-circle')
+            .classList
+            .remove('node-linking-target', 'hover');
+      });
 
       ctx.fixed = false;
     };
@@ -234,16 +238,18 @@ define([
         ctx.state.$layout.resume();
       }
 
-      ctx.$el.querySelector('.node-circle')
-          .classList
-          .remove('node-linking-target', 'hover');
-
       sourceCtx.$.ghostLink.$destroy(true);
       sourceCtx.$.ghostLink = null;
 
-      sourceCtx.$el.querySelector('.node-circle')
-          .classList
-          .remove('node-linking-source');
+      util.animationFrame(function() {
+        ctx.$el.querySelector('.node-circle')
+            .classList
+            .remove('node-linking-target', 'hover');
+
+        sourceCtx.$el.querySelector('.node-circle')
+            .classList
+            .remove('node-linking-source');
+      });
 
       sourceCtx.fixed = false;
 
@@ -342,11 +348,15 @@ define([
       },
 
       setLinkSource: function (e) {
+        var self = this;
+
         e.stopPropagation();
 
-        this.$el.querySelector('.node-circle')
-            .classList
-            .add('node-linking-source');
+        util.animationFrame(function() {
+          self.$el.querySelector('.node-circle')
+              .classList
+              .add('node-linking-source');
+        });
 
         this.menu = false;
         this.fixed = true;
@@ -363,7 +373,9 @@ define([
         var dynamicContentEl = this.$parent.$el
             .querySelector('.dynamic-content');
 
-        ghostLink.$appendTo(dynamicContentEl);
+        util.animationFrame(function() {
+          ghostLink.$appendTo(dynamicContentEl);
+        });
       },
 
       getState: function () {
