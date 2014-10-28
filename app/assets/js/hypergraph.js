@@ -70,15 +70,10 @@ define([
     events: {
 
       'hook:attached': function () {
-        this.source = util.transformPointFromViewportToEl(
-            this.linkSource.x,
-            this.linkSource.y,
-            this.$el);
+        this.source = this.linkSource;
 
         this.target = util.transformPointFromClientToEl(
-            mouse.x,
-            mouse.y,
-            this.$el);
+            mouse.x, mouse.y, this.$el);
 
         this._mousemove = this.mousemove.bind(this);
         util.on('mousemove', this._mousemove);
