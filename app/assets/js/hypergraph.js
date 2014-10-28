@@ -96,8 +96,6 @@ define([
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
 
-    var dragFlag = false;
-
     // shift viewport to center node
     this.click = function (e) {
       if (e.defaultPrevented) { //check if dragged
@@ -133,6 +131,7 @@ define([
         return t > 1;
       });
 
+      ctx.fixed = true;
       ctx.menu = false;
       ctx.radius += 0.5;
       ctx.labelDistance += 12;
@@ -201,7 +200,12 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
 
-      ctx.fixed = true;
+      ctx.menu = false;
+
+      util.animationFrame(function() {
+        ctx.$el.nearestViewportElement
+            .style.setProperty('cursor', 'move');
+      });
     };
 
     this.drag = function (e) {
@@ -211,29 +215,16 @@ define([
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
 
-      ctx.menu = false;
-
       ctx.state.$layout.resume();
-
-      if (!dragFlag) {
-        util.animationFrame(function() {
-          ctx.$el.style.cursor = 'move';
-        });
-
-        dragFlag = true;
-      }
     };
 
     this.dragend = function () {
       ctx.menu = true;
 
-      if (dragFlag) {
-        util.animationFrame(function() {
-          ctx.$el.style.cursor = 'auto';
-        });
-
-        dragFlag = false;
-      }
+      util.animationFrame(function() {
+        ctx.$el.nearestViewportElement
+            .style.setProperty('cursor', 'auto');
+      });
     };
   });
 
@@ -312,8 +303,6 @@ define([
         menu: false,
         labelDistance: 15,
         radius: 1.5,
-        x: 0,
-        y: 0,
         labelX: 0,
         labelY: 0,
         fixed: false //d3.force doesn't pick it up if not explicitly linked
@@ -461,7 +450,7 @@ define([
 
       freezePosition: function () {
         if (state.nodeState !== 'initial' ||
-            this._dragging) {
+            mouse.dragState.state !== util.DRAG_STATES.NONE) {
           return;
         }
 
@@ -487,7 +476,7 @@ define([
 
       releasePosition: function () {
         if (state.nodeState !== 'initial' ||
-            this._dragging) {
+            mouse.dragState.state !== util.DRAG_STATES.NONE) {
           return;
         }
 
@@ -523,8 +512,6 @@ define([
         this.target_x = target.px = target.x;
         this.target_y = target.py = target.y;
 
-        this._dragging = true;
-
         util.animationFrame(function() {
           self.$el.nearestViewportElement
               .style.setProperty('cursor', 'move');
@@ -539,7 +526,8 @@ define([
         var source = this.source,
             target = this.target;
 
-        var v = util.transformVectorFromClientToEl(e.dx, e.dy, this.$el);
+        var v = util.transformVectorFromClientToEl(
+            e.dx, e.dy, this.$el);
 
         source.px = source.x = this.source_x + v.x;
         source.py = source.y = this.source_y + v.y;
@@ -552,8 +540,6 @@ define([
 
       dragend: function() {
         var self = this;
-
-        this._dragging = false;
 
         util.animationFrame(function() {
           self.$el.querySelector('.link')
@@ -694,12 +680,12 @@ define([
       deleteNode: function (e, nodeId) {
         var self = this;
 
-        e.stopPropagation();
+        e.stopImmediatePropagation();
 
         util.ajax({
           url: '/hypernode/' + nodeId,
           type: 'DELETE',
-          success: function (response) {
+          success: function () {
             //test: make sure events bound to arrays are still active
 
             self.links = self.links.filter(function (l) {

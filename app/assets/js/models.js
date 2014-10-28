@@ -37,8 +37,15 @@ define([
     row.data = JSON.parse(row.data || null);
 
     var clientDisplay = row.data.clientDisplay;
+
     row.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     row.y = clientDisplay ? (clientDisplay.y || 0) : 0;
+
+    // need to specify px for d3 to play happy
+    // for reasons still unknown
+    row.px = row.x;
+    row.py = row.y;
+
     row.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
 
     return row;
