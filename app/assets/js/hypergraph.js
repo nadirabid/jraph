@@ -157,11 +157,7 @@ define([
       ctx.fixed = true;
     };
 
-    var dragCursor = false;
-
     this.drag = function (e) {
-      dragFlag = true;
-
       var p = util.transformPointFromClientToEl(
           e.clientX, e.clientY, ctx.$el);
 
@@ -172,19 +168,24 @@ define([
 
       ctx.state.$layout.resume();
 
-      if (!dragCursor) {
-        ctx.$el.style.cursor = 'move';
-        dragCursor = true;
+      if (!dragFlag) {
+        util.animationFrame(function() {
+          ctx.$el.style.cursor = 'move';
+        });
+
+        dragFlag = true;
       }
     };
 
     this.dragend = function () {
-      dragFlag = false;
       ctx.menu = true;
 
-      if (dragCursor) {
-        ctx.$el.style.cursor = 'auto';
-        dragCursor = false;
+      if (dragFlag) {
+        util.animationFrame(function() {
+          ctx.$el.style.cursor = 'auto';
+        });
+
+        dragFlag = false;
       }
     };
   });
