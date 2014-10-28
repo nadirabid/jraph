@@ -32,10 +32,6 @@ define([
   var nodesAry = [];
   var linksAry = [];
 
-  /*
-   Graph view
-   */
-
   function StateEventHandlers() {
     this.click = util.noop;
     this.mouseover = util.noop;
@@ -44,6 +40,57 @@ define([
     this.dragstart = util.noop;
     this.dragend = util.noop;
   }
+
+  /*
+   Graph view
+   */
+
+  var GhostLinkComponent = Vue.extend({
+
+    replace: true,
+
+    template: document.getElementById('graph.ghostLink').innerHTML,
+
+    data: function () {
+      return {
+        source: { x: 0, y: 0 },
+        target: { x: 0, y: 0 }
+      };
+    },
+
+    methods: {
+
+      mousemove: function (e) {
+        this.target = util.transformPointFromClientToEl(
+            e.clientX, e.clientY, this.$el);
+      }
+
+    },
+
+    events: {
+
+      'hook:attached': function () {
+        this.source = util.transformPointFromViewportToEl(
+            this.linkSource.x,
+            this.linkSource.y,
+            this.$el);
+
+        this.target = util.transformPointFromClientToEl(
+            mouse.x,
+            mouse.y,
+            this.$el);
+
+        this._mousemove = this.mousemove.bind(this);
+        util.on('mousemove', this._mousemove);
+      },
+
+      'hook:beforeDestroy': function () {
+        util.off('mousemove', this._mousemove);
+      }
+
+    }
+
+  });
 
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
@@ -256,53 +303,6 @@ define([
       state.nodeState = 'initial';
       mouse.data.source = null;
     };
-  });
-
-  var GhostLinkComponent = Vue.extend({
-
-    replace: true,
-
-    template: document.getElementById('graph.ghostLink').innerHTML,
-
-    data: function () {
-      return {
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 }
-      };
-    },
-
-    methods: {
-
-      mousemove: function (e) {
-        this.target = util.transformPointFromClientToEl(
-            e.clientX, e.clientY, this.$el);
-      }
-
-    },
-
-    events: {
-
-      'hook:attached': function () {
-        this.source = util.transformPointFromViewportToEl(
-            this.linkSource.x,
-            this.linkSource.y,
-            this.$el);
-
-        this.target = util.transformPointFromClientToEl(
-            mouse.x,
-            mouse.y,
-            this.$el);
-
-        this._mousemove = this.mousemove.bind(this);
-        util.on('mousemove', this._mousemove);
-      },
-
-      'hook:beforeDestroy': function () {
-        util.off('mousemove', this._mousemove);
-      }
-
-    }
-
   });
 
   Vue.component('x-node', {
