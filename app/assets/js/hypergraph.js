@@ -617,6 +617,10 @@ define([
       },
 
       panStart: function () {
+        if (this.state.nodeState === 'disabled') {
+          return;
+        }
+
         var self = this;
 
         this._pMinX = this.minX;
@@ -629,11 +633,19 @@ define([
       },
 
       pan: function (e) {
+        if (this.state.nodeState === 'disabled') {
+          return;
+        }
+
         this.minX = this._pMinX - e.dx;
         this.minY = this._pMinY - e.dy;
       },
 
       panEnd: function() {
+        if (this.state.nodeState === 'disabled') {
+          return;
+        }
+
         var self = this;
 
         util.animationFrame(function() {
