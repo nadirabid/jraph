@@ -8,7 +8,8 @@ scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   cache,
-  ws
+  ws,
+  "org.scalatestplus" %% "play" % "1.1.0" % "test"
 )
 
 MochaKeys.requires ++= Seq("./Setup.js")
