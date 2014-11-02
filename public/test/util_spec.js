@@ -497,58 +497,6 @@ define([
               type: 'mouseup'
             }));
           });
-
-      it('should fire mouseout when mouse is dragged and ' +
-              'released out side of browser window',
-          function () {
-            var bBox = circleEl.getBoundingClientRect();
-            var x = bBox.left + 0;
-            var y = bBox.top + 0;
-
-            var mouseoutSpy = jasmine.createSpy('mouseoutSpy');
-            $circleEl.on('mouseout', mouseoutSpy);
-
-            var mouseEvent = document.createEvent('MouseEvents');
-            testHelpers.initMouseEvent(mouseEvent, {
-              type: 'mousedown',
-              view: window,
-              clientX: x,
-              clientY: y
-            });
-            circleEl.dispatchEvent(mouseEvent);
-
-            //simulate the mouse moving outside of the browser window
-            mouseEvent = document.createEvent('MouseEvents');
-            testHelpers.initMouseEvent(mouseEvent, {
-              type: 'mousemove',
-              view: window,
-              clientX: window.innerWidth + 100,
-              clientY: window.innerHeight + 100
-            });
-            circleEl.dispatchEvent(mouseEvent);
-
-            mouseEvent = document.createEvent('MouseEvents');
-            testHelpers.initMouseEvent(mouseEvent, {
-              type: 'mouseleave',
-              view: window,
-              clientX: window.innerHeight + 100,
-              clientY: window.innerWidth + 100
-            });
-            circleEl.dispatchEvent(mouseEvent);
-
-            mouseEvent = document.createEvent('MouseEvents');
-            testHelpers.initMouseEvent(mouseEvent, {
-              type: 'mouseup',
-              view: window,
-              clientX: window.innerHeight + 100,
-              clientY: window.innerWidth + 100
-            });
-            circleEl.dispatchEvent(mouseEvent);
-
-            expect(mouseoutSpy).toHaveBeenCalledWith(jasmine.objectContaining({
-              type: 'mouseup'
-            }));
-          });
     });
   });
 
