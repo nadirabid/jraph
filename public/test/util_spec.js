@@ -1,5 +1,6 @@
 define([
   'util',
+  'models',
   'testHelpers'
 ], function (util, testHelpers) {
 
