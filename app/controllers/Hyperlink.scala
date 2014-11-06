@@ -8,13 +8,16 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
 import java.util.UUID
 
-trait Hyperlink extends Controller {
+object Hyperlink extends Controller {
 
-  val mockUserId = UUID.fromString( "c53303e1-0287-4e5a-8020-1026493c6e37" )
+  val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
 
-  val cypherCreate = "MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} }) " +
-                     "CREATE UNIQUE (source)-[hl:HYPERLINK {hl}]->(target) " +
-                     "RETURN hl;"
+  val cypherCreate =
+    """
+      | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
+      | CREATE UNIQUE (source)-[hl:HYPERLINK {hl}]->(target)
+      | RETURN hl;
+    """.stripMargin
 
   def create = Action.async(parse.json) { req =>
     val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
@@ -54,8 +57,11 @@ trait Hyperlink extends Controller {
     }
   }
 
-  val cypherRead =  "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode) " +
-                    "RETURN hl;"
+  val cypherRead =
+    """
+      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
+      | RETURN hl;
+    """.stripMargin
 
   def read(uuid: UUID) = Action.async { req =>
     val neo4jReq = Json.obj(
@@ -81,8 +87,11 @@ trait Hyperlink extends Controller {
     }
   }
 
-  val cypherAll = "MATCH (user:User { id: {userId} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode) " +
-                  "RETURN rels;"
+  val cypherAll =
+    """
+      |MATCH (user:User { id: {userId} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
+      | RETURN rels;
+    """.stripMargin
 
   def readAll = Action.async { req =>
     val neo4jReq = Json.obj(
@@ -108,9 +117,12 @@ trait Hyperlink extends Controller {
     }
   }
 
-  val cypherUpdate = "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode) " +
-                     "SET hl.data = {data}, hl.updatedAt = {updatedAt} " +
-                     "RETURN hl;"
+  val cypherUpdate =
+    """
+      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
+      | SET hl.data = {data}, hl.updatedAt = {updatedAt}
+      | RETURN hl;
+    """.stripMargin
 
   def update(uuid: UUID) = Action.async(parse.json) { req =>
     val neo4jReq = Json.obj(
@@ -138,8 +150,11 @@ trait Hyperlink extends Controller {
     }
   }
 
-  val cypherDelete = "MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]-(:Hypernode) " +
-                     "DELETE hyperlink;"
+  val cypherDelete =
+    """
+      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]-(:Hypernode)
+      | DELETE hyperlink;
+    """.stripMargin
 
   def delete(uuid: UUID) = Action.async { req =>
     val neo4jReq = Json.obj(
@@ -165,5 +180,3 @@ trait Hyperlink extends Controller {
     }
   }
 }
-
-object Hyperlink extends Hyperlink

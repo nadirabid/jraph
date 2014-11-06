@@ -6,6 +6,10 @@
 GET           /                       controllers.Application.index
 GET           /*path/                 controllers.Application.trimTrailingForwardSlash(path: String)
 
+POST          /user                   controllers.User.create
+GET           /user/:id               controllers.User.read(id: String)
+DELETE        /user/:id               controllers.User.delete(id: String)
+
 POST          /hypernode              controllers.Hypernode.create
 GET           /hypernode/:uuid        controllers.Hypernode.read(uuid: java.util.UUID)
 GET           /hypernode              controllers.Hypernode.readAll

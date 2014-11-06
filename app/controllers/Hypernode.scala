@@ -8,7 +8,7 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
 import java.util.UUID
 
-trait Hypernode extends Controller {
+object Hypernode extends Controller {
 
   val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
 
@@ -191,5 +191,3 @@ trait Hypernode extends Controller {
   }
 
 }
-
-object Hypernode extends Hypernode

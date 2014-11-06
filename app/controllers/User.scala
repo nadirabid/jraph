@@ -7,8 +7,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play.current
 
-trait User extends Controller {
-
+object User extends Controller {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   val cypherCreate =
@@ -29,7 +28,7 @@ trait User extends Controller {
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
             "userData" -> Json.obj(
-              "email" -> Json.stringify(req.body \ "email"),
+              "email" -> (req.body \ "email").as[JsString],
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
             )
@@ -56,13 +55,13 @@ trait User extends Controller {
       | RETURN user;
     """.stripMargin
 
-  def read = Action.async(parse.json) { req =>
+  def read(id: String) = Action.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherRead,
           "parameters" -> Json.obj(
-            "email" -> Json.stringify(req.body \ "email")
+            "email" -> id
           )
         )
       )
@@ -94,13 +93,13 @@ trait User extends Controller {
       | DELETE user, owns, hn, hl;
     """.stripMargin
 
-  def delete = Action.async(parse.json) { req =>
+  def delete(id: String) = Action.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherRead,
           "parameters" -> Json.obj(
-            "email" -> Json.stringify(req.body \ "email")
+            "email" -> id
           )
         )
       )
@@ -119,5 +118,3 @@ trait User extends Controller {
   }
 
 }
-
-object User extends User
