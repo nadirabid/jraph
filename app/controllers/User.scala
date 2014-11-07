@@ -82,12 +82,6 @@ object User extends Controller {
   val cypherDelete =
     """
       | MATCH (user:User { email: {email} })
-      | DELETE user;
-    """.stripMargin
-
-  val cypherDelete2 =
-    """
-      | MATCH (user:User { email: {email} })
       | OPTIONAL MATCH (user)-[owns:OWNS]-(hn:Hypernode)
       | OPTIONAL MATCH (hn)-[hl:HYPERLINK]->()
       | DELETE user, owns, hn, hl;
@@ -97,10 +91,11 @@ object User extends Controller {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherRead,
+          "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "email" -> id
-          )
+          ),
+          "includeState" -> true
         )
       )
     )
