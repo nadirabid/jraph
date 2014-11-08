@@ -6,11 +6,6 @@ import play.api.libs.json._
 import play.api.test._
 import play.api.test.Helpers._
 
-/**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- * For more information, consult the wiki.
- */
 @RunWith(classOf[JUnitRunner])
 class UserSpec extends Specification {
 
@@ -56,8 +51,8 @@ class UserSpec extends Specification {
 
       status(result) must equalTo(OK)
 
-      contentAsJson(result) \ "email" must equalTo("something wrong")
-      //TODO check return stats to see delete nodes count
+      val nodesDeleted = ((contentAsJson(result) \ "results")(0) \ "stats" \ "nodes_deleted").as[Int]
+      nodesDeleted must equalTo(1)
     }
   }
 

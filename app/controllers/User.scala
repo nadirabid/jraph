@@ -95,7 +95,7 @@ object User extends Controller {
           "parameters" -> Json.obj(
             "email" -> id
           ),
-          "includeState" -> true
+          "includeStats" -> true
         )
       )
     )
