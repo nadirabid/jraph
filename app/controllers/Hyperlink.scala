@@ -93,13 +93,15 @@ object Hyperlink extends Controller {
       | RETURN rels;
     """.stripMargin
 
-  def readAll = Action.async { req =>
+  def readAll = Action.async(parse.json) { req =>
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userId" -> mockUserId
+            "userId" -> userEmail
           )
         )
       )

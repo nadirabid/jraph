@@ -1,3 +1,5 @@
+import java.util.UUID
+
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -27,7 +29,12 @@ class HypernodeSpec extends Specification {
   sequential
 
   "Hypernode" should {
-
+    "create new node given JSON data and user email" in new WithApplication {
+      //create user
+      val email = UUID.randomUUID().toString + "@email.com"
+      val reqJson = Json.obj("email" -> email)
+      route(FakeRequest(POST, "/user").withJsonBody(reqJson)).get
+    }
   }
 
 }

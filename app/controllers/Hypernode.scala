@@ -21,12 +21,14 @@ object Hypernode extends Controller {
   def create = Action.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
 
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
-            "userId" -> mockUserId,
+            "userId" -> userEmail,
             "hn" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
@@ -78,13 +80,15 @@ object Hypernode extends Controller {
   val cypherAll = "MATCH (user:User { id: {userId} }), (user)-[:OWNS]->(hn:Hypernode) " +
                   "RETURN hn;"
 
-  def readAll = Action.async { req =>
+  def readAll = Action.async(parse.json) { req =>
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userId" -> mockUserId
+            "userId" -> userEmail
           )
         )
       )
@@ -165,14 +169,16 @@ object Hypernode extends Controller {
                      "MATCH (user:User { id: {userId} })-[owns:OWNS]->(hn) " +
                      "DELETE owns, rels, hn;"
 
-  def delete(uuid: UUID) = Action.async(parse.empty) { req =>
+  def delete(uuid: UUID) = Action.async(parse.json) { req =>
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "uuid" -> uuid,
-            "userId" -> mockUserId
+            "userId" -> userEmail
           )
         )
       )
