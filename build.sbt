@@ -12,4 +12,4 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %% "play" % "1.2.0" % "test"
 )
 
-MochaKeys.requires ++= Seq("./Setup.js")
+//MochaKeys.requires ++= Seq("./Setup.js")

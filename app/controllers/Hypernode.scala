@@ -14,7 +14,7 @@ object Hypernode extends Controller {
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
-  val cypherCreate = "MATCH (user:User { id: {userId} }) " +
+  val cypherCreate = "MATCH (user:User { email: {userEmail} }) " +
                      "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
                      "RETURN hn;"
 
@@ -28,7 +28,7 @@ object Hypernode extends Controller {
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
-            "userId" -> userEmail,
+            "userEmail" -> userEmail,
             "hn" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
@@ -77,18 +77,19 @@ object Hypernode extends Controller {
     }
   }
 
-  val cypherAll = "MATCH (user:User { id: {userId} }), (user)-[:OWNS]->(hn:Hypernode) " +
+  //TODO have to update readAll to use email
+  val cypherAll = "MATCH (user:User { id: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
                   "RETURN hn;"
 
-  def readAll = Action.async(parse.json) { req =>
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+  def readAll = Action.async { req =>
+    val userEmail = mockUserId.toString
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userId" -> userEmail
+            "userEmail" -> userEmail
           )
         )
       )
@@ -166,7 +167,7 @@ object Hypernode extends Controller {
   }
 
   val cypherDelete = "MATCH (hn:Hypernode { id: {uuid} })-[rels]-() " +
-                     "MATCH (user:User { id: {userId} })-[owns:OWNS]->(hn) " +
+                     "MATCH (user:User { email: {userEmail} })-[owns:OWNS]->(hn) " +
                      "DELETE owns, rels, hn;"
 
   def delete(uuid: UUID) = Action.async(parse.json) { req =>
@@ -178,8 +179,9 @@ object Hypernode extends Controller {
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "uuid" -> uuid,
-            "userId" -> userEmail
-          )
+            "userEmail" -> userEmail
+          ),
+          "includeStats" -> true
         )
       )
     )

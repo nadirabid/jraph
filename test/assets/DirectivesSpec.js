@@ -1,3 +1,4 @@
+/*
 var Util = require('util');
 
 describe('Util', function() {
@@ -8,3 +9,4 @@ describe('Util', function() {
     });
   });
 });
+*/

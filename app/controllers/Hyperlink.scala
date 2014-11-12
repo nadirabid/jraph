@@ -87,21 +87,22 @@ object Hyperlink extends Controller {
     }
   }
 
+  //TODO have to update readAll to use email
   val cypherAll =
     """
-      |MATCH (user:User { id: {userId} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
+      |MATCH (user:User { id: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
       | RETURN rels;
     """.stripMargin
 
-  def readAll = Action.async(parse.json) { req =>
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+  def readAll = Action.async { req =>
+    val userEmail = mockUserId.toString
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userId" -> userEmail
+            "userEmail" -> userEmail
           )
         )
       )
