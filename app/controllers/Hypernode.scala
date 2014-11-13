@@ -10,7 +10,7 @@ import java.util.UUID
 
 object Hypernode extends Controller {
 
-  val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
+  val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
@@ -21,7 +21,7 @@ object Hypernode extends Controller {
   def create = Action.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
 
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
@@ -77,12 +77,11 @@ object Hypernode extends Controller {
     }
   }
 
-  //TODO have to update readAll to use email
-  val cypherAll = "MATCH (user:User { id: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
+  val cypherAll = "MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
                   "RETURN hn;"
 
   def readAll = Action.async { req =>
-    val userEmail = mockUserId.toString
+    val userEmail = mockUserEmail
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
@@ -171,7 +170,7 @@ object Hypernode extends Controller {
                      "DELETE owns, rels, hn;"
 
   def delete(uuid: UUID) = Action.async(parse.json) { req =>
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserId.toString
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(

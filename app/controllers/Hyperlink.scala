@@ -10,7 +10,7 @@ import java.util.UUID
 
 object Hyperlink extends Controller {
 
-  val mockUserId = UUID.fromString("c53303e1-0287-4e5a-8020-1026493c6e37")
+  val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 
   val cypherCreate =
     """
@@ -90,12 +90,12 @@ object Hyperlink extends Controller {
   //TODO have to update readAll to use email
   val cypherAll =
     """
-      |MATCH (user:User { id: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
+      |MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
       | RETURN rels;
     """.stripMargin
 
   def readAll = Action.async { req =>
-    val userEmail = mockUserId.toString
+    val userEmail = mockUserEmail
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
