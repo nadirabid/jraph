@@ -61,6 +61,8 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
   override def onNotAuthorized(request: RequestHeader,
                                lang: Lang): Option[Future[Result]] = {
 
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))))
+    Some(Future.successful(
+      Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))
+    ))
   }
 }

@@ -1,11 +1,25 @@
 package controllers
 
-import play.api._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
 import play.api.mvc._
+import play.api.Play.current
 
-object Application extends Controller {
+import com.mohiva.play.silhouette.api.services.AuthInfoService
+import models.User
+import com.mohiva.play.silhouette.api.{LogoutEvent, Environment, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.services.UserService
 
-  def index = Action {
+import javax.inject.Inject
+
+class Application @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+                             val userService: UserService,
+                             val authInfoService: AuthInfoService)
+  extends Silhouette[User, SessionAuthenticator] {
+
+  def index = SecuredAction {
     Ok(views.html.graph.index())
   }
 
@@ -13,8 +27,23 @@ object Application extends Controller {
     MovedPermanently("/" + path)
   }
 
-  def test = Action {
+  def test = UserAwareAction {
     Ok(views.html.test.index())
   }
 
+  def signIn = UserAwareAction { req =>
+    Ok()
+  }
+
+  def signUp = UserAwareAction { req =>
+    Ok()
+  }
+
+  def signOut = SecuredAction { req =>
+    Ok()
+  }
+
+  def authenticate = Action { req =>
+    Ok()
+  }
 }
