@@ -14,6 +14,9 @@ import models.services.UserService
 
 import javax.inject.Inject
 
+//TODO: gotta rename controllers with suffic of "Controller" so we dont clash
+//with model names. eg User the model and User the controller
+
 class Application @Inject() (implicit val env: Environment[User, SessionAuthenticator],
                              val userService: UserService,
                              val authInfoService: AuthInfoService)
@@ -32,18 +35,22 @@ class Application @Inject() (implicit val env: Environment[User, SessionAuthenti
   }
 
   def signIn = UserAwareAction { req =>
-    Ok()
+    Ok
   }
 
   def signUp = UserAwareAction { req =>
-    Ok()
+    Ok
+  }
+
+  def signUpSubmit = Action { req =>
+    Ok
   }
 
   def signOut = SecuredAction { req =>
-    Ok()
+    Ok
   }
 
   def authenticate = Action { req =>
-    Ok()
+    Ok
   }
 }
