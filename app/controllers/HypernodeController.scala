@@ -8,36 +8,31 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
 import java.util.UUID
 
-object Hyperlink extends Controller {
+object HypernodeController extends Controller {
 
   val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 
-  val cypherCreate =
-    """
-      | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
-      | CREATE UNIQUE (source)-[hl:HYPERLINK {hl}]->(target)
-      | RETURN hl;
-    """.stripMargin
+  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+
+  val cypherCreate = "MATCH (user:User { email: {userEmail} }) " +
+                     "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
+                     "RETURN hn;"
 
   def create = Action.async(parse.json) { req =>
-    val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
-    val targetId = UUID.fromString((req.body \ "targetId").as[String])
-
     val timestamp = System.currentTimeMillis
+
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
-            "sourceId" -> sourceId,
-            "targetId" -> targetId,
-            "hl" -> Json.obj(
+            "userEmail" -> userEmail,
+            "hn" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp,
-              "sourceId" -> sourceId,
-              "targetId" -> targetId,
               "data" -> Json.stringify(req.body \ "data")
             )
           )
@@ -46,7 +41,7 @@ object Hyperlink extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -57,26 +52,21 @@ object Hyperlink extends Controller {
     }
   }
 
-  val cypherRead =
-    """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | RETURN hl;
-    """.stripMargin
+  val cypherRead = "MATCH (hn:Hypernode { id: {uuid} }) " +
+                   "RETURN hn;"
 
   def read(uuid: UUID) = Action.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherRead,
-          "parameters" -> Json.obj(
-            "uuid" -> uuid
-          )
+          "parameters" -> Json.obj("uuid" -> uuid)
         )
       )
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -87,12 +77,8 @@ object Hyperlink extends Controller {
     }
   }
 
-  //TODO have to update readAll to use email
-  val cypherAll =
-    """
-      |MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
-      | RETURN rels;
-    """.stripMargin
+  val cypherAll = "MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
+                  "RETURN hn;"
 
   def readAll = Action.async { req =>
     val userEmail = mockUserEmail
@@ -109,7 +95,7 @@ object Hyperlink extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -120,12 +106,9 @@ object Hyperlink extends Controller {
     }
   }
 
-  val cypherUpdate =
-    """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | SET hl.data = {data}, hl.updatedAt = {updatedAt}
-      | RETURN hl;
-    """.stripMargin
+  val cypherUpdate = "MATCH (hn { id: {uuid} }) " +
+                     "SET hn.data = {data}, hn.updatedAt = {updatedAt} " +
+                     "RETURN hn;"
 
   def update(uuid: UUID) = Action.async(parse.json) { req =>
     val neo4jReq = Json.obj(
@@ -142,7 +125,7 @@ object Hyperlink extends Controller {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -153,26 +136,57 @@ object Hyperlink extends Controller {
     }
   }
 
-  val cypherDelete =
-    """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]-(:Hypernode)
-      | DELETE hyperlink;
-    """.stripMargin
+  def batchUpdate = Action.async(parse.json) { req =>
 
-  def delete(uuid: UUID) = Action.async { req =>
+    val nodes = (req.body \ "data").as[Seq[JsObject]]
+
+    val neo4jReq = Json.obj(
+      "statements" -> nodes.map{ node =>
+        Json.obj(
+          "statement" -> cypherUpdate,
+          "parameters" -> Json.obj(
+            "uuid" -> UUID.fromString((node \ "id").as[String]),
+            "data" -> Json.stringify(node \ "data"),
+            "updatedAt" -> System.currentTimeMillis
+          )
+        )
+      }
+    )
+
+    val holder = WS
+      .url(dbUrl)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accept" -> "application/json; charset=UTF-8"
+      )
+
+    holder.post(neo4jReq).map { neo4jRes =>
+      Ok(neo4jRes.json)
+    }
+  }
+
+  val cypherDelete = "MATCH (hn:Hypernode { id: {uuid} })-[rels]-() " +
+                     "MATCH (user:User { email: {userEmail} })-[owns:OWNS]->(hn) " +
+                     "DELETE owns, rels, hn;"
+
+  def delete(uuid: UUID) = Action.async(parse.json) { req =>
+    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
-            "uuid" -> uuid
-          )
+            "uuid" -> uuid,
+            "userEmail" -> userEmail
+          ),
+          "includeStats" -> true
         )
       )
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
+      .url(dbUrl)
       .withHeaders(
         "Content-Type" -> "application/json",
         "Accept" -> "application/json; charset=UTF-8"
@@ -182,4 +196,5 @@ object Hyperlink extends Controller {
       Ok(neo4jRes.json)
     }
   }
+
 }

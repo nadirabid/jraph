@@ -14,12 +14,9 @@ import models.services.UserService
 
 import javax.inject.Inject
 
-//TODO: gotta rename controllers with suffic of "Controller" so we dont clash
-//with model names. eg User the model and User the controller
-
-class Application @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                             val userService: UserService,
-                             val authInfoService: AuthInfoService)
+class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+                                       val userService: UserService,
+                                       val authInfoService: AuthInfoService)
   extends Silhouette[User, SessionAuthenticator] {
 
   def index = SecuredAction {

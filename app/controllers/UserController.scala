@@ -7,7 +7,7 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play.current
 
-object User extends Controller {
+object UserController extends Controller {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   val cypherCreate =
