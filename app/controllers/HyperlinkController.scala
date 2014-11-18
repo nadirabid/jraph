@@ -1,5 +1,13 @@
 package controllers
 
+import javax.inject.Inject
+
+import com.mohiva.play.silhouette.api.{Silhouette, Environment}
+import com.mohiva.play.silhouette.api.services.AuthInfoService
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.User
+import models.services.UserService
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc._
@@ -8,7 +16,10 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
 import java.util.UUID
 
-object HyperlinkController extends Controller {
+class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+                                     val userService: UserService,
+                                     val authInfoService: AuthInfoService)
+  extends Silhouette[User, SessionAuthenticator] {
 
   val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 

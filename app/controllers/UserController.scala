@@ -1,5 +1,13 @@
 package controllers
 
+import javax.inject.Inject
+
+import com.mohiva.play.silhouette.api.{Silhouette, Environment}
+import com.mohiva.play.silhouette.api.services.AuthInfoService
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.User
+import models.services.UserService
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.ws.{WS, WSRequestHolder}
@@ -7,7 +15,11 @@ import play.api.libs.json._
 import play.api.mvc._
 import play.api.Play.current
 
-object UserController extends Controller {
+class UserController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+                                val userService: UserService,
+                                val authInfoService: AuthInfoService)
+  extends Silhouette[User, SessionAuthenticator] {
+
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   val cypherCreate =
