@@ -1,0 +1,28 @@
+@(signInForm: Form[com.mohiva.play.silhouette.impl.providers.Credentials])(
+    implicit env: com.mohiva.play.silhouette.api.Environment[User, _],
+    request: RequestHeader)
+
+@import com.mohiva.play.silhouette.impl.providers._
+@import bootstrap._
+
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+  </head>
+  <body>
+    <fieldset>
+      <legend class="col-md-6 col-md-offset-3">Sign in with your credentials</legend>
+      @helper.form(action = routes.ApplicationController.authenticate()) {
+        @text(signInForm("identifier"), "Email")
+        @password(signInForm("password"), "Password")
+        <div class="form-group">
+          <div class="col-md-6 col-md-offset-3">
+            <button id="submit" type="submit" value="submit" class="btn btn-primary btn-block">Submit</button>
+          </div>
+        </div>
+      }
+    </fieldset>
+  </body>
+</html>

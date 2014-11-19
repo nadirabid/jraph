@@ -1,15 +1,15 @@
 package controllers
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import forms._
+
 import scala.concurrent.Future
 
 import play.api.mvc._
-import play.api.Play.current
 
 import com.mohiva.play.silhouette.api.services.AuthInfoService
-import models.User
 import com.mohiva.play.silhouette.api.{LogoutEvent, Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.User
 import models.services.UserService
 
 import javax.inject.Inject
@@ -31,23 +31,30 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Ok(views.html.test.index())
   }
 
-  def signIn = UserAwareAction { req =>
-    Ok
+  def signIn = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+      case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
+    }
   }
 
-  def signUp = UserAwareAction { req =>
-    Ok
+  def signUp = UserAwareAction.async { implicit request =>
+    request.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
+      case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
+    }
   }
 
   def signUpSubmit = Action { req =>
     Ok
   }
 
-  def signOut = SecuredAction { req =>
+  def authenticate = Action { req =>
     Ok
   }
 
-  def authenticate = Action { req =>
-    Ok
+  def signOut = SecuredAction.async { implicit request =>
+    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
+    Future.successful(request.authenticator.discard(Redirect(routes.ApplicationController.index)))
   }
 }
