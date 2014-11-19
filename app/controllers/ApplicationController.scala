@@ -7,7 +7,7 @@ import scala.concurrent.Future
 import play.api.mvc._
 
 import com.mohiva.play.silhouette.api.services.AuthInfoService
-import com.mohiva.play.silhouette.api.{LogoutEvent, Environment, Silhouette}
+import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.User
 import models.services.UserService
@@ -43,10 +43,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index))
       case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
     }
-  }
-
-  def signUpSubmit = Action { req =>
-    Ok
   }
 
   def authenticate = Action { req =>
