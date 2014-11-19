@@ -11,7 +11,7 @@
 <body>
   <fieldset>
     <legend class="col-md-6 col-md-offset-3">Sign up for a new account</legend>
-    @helper.form(action = routes.ApplicationController.signUp()) {
+    @helper.form(action = routes.SignUpController.signUp()) {
       @text(signInForm("email"), "Email")
       @password(signInForm("password"), "Password")
       <div class="form-group">
@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="sign-in-now col-md-6 col-md-offset-3">
-        <p>Already a member? <a href="@routes.ApplicationController.signIn">Sign in now</a></p>
+        <p>Already a member? <a href="@routes.ApplicationController.signIn()">Sign in now</a></p>
       </div>
     }
   </fieldset>

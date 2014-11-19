@@ -36,7 +36,7 @@ class SignUpController @Inject() (implicit val env: Environment[User, SessionAut
           authInfo <- authInfoService.save(loginInfo, authInfo)
           authenticator <- env.authenticatorService.create(user.loginInfo)
           result <- env.authenticatorService.init(authenticator, Future.successful(
-            Redirect(routes.ApplicationController.index)
+            Redirect(routes.ApplicationController.index())
           ))
         } yield  {
           env.eventBus.publish(SignUpEvent(user, request, request2lang))

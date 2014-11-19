@@ -9,7 +9,7 @@ GET           /signIn                 @controllers.ApplicationController.signIn
 GET           /signUp                 @controllers.ApplicationController.signUp
 POST          /signUp                 @controllers.SignUpController.signUp
 GET           /signOut                @controllers.ApplicationController.signOut
-POST          /credentials            @controllers.ApplicationController.authenticate
+POST          /credentials            @controllers.CredentialsAuthController.authenticate
 GET           /test                   @controllers.ApplicationController.test
 
 POST          /user                   @controllers.UserController.create
