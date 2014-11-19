@@ -33,6 +33,7 @@ class SignUpController @Inject() (implicit val env: Environment[User, SessionAut
         val authInfo = passwordHasher.hash(data.password)
         val user = User(data.email, loginInfo)
         for {
+          user <- userService.save(user.copy())
           authInfo <- authInfoService.save(loginInfo, authInfo)
           authenticator <- env.authenticatorService.create(user.loginInfo)
           result <- env.authenticatorService.init(authenticator, Future.successful(
