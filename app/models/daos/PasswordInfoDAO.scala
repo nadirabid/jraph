@@ -94,7 +94,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
               "providerKey" -> loginInfo.providerKey,
               "hasher" -> authInfo.hasher,
               "password" -> authInfo.password,
-              "salt" -> authInfo.salt,
+              //"salt" -> authInfo.salt, //how to deal with possibly Null salt. use writer maybe?
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
             )
@@ -110,7 +110,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    //TODO: check if post returned with error
-    holder.post(neo4jReq).map{ _ => authInfo }
+    holder.post(neo4jReq).map{ res => authInfo }
   }
 }

@@ -1,24 +1,19 @@
 package controllers
 
 import javax.inject.Inject
+import java.util.UUID
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
-import com.mohiva.play.silhouette.api.services.AuthInfoService
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.User
-import models.services.UserService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.mvc._
 import play.api.Play.current
 import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
-import java.util.UUID
 
-class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                     val userService: UserService,
-                                     val authInfoService: AuthInfoService)
+class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
@@ -29,7 +24,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
                      "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
                      "RETURN hn;"
 
-  def create = Action.async(parse.json) { req =>
+  def create = SecuredAction.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
 
     val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
@@ -66,7 +61,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   val cypherRead = "MATCH (hn:Hypernode { id: {uuid} }) " +
                    "RETURN hn;"
 
-  def read(uuid: UUID) = Action.async { req =>
+  def read(uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -91,7 +86,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   val cypherAll = "MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
                   "RETURN hn;"
 
-  def readAll = Action.async { req =>
+  def readAll = SecuredAction.async { req =>
     val userEmail = mockUserEmail
 
     val neo4jReq = Json.obj(
@@ -121,7 +116,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
                      "SET hn.data = {data}, hn.updatedAt = {updatedAt} " +
                      "RETURN hn;"
 
-  def update(uuid: UUID) = Action.async(parse.json) { req =>
+  def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -147,7 +142,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  def batchUpdate = Action.async(parse.json) { req =>
+  def batchUpdate = SecuredAction.async(parse.json) { req =>
 
     val nodes = (req.body \ "data").as[Seq[JsObject]]
 
@@ -180,7 +175,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
                      "MATCH (user:User { email: {userEmail} })-[owns:OWNS]->(hn) " +
                      "DELETE owns, rels, hn;"
 
-  def delete(uuid: UUID) = Action.async(parse.json) { req =>
+  def delete(uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
 
     val neo4jReq = Json.obj(

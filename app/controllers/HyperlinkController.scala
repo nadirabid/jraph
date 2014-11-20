@@ -3,10 +3,8 @@ package controllers
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
-import com.mohiva.play.silhouette.api.services.AuthInfoService
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.User
-import models.services.UserService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -16,9 +14,7 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSResponse, WS}
 import java.util.UUID
 
-class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                     val userService: UserService,
-                                     val authInfoService: AuthInfoService)
+class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
@@ -30,7 +26,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN hl;
     """.stripMargin
 
-  def create = Action.async(parse.json) { req =>
+  def create = SecuredAction.async(parse.json) { req =>
     val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
     val targetId = UUID.fromString((req.body \ "targetId").as[String])
 
@@ -74,7 +70,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN hl;
     """.stripMargin
 
-  def read(uuid: UUID) = Action.async { req =>
+  def read(uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -105,7 +101,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN rels;
     """.stripMargin
 
-  def readAll = Action.async { req =>
+  def readAll = SecuredAction.async { req =>
     val userEmail = mockUserEmail
 
     val neo4jReq = Json.obj(
@@ -138,7 +134,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN hl;
     """.stripMargin
 
-  def update(uuid: UUID) = Action.async(parse.json) { req =>
+  def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -170,7 +166,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | DELETE hyperlink;
     """.stripMargin
 
-  def delete(uuid: UUID) = Action.async { req =>
+  def delete(uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
