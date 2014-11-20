@@ -85,6 +85,10 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     // ASK: Do we need a UUID to identify a User node
     // given that we should have unique email addresses?
 
+    // TODO: how to deal with possibly Null salt value. use Writer maybe?
+    // Currently using BCryptPasswordHasher which does not set salt value
+    // so we're ignoring it below all together
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -94,7 +98,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
               "providerKey" -> loginInfo.providerKey,
               "hasher" -> authInfo.hasher,
               "password" -> authInfo.password,
-              //"salt" -> authInfo.salt, //how to deal with possibly Null salt. use writer maybe?
+              //"salt" -> authInfo.salt,
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
             )
