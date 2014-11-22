@@ -1,7 +1,15 @@
 import java.util.UUID
 
+import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import com.mohiva.play.silhouette.test._
+import controllers.HypernodeController
+import forms.SignUpForm
+import models.User
 import org.scalatest._
 import org.scalatestplus.play._
+import play.api.data.Form
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
@@ -18,19 +26,60 @@ class HypernodeControllerSpec extends WordSpec
 
   before {
     running(FakeApplication()) {
-      val reqUserJson = Json.obj("email" -> userEmail)
-      val userCreateResult = route(FakeRequest(POST, "/user").withJsonBody(reqUserJson)).get
+      val userCreateRequest = FakeRequest(POST, "/create")
+        .withFormUrlEncodedBody(Map("email" -> userEmail, "password" -> "123").toSeq:_*)
+
+      val userCreateResult = route(userCreateRequest).get
       status(userCreateResult) shouldBe OK
     }
   }
 
   after {
     running(FakeApplication()) {
-      val userDeleteResult = route(FakeRequest(DELETE, "/user/" + userEmail)).get
+      val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
+      implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+
+      val userDeleteRequest = FakeRequest(DELETE, "/delete")
+        .withAuthenticator(identity.loginInfo)
+
+      val userDeleteResult = route(userDeleteRequest).get
       status(userDeleteResult) shouldBe OK
     }
   }
 
+  "The Hypernode controller" should {
+    "create a new node given JSON data and user email" in {
+      val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
+      implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+
+      val createReqJson = Json.obj(
+        "email" -> userEmail,
+        "data" -> Json.obj(
+          "p1" -> "v1"
+        )
+      )
+
+      val createRequest = FakeRequest(POST, "/hypernode")
+        .withJsonBody(createReqJson)
+        .withAuthenticator(identity.loginInfo)
+
+      val createResult = route(createRequest).get
+
+      println("create result status", status(createResult))
+      status(createResult) shouldBe OK
+
+      val createUuidString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
+      val uuid = UUID.fromString(createUuidString)
+
+      uuid.toString shouldEqual createUuidString
+
+      val createDataString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "data").as[String]
+      val createDataJson = Json.parse(createDataString)
+      (createDataJson \ "p1").as[String] shouldBe "v1"
+    }
+  }
+
+  /*
   "The HypernodeController" should {
     "create, find, update, delete a new node given JSON data and user email" in {
       //
@@ -99,5 +148,6 @@ class HypernodeControllerSpec extends WordSpec
       nodesDeleted shouldBe 1
     }
   }
+  */
 
 }

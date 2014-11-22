@@ -142,4 +142,37 @@ class UserDAOImpl extends UserDAO {
     //TODO: check if post returned with error
     holder.post(neo4jReq).map { _ => user}
   }
+
+  val cypherDelete =
+    """
+      | MATCH (user:User { email: {email} }),
+      |       (passwordInfo:PasswordInfo { providerKey: {email} })
+      | OPTIONAL MATCH (user)-[owns:OWNS]-(hn:Hypernode)
+      | OPTIONAL MATCH (hn)-[hl:HYPERLINK]->()
+      | DELETE user, owns, hn, hl;
+    """.stripMargin
+
+  def delete(userID: String) = {
+    val neo4jReq = Json.obj(
+      "statements" -> Json.arr(
+        Json.obj(
+          "statement" -> cypherDelete,
+          "parameters" -> Json.obj(
+            "email" -> userID
+          ),
+          "includeStats" -> true
+        )
+      )
+    )
+
+    val holder: WSRequestHolder = WS
+      .url(dbUrl)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accepts" -> "application/json; charset=UTF-8"
+      )
+
+    // TODO: check if there was any error and the stats confirm at least one deleted node
+    holder.post(neo4jReq).map { _ => true }
+  }
 }

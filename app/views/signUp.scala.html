@@ -11,7 +11,7 @@
 <body>
   <fieldset>
     <legend class="col-md-6 col-md-offset-3">Sign up for a new account</legend>
-    @helper.form(action = routes.SignUpController.signUp()) {
+    @helper.form(action = routes.AccountController.create()) {
       @text(signInForm("email"), "Email")
       @password(signInForm("password"), "Password")
       <div class="form-group">

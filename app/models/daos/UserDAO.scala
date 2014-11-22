@@ -33,4 +33,12 @@ trait UserDAO {
    * @return The saved user.
    */
   def save(user: User): Future[User]
+
+  /**
+   * Deletes a user of the specified ID.
+   *
+   * @param userID The ID of the user to find.
+   * @return
+   */
+  def delete(userID: String): Future[Boolean]
 }

@@ -14,7 +14,7 @@ import play.api.mvc.Action
 
 import scala.concurrent.Future
 
-class SignUpController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+class AccountController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
                                   val authInfoService: AuthInfoService,
                                   val userService: UserService,
                                   val passwordHasher: PasswordHasher)
@@ -25,7 +25,7 @@ class SignUpController @Inject() (implicit val env: Environment[User, SessionAut
    *
    * @return The result to display.
    */
-  def signUp = Action.async { implicit request =>
+  def create = Action.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold (
       form => Future.successful(BadRequest(views.html.signUp(form))),
       data => {
@@ -46,5 +46,11 @@ class SignUpController @Inject() (implicit val env: Environment[User, SessionAut
         }
       }
     )
+  }
+
+  def delete = SecuredAction.async { implicit request =>
+    userService.delete(request.identity.email).map { _ =>
+      Ok
+    }
   }
 }

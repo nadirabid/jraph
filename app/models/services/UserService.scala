@@ -17,4 +17,12 @@ trait UserService extends IdentityService[User] {
    * @return The saved user.
    */
   def save(user: User): Future[User]
+
+  /**
+   * Deletes the user of the specified ID.
+   *
+   * @param userID The ID of the user to delete.
+   * @return
+   */
+  def delete(userID: String): Future[Boolean]
 }
