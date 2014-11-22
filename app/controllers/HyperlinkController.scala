@@ -8,16 +8,13 @@ import models.User
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.mvc._
 import play.api.Play.current
 import play.api.libs.json._
-import play.api.libs.ws.{WSResponse, WS}
+import play.api.libs.ws.WS
 import java.util.UUID
 
 class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
-
-  val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 
   val cypherCreate =
     """
@@ -94,7 +91,6 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  //TODO have to update readAll to use email
   val cypherAll =
     """
       |MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
@@ -102,14 +98,12 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
     """.stripMargin
 
   def readAll = SecuredAction.async { req =>
-    val userEmail = mockUserEmail
-
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userEmail" -> userEmail
+            "userEmail" -> req.identity.email
           )
         )
       )

@@ -11,12 +11,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Play.current
 import play.api.libs.json._
-import play.api.libs.ws.{WSResponse, WS}
+import play.api.libs.ws.WS
 
 class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
-
-  val mockUserEmail = "c53303e1-0287-4e5a-8020-1026493c6e37@email.com"
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
@@ -27,14 +25,12 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   def create = SecuredAction.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
 
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
-
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
-            "userEmail" -> userEmail,
+            "userEmail" -> req.identity.email,
             "hn" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
@@ -87,14 +83,12 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
                   "RETURN hn;"
 
   def readAll = SecuredAction.async { req =>
-    val userEmail = mockUserEmail
-
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherAll,
           "parameters" -> Json.obj(
-            "userEmail" -> userEmail
+            "userEmail" -> req.identity.email
           )
         )
       )
@@ -176,15 +170,13 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
                      "DELETE owns, rels, hn;"
 
   def delete(uuid: UUID) = SecuredAction.async(parse.json) { req =>
-    val userEmail = (req.body \ "email").asOpt[String] getOrElse mockUserEmail
-
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "uuid" -> uuid,
-            "userEmail" -> userEmail
+            "userEmail" -> req.identity.email
           ),
           "includeStats" -> true
         )
