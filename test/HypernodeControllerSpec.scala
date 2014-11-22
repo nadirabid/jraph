@@ -4,12 +4,9 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
-import controllers.HypernodeController
-import forms.SignUpForm
 import models.User
 import org.scalatest._
 import org.scalatestplus.play._
-import play.api.data.Form
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
