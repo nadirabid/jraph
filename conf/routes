@@ -7,11 +7,12 @@ GET           /                       @controllers.ApplicationController.index
 GET           /*path/                 @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
 GET           /signIn                 @controllers.ApplicationController.signIn
 GET           /signUp                 @controllers.ApplicationController.signUp
-POST          /create                 @controllers.AccountController.create
-DELETE        /delete                 @controllers.AccountController.delete
 GET           /signOut                @controllers.ApplicationController.signOut
-POST          /credentials            @controllers.CredentialsAuthController.authenticate
 GET           /test                   @controllers.ApplicationController.test
+POST          /credentials            @controllers.CredentialsAuthController.authenticate
+
+POST          /account/create         @controllers.AccountController.create
+DELETE        /account/delete         @controllers.AccountController.delete
 
 POST          /hypernode              @controllers.HypernodeController.create
 GET           /hypernode/:uuid        @controllers.HypernodeController.read(uuid: java.util.UUID)

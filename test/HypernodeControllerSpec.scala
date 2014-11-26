@@ -23,11 +23,11 @@ class HypernodeControllerSpec extends WordSpec
 
   before {
     running(FakeApplication()) {
-      val userCreateRequest = FakeRequest(POST, "/create")
+      val userCreateRequest = FakeRequest(POST, "/account/create")
         .withFormUrlEncodedBody(Map("email" -> userEmail, "password" -> "123").toSeq:_*)
 
       val userCreateResult = route(userCreateRequest).get
-      status(userCreateResult) shouldBe OK
+      status(userCreateResult) shouldBe SEE_OTHER
     }
   }
 
@@ -36,7 +36,7 @@ class HypernodeControllerSpec extends WordSpec
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
 
-      val userDeleteRequest = FakeRequest(DELETE, "/delete")
+      val userDeleteRequest = FakeRequest(DELETE, "/account/delete")
         .withAuthenticator(identity.loginInfo)
 
       val userDeleteResult = route(userDeleteRequest).get

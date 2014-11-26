@@ -20,13 +20,8 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
                                   val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
-  /**
-   * Registers a new user.
-   *
-   * @return The result to display.
-   */
   def create = Action.async { implicit request =>
-    SignUpForm.form.bindFromRequest.fold (
+    SignUpForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.signUp(form))),
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
@@ -50,6 +45,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
 
   def delete = SecuredAction.async { implicit request =>
     userService.delete(request.identity.email).map { _ =>
+      //TODO check if delete completed successfully
       Ok
     }
   }
