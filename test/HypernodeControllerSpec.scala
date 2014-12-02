@@ -19,7 +19,7 @@ class HypernodeControllerSpec extends WordSpec
   with OneAppPerTest
   with BeforeAndAfter {
 
-  val userEmail = UUID.randomUUID().toString + "@email.com"
+  val userEmail = UUID.randomUUID().toString + "@test.com"
 
   before {
     running(FakeApplication()) {
@@ -45,9 +45,13 @@ class HypernodeControllerSpec extends WordSpec
   }
 
   "The Hypernode controller" should {
-    "create a new node given JSON data and user email" in {
+    "create, find, read, delete a new node given JSON data and user email" in {
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+
+      //
+      // create hypernode
+      //
 
       val createReqJson = Json.obj(
         "email" -> userEmail,
@@ -61,36 +65,6 @@ class HypernodeControllerSpec extends WordSpec
         .withAuthenticator(identity.loginInfo)
 
       val createResult = route(createRequest).get
-
-      println("create result status", status(createResult))
-      status(createResult) shouldBe OK
-
-      val createUuidString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
-      val uuid = UUID.fromString(createUuidString)
-
-      uuid.toString shouldEqual createUuidString
-
-      val createDataString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "data").as[String]
-      val createDataJson = Json.parse(createDataString)
-      (createDataJson \ "p1").as[String] shouldBe "v1"
-    }
-  }
-
-  /*
-  "The HypernodeController" should {
-    "create, find, update, delete a new node given JSON data and user email" in {
-      //
-      // create hypernode
-      //
-
-      val createReqJson = Json.obj(
-        "email" -> userEmail,
-        "data" -> Json.obj(
-          "p1" -> "v1"
-        )
-      )
-
-      val createResult = route(FakeRequest(POST, "/hypernode").withJsonBody(createReqJson)).get
       status(createResult) shouldBe OK
 
       val createUuidString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
@@ -106,7 +80,10 @@ class HypernodeControllerSpec extends WordSpec
       // find hypernode
       //
 
-      val findResult = route(FakeRequest(GET, "/hypernode/" + createUuidString)).get
+      val findRequest = FakeRequest(GET, "/hypernode/" + createUuidString)
+        .withAuthenticator(identity.loginInfo)
+
+      val findResult = route(findRequest).get
       status(findResult) shouldBe OK
 
       val findUuidString = ((((contentAsJson(findResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
@@ -123,7 +100,11 @@ class HypernodeControllerSpec extends WordSpec
         )
       )
 
-      val updateResult = route(FakeRequest(PUT, "/hypernode/" + createUuidString).withJsonBody(updateReqJson)).get
+      val updateRequest = FakeRequest(PUT, "/hypernode/" + createUuidString)
+        .withJsonBody(updateReqJson)
+        .withAuthenticator(identity.loginInfo)
+
+      val updateResult = route(updateRequest).get
       status(updateResult) shouldBe OK
 
       val updateDataString = ((((contentAsJson(updateResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "data").as[String]
@@ -138,13 +119,16 @@ class HypernodeControllerSpec extends WordSpec
       //
 
       val deleteReqJson = Json.obj("email" -> userEmail)
-      val deleteRes = route(FakeRequest(DELETE, "/hypernode/" + createUuidString).withJsonBody(deleteReqJson)).get
+
+      val deleteReq = FakeRequest(DELETE, "/hypernode/" + createUuidString)
+        .withJsonBody(deleteReqJson)
+        .withAuthenticator(identity.loginInfo)
+
+      val deleteRes = route(deleteReq).get
       status(deleteRes) shouldBe OK
 
       val nodesDeleted = ((contentAsJson(deleteRes) \ "results")(0) \ "stats" \ "nodes_deleted").as[Int]
       nodesDeleted shouldBe 1
     }
   }
-  */
-
 }

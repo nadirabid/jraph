@@ -1,5 +1,7 @@
 package models.daos
 
+import java.util.UUID
+
 import com.mohiva.play.silhouette.api.LoginInfo
 
 import models.User
@@ -106,7 +108,8 @@ class UserDAOImpl extends UserDAO {
 
   val cypherCreate =
     """
-      | CREATE (user:User {userData})
+      | CREATE (user:User {userData}), (hg:Hypergraph {hypergraphData})
+      | CREATE (user)-[:OWNS_HYPERGRAPH]->(hg)
       | RETURN user;
     """.stripMargin
 
@@ -121,6 +124,12 @@ class UserDAOImpl extends UserDAO {
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
+            "hypergraphData" -> Json.obj(
+              "id" -> UUID.randomUUID(),
+              "name" -> "default",
+              "createdAt" -> timestamp,
+              "updateAt" -> timestamp
+            ),
             "userData" -> Json.obj(
               "email" -> user.email,
               "providerID" -> user.loginInfo.providerID,
@@ -147,9 +156,10 @@ class UserDAOImpl extends UserDAO {
     """
       | MATCH (user:User { email: {email} }),
       |       (passwordInfo:PasswordInfo { providerKey: {email} })
-      | OPTIONAL MATCH (user)-[owns:OWNS]-(hn:Hypernode)
-      | OPTIONAL MATCH (hn)-[hl:HYPERLINK]->()
-      | DELETE user, owns, hn, hl;
+      | OPTIONAL MATCH (user)-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph)
+      | OPTIONAL MATCH (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
+      | OPTIONAL MATCH (hn)-[HL:HYPERLINK]->(:Hypernode)
+      | DELETE OWNS_HG, OWNS_HN, HL, user, passwordInfo, hg, hn;
     """.stripMargin
 
   def delete(userID: String) = {

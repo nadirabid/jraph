@@ -19,8 +19,8 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
   val cypherCreate =
     """
       | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
-      | CREATE UNIQUE (source)-[hl:HYPERLINK {hl}]->(target)
-      | RETURN hl;
+      | CREATE UNIQUE (source)-[HL:HYPERLINK {hyperlinkData}]->(target)
+      | RETURN HL;
     """.stripMargin
 
   def create = SecuredAction.async(parse.json) { req =>
@@ -36,7 +36,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
           "parameters" -> Json.obj(
             "sourceId" -> sourceId,
             "targetId" -> targetId,
-            "hl" -> Json.obj(
+            "hyperlinkData" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp,
@@ -63,8 +63,8 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
 
   val cypherRead =
     """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | RETURN hl;
+      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]->(:Hypernode)
+      | RETURN HL;
     """.stripMargin
 
   def read(uuid: UUID) = SecuredAction.async { req =>
@@ -91,18 +91,20 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  val cypherAll =
+  val cypherReadAll =
     """
-      |MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]-(:Hypernode)-[rels]->(:Hypernode)
-      | RETURN rels;
+      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} })
+      | MATCH (hg)-[:OWNS_HYPERNODE]->(:Hypernode)-[HL:HYPERLINK]->(:Hypernode)
+      | RETURN HL;
     """.stripMargin
 
   def readAll = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherAll,
+          "statement" -> cypherReadAll,
           "parameters" -> Json.obj(
+            "hypergraphName" -> "default",
             "userEmail" -> req.identity.email
           )
         )
@@ -123,9 +125,9 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
 
   val cypherUpdate =
     """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | SET hl.data = {data}, hl.updatedAt = {updatedAt}
-      | RETURN hl;
+      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]->(:Hypernode)
+      | SET HL.data = {data}, HL.updatedAt = {updatedAt}
+      | RETURN HL;
     """.stripMargin
 
   def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
@@ -156,8 +158,8 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
 
   val cypherDelete =
     """
-      | MATCH (:Hypernode)-[hl:HYPERLINK { id: {uuid} }]-(:Hypernode)
-      | DELETE hyperlink;
+      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]-(:Hypernode)
+      | DELETE HL;
     """.stripMargin
 
   def delete(uuid: UUID) = SecuredAction.async { req =>

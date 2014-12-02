@@ -18,9 +18,12 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
-  val cypherCreate = "MATCH (user:User { email: {userEmail} }) " +
-                     "CREATE (hn:Hypernode {hn}), (user)-[owns:OWNS]->(hn) " +
-                     "RETURN hn;"
+  val cypherCreate =
+    """
+      | MATCH (user:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} })
+      | CREATE (hn:Hypernode {hn}), (hg)-[:OWNS_HYPERNODE]->(hn)
+      | RETURN hn;
+    """.stripMargin
 
   def create = SecuredAction.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
@@ -31,6 +34,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
             "userEmail" -> req.identity.email,
+            "hypergraphName" -> "default", //TODO: need to switch this to use ID
             "hn" -> Json.obj(
               "id" -> UUID.randomUUID(),
               "createdAt" -> timestamp,
@@ -54,8 +58,11 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  val cypherRead = "MATCH (hn:Hypernode { id: {uuid} }) " +
-                   "RETURN hn;"
+  val cypherRead =
+    """
+      | MATCH (hn:Hypernode { id: {uuid} })
+      | RETURN hn;
+    """.stripMargin
 
   def read(uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
@@ -79,15 +86,20 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  val cypherAll = "MATCH (user:User { email: {userEmail} }), (user)-[:OWNS]->(hn:Hypernode) " +
-                  "RETURN hn;"
+  val cypherReadAll =
+    """
+      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} })
+      | MATCH (hg)-[:OWNS_HYPERNODE]->(hn:Hypernode)
+      | RETURN hn;
+    """.stripMargin
 
   def readAll = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherAll,
+          "statement" -> cypherReadAll,
           "parameters" -> Json.obj(
+            "hypergraphName" -> "default",
             "userEmail" -> req.identity.email
           )
         )
@@ -106,9 +118,12 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  val cypherUpdate = "MATCH (hn { id: {uuid} }) " +
-                     "SET hn.data = {data}, hn.updatedAt = {updatedAt} " +
-                     "RETURN hn;"
+  val cypherUpdate =
+    """
+      | MATCH (hn { id: {uuid} })
+      | SET hn.data = {data}, hn.updatedAt = {updatedAt}
+      | RETURN hn;
+    """.stripMargin
 
   def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
@@ -137,7 +152,6 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   }
 
   def batchUpdate = SecuredAction.async(parse.json) { req =>
-
     val nodes = (req.body \ "data").as[Seq[JsObject]]
 
     val neo4jReq = Json.obj(
@@ -165,9 +179,14 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  val cypherDelete = "MATCH (hn:Hypernode { id: {uuid} })-[rels]-() " +
-                     "MATCH (user:User { email: {userEmail} })-[owns:OWNS]->(hn) " +
-                     "DELETE owns, rels, hn;"
+  val cypherDelete =
+    """
+      | MATCH (hn:Hypernode { id: {uuid} }),
+      |       (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} }),
+      |       (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn)
+      | OPTIONAL MATCH (hn)-[HL:HYPERLINK]-(:Hypernode)
+      | DELETE OWNS_HN, HL, hn;
+    """.stripMargin
 
   def delete(uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
@@ -176,6 +195,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "uuid" -> uuid,
+            "hypergraphName" -> "default",
             "userEmail" -> req.identity.email
           ),
           "includeStats" -> true
