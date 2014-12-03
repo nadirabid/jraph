@@ -74,7 +74,7 @@ object Hypergraph {
     val neo4jReqJson = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherCreate,
+          "statement" -> cypherRead,
           "parameters" -> Json.obj(
             "userEmail" -> userEmail,
             "id" -> hypergraphID
@@ -111,7 +111,7 @@ object Hypergraph {
     val neo4jReqJson = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherCreate,
+          "statement" -> cypherReadAll,
           "parameters" -> Json.obj(
             "userEmail" -> userEmail
           )
@@ -148,7 +148,7 @@ object Hypergraph {
     val neo4jReqJson = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherCreate,
+          "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "userEmail" -> userEmail,
             "id" -> hypergraphID
