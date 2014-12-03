@@ -1,5 +1,20 @@
-@layout("Your Hypergraphs") {
-  <ul>
+@(hypergraphs: List[Hypergraph])
 
-  </ul>
-}
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+  </head>
+  <body>
+    @if (hypergraphs.length > 0) {
+      <ul>
+      @for(hg <- hypergraphs) {
+        <li><a href="#">@hg.name</a></li>
+      }
+      </ul>
+    } else {
+      <p>You have no graphs!</p>
+    }
+  </body>
+</html>
