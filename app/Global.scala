@@ -46,7 +46,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
   override def onNotAuthenticated(request: RequestHeader,
                                   lang: Lang): Option[Future[Result]] = {
 
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn)))
+    Some(Future.successful(Redirect(routes.ApplicationController.signIn())))
   }
 
   /**
@@ -62,7 +62,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
                                lang: Lang): Option[Future[Result]] = {
 
     Some(Future.successful(
-      Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))
+      Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("access.denied"))
     ))
   }
 }
