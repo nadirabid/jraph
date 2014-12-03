@@ -3,29 +3,34 @@
 # ~~~~
 
 # API
-GET           /                       @controllers.ApplicationController.index
-GET           /*path/                 @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
-GET           /signIn                 @controllers.ApplicationController.signIn
-GET           /signUp                 @controllers.ApplicationController.signUp
-GET           /signOut                @controllers.ApplicationController.signOut
-GET           /test                   @controllers.ApplicationController.test
-POST          /credentials            @controllers.CredentialsAuthController.authenticate
+GET           /                                @controllers.ApplicationController.index
+GET           /*path/                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
+GET           /signIn                          @controllers.ApplicationController.signIn
+GET           /signUp                          @controllers.ApplicationController.signUp
+GET           /signOut                         @controllers.ApplicationController.signOut
+GET           /test                            @controllers.ApplicationController.test
+POST          /credentials                     @controllers.CredentialsAuthController.authenticate
 
-POST          /account/create         @controllers.AccountController.create
-DELETE        /account/delete         @controllers.AccountController.delete
+POST          /account/create                  @controllers.AccountController.create
+DELETE        /account/delete                  @controllers.AccountController.delete
 
-POST          /hypernode              @controllers.HypernodeController.create
-GET           /hypernode/:uuid        @controllers.HypernodeController.read(uuid: java.util.UUID)
-GET           /hypernode              @controllers.HypernodeController.readAll
-PUT           /hypernode/:uuid        @controllers.HypernodeController.update(uuid: java.util.UUID)
-PUT           /hypernode              @controllers.HypernodeController.batchUpdate
-DELETE        /hypernode/:uuid        @controllers.HypernodeController.delete(uuid: java.util.UUID)
+POST          /hypergraph                      @controllers.HypergraphController.create
+GET           /hypergraph/:hypergraphID        @controllers.HypergraphController.read(hypergraphID: java.util.UUID)
+GET           /hypergraph                      @controllers.HypergraphController.readAll
+DELETE        /hypergraph/:hypergraphID        @controllers.HypergraphController.delete(hypergraphID: java.util.UUID)
 
-POST          /hyperlink              @controllers.HyperlinkController.create
-GET           /hyperlink/:uuid        @controllers.HyperlinkController.read(uuid: java.util.UUID)
-GET           /hyperlink              @controllers.HyperlinkController.readAll
-PUT           /hyperlink/:uuid        @controllers.HyperlinkController.update(uuid: java.util.UUID)
-DELETE        /hyperlink/:uuid        @controllers.HyperlinkController.delete(uuid: java.util.UUID)
+POST          /hypernode                       @controllers.HypernodeController.create
+GET           /hypernode/:uuid                 @controllers.HypernodeController.read(uuid: java.util.UUID)
+GET           /hypernode                       @controllers.HypernodeController.readAll
+PUT           /hypernode/:uuid                 @controllers.HypernodeController.update(uuid: java.util.UUID)
+PUT           /hypernode                       @controllers.HypernodeController.batchUpdate
+DELETE        /hypernode/:uuid                 @controllers.HypernodeController.delete(uuid: java.util.UUID)
+
+POST          /hyperlink                       @controllers.HyperlinkController.create
+GET           /hyperlink/:uuid                 @controllers.HyperlinkController.read(uuid: java.util.UUID)
+GET           /hyperlink                       @controllers.HyperlinkController.readAll
+PUT           /hyperlink/:uuid                 @controllers.HyperlinkController.update(uuid: java.util.UUID)
+DELETE        /hyperlink/:uuid                 @controllers.HyperlinkController.delete(uuid: java.util.UUID)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file           controllers.Assets.at(path="/public", file)
+GET           /assets/*file                    controllers.Assets.at(path="/public", file)
