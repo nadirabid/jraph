@@ -24,7 +24,7 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
       "name" -> hypergraph.name
     )
   }
-  
+
   def create = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(UUID.randomUUID(), (req.body \ "name").as[String])
 
