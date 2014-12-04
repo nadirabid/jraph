@@ -1,4 +1,4 @@
-@(hypergraphs: List[Hypergraph])
+@(hypergraphs: Seq[Hypergraph])
 
 <!DOCTYPE html>
 <html>
@@ -7,14 +7,14 @@
     <title></title>
   </head>
   <body>
-    @if (hypergraphs.length > 0) {
-      <ul>
-      @for(hg <- hypergraphs) {
-        <li><a href="#">@hg.name</a></li>
-      }
-      </ul>
-    } else {
+    @if(hypergraphs.isEmpty) {
       <p>You have no graphs!</p>
+    } else {
+      <ul>
+        @for(hg <- hypergraphs) {
+          <li><a href="#">@hg.name</a></li>
+        }
+      </ul>
     }
   </body>
 </html>

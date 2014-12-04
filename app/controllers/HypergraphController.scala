@@ -18,25 +18,32 @@ import java.util.UUID
 class HypergraphController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
+  implicit val hypergraphWrites = new Writes[Hypergraph] {
+    def writes(hypergraph: Hypergraph) = Json.obj(
+      "hypergraphID" -> hypergraph.hypergraphID,
+      "name" -> hypergraph.name
+    )
+  }
+  
   def create = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(UUID.randomUUID(), (req.body \ "name").as[String])
 
     Hypergraph.create(req.identity.email, model).map {
-      case Some(_) => Ok(Json.toJson(_))
+      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => ServiceUnavailable
     }
   }
 
   def read(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
-      case Some(_) => Ok(Json.toJson(_))
+      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => ServiceUnavailable
     }
   }
 
   def readAll = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
-      case Some(_) => Ok(Json.toJson(_))
+      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => ServiceUnavailable
     }
   }
