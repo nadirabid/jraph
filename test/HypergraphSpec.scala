@@ -84,6 +84,4 @@ class HypergraphSpec extends WordSpec
       }
     }
   }
-
-
 }
