@@ -22,7 +22,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
 
   def create = Action.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.user.signUp(form))),
+      form => Future.successful(BadRequest(views.html.account.signUp(form))),
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         val authInfo = passwordHasher.hash(data.password)

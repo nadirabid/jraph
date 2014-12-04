@@ -30,14 +30,14 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def signIn = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.user.signIn(SignInForm.form)))
+      case None => Future.successful(Ok(views.html.account.signIn(SignInForm.form)))
     }
   }
 
   def signUp = UserAwareAction.async { implicit request =>
     request.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.user.signUp(SignUpForm.form)))
+      case None => Future.successful(Ok(views.html.account.signUp(SignUpForm.form)))
     }
   }
 
