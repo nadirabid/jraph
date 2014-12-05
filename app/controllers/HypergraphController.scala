@@ -20,7 +20,7 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
 
   implicit val hypergraphWrites = new Writes[Hypergraph] {
     def writes(hypergraph: Hypergraph) = Json.obj(
-      "hypergraphID" -> hypergraph.hypergraphID,
+      "id" -> hypergraph.hypergraphID,
       "name" -> hypergraph.name
     )
   }

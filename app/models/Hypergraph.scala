@@ -28,7 +28,7 @@ object Hypergraph {
     """.stripMargin
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
-    (JsPath \ "hypergraphID").read[UUID] and
+    (JsPath \ "id").read[UUID] and
     (JsPath \ "name").read[String]
   )(Hypergraph.apply _)
 
@@ -57,6 +57,7 @@ object Hypergraph {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
+      println(Json.prettyPrint(neo4jRes.json))
       val hypergraph = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[Hypergraph]
 
       hypergraph match {
