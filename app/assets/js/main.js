@@ -2,7 +2,7 @@
   'use strict';
 
   requirejs.config({
-    baseUrl: 'assets/js',
+    baseUrl: '/assets/js',
     paths: {
       d3: 'dependencies/d3',
       jquery: 'dependencies/jquery-2.1.1',
