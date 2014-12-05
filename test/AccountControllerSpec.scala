@@ -4,12 +4,13 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
+
 import models.User
+
 import org.scalatest._
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
-import play.api.libs.json._
 
 // By default the tests of a given ScalaTest Suite (WordSpec, FlatSpec, etc)
 // are run sequentially inferred from the order in which the tests are defined.
@@ -40,4 +41,5 @@ class AccountControllerSpec extends WordSpec
       status(userDeleteResult) shouldBe OK
     }
   }
+
 }
