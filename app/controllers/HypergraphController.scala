@@ -43,7 +43,7 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
 
   def readAll = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
-      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
+      case Some(hypergraphs) => Ok(Json.toJson(hypergraphs))
       case None => ServiceUnavailable
     }
   }

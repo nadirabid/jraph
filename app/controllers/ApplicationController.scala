@@ -3,20 +3,24 @@ package controllers
 import forms._
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc._
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import models.User
+import models.{Hypergraph, User}
 
 import javax.inject.Inject
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def index = SecuredAction {
-    Ok(views.html.graph.index())
+  def index = SecuredAction.async { req =>
+    Hypergraph.readAll(req.identity.email).map {
+      case Some(hypergraphs) => Ok(views.html.account.index(hypergraphs))
+      case None => ServiceUnavailable
+    }
   }
 
   def trimTrailingForwardSlash(path: String) = Action {
