@@ -23,6 +23,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
+  def hypergraph = SecuredAction { req =>
+    Ok(views.html.graph.index())
+  }
+
   def trimTrailingForwardSlash(path: String) = Action {
     MovedPermanently("/" + path)
   }

@@ -9,6 +9,8 @@ GET           /signIn                          @controllers.ApplicationControlle
 GET           /signUp                          @controllers.ApplicationController.signUp
 GET           /signOut                         @controllers.ApplicationController.signOut
 GET           /test                            @controllers.ApplicationController.test
+GET           /:hypergraphID                   @controllers.ApplicationController.hypergraph(hypergraphID: java.util.UUID)
+
 POST          /credentials                     @controllers.CredentialsAuthController.authenticate
 
 POST          /account/create                  @controllers.AccountController.create

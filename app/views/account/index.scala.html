@@ -14,7 +14,7 @@
     } else {
       <ul>
         @for(hg <- hypergraphs) {
-          <li><a href="#">@hg.name</a></li>
+          <li><a href="@routes.ApplicationController.hypergraph(hg.hypergraphID)">@hg.name</a></li>
         }
       </ul>
     }
