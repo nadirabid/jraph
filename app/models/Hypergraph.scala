@@ -57,7 +57,6 @@ object Hypergraph {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      println(Json.prettyPrint(neo4jRes.json))
       val hypergraph = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[Hypergraph]
 
       hypergraph match {
@@ -69,7 +68,7 @@ object Hypergraph {
 
   val cypherRead =
     """
-      | MATCH   (:User {email: userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: hypergraphID })
+      | MATCH   (:User {email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
       | RETURN  hg;
     """.stripMargin
 
@@ -80,7 +79,7 @@ object Hypergraph {
           "statement" -> cypherRead,
           "parameters" -> Json.obj(
             "userEmail" -> userEmail,
-            "id" -> hypergraphID
+            "hypergraphID" -> hypergraphID
           )
         )
       )
@@ -142,7 +141,7 @@ object Hypergraph {
 
   val cypherDelete =
     """
-      | MATCH           (:User { email: {userEmail} })-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: hypergraphID })
+      | MATCH           (:User { email: {userEmail} })-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
       | OPTIONAL MATCH  (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
       | DELETE          OWNS_HG, OWNS_HN, hn, hg;
     """.stripMargin
@@ -154,7 +153,7 @@ object Hypergraph {
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
             "userEmail" -> userEmail,
-            "id" -> hypergraphID
+            "hypergraphID" -> hypergraphID
           ),
           "includeStats" -> true
         )

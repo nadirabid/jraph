@@ -50,7 +50,7 @@ class HypergraphSpec extends WordSpec
   }
 
   "The Hypergraph model and companion object" should {
-    "create given a new unique Hypergraph model" in {
+    "create, find, and delete the given new unique Hypergraph model" in {
       val hypergraphModel = Hypergraph(hypergraphID, hypergraphName)
 
       val createResult = Hypergraph.create(userEmail, hypergraphModel)
@@ -59,27 +59,23 @@ class HypergraphSpec extends WordSpec
         opt.value.hypergraphID shouldBe hypergraphID
         opt.value.name shouldBe hypergraphName
       }
-    }
 
-    "find a Hypergraph model with the specified hypergraphID" in {
       val findResult = Hypergraph.read(userEmail, hypergraphID)
 
       whenReady(findResult) { opt =>
         opt.value.hypergraphID shouldBe hypergraphID
         opt.value.name shouldBe hypergraphName
       }
-    }
 
-    "delete a Hypergraph model of the specified hypergraphID" in {
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)
 
       whenReady(deleteResult) { res =>
         res shouldBe true
       }
 
-      val findResult = Hypergraph.read(userEmail, hypergraphID)
+      val findDeletedResult = Hypergraph.read(userEmail, hypergraphID)
 
-      whenReady(findResult) { opt =>
+      whenReady(findDeletedResult) { opt =>
         opt shouldBe None
       }
     }
