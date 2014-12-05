@@ -1,5 +1,8 @@
 package controllers
 
+import java.util.UUID
+import javax.inject.Inject
+
 import forms._
 
 import scala.concurrent.Future
@@ -9,9 +12,8 @@ import play.api.mvc._
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import models.{Hypergraph, User}
 
-import javax.inject.Inject
+import models.{Hypergraph, User}
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
@@ -23,7 +25,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
-  def hypergraph = SecuredAction { req =>
+  def hypergraph(hypergraphID: UUID) = SecuredAction { req =>
     Ok(views.html.graph.index())
   }
 
