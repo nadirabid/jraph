@@ -64,7 +64,7 @@ define([
   };
 
   Node.fetchAll = function () {
-    var xhr = util.getJSON('/hypernode')
+    var xhr = util.getJSON('hypernode')
         .then(function (response) {
           if (response.errors.length) {
             throw 'Unable to fetchNodes: ' + JSON.stringify(response.errors);
@@ -83,7 +83,7 @@ define([
 
     return util
         .ajax({
-          url: '/hypernode',
+          url: 'hypernode',
           type: 'PUT',
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify({ data: nodesJson })
@@ -96,7 +96,7 @@ define([
   Node.create = function(data) {
     return util
         .ajax({
-          url: '/hypernode',
+          url: 'hypernode',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
           data: JSON.stringify({ data: data })

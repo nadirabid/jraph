@@ -25,7 +25,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       | RETURN hn;
     """.stripMargin
 
-  def create = SecuredAction.async(parse.json) { req =>
+  def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val timestamp = System.currentTimeMillis
 
     val neo4jReq = Json.obj(
@@ -64,7 +64,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       | RETURN hn;
     """.stripMargin
 
-  def read(uuid: UUID) = SecuredAction.async { req =>
+  def read(hypergraphID: UUID, uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -93,7 +93,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       | RETURN hn;
     """.stripMargin
 
-  def readAll = SecuredAction.async { req =>
+  def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -125,7 +125,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       | RETURN hn;
     """.stripMargin
 
-  def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
+  def update(hypergraphID: UUID, uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -151,7 +151,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  def batchUpdate = SecuredAction.async(parse.json) { req =>
+  def batchUpdate(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val nodes = (req.body \ "data").as[Seq[JsObject]]
 
     val neo4jReq = Json.obj(
@@ -188,7 +188,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       | DELETE OWNS_HN, HL, hn;
     """.stripMargin
 
-  def delete(uuid: UUID) = SecuredAction.async(parse.json) { req =>
+  def delete(hypergraphID: UUID, uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(

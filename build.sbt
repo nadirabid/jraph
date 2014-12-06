@@ -16,4 +16,6 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "4.0.0-beta4"
 )
 
+play.PlayImport.PlayKeys.routesImport += "java.util.UUID"
+
 //MochaKeys.requires ++= Seq("./Setup.js")

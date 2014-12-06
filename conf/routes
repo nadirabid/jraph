@@ -2,37 +2,39 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
+
 # API
-GET           /                                @controllers.ApplicationController.index
-GET           /*path/                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
-GET           /signIn                          @controllers.ApplicationController.signIn
-GET           /signUp                          @controllers.ApplicationController.signUp
-GET           /signOut                         @controllers.ApplicationController.signOut
-GET           /test                            @controllers.ApplicationController.test
-GET           /graph/:hypergraphID             @controllers.ApplicationController.hypergraph(hypergraphID: java.util.UUID)
+GET           /                                                @controllers.ApplicationController.index
+GET           /*path/                                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
+GET           /signIn                                          @controllers.ApplicationController.signIn
+GET           /signUp                                          @controllers.ApplicationController.signUp
+GET           /signOut                                         @controllers.ApplicationController.signOut
+GET           /test                                            @controllers.ApplicationController.test
+GET           /graph/:hypergraphID                             @controllers.ApplicationController.hypergraph(hypergraphID: UUID)
 
-POST          /credentials                     @controllers.CredentialsAuthController.authenticate
+POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
 
-POST          /account/create                  @controllers.AccountController.create
-DELETE        /account/delete                  @controllers.AccountController.delete
+POST          /account/create                                  @controllers.AccountController.create
+DELETE        /account/delete                                  @controllers.AccountController.delete
 
-POST          /hypergraph                      @controllers.HypergraphController.create
-GET           /hypergraph/:hypergraphID        @controllers.HypergraphController.read(hypergraphID: java.util.UUID)
-GET           /hypergraph                      @controllers.HypergraphController.readAll
-DELETE        /hypergraph/:hypergraphID        @controllers.HypergraphController.delete(hypergraphID: java.util.UUID)
+POST          /hypergraph                                      @controllers.HypergraphController.create
+GET           /hypergraph/:hypergraphID                        @controllers.HypergraphController.read(hypergraphID: UUID)
+GET           /hypergraph                                      @controllers.HypergraphController.readAll
+DELETE        /hypergraph/:hypergraphID                        @controllers.HypergraphController.delete(hypergraphID: UUID)
 
-POST          /hypernode                       @controllers.HypernodeController.create
-GET           /hypernode/:uuid                 @controllers.HypernodeController.read(uuid: java.util.UUID)
-GET           /hypernode                       @controllers.HypernodeController.readAll
-PUT           /hypernode/:uuid                 @controllers.HypernodeController.update(uuid: java.util.UUID)
-PUT           /hypernode                       @controllers.HypernodeController.batchUpdate
-DELETE        /hypernode/:uuid                 @controllers.HypernodeController.delete(uuid: java.util.UUID)
+POST          /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.create(hypergraphID: UUID)
+GET           /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.read(hypergraphID: UUID, uuid: UUID)
+GET           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.readAll(hypergraphID: UUID)
+PUT           /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.update(hypergraphID: UUID, uuid: UUID)
+PUT           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.batchUpdate(hypergraphID: UUID)
+DELETE        /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.delete(hypergraphID: UUID, uuid: UUID)
 
-POST          /hyperlink                       @controllers.HyperlinkController.create
-GET           /hyperlink/:uuid                 @controllers.HyperlinkController.read(uuid: java.util.UUID)
-GET           /hyperlink                       @controllers.HyperlinkController.readAll
-PUT           /hyperlink/:uuid                 @controllers.HyperlinkController.update(uuid: java.util.UUID)
-DELETE        /hyperlink/:uuid                 @controllers.HyperlinkController.delete(uuid: java.util.UUID)
+POST          /hyperlink                                       @controllers.HyperlinkController.create
+GET           /hyperlink/:uuid                                 @controllers.HyperlinkController.read(uuid: UUID)
+GET           /hyperlink                                       @controllers.HyperlinkController.readAll
+PUT           /hyperlink/:uuid                                 @controllers.HyperlinkController.update(uuid: UUID)
+DELETE        /hyperlink/:uuid                                 @controllers.HyperlinkController.delete(uuid: UUID)
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /assets/*file                    controllers.Assets.at(path="/public", file)
+GET           /assets/*file                                    controllers.Assets.at(path="/public", file)
