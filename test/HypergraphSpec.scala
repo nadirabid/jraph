@@ -66,6 +66,13 @@ class HypergraphSpec extends WordSpec
         opt.value.name shouldBe hypergraphName
       }
 
+      val findAllResult = Hypergraph.readAll(userEmail)
+
+      whenReady(findAllResult) { opt =>
+        opt.value.size shouldBe 2 //including the default graph
+        opt.value.count(_.hypergraphID == hypergraphID) shouldBe 1
+      }
+
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)
 
       whenReady(deleteResult) { res =>

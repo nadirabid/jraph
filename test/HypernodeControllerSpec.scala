@@ -4,12 +4,14 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
-import models.User
+import models.{Hypergraph, User}
 import org.scalatest._
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
+
+import scala.concurrent.Await
 
 // By default the tests of a given ScalaTest Suite (WordSpec, FlatSpec, etc)
 // are run sequentially inferred from the order in which the tests are defined.
@@ -48,6 +50,8 @@ class HypernodeControllerSpec extends WordSpec
     "create, find, read, delete a new node given JSON data and user email" in {
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+
+      val defaultHypergraph = Hypergraph.readAll(userEmail).
 
       //
       // create hypernode

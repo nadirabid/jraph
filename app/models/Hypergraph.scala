@@ -28,8 +28,8 @@ object Hypergraph {
     """.stripMargin
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
-    (JsPath \ "id").read[UUID] and
-    (JsPath \ "name").read[String]
+    ((JsPath \ "row")(0) \ "id").read[UUID] and
+    ((JsPath \ "row")(0)\ "name").read[String]
   )(Hypergraph.apply _)
 
   def create(userEmail: String, hypergraph: Hypergraph): Future[Option[Hypergraph]] = {
@@ -57,7 +57,7 @@ object Hypergraph {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypergraph = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[Hypergraph]
+      val hypergraph = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypergraph]
 
       hypergraph match {
         case s: JsSuccess[Hypergraph] => Some(s.get)
@@ -94,7 +94,7 @@ object Hypergraph {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypergraph = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[Hypergraph]
+      val hypergraph = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypergraph]
 
       hypergraph match {
         case s: JsSuccess[Hypergraph] => Some(s.get)
@@ -130,7 +130,7 @@ object Hypergraph {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypergraphs = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row").validate[Seq[Hypergraph]]
+      val hypergraphs = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hypergraph]]
 
       hypergraphs match {
         case s: JsSuccess[Seq[Hypergraph]] => Some(s.get)
