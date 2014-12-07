@@ -1,19 +1,22 @@
 package utils.silhouette
 
 import com.google.inject.{AbstractModule, Provides}
+
 import com.mohiva.play.silhouette.api.services._
 import com.mohiva.play.silhouette.api.util._
 import com.mohiva.play.silhouette.api.{Environment, EventBus}
 import com.mohiva.play.silhouette.impl.authenticators._
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.providers._
-import com.mohiva.play.silhouette.impl.providers.credentials.hasher.BCryptPasswordHasher
 import com.mohiva.play.silhouette.impl.services._
 import com.mohiva.play.silhouette.impl.util._
+
 import models.User
 import models.daos._
 import models.services.{UserService, UserServiceImpl}
+
 import net.codingwell.scalaguice.ScalaModule
+
 import play.api.Play
 import play.api.Play.current
 
