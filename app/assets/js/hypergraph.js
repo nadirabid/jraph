@@ -1,6 +1,7 @@
 define([
     'lodash',
     'mousetrap',
+    'page',
     'vue',
     'util',
     'globals',
@@ -12,6 +13,7 @@ define([
 ], function (
     _,
     Mousetrap,
+    page,
     Vue,
     util,
     glob,
@@ -40,6 +42,10 @@ define([
     this.dragstart = util.noop;
     this.dragend = util.noop;
   }
+
+  page('/graph/:hypergraphID/', function(ctx) {
+    console.log('PAGE CALLED:', ctx);
+  });
 
   /*
    Graph view
@@ -824,7 +830,7 @@ define([
   navbarComponent.$mount('#navbar');
   app.$mount('#main');
 
-  util.when(Node.fetchAll(), Link.fetchAll())
+  util.when(Node.fetchAll(hypergraphID), Link.fetchAll())
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {

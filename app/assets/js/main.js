@@ -11,7 +11,8 @@
       q: 'dependencies/q',
       snap: 'dependencies/snap.svg',
       vue: 'dependencies/vue',
-      bootstrap: 'dependencies/bootstrap'
+      bootstrap: 'dependencies/bootstrap',
+      page: 'dependencies/page'
     }
   });
 

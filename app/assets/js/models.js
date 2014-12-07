@@ -63,8 +63,8 @@ define([
     return json;
   };
 
-  Node.fetchAll = function () {
-    var xhr = util.getJSON('hypernode')
+  Node.fetchAll = function (hypergraphID) {
+    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hypernode')
         .then(function (response) {
           if (response.errors.length) {
             throw 'Unable to fetchNodes: ' + JSON.stringify(response.errors);
@@ -76,14 +76,14 @@ define([
     return xhr;
   };
 
-  Node.update = function(nodes) {
+  Node.update = function(hypergraphID, nodes) {
     var nodesJson = _.map(nodes, function (node) {
       return Node.toJSON(node);
     });
 
     return util
         .ajax({
-          url: 'hypernode',
+          url: '/hypergraph/' + hypergraphID + '/hypernode',
           type: 'PUT',
           contentType: "application/json; charset=utf-8",
           data: JSON.stringify({ data: nodesJson })
@@ -93,10 +93,10 @@ define([
         });
   };
 
-  Node.create = function(data) {
+  Node.create = function(hypergraphID, data) {
     return util
         .ajax({
-          url: 'hypernode',
+          url: '/hypergraph/' + hypergraphID + '/hypernode',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
           data: JSON.stringify({ data: data })
