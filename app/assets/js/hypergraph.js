@@ -34,6 +34,8 @@ define([
   var nodesAry = [];
   var linksAry = [];
 
+  var hypergraphID = window.location.pathname.split('/')[2];
+
   function StateEventHandlers() {
     this.click = util.noop;
     this.mouseover = util.noop;
@@ -42,10 +44,6 @@ define([
     this.dragstart = util.noop;
     this.dragend = util.noop;
   }
-
-  page('/graph/:hypergraphID/', function(ctx) {
-    console.log('PAGE CALLED:', ctx);
-  });
 
   /*
    Graph view
