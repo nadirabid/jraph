@@ -4,14 +4,18 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
+
 import models.{Hypergraph, User}
+
 import org.scalatest._
 import org.scalatestplus.play._
+
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.libs.json._
 
 import scala.concurrent.Await
+import scala.concurrent.duration._
 
 // By default the tests of a given ScalaTest Suite (WordSpec, FlatSpec, etc)
 // are run sequentially inferred from the order in which the tests are defined.
@@ -51,7 +55,10 @@ class HypernodeControllerSpec extends WordSpec
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
 
-      val defaultHypergraph = Hypergraph.readAll(userEmail).
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
+        .find(_.name == "default").get
+
+      val baseUrl = s"/hypergraph/${defaultHypergraph.hypergraphID}/hypernode"
 
       //
       // create hypernode
@@ -64,7 +71,7 @@ class HypernodeControllerSpec extends WordSpec
         )
       )
 
-      val createRequest = FakeRequest(POST, "/hypernode")
+      val createRequest = FakeRequest(POST, baseUrl)
         .withJsonBody(createReqJson)
         .withAuthenticator(identity.loginInfo)
 
@@ -84,7 +91,7 @@ class HypernodeControllerSpec extends WordSpec
       // find hypernode
       //
 
-      val findRequest = FakeRequest(GET, "/hypernode/" + createUuidString)
+      val findRequest = FakeRequest(GET, s"$baseUrl/$createUuidString")
         .withAuthenticator(identity.loginInfo)
 
       val findResult = route(findRequest).get
@@ -104,7 +111,7 @@ class HypernodeControllerSpec extends WordSpec
         )
       )
 
-      val updateRequest = FakeRequest(PUT, "/hypernode/" + createUuidString)
+      val updateRequest = FakeRequest(PUT, s"$baseUrl/$createUuidString")
         .withJsonBody(updateReqJson)
         .withAuthenticator(identity.loginInfo)
 
@@ -124,7 +131,7 @@ class HypernodeControllerSpec extends WordSpec
 
       val deleteReqJson = Json.obj("email" -> userEmail)
 
-      val deleteReq = FakeRequest(DELETE, "/hypernode/" + createUuidString)
+      val deleteReq = FakeRequest(DELETE, s"$baseUrl/$createUuidString")
         .withJsonBody(deleteReqJson)
         .withAuthenticator(identity.loginInfo)
 
