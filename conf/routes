@@ -30,11 +30,11 @@ PUT           /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.Hype
 PUT           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.batchUpdate(hypergraphID: UUID)
 DELETE        /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.delete(hypergraphID: UUID, uuid: UUID)
 
-POST          /hyperlink                                       @controllers.HyperlinkController.create
-GET           /hyperlink/:uuid                                 @controllers.HyperlinkController.read(uuid: UUID)
-GET           /hyperlink                                       @controllers.HyperlinkController.readAll
-PUT           /hyperlink/:uuid                                 @controllers.HyperlinkController.update(uuid: UUID)
-DELETE        /hyperlink/:uuid                                 @controllers.HyperlinkController.delete(uuid: UUID)
+POST          /hypergraph/:hypergraphID/hyperlink              @controllers.HyperlinkController.create(hypergraphID: UUID)
+GET           /hypergraph/:hypergraphID/hyperlink/:uuid        @controllers.HyperlinkController.read(hypergraphID: UUID, uuid: UUID)
+GET           /hypergraph/:hypergraphID/hyperlink              @controllers.HyperlinkController.readAll(hypergraphID: UUID)
+PUT           /hypergraph/:hypergraphID/hyperlink/:uuid        @controllers.HyperlinkController.update(hypergraphID: UUID, uuid: UUID)
+DELETE        /hypergraph/:hypergraphID/hyperlink/:uuid        @controllers.HyperlinkController.delete(hypergraphID: UUID, uuid: UUID)
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /assets/*file                                    controllers.Assets.at(path="/public", file)

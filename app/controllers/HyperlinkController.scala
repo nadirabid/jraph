@@ -23,7 +23,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN HL;
     """.stripMargin
 
-  def create = SecuredAction.async(parse.json) { req =>
+  def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
     val targetId = UUID.fromString((req.body \ "targetId").as[String])
 
@@ -67,7 +67,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN HL;
     """.stripMargin
 
-  def read(uuid: UUID) = SecuredAction.async { req =>
+  def read(hypergraphID: UUID, uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -98,7 +98,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN HL;
     """.stripMargin
 
-  def readAll = SecuredAction.async { req =>
+  def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -130,7 +130,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | RETURN HL;
     """.stripMargin
 
-  def update(uuid: UUID) = SecuredAction.async(parse.json) { req =>
+  def update(hypergraphID: UUID, uuid: UUID) = SecuredAction.async(parse.json) { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
@@ -162,7 +162,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       | DELETE HL;
     """.stripMargin
 
-  def delete(uuid: UUID) = SecuredAction.async { req =>
+  def delete(hypergraphID: UUID, uuid: UUID) = SecuredAction.async { req =>
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(

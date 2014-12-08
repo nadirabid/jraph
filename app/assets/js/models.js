@@ -12,8 +12,8 @@ define([
     return row;
   };
 
-  Link.fetchAll = function () {
-    var xhr = util.getJSON('/hyperlink')
+  Link.fetchAll = function (hypergraphID) {
+    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
         .then(function (response) {
           var links = _(response.results[0].data)
               .uniq(function (datum) {

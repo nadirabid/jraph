@@ -828,7 +828,7 @@ define([
   navbarComponent.$mount('#navbar');
   app.$mount('#main');
 
-  util.when(Node.fetchAll(hypergraphID), Link.fetchAll())
+  util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {
