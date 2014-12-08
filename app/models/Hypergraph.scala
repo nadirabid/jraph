@@ -20,17 +20,17 @@ object Hypergraph {
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
+  implicit val hypergraphReads: Reads[Hypergraph] = (
+    ((JsPath \ "row")(0) \ "id").read[UUID] and
+    ((JsPath \ "row")(0)\ "name").read[String]
+  )(Hypergraph.apply _)
+
   val cypherCreate =
     """
       | MATCH   (u:User { email: {userEmail} })
       | CREATE  (u)-[:OWNS_HYPERGRAPH]->(hg:Hypergraph {hypergraphData})
       | RETURN  hg;
     """.stripMargin
-
-  implicit val hypergraphReads: Reads[Hypergraph] = (
-    ((JsPath \ "row")(0) \ "id").read[UUID] and
-    ((JsPath \ "row")(0)\ "name").read[String]
-  )(Hypergraph.apply _)
 
   def create(userEmail: String, hypergraph: Hypergraph): Future[Option[Hypergraph]] = {
     val neo4jReqJson = Json.obj(
