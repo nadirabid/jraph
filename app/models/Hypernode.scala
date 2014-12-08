@@ -125,8 +125,7 @@ object Hypernode {
     """.stripMargin
 
   def readAll(userEmail: String,
-              hypergraphID: UUID,
-              hypernodeID: UUID): Future[Option[Seq[Hypernode]]] = {
+              hypergraphID: UUID): Future[Option[Seq[Hypernode]]] = {
 
     val neo4jReqJson = Json.obj(
       "statements" -> Json.arr(
