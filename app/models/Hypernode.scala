@@ -25,7 +25,7 @@ object Hypernode {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   implicit val hypergraphReads: Reads[Hypernode] = (
-    ((JsPath \ "row")(0) \ "hypernodeID").read[UUID] and
+    ((JsPath \ "row")(0) \ "id").read[UUID] and
     ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
     ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
     ((JsPath \ "row")(0) \ "data").read[String]
@@ -33,7 +33,7 @@ object Hypernode {
 
   val cypherCreate =
     """
-      | MATCH (user:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} })
+      | MATCH (user:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
       | CREATE (hn:Hypernode {hn}), (hg)-[:OWNS_HYPERNODE]->(hn)
       | RETURN hn;
     """.stripMargin
@@ -42,7 +42,7 @@ object Hypernode {
              hypergraphID: UUID,
              hypernode: Hypernode): Future[Option[Hypernode]] = {
 
-    val neo4jReq = Json.obj(
+    val neo4jReqJson = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherCreate,
@@ -67,7 +67,7 @@ object Hypernode {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map { neo4jRes =>
+    holder.post(neo4jReqJson).map { neo4jRes =>
       val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypernode]
 
       hypernode match {

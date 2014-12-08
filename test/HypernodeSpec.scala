@@ -72,7 +72,7 @@ class HypernodeSpec extends WordSpec
 
       whenReady(createResult) { opt =>
         opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
-        Json.parse(opt.value.data) \ "p1" shouldBe "v1"
+        (Json.parse(opt.value.data) \ "p1").as[String] shouldBe "v1"
       }
 
       val findResult = Hypernode.read(
@@ -83,7 +83,7 @@ class HypernodeSpec extends WordSpec
 
       whenReady(findResult) { opt =>
         opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
-        Json.parse(opt.value.data) \ "p1" shouldBe "v1"
+        (Json.parse(opt.value.data) \ "p1").as[String] shouldBe "v1"
       }
 
       val findAllResult = Hypernode.readAll(userEmail, defaultHypergraph.hypergraphID)
