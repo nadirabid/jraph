@@ -78,12 +78,12 @@ class HypernodeControllerSpec extends WordSpec
       val createResult = route(createRequest).get
       status(createResult) shouldBe OK
 
-      val createUuidString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
+      val createUuidString = (contentAsJson(createResult) \ "id").as[String]
       val uuid = UUID.fromString(createUuidString)
 
       uuid.toString shouldEqual createUuidString
 
-      val createDataString = ((((contentAsJson(createResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "data").as[String]
+      val createDataString = (contentAsJson(createResult) \ "data").as[String]
       val createDataJson = Json.parse(createDataString)
       (createDataJson \ "p1").as[String] shouldBe "v1"
 
@@ -97,7 +97,7 @@ class HypernodeControllerSpec extends WordSpec
       val findResult = route(findRequest).get
       status(findResult) shouldBe OK
 
-      val findUuidString = ((((contentAsJson(findResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "id").as[String]
+      val findUuidString = (contentAsJson(findResult) \ "id").as[String]
 
       findUuidString shouldEqual createUuidString
 
@@ -118,7 +118,7 @@ class HypernodeControllerSpec extends WordSpec
       val updateResult = route(updateRequest).get
       status(updateResult) shouldBe OK
 
-      val updateDataString = ((((contentAsJson(updateResult) \ "results")(0) \ "data")(0) \ "row")(0) \ "data").as[String]
+      val updateDataString = (contentAsJson(updateResult) \ "data").as[String]
       val updateDataJson = Json.parse(updateDataString)
 
       // check the the data has property 'p2' and has removed 'p1'
@@ -138,8 +138,8 @@ class HypernodeControllerSpec extends WordSpec
       val deleteRes = route(deleteReq).get
       status(deleteRes) shouldBe OK
 
-      val nodesDeleted = ((contentAsJson(deleteRes) \ "results")(0) \ "stats" \ "nodes_deleted").as[Int]
-      nodesDeleted shouldBe 1
+      val nodesDeleted = contentAsJson(deleteRes).as[Boolean]
+      nodesDeleted shouldBe true
     }
   }
 }
