@@ -16,7 +16,7 @@ define([
     var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
         .then(function (response) {
           var links = _(response.results[0].data)
-              .uniq(function (datum) {
+              .uniq(function(datum) {
                 return datum.row[0].id;
               })
               .map(Link.parseJSON)
@@ -33,22 +33,19 @@ define([
   var Node = {};
 
   Node.parseJSON = function (datum) {
-    var row = datum.row[0];
-    row.data = JSON.parse(row.data || null);
+    datum.data = JSON.parse(datum.data || null);
 
-    var clientDisplay = row.data.clientDisplay;
+    var clientDisplay = datum.data.clientDisplay;
 
-    row.x = clientDisplay ? (clientDisplay.x || 0) : 0;
-    row.y = clientDisplay ? (clientDisplay.y || 0) : 0;
+    datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
+    datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
-    // need to specify px for d3 to play happy
-    // for reasons still unknown
-    row.px = row.x;
-    row.py = row.y;
+    datum.px = datum.x;
+    datum.py = datum.y;
 
-    row.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
+    datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
 
-    return row;
+    return datum;
   };
 
   Node.toJSON = function (node) {
@@ -66,11 +63,7 @@ define([
   Node.fetchAll = function (hypergraphID) {
     var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hypernode')
         .then(function (response) {
-          if (response.errors.length) {
-            throw 'Unable to fetchNodes: ' + JSON.stringify(response.errors);
-          }
-
-          return _.map(response.results[0].data, Node.parseJSON);
+          return _.map(response, Node.parseJSON);
         });
 
     return xhr;
@@ -89,7 +82,7 @@ define([
           data: JSON.stringify({ data: nodesJson })
         })
         .then(function(response) {
-          return Node.parseJSON(response.results[0].data[0]);
+          return Node.parseJSON(response);
         });
   };
 
@@ -102,7 +95,7 @@ define([
           data: JSON.stringify({ data: data })
         })
         .then(function(response) {
-          return Node.parseJSON(response.results[0].data[0]);
+          return Node.parseJSON(response);
         });
   };
 

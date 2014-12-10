@@ -102,6 +102,21 @@ class HypernodeControllerSpec extends WordSpec
       findUuidString shouldEqual createUuidString
 
       //
+      // findAll hypernode
+      //
+
+      val findAllRequest = FakeRequest(GET, baseUrl)
+        .withAuthenticator(identity.loginInfo)
+
+      val findAllResult = route(findAllRequest).get
+      status(findAllResult) shouldBe OK
+
+      val findAllResultSeq = contentAsJson(findAllResult).as[Seq[JsObject]]
+
+      findAllResultSeq.size shouldBe 1
+      findAllResultSeq.count(o => (o \ "id").as[UUID] == uuid) shouldBe 1
+
+      //
       // update hypernode
       //
 

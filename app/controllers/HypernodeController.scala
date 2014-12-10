@@ -51,7 +51,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
 
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypernode.readAll(req.identity.email, hypergraphID) map {
-      case Some(hypernodes) => Ok(Json.toJson(hypergraphID))
+      case Some(hypernodes) => Ok(Json.toJson(hypernodes))
       case None => ServiceUnavailable
     }
   }
