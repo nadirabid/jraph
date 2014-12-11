@@ -107,7 +107,7 @@ class HyperlinkSpec extends WordSpec
       }
 
       val hyperlinkUpdate = Hyperlink(
-        UUID.randomUUID(),
+        hyperlink.hyperlinkID,
         sourceNode.hypernodeID,
         targetNode.hypernodeID,
         DateTime.now,
