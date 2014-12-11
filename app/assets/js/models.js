@@ -13,23 +13,18 @@ define([
   };
 
   Link.parseJSON2 = function (datum) {
-    datum.data = JSON.parse()
+    return datum;
   };
 
   Link.fetchAll = function (hypergraphID) {
-    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
+    return util
+        .getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
         .then(function (response) {
-          var links = _(response.results[0].data)
-              .uniq(function(datum) {
-                return datum.row[0].id;
-              })
-              .map(Link.parseJSON)
+          return _(response)
+              .uniq(function(datum) { return datum.id; })
+              .map(Link.parseJSON2)
               .value();
-
-          return links;
         });
-
-    return xhr;
   };
 
   // Node Model

@@ -43,13 +43,15 @@ object Hyperlink {
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
+  // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
+
   implicit val hyperlinkReads: Reads[Hyperlink] = (
     ((JsPath \ "row")(0) \ "id").read[UUID] and
     ((JsPath \ "row")(0) \ "sourceId").read[UUID] and
     ((JsPath \ "row")(0) \ "targetId").read[UUID] and
     ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
     ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "data").read[String].map { ds => Json.parse(ds).as[JsObject] }
+    ((JsPath \ "row")(0) \ "data").readNullable[String].map(_ => JsObject(Seq("p1" -> JsString("v1")))) //TODO: well this shit aint right
   )(Hyperlink.apply _)
 
   val cypherCreate =
