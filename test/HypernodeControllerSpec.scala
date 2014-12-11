@@ -138,7 +138,10 @@ class HypernodeControllerSpec extends WordSpec
 
       // check the the data has property 'p2' and has removed 'p1'
       (updateDataJson \ "p2").as[String] shouldBe "v2"
-      an [JsResultException] should be thrownBy { (updateDataJson \ "p1").as[String] }
+
+      an [JsResultException] should be thrownBy {
+        (updateDataJson \ "p1").as[String]
+      }
 
       //
       // delete hypernode

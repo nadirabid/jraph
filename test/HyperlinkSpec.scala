@@ -5,14 +5,14 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
 
-import models.{User, Hypergraph, Hypernode}
+import models.{User, Hypergraph, Hypernode, Hyperlink}
 
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play._
 
 import org.joda.time._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResultException, Json}
 
 import play.api.test._
 import play.api.test.Helpers._
@@ -54,7 +54,102 @@ class HyperlinkSpec extends WordSpec
 
   "The Hyperlink model and companion object" should {
     "create, find, and delete the given new unique Hyperlink model" in {
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
+        .find(_.name == "default").get
 
+      val sourceNode = Hypernode(
+        UUID.randomUUID(),
+        DateTime.now,
+        DateTime.now,
+        Json.stringify(Json.obj("p1" -> "v1"))
+      )
+
+      val targetNode = Hypernode(
+        UUID.randomUUID(),
+        DateTime.now,
+        DateTime.now,
+        Json.stringify(Json.obj("p1" -> "v1"))
+      )
+
+      Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode)
+      Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode)
+
+      val hyperlink = Hyperlink(
+        UUID.randomUUID(),
+        sourceNode.hypernodeID,
+        targetNode.hypernodeID,
+        DateTime.now,
+        DateTime.now,
+        Json.obj("p1" -> "v1")
+      )
+
+      val createResult = Hyperlink.create(userEmail, defaultHypergraph.hypergraphID, hyperlink)
+
+      whenReady(createResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        (opt.value.data \ "p1").as[String] shouldBe "v1"
+      }
+
+      val findResult = Hyperlink.read(userEmail, defaultHypergraph.hypergraphID, hyperlink.hyperlinkID)
+
+      whenReady(findResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        (opt.value.data \ "p1").as[String] shouldBe "v1"
+      }
+
+      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.hypergraphID)
+
+      whenReady(findAllResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.count(_.hyperlinkID == hyperlink.hyperlinkID) shouldBe 1
+      }
+
+      val hyperlinkUpdate = Hyperlink(
+        UUID.randomUUID(),
+        sourceNode.hypernodeID,
+        targetNode.hypernodeID,
+        DateTime.now,
+        null,
+        Json.obj("p2" -> "v2")
+      )
+
+      val updateResult = Hyperlink.update(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlinkUpdate
+      )
+
+      whenReady(updateResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        (opt.value.data \ "p2").as[String] shouldBe "v2"
+
+        an [JsResultException] should be thrownBy {
+          (opt.value.data \ "p1").as[String]
+        }
+      }
+
+      val deleteResult = Hyperlink.delete(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlink.hyperlinkID
+      )
+
+      whenReady(deleteResult) { opt =>
+        opt shouldBe true
+      }
+
+      val deleteFindResult = Hyperlink.read(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlink.hyperlinkID
+      )
+
+      whenReady(deleteFindResult) { opt =>
+        opt shouldBe None
+      }
     }
   }
 }

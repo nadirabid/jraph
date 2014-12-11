@@ -12,7 +12,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play._
 
 import org.joda.time._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResultException, Json}
 
 import play.api.test._
 import play.api.test.Helpers._
@@ -105,6 +105,10 @@ class HypernodeSpec extends WordSpec
       whenReady(updateResult) { opt =>
         opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
         (Json.parse(opt.value.data) \ "p2").as[String] shouldBe "v2"
+
+        an [JsResultException] should be thrownBy {
+          (Json.parse(opt.value.data) \ "p1").as[String]
+        }
       }
 
       val batchUpdateModels = Seq(Hypernode(
@@ -117,7 +121,8 @@ class HypernodeSpec extends WordSpec
       val batchUpdateResult = Hypernode.batchUpdate(
         userEmail,
         defaultHypergraph.hypergraphID,
-        batchUpdateModels)
+        batchUpdateModels
+      )
 
       whenReady(batchUpdateResult) { opt =>
         opt.value.size shouldBe 1
