@@ -58,7 +58,7 @@ class HypernodeControllerSpec extends WordSpec
       val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
         .find(_.name == "default").get
 
-      val baseUrl = s"/hypergraph/${defaultHypergraph.hypergraphID}/hypernode"
+      val baseUrl = s"/hypergraph/${defaultHypergraph.id}/hypernode"
 
       //
       // create hypernode

@@ -25,7 +25,7 @@ object Hypernode {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   // TODO: refactor reads so we dont reindex down (__ \ "row")(0)
-  
+
   implicit val hypergraphReads: Reads[Hypernode] = (
     ((JsPath \ "row")(0) \ "id").read[UUID] and
     ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and

@@ -12,7 +12,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Hypergraph(
-  hypergraphID: UUID,
+  id: UUID,
   name: String
 )
 
@@ -40,7 +40,7 @@ object Hypergraph {
           "parameters" -> Json.obj(
             "userEmail" -> userEmail,
             "hypergraphData" -> Json.obj(
-              "id" -> hypergraph.hypergraphID,
+              "id" -> hypergraph.id,
               "name" -> hypergraph.name
             )
           )

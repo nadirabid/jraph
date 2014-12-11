@@ -55,14 +55,14 @@ class HypergraphSpec extends WordSpec
       val createResult = Hypergraph.create(userEmail, hypergraphModel)
 
       whenReady(createResult) { opt =>
-        opt.value.hypergraphID shouldBe hypergraphID
+        opt.value.id shouldBe hypergraphID
         opt.value.name shouldBe hypergraphName
       }
 
       val findResult = Hypergraph.read(userEmail, hypergraphID)
 
       whenReady(findResult) { opt =>
-        opt.value.hypergraphID shouldBe hypergraphID
+        opt.value.id shouldBe hypergraphID
         opt.value.name shouldBe hypergraphName
       }
 
@@ -70,7 +70,7 @@ class HypergraphSpec extends WordSpec
 
       whenReady(findAllResult) { opt =>
         opt.value.size shouldBe 2 //including the default graph
-        opt.value.count(_.hypergraphID == hypergraphID) shouldBe 1
+        opt.value.count(_.id == hypergraphID) shouldBe 1
       }
 
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)

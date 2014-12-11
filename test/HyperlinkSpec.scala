@@ -71,8 +71,8 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 200.millis)
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
@@ -83,7 +83,7 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      val createResult = Hyperlink.create(userEmail, defaultHypergraph.hypergraphID, hyperlink)
+      val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
 
       whenReady(createResult) { opt =>
         opt.isEmpty shouldBe false
@@ -91,7 +91,7 @@ class HyperlinkSpec extends WordSpec
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      val findResult = Hyperlink.read(userEmail, defaultHypergraph.hypergraphID, hyperlink.hyperlinkID)
+      val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.hyperlinkID)
 
       whenReady(findResult) { opt =>
         opt.isEmpty shouldBe false
@@ -99,7 +99,7 @@ class HyperlinkSpec extends WordSpec
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.hypergraphID)
+      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { opt =>
         opt.isEmpty shouldBe false
@@ -117,7 +117,7 @@ class HyperlinkSpec extends WordSpec
 
       val updateResult = Hyperlink.update(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlinkUpdate
       )
 
@@ -133,7 +133,7 @@ class HyperlinkSpec extends WordSpec
 
       val deleteResult = Hyperlink.delete(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlink.hyperlinkID
       )
 
@@ -143,7 +143,7 @@ class HyperlinkSpec extends WordSpec
 
       val deleteFindResult = Hyperlink.read(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlink.hyperlinkID
       )
 
@@ -170,8 +170,8 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 200.millis)
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
@@ -182,7 +182,7 @@ class HyperlinkSpec extends WordSpec
         None
       )
 
-      val createResult = Hyperlink.create(userEmail, defaultHypergraph.hypergraphID, hyperlink)
+      val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
 
       whenReady(createResult) { opt =>
         opt.isEmpty shouldBe false
@@ -190,7 +190,7 @@ class HyperlinkSpec extends WordSpec
         opt.value.data shouldBe None
       }
 
-      val findResult = Hyperlink.read(userEmail, defaultHypergraph.hypergraphID, hyperlink.hyperlinkID)
+      val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.hyperlinkID)
 
       whenReady(findResult) { opt =>
         opt.isEmpty shouldBe false
@@ -198,7 +198,7 @@ class HyperlinkSpec extends WordSpec
         opt.value.data shouldBe None
       }
 
-      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.hypergraphID)
+      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { opt =>
         opt.isEmpty shouldBe false
@@ -216,7 +216,7 @@ class HyperlinkSpec extends WordSpec
 
       val updateResult = Hyperlink.update(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlinkUpdate
       )
 
@@ -237,7 +237,7 @@ class HyperlinkSpec extends WordSpec
 
       val update2Result = Hyperlink.update(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlinkUpdate2
       )
 
@@ -249,7 +249,7 @@ class HyperlinkSpec extends WordSpec
 
       val deleteResult = Hyperlink.delete(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlink.hyperlinkID
       )
 
@@ -259,7 +259,7 @@ class HyperlinkSpec extends WordSpec
 
       val deleteFindResult = Hyperlink.read(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hyperlink.hyperlinkID
       )
 

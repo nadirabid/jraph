@@ -66,7 +66,7 @@ class HypernodeSpec extends WordSpec
 
       val createResult = Hypernode.create(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hypernodeModel
       )
 
@@ -77,7 +77,7 @@ class HypernodeSpec extends WordSpec
 
       val findResult = Hypernode.read(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hypernodeModel.hypernodeID
       )
 
@@ -86,7 +86,7 @@ class HypernodeSpec extends WordSpec
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      val findAllResult = Hypernode.readAll(userEmail, defaultHypergraph.hypergraphID)
+      val findAllResult = Hypernode.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { opt =>
         opt.value.size shouldBe 1
@@ -100,7 +100,7 @@ class HypernodeSpec extends WordSpec
         Some(Json.obj("p2" -> "v2"))
       )
 
-      val updateResult = Hypernode.update(userEmail, defaultHypergraph.hypergraphID, modelUpdate)
+      val updateResult = Hypernode.update(userEmail, defaultHypergraph.id, modelUpdate)
 
       whenReady(updateResult) { opt =>
         opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
@@ -120,7 +120,7 @@ class HypernodeSpec extends WordSpec
 
       val batchUpdateResult = Hypernode.batchUpdate(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         batchUpdateModels
       )
 
@@ -133,7 +133,7 @@ class HypernodeSpec extends WordSpec
 
       val deleteResult = Hypernode.delete(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hypernodeModel.hypernodeID
       )
 
@@ -143,7 +143,7 @@ class HypernodeSpec extends WordSpec
 
       val deleteFindResult = Hypernode.read(
         userEmail,
-        defaultHypergraph.hypergraphID,
+        defaultHypergraph.id,
         hypernodeModel.hypernodeID
       )
 
