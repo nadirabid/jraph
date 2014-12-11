@@ -39,6 +39,8 @@ case class Hyperlink(
 
 object Hyperlink {
 
+  // TODO: hyperlink queries do not use hypergraphID or userEmail currently, use them!
+
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   implicit val hyperlinkReads: Reads[Hyperlink] = (

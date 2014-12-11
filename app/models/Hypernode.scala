@@ -17,7 +17,7 @@ case class Hypernode(
   hypernodeID: UUID,
   updatedAt: DateTime,
   createdAt: DateTime,
-  data: String
+  data: String // TODO: store as JsObject instead of serialized string, makes for clearer and safer api
 )
 
 object Hypernode {
