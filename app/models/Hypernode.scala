@@ -17,7 +17,7 @@ case class Hypernode(
   hypernodeID: UUID,
   updatedAt: DateTime,
   createdAt: DateTime,
-  data: String // TODO: store as JsObject instead of serialized string, makes for clearer and safer api
+  data: Option[JsObject] // TODO: store as JsObject instead of serialized string, makes for clearer and safer api
 )
 
 object Hypernode {
@@ -28,7 +28,7 @@ object Hypernode {
     ((JsPath \ "row")(0) \ "id").read[UUID] and
     ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
     ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "data").read[String]
+    ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hypernode.apply _)
 
   val cypherCreate =
@@ -53,7 +53,7 @@ object Hypernode {
               "id" -> hypernode.hypernodeID,
               "createdAt" -> hypernode.createdAt.getMillis,
               "updatedAt" -> hypernode.updatedAt.getMillis,
-              "data" -> hypernode.data
+              "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
             )
           )
         )
@@ -174,7 +174,7 @@ object Hypernode {
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
             "hypernodeID" -> hypernode.hypernodeID,
-            "data" -> hypernode.data,
+            "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
             "updatedAt" -> hypernode.updatedAt.getMillis
           )
         )
@@ -209,7 +209,7 @@ object Hypernode {
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
             "hypernodeID" -> node.hypernodeID,
-            "data" -> node.data,
+            "data" -> Json.stringify(node.data.getOrElse(JsNull)),
             "updatedAt" -> node.updatedAt.getMillis
           )
         )

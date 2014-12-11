@@ -83,9 +83,7 @@ class HypernodeControllerSpec extends WordSpec
 
       uuid.toString shouldEqual createUuidString
 
-      val createDataString = (contentAsJson(createResult) \ "data").as[String]
-      val createDataJson = Json.parse(createDataString)
-      (createDataJson \ "p1").as[String] shouldBe "v1"
+      (contentAsJson(createResult) \ "data" \ "p1").as[String] shouldBe "v1"
 
       //
       // find hypernode
@@ -133,14 +131,13 @@ class HypernodeControllerSpec extends WordSpec
       val updateResult = route(updateRequest).get
       status(updateResult) shouldBe OK
 
-      val updateDataString = (contentAsJson(updateResult) \ "data").as[String]
-      val updateDataJson = Json.parse(updateDataString)
+      (contentAsJson(updateResult) \ "data" \ "p2").as[String] shouldBe "v2"
+
 
       // check the the data has property 'p2' and has removed 'p1'
-      (updateDataJson \ "p2").as[String] shouldBe "v2"
 
       an [JsResultException] should be thrownBy {
-        (updateDataJson \ "p1").as[String]
+        (contentAsJson(updateResult) \ "data" \ "p1").as[String]
       }
 
       //

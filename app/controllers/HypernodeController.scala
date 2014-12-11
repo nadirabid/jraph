@@ -33,7 +33,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       UUID.randomUUID(),
       DateTime.now,
       DateTime.now,
-      Json.stringify(req.body \ "data")
+      (req.body \ "data").asOpt[JsObject]
     )
 
     Hypernode.create(req.identity.email, hypergraphID, model) map {
@@ -61,7 +61,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       hypernodeID,
       DateTime.now,
       null,
-      Json.stringify(req.body \ "data")
+      (req.body \ "data").asOpt[JsObject]
     )
 
     Hypernode.update(req.identity.email, hypergraphID, model) map {
@@ -72,7 +72,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
 
   def batchUpdate(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val models = (req.body \ "data").as[Seq[JsObject]] map { json =>
-      Hypernode((json \ "id").as[UUID], DateTime.now, null, Json.stringify(json \ "data"))
+      Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").asOpt[JsObject])
     }
 
     Hypernode.batchUpdate(req.identity.email, hypergraphID, models) map {

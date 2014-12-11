@@ -61,14 +61,14 @@ class HyperlinkSpec extends WordSpec
         UUID.randomUUID(),
         DateTime.now,
         DateTime.now,
-        Json.stringify(Json.obj("p1" -> "v1"))
+        Some(Json.obj("p1" -> "v1"))
       )
 
       val targetNode = Hypernode(
         UUID.randomUUID(),
         DateTime.now,
         DateTime.now,
-        Json.stringify(Json.obj("p1" -> "v1"))
+        Some(Json.obj("p1" -> "v1"))
       )
 
       Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
@@ -160,14 +160,14 @@ class HyperlinkSpec extends WordSpec
         UUID.randomUUID(),
         DateTime.now,
         DateTime.now,
-        Json.stringify(Json.obj("p1" -> "v1"))
+        Some(Json.obj("p1" -> "v1"))
       )
 
       val targetNode = Hypernode(
         UUID.randomUUID(),
         DateTime.now,
         DateTime.now,
-        Json.stringify(Json.obj("p1" -> "v1"))
+        Some(Json.obj("p1" -> "v1"))
       )
 
       Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
