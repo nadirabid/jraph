@@ -19,7 +19,7 @@ case class Hyperlink(
   targetID: UUID,
   updatedAt: DateTime,
   createdAt: DateTime,
-  data: JsObject
+  data: Option[JsObject]
 )
 
 /**
@@ -46,12 +46,12 @@ object Hyperlink {
   // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
 
   implicit val hyperlinkReads: Reads[Hyperlink] = (
-    ((JsPath \ "row")(0) \ "id").read[UUID] and
-    ((JsPath \ "row")(0) \ "sourceId").read[UUID] and
-    ((JsPath \ "row")(0) \ "targetId").read[UUID] and
-    ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "data").readNullable[String].map(_ => JsObject(Seq("p1" -> JsString("v1")))) //TODO: well this shit aint right
+    ((__ \ "row")(0) \ "id").read[UUID] and
+    ((__ \ "row")(0) \ "sourceId").read[UUID] and
+    ((__ \ "row")(0) \ "targetId").read[UUID] and
+    ((__ \ "row")(0) \ "updatedAt").read[DateTime] and
+    ((__ \ "row")(0) \ "createdAt").read[DateTime] and
+    ((__ \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hyperlink.apply _)
 
   val cypherCreate =
@@ -78,7 +78,7 @@ object Hyperlink {
               "updatedAt" -> hyperlink.updatedAt.getMillis,
               "sourceId" -> hyperlink.sourceID,
               "targetId" -> hyperlink.targetID,
-              "data" -> Json.stringify(hyperlink.data)
+              "data" -> Json.stringify(hyperlink.data.getOrElse(JsNull))
             )
           )
         )
@@ -171,6 +171,7 @@ object Hyperlink {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
+
       val hyperlinks = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hyperlink]]
 
       hyperlinks match {
@@ -197,7 +198,7 @@ object Hyperlink {
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
             "hyperlinkID" -> hyperlink.hyperlinkID,
-            "data" -> Json.stringify(hyperlink.data),
+            "data" -> Json.stringify(hyperlink.data.getOrElse(JsNull)),
             "updatedAt" -> hyperlink.updatedAt.getMillis
           )
         )

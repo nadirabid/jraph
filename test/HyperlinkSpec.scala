@@ -80,7 +80,7 @@ class HyperlinkSpec extends WordSpec
         targetNode.hypernodeID,
         DateTime.now,
         DateTime.now,
-        Json.obj("p1" -> "v1")
+        Some(Json.obj("p1" -> "v1"))
       )
 
       val createResult = Hyperlink.create(userEmail, defaultHypergraph.hypergraphID, hyperlink)
@@ -88,7 +88,7 @@ class HyperlinkSpec extends WordSpec
       whenReady(createResult) { opt =>
         opt.isEmpty shouldBe false
         opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
-        (opt.value.data \ "p1").as[String] shouldBe "v1"
+        (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
       val findResult = Hyperlink.read(userEmail, defaultHypergraph.hypergraphID, hyperlink.hyperlinkID)
@@ -96,7 +96,7 @@ class HyperlinkSpec extends WordSpec
       whenReady(findResult) { opt =>
         opt.isEmpty shouldBe false
         opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
-        (opt.value.data \ "p1").as[String] shouldBe "v1"
+        (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
       val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.hypergraphID)
@@ -112,7 +112,7 @@ class HyperlinkSpec extends WordSpec
         targetNode.hypernodeID,
         DateTime.now,
         null,
-        Json.obj("p2" -> "v2")
+        Some(Json.obj("p2" -> "v2"))
       )
 
       val updateResult = Hyperlink.update(
@@ -124,10 +124,10 @@ class HyperlinkSpec extends WordSpec
       whenReady(updateResult) { opt =>
         opt.isEmpty shouldBe false
         opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
-        (opt.value.data \ "p2").as[String] shouldBe "v2"
+        (opt.value.data.get \ "p2").as[String] shouldBe "v2"
 
         an [JsResultException] should be thrownBy {
-          (opt.value.data \ "p1").as[String]
+          (opt.value.data.get \ "p1").as[String]
         }
       }
 

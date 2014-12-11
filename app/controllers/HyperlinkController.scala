@@ -39,7 +39,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "targetId").as[UUID],
       DateTime.now,
       DateTime.now,
-      Json.parse((req.body \ "data").as[String]).as[JsObject]
+      (req.body \ "data").asOpt[JsObject]
     )
 
     Hyperlink.create(req.identity.email, hypergraphID, model) map {
@@ -70,7 +70,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "targetId").as[UUID],
       DateTime.now,
       null,
-      Json.parse((req.body \ "data").as[String]).as[JsObject]
+      (req.body \ "data").asOpt[JsObject]
     )
 
     Hyperlink.update(req.identity.email, hypergraphID, model) map {
