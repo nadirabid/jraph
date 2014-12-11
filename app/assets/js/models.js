@@ -32,8 +32,6 @@ define([
   var Node = {};
 
   Node.parseJSON = function (datum) {
-    datum.data = JSON.parse(datum.data || null);
-
     var clientDisplay = datum.data.clientDisplay;
 
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
