@@ -93,6 +93,39 @@ class HypernodeSpec extends WordSpec
         opt.value.count(_.hypernodeID == hypernodeModel.hypernodeID) shouldBe 1
       }
 
+      val modelUpdate = Hypernode(
+        hypernodeModel.hypernodeID,
+        DateTime.now,
+        null,
+        Json.stringify(Json.obj("p2" -> "v2"))
+      )
+
+      val updateResult = Hypernode.update(userEmail, defaultHypergraph.hypergraphID, modelUpdate)
+
+      whenReady(updateResult) { opt =>
+        opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
+        (Json.parse(opt.value.data) \ "p2").as[String] shouldBe "v2"
+      }
+
+      val batchUpdateModels = Seq(Hypernode(
+        hypernodeModel.hypernodeID,
+        DateTime.now,
+        null,
+        Json.stringify(Json.obj("p3" -> "v3"))
+      ))
+
+      val batchUpdateResult = Hypernode.batchUpdate(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        batchUpdateModels)
+
+      whenReady(batchUpdateResult) { opt =>
+        opt.value.size shouldBe 1
+
+        val batchUpdatedNode = opt.value.find(_.hypernodeID == hypernodeModel.hypernodeID)
+        (Json.parse(batchUpdatedNode.get.data) \ "p3").as[String] shouldBe "v3"
+      }
+
       val deleteResult = Hypernode.delete(
         userEmail,
         defaultHypergraph.hypergraphID,
