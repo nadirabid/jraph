@@ -6,13 +6,6 @@ define([
   var Link = {};
 
   Link.parseJSON = function (datum) {
-    var row = datum.row[0];
-    row.data = JSON.parse(row.data || null);
-
-    return row;
-  };
-
-  Link.parseJSON2 = function (datum) {
     return datum;
   };
 
@@ -22,7 +15,7 @@ define([
         .then(function (response) {
           return _(response)
               .uniq(function(datum) { return datum.id; })
-              .map(Link.parseJSON2)
+              .map(Link.parseJSON)
               .value();
         });
   };
