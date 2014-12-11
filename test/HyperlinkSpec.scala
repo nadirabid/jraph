@@ -76,8 +76,8 @@ class HyperlinkSpec extends WordSpec
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
-        sourceNode.hypernodeID,
-        targetNode.hypernodeID,
+        sourceNode.id,
+        targetNode.id,
         DateTime.now,
         DateTime.now,
         Some(Json.obj("p1" -> "v1"))
@@ -108,8 +108,8 @@ class HyperlinkSpec extends WordSpec
 
       val hyperlinkUpdate = Hyperlink(
         hyperlink.hyperlinkID,
-        sourceNode.hypernodeID,
-        targetNode.hypernodeID,
+        sourceNode.id,
+        targetNode.id,
         DateTime.now,
         null,
         Some(Json.obj("p2" -> "v2"))
@@ -175,8 +175,8 @@ class HyperlinkSpec extends WordSpec
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
-        sourceNode.hypernodeID,
-        targetNode.hypernodeID,
+        sourceNode.id,
+        targetNode.id,
         DateTime.now,
         DateTime.now,
         None
@@ -207,8 +207,8 @@ class HyperlinkSpec extends WordSpec
 
       val hyperlinkUpdate = Hyperlink(
         hyperlink.hyperlinkID,
-        sourceNode.hypernodeID,
-        targetNode.hypernodeID,
+        sourceNode.id,
+        targetNode.id,
         DateTime.now,
         null,
         Some(Json.obj("p2" -> "v2"))
@@ -228,8 +228,8 @@ class HyperlinkSpec extends WordSpec
 
       val hyperlinkUpdate2 = Hyperlink(
         hyperlink.hyperlinkID,
-        sourceNode.hypernodeID,
-        targetNode.hypernodeID,
+        sourceNode.id,
+        targetNode.id,
         DateTime.now,
         null,
         None

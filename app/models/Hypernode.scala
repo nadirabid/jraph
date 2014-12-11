@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time._
 
 case class Hypernode(
-  hypernodeID: UUID,
+  id: UUID,
   updatedAt: DateTime,
   createdAt: DateTime,
   data: Option[JsObject]
@@ -52,7 +52,7 @@ object Hypernode {
             "userEmail" -> userEmail,
             "hypergraphID" -> hypergraphID,
             "hn" -> Json.obj(
-              "id" -> hypernode.hypernodeID,
+              "id" -> hypernode.id,
               "createdAt" -> hypernode.createdAt.getMillis,
               "updatedAt" -> hypernode.updatedAt.getMillis,
               "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
@@ -175,7 +175,7 @@ object Hypernode {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
-            "hypernodeID" -> hypernode.hypernodeID,
+            "hypernodeID" -> hypernode.id,
             "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
             "updatedAt" -> hypernode.updatedAt.getMillis
           )
@@ -210,7 +210,7 @@ object Hypernode {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
-            "hypernodeID" -> node.hypernodeID,
+            "hypernodeID" -> node.id,
             "data" -> Json.stringify(node.data.getOrElse(JsNull)),
             "updatedAt" -> node.updatedAt.getMillis
           )

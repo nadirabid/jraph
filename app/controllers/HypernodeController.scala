@@ -21,7 +21,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
 
   implicit val hypernodeWrites = new Writes[Hypernode] {
     def writes(hypernode: Hypernode) = Json.obj(
-      "id" -> hypernode.hypernodeID,
+      "id" -> hypernode.id,
       "createdAt" -> hypernode.createdAt.getMillis,
       "updatedAt" -> hypernode.updatedAt.getMillis,
       "data" -> hypernode.data

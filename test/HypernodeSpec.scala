@@ -71,18 +71,18 @@ class HypernodeSpec extends WordSpec
       )
 
       whenReady(createResult) { opt =>
-        opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
+        opt.value.id shouldBe hypernodeModel.id
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
       val findResult = Hypernode.read(
         userEmail,
         defaultHypergraph.id,
-        hypernodeModel.hypernodeID
+        hypernodeModel.id
       )
 
       whenReady(findResult) { opt =>
-        opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
+        opt.value.id shouldBe hypernodeModel.id
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
@@ -90,11 +90,11 @@ class HypernodeSpec extends WordSpec
 
       whenReady(findAllResult) { opt =>
         opt.value.size shouldBe 1
-        opt.value.count(_.hypernodeID == hypernodeModel.hypernodeID) shouldBe 1
+        opt.value.count(_.id == hypernodeModel.id) shouldBe 1
       }
 
       val modelUpdate = Hypernode(
-        hypernodeModel.hypernodeID,
+        hypernodeModel.id,
         DateTime.now,
         null,
         Some(Json.obj("p2" -> "v2"))
@@ -103,7 +103,7 @@ class HypernodeSpec extends WordSpec
       val updateResult = Hypernode.update(userEmail, defaultHypergraph.id, modelUpdate)
 
       whenReady(updateResult) { opt =>
-        opt.value.hypernodeID shouldBe hypernodeModel.hypernodeID
+        opt.value.id shouldBe hypernodeModel.id
         (opt.value.data.get \ "p2").as[String] shouldBe "v2"
 
         an [JsResultException] should be thrownBy {
@@ -112,7 +112,7 @@ class HypernodeSpec extends WordSpec
       }
 
       val batchUpdateModels = Seq(Hypernode(
-        hypernodeModel.hypernodeID,
+        hypernodeModel.id,
         DateTime.now,
         null,
         Some(Json.obj("p3" -> "v3"))
@@ -127,14 +127,14 @@ class HypernodeSpec extends WordSpec
       whenReady(batchUpdateResult) { opt =>
         opt.value.size shouldBe 1
 
-        val batchUpdatedNode = opt.value.find(_.hypernodeID == hypernodeModel.hypernodeID)
+        val batchUpdatedNode = opt.value.find(_.id == hypernodeModel.id)
         (batchUpdatedNode.value.data.get \ "p3").as[String] shouldBe "v3"
       }
 
       val deleteResult = Hypernode.delete(
         userEmail,
         defaultHypergraph.id,
-        hypernodeModel.hypernodeID
+        hypernodeModel.id
       )
 
       whenReady(deleteResult) { opt =>
@@ -144,7 +144,7 @@ class HypernodeSpec extends WordSpec
       val deleteFindResult = Hypernode.read(
         userEmail,
         defaultHypergraph.id,
-        hypernodeModel.hypernodeID
+        hypernodeModel.id
       )
 
       whenReady(deleteFindResult) { opt =>
