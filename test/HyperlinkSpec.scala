@@ -151,5 +151,121 @@ class HyperlinkSpec extends WordSpec
         opt shouldBe None
       }
     }
+
+    "create, find, and delete the given new unique Hyperlink model with a null data property" in {
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
+        .find(_.name == "default").get
+
+      val sourceNode = Hypernode(
+        UUID.randomUUID(),
+        DateTime.now,
+        DateTime.now,
+        Json.stringify(Json.obj("p1" -> "v1"))
+      )
+
+      val targetNode = Hypernode(
+        UUID.randomUUID(),
+        DateTime.now,
+        DateTime.now,
+        Json.stringify(Json.obj("p1" -> "v1"))
+      )
+
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode), 200.millis)
+
+      val hyperlink = Hyperlink(
+        UUID.randomUUID(),
+        sourceNode.hypernodeID,
+        targetNode.hypernodeID,
+        DateTime.now,
+        DateTime.now,
+        None
+      )
+
+      val createResult = Hyperlink.create(userEmail, defaultHypergraph.hypergraphID, hyperlink)
+
+      whenReady(createResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        opt.value.data shouldBe None
+      }
+
+      val findResult = Hyperlink.read(userEmail, defaultHypergraph.hypergraphID, hyperlink.hyperlinkID)
+
+      whenReady(findResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        opt.value.data shouldBe None
+      }
+
+      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.hypergraphID)
+
+      whenReady(findAllResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.count(_.hyperlinkID == hyperlink.hyperlinkID) shouldBe 1
+      }
+
+      val hyperlinkUpdate = Hyperlink(
+        hyperlink.hyperlinkID,
+        sourceNode.hypernodeID,
+        targetNode.hypernodeID,
+        DateTime.now,
+        null,
+        Some(Json.obj("p2" -> "v2"))
+      )
+
+      val updateResult = Hyperlink.update(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlinkUpdate
+      )
+
+      whenReady(updateResult) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        (opt.value.data.get \ "p2").as[String] shouldBe "v2"
+      }
+
+      val hyperlinkUpdate2 = Hyperlink(
+        hyperlink.hyperlinkID,
+        sourceNode.hypernodeID,
+        targetNode.hypernodeID,
+        DateTime.now,
+        null,
+        None
+      )
+
+      val update2Result = Hyperlink.update(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlinkUpdate2
+      )
+
+      whenReady(update2Result) { opt =>
+        opt.isEmpty shouldBe false
+        opt.value.hyperlinkID shouldBe hyperlink.hyperlinkID
+        opt.value.data shouldBe None
+      }
+
+      val deleteResult = Hyperlink.delete(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlink.hyperlinkID
+      )
+
+      whenReady(deleteResult) { opt =>
+        opt shouldBe true
+      }
+
+      val deleteFindResult = Hyperlink.read(
+        userEmail,
+        defaultHypergraph.hypergraphID,
+        hyperlink.hyperlinkID
+      )
+
+      whenReady(deleteFindResult) { opt =>
+        opt shouldBe None
+      }
+    }
   }
 }
