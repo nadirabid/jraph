@@ -210,7 +210,7 @@ object Hyperlink {
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
-      
+
       hyperlink match {
         case s: JsSuccess[Hyperlink] => Some(s.get)
         case e: JsError => None
