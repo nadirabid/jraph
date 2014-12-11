@@ -47,7 +47,7 @@ object Hyperlink {
     ((JsPath \ "row")(0) \ "targetId").read[UUID] and
     ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
     ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "data").read[JsObject]
+    ((JsPath \ "row")(0) \ "data").read[String].map { ds => Json.parse(ds).as[JsObject] }
   )(Hyperlink.apply _)
 
   val cypherCreate =
@@ -69,9 +69,9 @@ object Hyperlink {
             "sourceId" -> hyperlink.sourceID,
             "targetId" -> hyperlink.targetID,
             "hyperlinkData" -> Json.obj(
-              "id" -> UUID.randomUUID(),
-              "createdAt" -> hyperlink.createdAt,
-              "updatedAt" -> hyperlink.updatedAt,
+              "id" -> hyperlink.hyperlinkID,
+              "createdAt" -> hyperlink.createdAt.getMillis,
+              "updatedAt" -> hyperlink.updatedAt.getMillis,
               "sourceId" -> hyperlink.sourceID,
               "targetId" -> hyperlink.targetID,
               "data" -> Json.stringify(hyperlink.data)
@@ -89,9 +89,9 @@ object Hyperlink {
       )
 
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
+      val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
 
-      hypernode match {
+      hyperlink match {
         case s: JsSuccess[Hyperlink] => Some(s.get)
         case e: JsError => None
       }
@@ -127,9 +127,9 @@ object Hyperlink {
       )
 
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
+      val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
 
-      hypernode match {
+      hyperlink match {
         case s: JsSuccess[Hyperlink] => Some(s.get)
         case e: JsError => None
       }
@@ -167,9 +167,9 @@ object Hyperlink {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernodes = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hyperlink]]
+      val hyperlinks = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hyperlink]]
 
-      hypernodes match {
+      hyperlinks match {
         case s: JsSuccess[Seq[Hyperlink]] => Some(s.get)
         case e: JsError => None
       }
@@ -194,7 +194,7 @@ object Hyperlink {
           "parameters" -> Json.obj(
             "hyperlinkID" -> hyperlink.hyperlinkID,
             "data" -> Json.stringify(hyperlink.data),
-            "updatedAt" -> hyperlink.updatedAt
+            "updatedAt" -> hyperlink.updatedAt.getMillis
           )
         )
       )
@@ -209,9 +209,9 @@ object Hyperlink {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
+      val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
 
-      hypernode match {
+      hyperlink match {
         case s: JsSuccess[Hyperlink] => Some(s.get)
         case e: JsError => None
       }

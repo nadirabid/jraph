@@ -71,8 +71,8 @@ class HyperlinkSpec extends WordSpec
         Json.stringify(Json.obj("p1" -> "v1"))
       )
 
-      Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode)
-      Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, sourceNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.hypergraphID, targetNode), 200.millis)
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
