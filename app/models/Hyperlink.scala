@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import org.joda.time._
 
 case class Hyperlink(
-  hyperlinkID: UUID,
+  id: UUID,
   sourceID: UUID,
   targetID: UUID,
   updatedAt: DateTime,
@@ -73,7 +73,7 @@ object Hyperlink {
             "sourceId" -> hyperlink.sourceID,
             "targetId" -> hyperlink.targetID,
             "hyperlinkData" -> Json.obj(
-              "id" -> hyperlink.hyperlinkID,
+              "id" -> hyperlink.id,
               "createdAt" -> hyperlink.createdAt.getMillis,
               "updatedAt" -> hyperlink.updatedAt.getMillis,
               "sourceId" -> hyperlink.sourceID,
@@ -197,7 +197,7 @@ object Hyperlink {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
-            "hyperlinkID" -> hyperlink.hyperlinkID,
+            "hyperlinkID" -> hyperlink.id,
             "data" -> Json.stringify(hyperlink.data.getOrElse(JsNull)),
             "updatedAt" -> hyperlink.updatedAt.getMillis
           )

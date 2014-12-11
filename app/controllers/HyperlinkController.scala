@@ -21,7 +21,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
   //TODO: change api from using "xId" to "xID"
   implicit val hyperlinkWrites = new Writes[Hyperlink] {
     def writes(hyperlink: Hyperlink) = Json.obj(
-      "id" -> hyperlink.hyperlinkID,
+      "id" -> hyperlink.id,
       "sourceId" -> hyperlink.sourceID,
       "targetId" -> hyperlink.targetID,
       "updatedAt" -> hyperlink.updatedAt.getMillis,
