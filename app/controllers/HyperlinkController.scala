@@ -1,188 +1,88 @@
 package controllers
 
+import java.util.UUID
+
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import models.User
+
+import models.{ User, Hyperlink }
+import org.joda.time.DateTime
+
+import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import play.api.Play.current
-import play.api.libs.json._
-import play.api.libs.ws.WS
-import java.util.UUID
+import scala.concurrent.Future
 
 class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  val cypherCreate =
-    """
-      | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
-      | CREATE UNIQUE (source)-[HL:HYPERLINK {hyperlinkData}]->(target)
-      | RETURN HL;
-    """.stripMargin
+  implicit val hyperlinkWrites = new Writes[Hyperlink] {
+    def writes(hyperlink: Hyperlink) = Json.obj(
+      "id" -> hyperlink.hyperlinkID,
+      "sourceId" -> hyperlink.sourceID,
+      "targetId" -> hyperlink.targetID,
+      "updatedAt" -> hyperlink.updatedAt.getMillis,
+      "createdAt" -> hyperlink.createdAt.getMillis,
+      "data" -> hyperlink.data
+    )
+  }
 
   def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
-    val sourceId = UUID.fromString((req.body \ "sourceId").as[String])
-    val targetId = UUID.fromString((req.body \ "targetId").as[String])
+    Future.successful(Ok)
 
-    val timestamp = System.currentTimeMillis
-
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherCreate,
-          "parameters" -> Json.obj(
-            "sourceId" -> sourceId,
-            "targetId" -> targetId,
-            "hyperlinkData" -> Json.obj(
-              "id" -> UUID.randomUUID(),
-              "createdAt" -> timestamp,
-              "updatedAt" -> timestamp,
-              "sourceId" -> sourceId,
-              "targetId" -> targetId,
-              "data" -> Json.stringify(req.body \ "data")
-            )
-          )
-        )
-      )
+    val model = Hyperlink(
+      UUID.randomUUID(),
+      (req.body \ "sourceId").as[UUID],
+      (req.body \ "targetId").as[UUID],
+      DateTime.now,
+      DateTime.now,
+      Json.parse((req.body \ "data").as[String]).as[JsObject]
     )
 
-    val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      Ok(neo4jRes.json)
+    Hyperlink.create(req.identity.email, hypergraphID, model) map {
+      case Some(hyperlink) => Ok(Json.toJson(hyperlink))
+      case None => ServiceUnavailable
     }
   }
 
-  val cypherRead =
-    """
-      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | RETURN HL;
-    """.stripMargin
-
-  def read(hypergraphID: UUID, uuid: UUID) = SecuredAction.async { req =>
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherRead,
-          "parameters" -> Json.obj(
-            "uuid" -> uuid
-          )
-        )
-      )
-    )
-
-    val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      Ok(neo4jRes.json)
+  def read(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction.async { req =>
+    Hyperlink.read(req.identity.email, hypergraphID, hyperlinkID) map {
+      case Some(hyperlink) => Ok(Json.toJson(hyperlink))
+      case None => ServiceUnavailable
     }
   }
-
-  val cypherReadAll =
-    """
-      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { name: {hypergraphName} })
-      | MATCH (hg)-[:OWNS_HYPERNODE]->(:Hypernode)-[HL:HYPERLINK]->(:Hypernode)
-      | RETURN HL;
-    """.stripMargin
 
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherReadAll,
-          "parameters" -> Json.obj(
-            "hypergraphName" -> "default",
-            "userEmail" -> req.identity.email
-          )
-        )
-      )
-    )
-
-    val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      Ok(neo4jRes.json)
+    Hyperlink.readAll(req.identity.email, hypergraphID) map {
+      case Some(hyperlinks) => Ok(Json.toJson(hyperlinks))
+      case None => ServiceUnavailable
     }
   }
 
-  val cypherUpdate =
-    """
-      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]->(:Hypernode)
-      | SET HL.data = {data}, HL.updatedAt = {updatedAt}
-      | RETURN HL;
-    """.stripMargin
-
-  def update(hypergraphID: UUID, uuid: UUID) = SecuredAction.async(parse.json) { req =>
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherUpdate,
-          "parameters" -> Json.obj(
-            "uuid" -> uuid,
-            "data" -> Json.stringify(req.body \ "data"),
-            "updatedAt" -> System.currentTimeMillis
-          )
-        )
-      )
+  def update(hypergraphID: UUID,
+             hyperlinkID: UUID) = SecuredAction.async(parse.json) { req =>
+    val model = Hyperlink(
+      hyperlinkID,
+      (req.body \ "sourceId").as[UUID],
+      (req.body \ "targetId").as[UUID],
+      DateTime.now,
+      null,
+      Json.parse((req.body \ "data").as[String]).as[JsObject]
     )
 
-    val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      Ok(neo4jRes.json)
+    Hyperlink.update(req.identity.email, hypergraphID, model) map {
+      case Some(hyperlink) => Ok(Json.toJson(hyperlink))
+      case None => ServiceUnavailable
     }
   }
 
-  val cypherDelete =
-    """
-      | MATCH (:Hypernode)-[HL:HYPERLINK { id: {uuid} }]-(:Hypernode)
-      | DELETE HL;
-    """.stripMargin
-
-  def delete(hypergraphID: UUID, uuid: UUID) = SecuredAction.async { req =>
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherDelete,
-          "parameters" -> Json.obj(
-            "uuid" -> uuid
-          )
-        )
-      )
-    )
-
-    val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      Ok(neo4jRes.json)
+  def delete(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction.async { req =>
+    Hyperlink.delete(req.identity.email, hypergraphID, hyperlinkID) map {
+      case true => Ok(Json.toJson(true))
+      case false => ServiceUnavailable
     }
   }
+
 }

@@ -105,7 +105,7 @@ object Hyperlink {
     """.stripMargin
 
   def read(userEmail: String,
-           hypernodeID: UUID,
+           hypergraphID: UUID,
            hyperlinkID: UUID): Future[Option[Hyperlink]] = {
 
     val neo4jReqJson = Json.obj(

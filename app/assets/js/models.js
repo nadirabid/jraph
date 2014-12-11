@@ -12,6 +12,10 @@ define([
     return row;
   };
 
+  Link.parseJSON2 = function (datum) {
+    datum.data = JSON.parse()
+  };
+
   Link.fetchAll = function (hypergraphID) {
     var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
         .then(function (response) {
