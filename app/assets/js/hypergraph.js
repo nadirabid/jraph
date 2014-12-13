@@ -65,8 +65,7 @@ define([
     methods: {
 
       mousemove: function (e) {
-        this.target = util.transformPointFromClientToEl(
-            e.clientX, e.clientY, this.$el);
+        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
       }
 
     },
@@ -75,9 +74,7 @@ define([
 
       'hook:attached': function () {
         this.source = this.linkSource;
-
-        this.target = util.transformPointFromClientToEl(
-            mouse.x, mouse.y, this.$el);
+        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
 
         this._mousemove = this.mousemove.bind(this);
         util.on('mousemove', this._mousemove);
@@ -94,66 +91,6 @@ define([
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
-
-    // shift viewport to center node
-    this.click = function (e) {
-      if (e.defaultPrevented) { //check if dragged
-        return;
-      }
-
-      var xgraph = ctx.$parent;
-
-      var minX = xgraph.minX;
-      var minY = xgraph.minY;
-
-      var p = util.transformPointFromViewportToEl(
-          (xgraph.width / 2),
-          (xgraph.height / 2),
-          ctx.$el);
-
-      var dx = p.x - ctx.x,
-          dy = p.y - ctx.y;
-
-      var iX = d3.interpolateRound(minX, minX - dx),
-          iY = d3.interpolateRound(minY, minY - dy);
-
-      var animDuration = 250;
-      var ease = d3.ease('quad');
-
-      d3.timer(function (elapsed) {
-        var t = elapsed / animDuration;
-        var easedT = ease(t);
-
-        xgraph.minX = iX(easedT);
-        xgraph.minY = iY(easedT);
-
-        return t > 1;
-      });
-
-      ctx.fixed = true;
-      ctx.menu = false;
-      ctx.radius += 0.5;
-      ctx.labelDistance += 12;
-
-      state.nodeState = 'disabled';
-
-      ctx.state.$layout.resume();
-
-      ctx.$dispatch('showNodeData', ctx.$data);
-
-      Mousetrap.bind('esc', function () {
-        state.nodeState = 'initial';
-
-        ctx.fixed = false;
-        ctx.radius -= 0.5;
-        ctx.labelDistance -= 12;
-
-        Mousetrap.unbind('esc');
-
-        ctx.$dispatch('hideNodeData');
-      });
-    };
-
     //show menu
     this.mouseover = function () {
       if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
@@ -163,7 +100,6 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
-      ctx.menu = true;
 
       //move node to front to make sure menu is not
       //hidden by overlapping elements
@@ -181,7 +117,6 @@ define([
       }
 
       ctx.fixed = false;
-      ctx.menu = false;
     };
 
     //drag node
@@ -221,15 +156,14 @@ define([
       ctx.menu = true;
 
       util.animationFrame(function() {
-        ctx.$el.nearestViewportElement
-            .style.setProperty('cursor', 'auto');
+        ctx.$el.nearestViewportElement.style.setProperty('cursor', 'auto');
       });
     };
   });
 
   var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
     //select node target
-    this.mouseover = function (e) {
+    this.mouseover = function () {
       if (ctx.id == mouse.data.source.id) {
         return;
       }
@@ -316,6 +250,18 @@ define([
       };
     },
 
+    computed: {
+
+      nodeTranslate: function() {
+        return 'translate(' + this.x + ',' + this.y + ')';
+      },
+
+      labelTranslate: function() {
+        return 'translate(' + this.labelX + ',' + this.labelY + ')';
+      }
+
+    },
+
     methods: {
 
       updateLable: function () {
@@ -341,8 +287,6 @@ define([
 
         this.labelX = tX + shiftX;
         this.labelY = tY + shiftY;
-        this.labelTranslate = 'translate(' + this.labelX + ',' + this.labelY + ')';
-        this.nodeTranslate = 'translate(' + this.x + ',' + this.y + ')';
       },
 
       setLinkSource: function (e) {
@@ -363,16 +307,13 @@ define([
         mouse.data.source = this;
 
         var ghostLink = this.$.ghostLink = new GhostLinkComponent({
-          data: {
-            linkSource: this
-          }
+          data: { linkSource: this }
         }).$mount();
 
-        var dynamicContentEl = this.$parent.$el
-            .querySelector('.dynamic-content');
+        var dynamicContent = this.$parent.$$.dynamicContent;
 
         util.animationFrame(function() {
-          ghostLink.$appendTo(dynamicContentEl);
+          ghostLink.$appendTo(dynamicContent);
         });
       },
 
@@ -429,10 +370,7 @@ define([
       },
 
       'hook:ready': function () {
-        this.$$.nodeLabel = this.$el.querySelector('.node-label');
-        this.$$.nodeCircle = this.$el.querySelector('.node-circle');
-
-        var $nodeGroup = util(this.$el.querySelector('.node-group'));
+        var $nodeGroup = util(this.$$.nodeCircle);
 
         $nodeGroup.on('click', this.click.bind(this));
         $nodeGroup.on('mouseover', this.mouseover.bind(this));
@@ -526,8 +464,7 @@ define([
         this.target_y = target.py = target.y;
 
         util.animationFrame(function() {
-          self.$el.nearestViewportElement
-              .style.setProperty('cursor', 'move');
+          self.$el.nearestViewportElement.style.setProperty('cursor', 'move');
         });
       },
 
@@ -559,8 +496,7 @@ define([
               .classList
               .remove('hover');
 
-          self.$el.nearestViewportElement
-              .style.setProperty('cursor', 'auto');
+          self.$el.nearestViewportElement.style.setProperty('cursor', 'auto');
         });
       }
 
@@ -568,13 +504,10 @@ define([
 
     events: {
 
-      'hook:created': function() {
-        this.state = this.$parent.state;
-      },
-
       'hook:ready': function () {
+        this.state = this.$parent.state;
+
         var $g = util(this.$el);
-        console.log(this.$el);
         $g.on('mouseover', this.freezePosition.bind(this));
         $g.on('mouseout', this.releasePosition.bind(this));
         $g.on('dragstart', this.dragstart.bind(this));
@@ -648,8 +581,7 @@ define([
         this._pMinY = this.minY;
 
         util.animationFrame(function() {
-          self.$el
-              .style.setProperty('cursor', 'move');
+          self.$el.style.setProperty('cursor', 'move');
         });
       },
 
@@ -670,8 +602,7 @@ define([
         var self = this;
 
         util.animationFrame(function() {
-          self.$el
-              .style.setProperty('cursor', 'auto');
+          self.$el.style.setProperty('cursor', 'auto');
         });
       },
 
@@ -791,21 +722,11 @@ define([
 
         window.addEventListener('resize', this.resize.bind(this));
 
-        /*
-        window.addEventListener(
-            'contextmenu',
-            this.contextMenu.bind(this));
-        */
-      },
-
-      'hook:compiled': function () {
         var $svg = util(this.$el);
         $svg.on('dragstart', this.panStart.bind(this));
         $svg.on('drag', this.pan.bind(this));
         $svg.on('dragend', this.panEnd.bind(this));
-      },
 
-      'hook:ready': function () {
         this.resize();
       }
 

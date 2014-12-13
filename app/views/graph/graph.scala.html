@@ -20,7 +20,7 @@
   </defs>
 
   <!-- Dynamic Content -->
-  <g class="dynamic-content"></g>
+  <g class="dynamic-content" v-el="dynamicContent"></g>
 
   <!-- Links -->
   <x-link v-repeat="links"></x-link>
@@ -40,10 +40,8 @@
 
 <template id="graph.node">
   <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
-    <g class="node-group">
-      <circle class="node-circle" v-attr="r:radius + 'em'"></circle>
-    </g>
-    <text class="node-label" text-anchor="middle" v-attr="transform: labelTranslate">
+    <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
+    <text class="node-label" text-anchor="middle" v-attr="transform: labelTranslate" v-el="nodeLabel">
       Label {{$index}}
     </text>
   </g>
