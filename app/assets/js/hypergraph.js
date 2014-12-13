@@ -572,8 +572,9 @@ define([
         this.state = this.$parent.state;
       },
 
-      'hook:compiled': function () {
+      'hook:ready': function () {
         var $g = util(this.$el);
+        console.log(this.$el);
         $g.on('mouseover', this.freezePosition.bind(this));
         $g.on('mouseout', this.releasePosition.bind(this));
         $g.on('dragstart', this.dragstart.bind(this));

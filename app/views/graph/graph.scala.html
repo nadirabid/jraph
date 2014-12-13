@@ -1,4 +1,5 @@
 <svg class="disable-user-selection" id="graph" v-attr="viewBox:viewBox">
+  <!-- Definitions -->
   <defs>
     <marker id="def-marker-arrow"
             markerWidth="2"
@@ -18,6 +19,7 @@
     </marker>
   </defs>
 
+  <!-- Dynamic Content -->
   <g class="dynamic-content"></g>
 
   <!-- Links -->
@@ -28,10 +30,12 @@
 </svg>
 
 <template id="graph.link">
-  <line class="link" v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-  <line class="marker-arrow"
-        marker-end="url(#def-marker-arrow)"
-        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+  <g class="enable-pointer-events">
+    <line class="link" v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+    <line class="marker-arrow"
+          marker-end="url(#def-marker-arrow)"
+          v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+  </g>
 </template>
 
 <template id="graph.node">
