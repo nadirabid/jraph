@@ -154,6 +154,7 @@ define([
         this.$$.textElement = this.$el.querySelector('.node-menu-item-label');
         this.label = this.$$.textElement.textContent.trim();
 
+        console.log(this.$parent);
         this.$parent.buttonVms.push(this);
       },
 

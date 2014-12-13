@@ -17,41 +17,33 @@
       <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
     </marker>
   </defs>
+
   <g class="dynamic-content"></g>
+
   <!-- Links -->
-  <g v-component="x-link" v-repeat="links">
-    <line class="link" v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-    <line class="marker-arrow"
-          marker-end="url(#def-marker-arrow)"
-          v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-  </g>
+  <x-link v-repeat="links"></x-link>
+
   <!-- Nodes -->
-  <g class="node enable-pointer-events"
-     v-attr="id: id, transform:'translate('+x+','+y+')'"
-     v-component="x-node"
-     v-repeat="nodes">
+  <x-node v-repeat="nodes"></x-node>
+</svg>
+
+<template id="graph.link">
+  <line class="link" v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+  <line class="marker-arrow"
+        marker-end="url(#def-marker-arrow)"
+        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+</template>
+
+<template id="graph.node">
+  <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
     <g class="node-group">
-      <g v-if="menu">
-        <x-radial-menu>
-          <x-radial-button v-on="click:setLinkSource">link</x-radial-button>
-          <x-radial-button v-on="click:deleteNode($event, id)">delete</x-radial-button>
-        </x-radial-menu>
-      </g>
-      <circle class="node-circle" v-attr="r:(radius + 'em')"></circle>
+      <circle class="node-circle" v-attr="r:radius + 'em'"></circle>
     </g>
-    <text class="node-label enable-pointer-events"
-          text-anchor="middle"
-          contenteditable="true"
-          v-attr="transform:'translate('+labelX+','+labelY+')'"
-          v-if="!menu">
+    <text class="node-label" text-anchor="middle" v-attr="transform: labelTranslate">
       Label {{$index}}
     </text>
   </g>
-  <x-radial-menu v-attr="transform:'translate('+cmX+','+cmY+')'" v-if="displayContextMenu">
-    <x-radial-button>create node</x-radial-button>
-    <x-radial-button>calculate force</x-radial-button>
-  </x-radial-menu>
-</svg>
+</template>
 
 @views.html.components.radial.menu()
 @views.html.components.radial.button()

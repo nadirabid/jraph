@@ -297,6 +297,12 @@ define([
 
   Vue.component('x-node', {
 
+    inherit: true,
+
+    replace: true,
+
+    template: document.getElementById('graph.node').innerHTML,
+
     data: function () {
       return {
         menu: false,
@@ -304,6 +310,8 @@ define([
         radius: 1.5,
         labelX: 0,
         labelY: 0,
+        labelTranslate: 'translate(0, 0)',
+        nodeTranslate: 'translate(0, 0)',
         fixed: false //d3.force doesn't pick it up if not explicitly linked
       };
     },
@@ -333,6 +341,8 @@ define([
 
         this.labelX = tX + shiftX;
         this.labelY = tY + shiftY;
+        this.labelTranslate = 'translate(' + this.labelX + ',' + this.labelY + ')';
+        this.nodeTranslate = 'translate(' + this.x + ',' + this.y + ')';
       },
 
       setLinkSource: function (e) {
@@ -444,6 +454,10 @@ define([
   });
 
   Vue.component('x-link', {
+
+    replace: true,
+
+    template: document.getElementById('graph.link').innerHTML,
 
     methods: {
 
@@ -570,6 +584,8 @@ define([
     }
 
   });
+
+  //refer to this for Vue.js update http://jsfiddle.net/ff7cz0b4/4/
 
   var GraphComponent = Vue.extend({
 
@@ -752,12 +768,6 @@ define([
       'hook:created': function () {
         var layout = this.state.$layout;
 
-        layout.on('end', function () {
-          _.defer(function () {
-            //Node.update(nodesAry);
-          });
-        });
-
         // TODO: unwatch when component is destroyed
 
         this.$watch('state.nodes', function (value, mutation) {
@@ -778,9 +788,7 @@ define([
           layout.start();
         }, false, true);
 
-        window.addEventListener(
-            'resize',
-            this.resize.bind(this));
+        window.addEventListener('resize', this.resize.bind(this));
 
         /*
         window.addEventListener(
