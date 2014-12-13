@@ -721,7 +721,9 @@ define([
         }, false, true);
 
         window.addEventListener('resize', this.resize.bind(this));
+      },
 
+      'hook:ready': function() {
         var $svg = util(this.$el);
         $svg.on('dragstart', this.panStart.bind(this));
         $svg.on('drag', this.pan.bind(this));
