@@ -5,13 +5,17 @@
         {{layout}} <span class="caret"></span>
       </a>
       <ul class="dropdown-menu" role="menu">
-
         <li><a href="#" v-on="click:setLayout('Static')">Static</a></li>
         <li><a href="#" v-on="click:setLayout('Force Directed')">Force Directed</a></li>
       </ul>
     </li>
   </ul>
   <ul class="nav navbar-nav navbar-right">
-    <li><a href="#">Username</a></li>
+    <li>
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username</a>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="@routes.ApplicationController.signOut()">Logout</a></li>
+      </ul>
+    </li>
   </ul>
 </div>
