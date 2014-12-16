@@ -10,11 +10,7 @@ import org.joda.time.DateTime
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.Play.current
 import play.api.libs.json._
-import play.api.libs.ws.WS
-
-import scala.concurrent.Future
 
 class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
