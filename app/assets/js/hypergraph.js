@@ -659,24 +659,25 @@ define([
       },
 
       contextMenu: function (e) {
-        var self = this;
-
-        if (e.target != this.$el) {
-          return;
-        }
+        if (e.target != this.$el) return;
 
         e.preventDefault();
 
-        this.displayContextMenu = true;
+        var contextMenuEl = document.getElementById('contextMenu');
 
-        var p = util.transformPointFromClientToEl(
-            e.clientX, e.clientY, this.$el);
+        contextMenuEl.classList.remove('hidden');
+        contextMenuEl.classList.add('show');
 
-        this.cmX = p.x;
-        this.cmY = p.y;
+        var p = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
+
+        contextMenuEl.style.position = 'absolute';
+        contextMenuEl.style.top = p.y + 'px';
+        contextMenuEl.style.left = p.x + 'px';
 
         var closeContextMenu = function () {
-          self.displayContextMenu = false;
+          contextMenuEl.classList.add('hidden');
+          contextMenuEl.classList.remove('show');
+
           window.removeEventListener('click', closeContextMenu);
         };
 
@@ -703,18 +704,14 @@ define([
         // TODO: unwatch when component is destroyed
 
         this.$watch('state.nodes', function (value, mutation) {
-          if (!mutation) {
-            return;
-          }
+          if (!mutation) return;
 
           layout.force.nodes(value);
           layout.start();
         }, false, true);
 
         this.$watch('state.links', function (value, mutation) {
-          if (!mutation) {
-            return;
-          }
+          if (!mutation) return;
 
           layout.force.links(value);
           layout.start();
@@ -728,6 +725,8 @@ define([
         $svg.on('dragstart', this.panStart.bind(this));
         $svg.on('drag', this.pan.bind(this));
         $svg.on('dragend', this.panEnd.bind(this));
+
+        this.$el.addEventListener('contextmenu', this.contextMenu.bind(this));
 
         this.resize();
       }
@@ -744,15 +743,11 @@ define([
 
   var graphComponent = new GraphComponent({
     parent: app,
-    data: {
-      state: state
-    }
+    data: { state: state }
   });
 
   var navbarComponent = new NavbarComponent({
-    data: {
-      state: state
-    }
+    data: { state: state }
   });
 
   //mount in reverse order so that parents are properly assigned
