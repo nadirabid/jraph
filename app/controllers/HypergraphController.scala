@@ -8,9 +8,8 @@ import models.{Hypergraph, User}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.Play.current
 import play.api.libs.json._
-import play.api.libs.ws.WS
+
 import java.util.UUID
 
 // TODO: make sure we sanitize the Cypher queries for there user specified parameters
