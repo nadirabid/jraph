@@ -496,7 +496,9 @@ define([
               .classList
               .remove('hover');
 
-          self.$el.nearestViewportElement.style.setProperty('cursor', 'auto');
+          self.$el.nearestViewportElement
+              .style
+              .setProperty('cursor', 'auto');
         });
       }
 
@@ -518,8 +520,6 @@ define([
     }
 
   });
-
-  //refer to this for Vue.js update http://jsfiddle.net/ff7cz0b4/4/
 
   var GraphComponent = Vue.extend({
 
@@ -668,11 +668,9 @@ define([
         contextMenuEl.classList.remove('hidden');
         contextMenuEl.classList.add('show');
 
-        var p = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
-
         contextMenuEl.style.position = 'absolute';
-        contextMenuEl.style.top = p.y + 'px';
-        contextMenuEl.style.left = p.x + 'px';
+        contextMenuEl.style.top = e.clientY + 'px';
+        contextMenuEl.style.left = e.clientX + 'px';
 
         var closeContextMenu = function () {
           contextMenuEl.classList.add('hidden');

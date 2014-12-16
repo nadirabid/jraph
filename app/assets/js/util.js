@@ -176,7 +176,7 @@ define([
     function transformPointFromViewportToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement || el;
 
-      var ctm = viewportEl.getCTM().inverse(0);
+      var ctm = viewportEl.getCTM().inverse();
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
 
