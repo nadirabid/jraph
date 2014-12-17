@@ -719,10 +719,10 @@ define([
         this.$.contextMenu = new ContextMenu({
           methods: {
             addNode: function(e) {
-              Node.create(hypergraphID, { clientDisplay: { x: e.clientX, y: e.clientY } })
-                  .done(function(node) {
-                    self.nodes.push(node);
-                  });
+              var p = util.transformPointFromClientToEl(e.clientX, e.clientY, self.$el);
+
+              Node.create(hypergraphID, { clientDisplay: { x: p.x, y: p.y } })
+                  .done(function(node) { self.nodes.push(node); });
             }
           }
         });
