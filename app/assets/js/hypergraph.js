@@ -709,12 +709,24 @@ define([
       },
 
       'hook:ready': function() {
+        var self = this;
+
         var $svg = util(this.$el);
         $svg.on('dragstart', this.panStart.bind(this));
         $svg.on('drag', this.pan.bind(this));
         $svg.on('dragend', this.panEnd.bind(this));
 
-        this.$.contextMenu = new ContextMenu();
+        this.$.contextMenu = new ContextMenu({
+          methods: {
+            addNode: function(e) {
+              Node.create(hypergraphID, { clientDisplay: { x: e.clientX, y: e.clientY } })
+                  .done(function(node) {
+                    self.nodes.push(node);
+                  });
+            }
+          }
+        });
+
         this.$.contextMenu.$mount('#contextMenu');
 
         this.resize();
@@ -725,8 +737,16 @@ define([
   });
 
   var ContextMenu = Vue.extend({
+
+    data: function() {
+      return { x: 0, y: 0 };
+    },
+
     methods: {
       show: function(x, y) {
+        this.x = x;
+        this.y = y;
+
         var $el = this.$el;
 
         $el.classList.add('show');
@@ -743,6 +763,7 @@ define([
         $el.classList.remove('show');
       }
     }
+
   });
 
   /*
@@ -757,7 +778,6 @@ define([
     data: { state: state }
   });
 
-  //mount in reverse order so that parents are properly assigned
   graphComponent.$mount('#graph');
   navbarComponent.$mount('#navbar');
 

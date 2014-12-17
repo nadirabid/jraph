@@ -30,7 +30,7 @@
 </svg>
 
 <ul id="contextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-  <li role="presentation"><a role="menutime" tabindex="-1">Add Node</a></li>
+  <li role="presentation" v-on="click:addNode"><a role="menutime" tabindex="-1">Add Node</a></li>
 </ul>
 
 <template id="graph.link">
