@@ -1,4 +1,4 @@
-<svg class="disable-user-selection" id="graph" v-attr="viewBox:viewBox">
+<svg class="disable-user-selection" id="graph" v-attr="viewBox:viewBox" v-on="contextmenu:contextMenu">
   <!-- Definitions -->
   <defs>
     <marker id="def-marker-arrow"
@@ -35,7 +35,8 @@
 
 <template id="graph.link">
   <g class="enable-pointer-events">
-    <line class="link" v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+    <line class="link"
+          v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
     <line class="marker-arrow"
           marker-end="url(#def-marker-arrow)"
           v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>

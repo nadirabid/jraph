@@ -532,9 +532,7 @@ define([
         minX: 0,
         minY: 0,
         cmX: 0,
-        cmY: 0,
-        displayContextMenu: false,
-        enableForceLayout: true
+        cmY: 0
       };
     },
 
@@ -663,19 +661,11 @@ define([
 
         e.preventDefault();
 
-        var contextMenuEl = document.getElementById('contextMenu');
-
-        contextMenuEl.classList.remove('hidden');
-        contextMenuEl.classList.add('show');
-
-        contextMenuEl.style.position = 'absolute';
-        contextMenuEl.style.top = e.clientY + 'px';
-        contextMenuEl.style.left = e.clientX + 'px';
+        var contextMenu = this.$.contextMenu;
+        contextMenu.show(e.clientX, e.clientY);
 
         var closeContextMenu = function () {
-          contextMenuEl.classList.add('hidden');
-          contextMenuEl.classList.remove('show');
-
+          contextMenu.hide();
           window.removeEventListener('click', closeContextMenu);
         };
 
@@ -724,7 +714,8 @@ define([
         $svg.on('drag', this.pan.bind(this));
         $svg.on('dragend', this.panEnd.bind(this));
 
-        this.$el.addEventListener('contextmenu', this.contextMenu.bind(this));
+        this.$.contextMenu = new ContextMenu();
+        this.$.contextMenu.$mount('#contextMenu');
 
         this.resize();
       }
@@ -733,14 +724,32 @@ define([
 
   });
 
+  var ContextMenu = Vue.extend({
+    methods: {
+      show: function(x, y) {
+        var $el = this.$el;
+
+        $el.classList.add('show');
+        $el.classList.remove('hidden');
+
+        $el.style.left = x + 'px';
+        $el.style.top = y + 'px';
+        $el.style.position = 'absolute';
+      },
+      hide: function() {
+        var $el = this.$el;
+
+        $el.classList.add('hidden');
+        $el.classList.remove('show');
+      }
+    }
+  });
+
   /*
    Main application code
    */
 
-  var app = new Vue(); // don't know what this is for anymore
-
   var graphComponent = new GraphComponent({
-    parent: app,
     data: { state: state }
   });
 
@@ -751,7 +760,6 @@ define([
   //mount in reverse order so that parents are properly assigned
   graphComponent.$mount('#graph');
   navbarComponent.$mount('#navbar');
-  app.$mount('#main');
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
@@ -772,11 +780,5 @@ define([
         graphComponent.$add('nodes', nodes);
         graphComponent.$add('links', links);
         graphComponent.$emit('data', nodes, links);
-
-        app.$add('nodes', nodes);
-        app.$add('links', links);
-        app.$broadcast('data', nodes, links);
       });
-
-  return app;
 });
