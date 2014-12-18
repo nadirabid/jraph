@@ -23,10 +23,10 @@
   <g class="dynamic-content" v-el="dynamicContent"></g>
 
   <!-- Links -->
-  <x-link v-repeat="links"></x-link>
+  <x-link v-repeat="links" track-by="id"></x-link>
 
   <!-- Nodes -->
-  <x-node v-repeat="nodes"></x-node>
+  <x-node v-repeat="nodes" track-by="id"></x-node>
 </svg>
 
 <ul id="contextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
