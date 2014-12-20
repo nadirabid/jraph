@@ -1,15 +1,10 @@
 @layout("Data Visualization") {
   <div id="all">
     <nav  id="nav" class="navbar navbar-default">
-    @views.html.graph.navbar()
+      @views.html.graph.navbar()
     </nav>
     <main id="main">
-      <div class="graph-container">
       @views.html.graph.graph()
-      </div>
-      <div class="sidebar-container">
-      @views.html.graph.sidebar()
-      </div>
     </main>
   </div>
 }

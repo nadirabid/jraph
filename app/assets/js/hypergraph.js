@@ -7,9 +7,7 @@ define([
     'globals',
     'models',
     'state',
-    'navbar',
-    'components',
-    'sidebar'
+    'navbar'
 ], function (
     _,
     Mousetrap,
@@ -21,6 +19,8 @@ define([
     State,
     NavbarComponent) {
   'use strict';
+
+  Vue.config.debug = true;
 
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
@@ -391,6 +391,24 @@ define([
 
   });
 
+  Vue.component('x-node-create-form', {
+
+    template: '#node.create.form',
+
+    methods: {
+
+      addText: function() {},
+
+      addPhone: function() {},
+
+      addEmail: function() {},
+
+      addLink: function() {}
+
+    }
+
+  });
+
   Vue.component('x-link', {
 
     replace: true,
@@ -464,7 +482,9 @@ define([
         this.target_y = target.py = target.y;
 
         util.animationFrame(function() {
-          self.$el.nearestViewportElement.style.setProperty('cursor', 'move');
+          self.$el.nearestViewportElement
+              .style
+              .setProperty('cursor', 'move');
         });
       },
 
@@ -736,6 +756,18 @@ define([
 
   });
 
+  Vue.component('x-sidebar', {
+
+    replace: true,
+
+    template: '#sidebar',
+
+    data: function() {
+      return { };
+    }
+
+  });
+
   var ContextMenu = Vue.extend({
 
     data: function() {
@@ -770,16 +802,14 @@ define([
    Main application code
    */
 
-  var graphComponent = new GraphComponent({
-    data: { state: state }
-  });
-
-  var navbarComponent = new NavbarComponent({
-    data: { state: state }
-  });
-
+  var graphComponent = new GraphComponent({ data: { state: state } });
   graphComponent.$mount('#graph');
+
+  var navbarComponent = new NavbarComponent({ data: { state: state } });
   navbarComponent.$mount('#navbar');
+
+  var main = new Vue({});
+  main.$mount('#main');
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
