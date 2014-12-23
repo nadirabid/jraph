@@ -391,24 +391,6 @@ define([
 
   });
 
-  Vue.component('x-node-create-form', {
-
-    template: '#node.create.form',
-
-    methods: {
-
-      addText: function() {},
-
-      addPhone: function() {},
-
-      addEmail: function() {},
-
-      addLink: function() {}
-
-    }
-
-  });
-
   Vue.component('x-link', {
 
     replace: true,
@@ -677,10 +659,12 @@ define([
       },
 
       contextMenu: function (e) {
+        console.log('contextMenu1');
         if (e.target != this.$el) return;
 
+        e.stopPropagation();
         e.preventDefault();
-
+        console.log('contextMenu2');
         var contextMenu = this.$.contextMenu;
         contextMenu.show(e.clientX, e.clientY);
 
@@ -741,8 +725,18 @@ define([
             addNode: function(e) {
               var p = util.transformPointFromClientToEl(e.clientX, e.clientY, self.$el);
 
-              Node.create(hypergraphID, { clientDisplay: { x: p.x, y: p.y } })
-                  .done(function(node) { self.nodes.push(node); });
+              var nodePanel = new NodePanel({
+                data: {
+                  node: {
+                    clientDisplay: {
+                      x: p.x,
+                      y: p.y
+                    }
+                  }
+                }
+              });
+
+              sidebar.setPanel(nodePanel);
             }
           }
         });
@@ -756,14 +750,52 @@ define([
 
   });
 
-  Vue.component('x-sidebar', {
+  var NodePanel = Vue.extend({
 
     replace: true,
 
-    template: '#sidebar',
+    template: '#node.panel',
 
     data: function() {
-      return { };
+      return {
+        isNew: false,
+        node: {}
+      };
+    },
+
+    methods: {
+
+      save: function() {
+        if (this.isNew) {
+          var p = util.transformPointFromClientToEl(this.node.x, this.node.y, self.$el);
+
+          Node.create(hypergraphID, { clientDisplay: { x: p.x, y: p.y } })
+              .done(function(node) { self.nodes.push(node); });
+        }
+      },
+
+      addText: function() {},
+
+      addPhone: function() {},
+
+      addEmail: function() {},
+
+      addLink: function() {}
+
+    }
+
+  });
+
+  var Sidebar = Vue.extend({
+
+    methods: {
+
+      setPanel: function(panel) {
+        this.$.currentPanel = panel;
+        panel.$mount();
+        panel.$appendTo(this.$el);
+      }
+
     }
 
   });
@@ -808,19 +840,15 @@ define([
   var navbarComponent = new NavbarComponent({ data: { state: state } });
   navbarComponent.$mount('#navbar');
 
-  var main = new Vue({});
-  main.$mount('#main');
+  var sidebar = new Sidebar();
+  sidebar.$mount('#sidebar');
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {
-            if (l.sourceId == n.id) {
-              l.source = n;
-            }
-            if (l.targetId == n.id) {
-              l.target = n;
-            }
+            if (l.sourceId == n.id) l.source = n;
+            if (l.targetId == n.id) l.target = n;
           });
         });
 
