@@ -659,12 +659,11 @@ define([
       },
 
       contextMenu: function (e) {
-        console.log('contextMenu1');
         if (e.target != this.$el) return;
 
         e.stopPropagation();
         e.preventDefault();
-        console.log('contextMenu2');
+
         var contextMenu = this.$.contextMenu;
         contextMenu.show(e.clientX, e.clientY);
 
