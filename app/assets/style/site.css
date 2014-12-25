@@ -63,7 +63,6 @@ html, body {
     width: 22em;
     background-color: #263238;
     color: #ffffff;
-    padding: 1.5em;
     box-shadow: inset .05em 0 .2em rgba(0, 0, 0, .35);
 }
 
@@ -132,7 +131,7 @@ html, body {
 */
 
 .sidebar-menu {
-    padding : 2em;
+    padding : 1.8em;
 }
 
 /*
@@ -190,7 +189,7 @@ html, body {
 }
 
 .node-menu:active {
-    transition: fill 0;
+    transition: fill 0ms;
     fill: #e84e40;
 }
 

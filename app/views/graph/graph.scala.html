@@ -48,7 +48,7 @@
     <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
       <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
       <text class="node-label" text-anchor="middle" v-attr="transform: labelTranslate" v-el="nodeLabel">
-        Label {{$index}}
+        {{label}} {{$index}}
       </text>
     </g>
   </template>
@@ -58,6 +58,18 @@
   <div id="sidebar" class="sidebar-menu"></div>
 
   <template id="node.panel">
+    <h3 v-on="dblclick:editLabel()"
+        v-class="hidden:editingLabel">
+      {{node.label}}
+    </h3>
+    <input type="text"
+           class="form-control"
+           v-model="node.label"
+           v-class="hidden:!editingLabel"
+           v-el="labelInput"
+           v-on="blur   : updateLabel,
+                 keyup  : updateLabel()       | key enter,
+                 keyup  : cancelLabelUpdate(this) | key esc">
     <ul class="list-unstyled">
       <li class="input-group">
         <input type="text" class="form-control" placeholder="Value">

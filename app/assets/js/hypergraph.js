@@ -239,6 +239,7 @@ define([
 
     data: function () {
       return {
+        label: 'Label',
         menu: false,
         labelDistance: 15,
         radius: 1.5,
@@ -758,7 +759,11 @@ define([
     data: function() {
       return {
         isNew: false,
-        node: {}
+        editingLabel: false,
+        labelCache: '',
+        node: {
+          label: 'Label'
+        }
       };
     },
 
@@ -771,6 +776,27 @@ define([
           Node.create(hypergraphID, { clientDisplay: { x: p.x, y: p.y } })
               .done(function(node) { self.nodes.push(node); });
         }
+      },
+
+      editLabel: function() {
+        this.editingLabel = true;
+        this.labelCache = this.node.label;
+
+        var $labelInput = this.$$.labelInput;
+        util.animationFrame(function() {
+          $labelInput.focus();
+        });
+      },
+
+      updateLabel: function() {
+        if (!this.editingLabel) return; //blur is called redundantly after 'enter' and 'esc' action
+
+        this.editingLabel = false;
+      },
+
+      cancelLabelUpdate: function() {
+        this.editingLabel = false;
+        this.node.label = this.labelCache;
       },
 
       addText: function() {},
