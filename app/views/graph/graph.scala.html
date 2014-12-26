@@ -68,9 +68,12 @@
            v-class="hidden:!editingLabel"
            v-el="labelInput"
            v-on="blur   : updateLabel,
-                 keyup  : updateLabel()       | key enter,
+                 keyup  : updateLabel()           | key enter,
                  keyup  : cancelLabelUpdate(this) | key esc">
     <ul class="list-unstyled">
+      <li v-repeat="properties">
+        {{$key}}: {{$value}}
+      </li>
       <li class="input-group">
         <input type="text" class="form-control" placeholder="Value">
         <div class="input-group-btn" role="group">

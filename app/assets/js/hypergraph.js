@@ -727,6 +727,7 @@ define([
 
               var nodePanel = new NodePanel({
                 data: {
+                  isNew: true,
                   node: {
                     clientDisplay: {
                       x: p.x,
@@ -767,6 +768,14 @@ define([
       };
     },
 
+    computed: {
+
+      properties: function() {
+        return _.omit(this.node, 'label', 'clientDisplay');
+      }
+
+    },
+
     methods: {
 
       save: function() {
@@ -790,6 +799,10 @@ define([
 
       updateLabel: function() {
         if (!this.editingLabel) return; //blur is called redundantly after 'enter' and 'esc' action
+
+        if (!this.node.label) {
+          this.node.label = this.labelCache;
+        }
 
         this.editingLabel = false;
       },
