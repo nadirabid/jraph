@@ -55,37 +55,105 @@
 </div>
 
 <div class="sidebar-container">
-  <div id="sidebar" class="sidebar-menu"></div>
+  <div id="panelBar" class="sidebar-menu"></div>
 
   <template id="node.panel">
+    <button type="button" class="close" aria-label="Close" v-on="click: cancelAddNode">
+      <span aria-hidden="true"
+            style="text-shadow: 0 0 0 #000;
+                   font-size:1.3em;
+                   color:#fff;">&times;</span>
+    </button>
     <h3 v-on="dblclick:editLabel()"
         v-class="hidden:editingLabel">
       {{node.label}}
     </h3>
     <input type="text"
-           class="form-control"
+           class="form-control input-lg"
            v-model="node.label"
            v-class="hidden:!editingLabel"
            v-el="labelInput"
            v-on="blur   : updateLabel,
-                 keyup  : updateLabel()           | key enter,
-                 keyup  : cancelLabelUpdate(this) | key esc">
+                 keyup  : updateLabel       | key enter,
+                 keyup  : cancelLabelUpdate | key esc">
+
+    <style>
+      .node-property-list > dt {
+        line-height:2.5em;
+      }
+
+      .node-property-list > dd {
+        line-height:1.8em;
+      }
+
+      .node-property-list > dd > div {
+        position:relative;
+      }
+
+      .node-property-list > dd > div > button {
+        position:absolute;
+        right:1em;
+        top:0;
+      }
+
+      .node-property-list > dd > div > button > span {
+        text-shadow:0 0 0 #000;
+        font-size:.8em;
+        color: #fff;
+      }
+
+      .node-property-list > dd > div > .close {
+        display:none;
+      }
+
+      .node-property-list > dd:hover .close,
+      .node-property-list dd:active .close  {
+        display:inherit;
+      }
+    </style>
+
     <ul class="list-unstyled">
-      <li v-repeat="properties">
-        {{$key}}: {{$value}}
+      <li v-repeat="propsGroup: propertyGroups">
+        <dl class="node-property-list">
+          <dt>{{$key}}</dt>
+          <dd v-repeat="prop: propsGroup">
+            <div v-class="hidden:prop.edit_">
+              {{prop.value}}
+              <button aria-label="Close"
+                      class="close"
+                      type="button"
+                      v-on="click: removeProp(this)">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <input type="text"
+                   class="form-control"
+                   v-class="hidden:!prop.edit_"
+                   v-on="blur   : updateProp(this),
+                         keyup  : updateProp(this)        | key enter,
+                         keyup  : cancelPropUpdate(this)  | key esc">
+          </dd>
+        </dl>
       </li>
       <li class="input-group">
-        <input type="text" class="form-control" placeholder="Value">
+        <input class="form-control"
+               placeholder="Value"
+               type="text"
+               v-el="propertyValue"
+               v-on="keydown:validateInputChange, paste:validateInputChange">
         <div class="input-group-btn" role="group">
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <button type="button"
+                  class="btn btn-default dropdown-toggle disabled"
+                  data-toggle="dropdown"
+                  v-el="addDropdownBtn">
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" role="menu">
             <li role="presentation" class="dropdown-header">Add as</li>
-            <li><a role="menuitem" v-on="click:addText">Text</a></li>
-            <li><a role="menuitem" v-on="click:addPhone">Phone</a></li>
-            <li><a role="menuitem" v-on="click:addEmail">Email</a></li>
-            <li><a role="menuitem" v-on="click:addLink">Link</a></li>
+            <li><a role="menuitem" v-on="click:addPropAs('text')">Text</a></li>
+            <li><a role="menuitem" v-on="click:addPropAs('phone')">Phone</a></li>
+            <li><a role="menuitem" v-on="click:addPropAs('email')">Email</a></li>
+            <li><a role="menuitem" v-on="click:addPropAs('link')">Link</a></li>
           </ul>
         </div>
       </li>

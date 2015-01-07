@@ -737,7 +737,7 @@ define([
                 }
               });
 
-              sidebar.setPanel(nodePanel);
+              panelBar.setPanel(nodePanel);
             }
           }
         });
@@ -763,20 +763,70 @@ define([
         editingLabel: false,
         labelCache: '',
         node: {
-          label: 'Label'
+          label: 'Label',
+          data: {
+            properties: []
+          }
         }
       };
     },
 
     computed: {
 
-      properties: function() {
-        return _.omit(this.node, 'label', 'clientDisplay');
+      propertyGroups: function() {
+        var propertyGroups = _.groupBy(this.node.data.properties, function(prop) {
+          return prop.type;
+        });
+
+        return propertyGroups;
       }
 
     },
 
     methods: {
+
+      cancelAddNode: function() {
+        panelBar.removePanel();
+      },
+
+      validateInputChange: function() {
+        var self = this;
+
+        util.animationFrame(function() {
+          var $addDropdownBtnEl = self.$$.addDropdownBtn;
+          var propertyValue = self.$$.propertyValue.value;
+
+          if (!propertyValue) {
+            $addDropdownBtnEl.classList.add('disabled');
+          }
+          else {
+            $addDropdownBtnEl.classList.remove('disabled');
+          }
+        });
+      },
+
+      addPropAs: function(propertyType) {
+        var $propertyValueEl = this.$$.propertyValue;
+
+        this.node.data.properties.push({
+          value: $propertyValueEl.value,
+          type: propertyType
+        });
+
+        $propertyValueEl.value = '';
+        this.validateInputChange();
+      },
+
+      removeProp: function(propVm) {
+        console.log('removeProp');
+        var propIndex = _.indexOf(this.node.data.properties, propVm.prop);
+
+        if (propIndex < 0) {
+          throw "Trying to remove property that apparently doesn't exist.";
+        }
+
+        console.log(this.node.data.properties.$remove(propIndex));
+      },
 
       save: function() {
         if (this.isNew) {
@@ -810,25 +860,48 @@ define([
       cancelLabelUpdate: function() {
         this.editingLabel = false;
         this.node.label = this.labelCache;
-      },
+      }
 
-      addText: function() {},
+    },
 
-      addPhone: function() {},
+    events: {
 
-      addEmail: function() {},
+      'hook:created': function() {
+        var node = this.node;
 
-      addLink: function() {}
+        if (!node.data) {
+          this.$add('node.data', { properties: [] });
+        }
+
+        if (!node.data.properties) {
+          this.$add('node.data.properties', []);
+        }
+
+
+
+      }
 
     }
 
   });
 
-  var Sidebar = Vue.extend({
+  var PanelBar = Vue.extend({
 
     methods: {
 
+      removePanel: function() {
+        if (this.$.currentPanel) {
+          this.$.currentPanel.$destroy(true);
+          delete this.$.currentPanel;
+        }
+      },
+
       setPanel: function(panel) {
+        if (this.$.currentPanel) {
+          this.$.currentPanel.$destroy(true);
+          delete this.$.currentPanel;
+        }
+
         this.$.currentPanel = panel;
         panel.$mount();
         panel.$appendTo(this.$el);
@@ -878,8 +951,8 @@ define([
   var navbarComponent = new NavbarComponent({ data: { state: state } });
   navbarComponent.$mount('#navbar');
 
-  var sidebar = new Sidebar();
-  sidebar.$mount('#sidebar');
+  var panelBar = new PanelBar();
+  panelBar.$mount('#panelBar');
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {

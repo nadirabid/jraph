@@ -60,7 +60,7 @@ html, body {
     order:2;
     -webkit-order:2;
 
-    width: 22em;
+    width: 30em;
     background-color: #263238;
     color: #ffffff;
     box-shadow: inset .05em 0 .2em rgba(0, 0, 0, .35);
