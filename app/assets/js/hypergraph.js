@@ -91,6 +91,17 @@ define([
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
+    this.click = function() {
+      var nodePanel = new NodePanel({
+        data: {
+          isNew: true,
+          node: ctx.$data
+        }
+      });
+
+      panelBar.setPanel(nodePanel);
+    };
+
     //show menu
     this.mouseover = function () {
       if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
@@ -239,13 +250,13 @@ define([
 
     data: function () {
       return {
-        label: 'Label',
+        name: 'Name',
         menu: false,
-        labelDistance: 15,
+        nameDistance: 15,
         radius: 1.5,
-        labelX: 0,
-        labelY: 0,
-        labelTranslate: 'translate(0, 0)',
+        nameX: 0,
+        nameY: 0,
+        nameTranslate: 'translate(0, 0)',
         nodeTranslate: 'translate(0, 0)',
         fixed: false //d3.force doesn't pick it up if not explicitly linked
       };
@@ -257,17 +268,17 @@ define([
         return 'translate(' + this.x + ',' + this.y + ')';
       },
 
-      labelTranslate: function() {
-        return 'translate(' + this.labelX + ',' + this.labelY + ')';
+      nameTranslate: function() {
+        return 'translate(' + this.nameX + ',' + this.nameY + ')';
       }
 
     },
 
     methods: {
 
-      updateLable: function () {
-        var labelDistance = (this.radius * 12) + this.labelDistance;
-        var bBox = this.$$.nodeLabel.getBBox();
+      updateName: function () {
+        var nameDistance = (this.radius * 12) + this.nameDistance;
+        var bBox = this.$$.nodeName.getBBox();
 
         var dx = this.x - (this.$parent.width / 2),
             dy = this.y - (this.$parent.height / 2);
@@ -278,16 +289,16 @@ define([
         var shiftX = bBox.width * Math.log(ratio + 1) * (( dx > 0 ) ? 0.5 : -0.5),
             shiftY = bBox.y * -0.5;
 
-        var tX = labelDistance * Math.cos(theta),
-            tY = labelDistance * Math.sin(theta);
+        var tX = nameDistance * Math.cos(theta),
+            tY = nameDistance * Math.sin(theta);
 
         if (dx < 0) {
           tX *= -1;
           tY *= -1;
         }
 
-        this.labelX = tX + shiftX;
-        this.labelY = tY + shiftY;
+        this.nameX = tX + shiftX;
+        this.nameY = tY + shiftY;
       },
 
       setLinkSource: function (e) {
@@ -365,9 +376,9 @@ define([
 
         this.state = this.$parent.state;
 
-        this.$watch('x', this.updateLable.bind(this));
-        this.$watch('labelDistance', this.updateLable.bind(this));
-        this.$watch('radius', this.updateLable.bind(this));
+        this.$watch('x', this.updateName.bind(this));
+        this.$watch('nameDistance', this.updateName.bind(this));
+        this.$watch('radius', this.updateName.bind(this));
       },
 
       'hook:ready': function () {
@@ -380,7 +391,7 @@ define([
         $nodeGroup.on('drag', this.drag.bind(this));
         $nodeGroup.on('dragend', this.dragend.bind(this));
 
-        this.updateLable();
+        this.updateName();
       },
 
       'hook:beforeDestroyed': function () {
@@ -729,10 +740,7 @@ define([
                 data: {
                   isNew: true,
                   node: {
-                    clientDisplay: {
-                      x: p.x,
-                      y: p.y
-                    }
+                    clientDisplay: { x: p.x, y: p.y }
                   }
                 }
               });
@@ -764,11 +772,11 @@ define([
       return {
         isNew: false,
         hasChanges: false,
-        editingLabel: false,
-        labelCache: '',
+        editingName: false,
+        nameCache: '',
         node: {
-          label: 'Label',
           data: {
+            name: 'Name',
             properties: []
           }
         }
@@ -778,11 +786,9 @@ define([
     computed: {
 
       propertyGroups: function() {
-        var propertyGroups = _.groupBy(this.node.data.properties, function(prop) {
+        return _.groupBy(this.node.data.properties, function(prop) {
           return prop.type;
         });
-
-        return propertyGroups;
       }
 
     },
@@ -829,41 +835,57 @@ define([
           throw "Trying to remove property that apparently doesn't exist.";
         }
 
+        this.node.data.properties.$remove(0);
         this.hasChanges = true;
       },
 
-      save: function() {
-        if (this.isNew) {
-          var p = util.transformPointFromClientToEl(this.node.x, this.node.y, self.$el);
+      createNode: function() {
+        var self = this;
 
-          Node.create(hypergraphID, { clientDisplay: { x: p.x, y: p.y } })
-              .done(function(node) { self.nodes.push(node); });
-        }
+        Node.create(hypergraphID, this.node)
+            .done(function(node) {
+              self.hasChanges = false;
+              self.isNew = false;
+              self.nodes.push(node);
+            });
       },
 
-      editLabel: function() {
-        this.editingLabel = true;
-        this.labelCache = this.node.label;
+      saveNode: function() {
+        var self = this;
 
-        var $labelInput = this.$$.labelInput;
+        Node.update(hypergraphID, [ this.node ])
+            .done(function(node) {
+              self.hasChanges = false;
+              //TODO: replace node in nodesAry??
+            });
+      },
+
+      editName: function() {
+        this.editingName = true;
+        this.nameCache = this.node.data.name;
+
+        var $nameInput = this.$$.nameInput;
         util.animationFrame(function() {
-          $labelInput.focus();
+          $nameInput.focus();
         });
       },
 
-      updateLabel: function() {
-        if (!this.editingLabel) return; //blur is called redundantly after 'enter' and 'esc' action
+      updateName: function() {
+        if (!this.editingName) return; //blur is called redundantly after 'enter' and 'esc' action
 
-        if (!this.node.label) {
-          this.node.label = this.labelCache;
+        if (!this.node.name) {
+          this.node.name = this.nameCache;
+        }
+        else {
+          this.hasChanges = true;
         }
 
-        this.editingLabel = false;
+        this.editingName = false;
       },
 
-      cancelLabelUpdate: function() {
-        this.editingLabel = false;
-        this.node.label = this.labelCache;
+      cancelNameUpdate: function() {
+        this.editingName = false;
+        this.node.data.name = this.nameCache;
       }
 
     },

@@ -27,6 +27,8 @@ define([
   Node.parseJSON = function (datum) {
     var clientDisplay = datum.data.clientDisplay;
 
+    datum.data.properties.push({ "p1": "v1" });
+
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
@@ -34,7 +36,7 @@ define([
     datum.py = datum.y;
 
     datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
-
+    console.log(_.clone(datum));
     return datum;
   };
 
@@ -43,6 +45,7 @@ define([
     //json.data = _.clone(node.data);
 
     json.data = {
+      name: "Name",
       properties: [],
       clientDisplay: {
         x: node.x,

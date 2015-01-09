@@ -56,12 +56,12 @@
   <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
     <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
     <text
-        class="node-label"
+        class="node-name"
         text-anchor="middle"
-        v-attr="transform: labelTranslate"
-        v-el="nodeLabel"
+        v-attr="transform: nameTranslate"
+        v-el="nodeName"
     >
-        {{label}} {{$index}}
+        {{name}} {{$index}}
     </text>
   </g>
 </template>
@@ -75,17 +75,17 @@
     <button type="button" class="close" aria-label="Close" v-on="click: cancelAddNode">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h3 v-on="dblclick:editLabel()" v-class="hidden:editingLabel">{{node.label}}</h3>
+    <h3 v-on="dblclick:editName()" v-class="hidden:editingName">{{node.data.name}}</h3>
     <input
         type="text"
         class="form-control input-lg"
-        v-model="node.label"
-        v-class="hidden:!editingLabel"
-        v-el="labelInput"
+        v-model="node.data.name"
+        v-class="hidden:!editingName"
+        v-el="nameInput"
         v-on="
-            blur   : updateLabel,
-            keyup  : updateLabel       | key enter,
-            keyup  : cancelLabelUpdate | key esc
+            blur   : updateName,
+            keyup  : updateName       | key enter,
+            keyup  : cancelNameUpdate | key esc
         "
     >
     <ul class="list-unstyled">
@@ -144,8 +144,20 @@
         </div>
       </li>
     </ul>
-    <button class="btn btn-default submit" v-class="hidden:!isNew, disabled:!hasChanges">Create</button>
-    <button class="btn btn-default submit" v-class="hidden:isNew, disabled:!hasChanges">Save</button>
+    <button
+        class="btn btn-default submit"
+        v-class="hidden:!isNew, disabled:!hasChanges"
+        v-on="click:createNode"
+    >
+      Create
+    </button>
+    <button
+        class="btn btn-default submit"
+        v-class="hidden:isNew, disabled:!hasChanges"
+        v-on="click:saveNode"
+    >
+      Save
+    </button>
   </div>
 </template>
 
