@@ -2,20 +2,24 @@
   <svg class="disable-user-selection" id="graph" v-attr="viewBox:viewBox" v-on="contextmenu:contextMenu">
     <!-- Definitions -->
     <defs>
-      <marker id="def-marker-arrow"
-              markerWidth="2"
-              markerHeight="2"
-              refx="8"
-              refy="1"
-              orient="auto">
+      <marker
+          id="def-marker-arrow"
+          markerWidth="2"
+          markerHeight="2"
+          refx="8"
+          refy="1"
+          orient="auto"
+      >
         <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
       </marker>
-      <marker id="def-marker-ghost-arrow"
-              markerWidth="2"
-              markerHeight="2"
-              refx="2"
-              refy="1"
-              orient="auto">
+      <marker
+          id="def-marker-ghost-arrow"
+          markerWidth="2"
+          markerHeight="2"
+          refx="2"
+          refy="1"
+          orient="auto"
+      >
         <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
       </marker>
     </defs>
@@ -32,120 +36,102 @@
 
   <ul id="contextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
     <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
+    <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
   </ul>
-
-  <template id="graph.link">
-    <g class="enable-pointer-events">
-      <line class="link"
-            v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-      <line class="marker-arrow"
-            marker-end="url(#def-marker-arrow)"
-            v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
-    </g>
-  </template>
-
-  <template id="graph.node">
-    <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
-      <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
-      <text class="node-label" text-anchor="middle" v-attr="transform: labelTranslate" v-el="nodeLabel">
-        {{label}} {{$index}}
-      </text>
-    </g>
-  </template>
 </div>
+
+<template id="graph.link">
+  <g class="enable-pointer-events">
+    <line
+      class="link"
+      v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+    <line
+        class="marker-arrow"
+        marker-end="url(#def-marker-arrow)"
+        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+  </g>
+</template>
+
+<template id="graph.node">
+  <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
+    <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
+    <text
+        class="node-label"
+        text-anchor="middle"
+        v-attr="transform: labelTranslate"
+        v-el="nodeLabel"
+    >
+        {{label}} {{$index}}
+    </text>
+  </g>
+</template>
 
 <div class="sidebar-container">
   <div id="panelBar" class="sidebar-menu"></div>
+</div>
 
-  <template id="node.panel">
+<template id="node.panel">
+  <div class="node-panel">
     <button type="button" class="close" aria-label="Close" v-on="click: cancelAddNode">
-      <span aria-hidden="true"
-            style="text-shadow: 0 0 0 #000;
-                   font-size:1.3em;
-                   color:#fff;">&times;</span>
+      <span aria-hidden="true">&times;</span>
     </button>
-    <h3 v-on="dblclick:editLabel()"
-        v-class="hidden:editingLabel">
-      {{node.label}}
-    </h3>
-    <input type="text"
-           class="form-control input-lg"
-           v-model="node.label"
-           v-class="hidden:!editingLabel"
-           v-el="labelInput"
-           v-on="blur   : updateLabel,
-                 keyup  : updateLabel       | key enter,
-                 keyup  : cancelLabelUpdate | key esc">
-
-    <style>
-      .node-property-list > dt {
-        line-height:2.5em;
-      }
-
-      .node-property-list > dd {
-        line-height:1.8em;
-      }
-
-      .node-property-list > dd > div {
-        position:relative;
-      }
-
-      .node-property-list > dd > div > button {
-        position:absolute;
-        right:1em;
-        top:0;
-      }
-
-      .node-property-list > dd > div > button > span {
-        text-shadow:0 0 0 #000;
-        font-size:.8em;
-        color: #fff;
-      }
-
-      .node-property-list > dd > div > .close {
-        display:none;
-      }
-
-      .node-property-list > dd:hover .close,
-      .node-property-list dd:active .close  {
-        display:inherit;
-      }
-    </style>
-
+    <h3 v-on="dblclick:editLabel()" v-class="hidden:editingLabel">{{node.label}}</h3>
+    <input
+        type="text"
+        class="form-control input-lg"
+        v-model="node.label"
+        v-class="hidden:!editingLabel"
+        v-el="labelInput"
+        v-on="
+            blur   : updateLabel,
+            keyup  : updateLabel       | key enter,
+            keyup  : cancelLabelUpdate | key esc
+        "
+    >
     <ul class="list-unstyled">
       <li v-repeat="propsGroup: propertyGroups">
         <dl class="node-property-list">
           <dt>{{$key}}</dt>
           <dd v-repeat="prop: propsGroup">
             <div v-class="hidden:prop.edit_">
-              {{prop.value}}
-              <button aria-label="Close"
-                      class="close"
-                      type="button"
-                      v-on="click: removeProp(this)">
+                {{prop.value}}
+              <button
+                  aria-label="Close"
+                  class="close"
+                  type="button"
+                  v-on="click: removeProp(this)"
+              >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <input type="text"
-                   class="form-control"
-                   v-class="hidden:!prop.edit_"
-                   v-on="blur   : updateProp(this),
-                         keyup  : updateProp(this)        | key enter,
-                         keyup  : cancelPropUpdate(this)  | key esc">
+            <input
+                type="text"
+                class="form-control"
+                v-class="hidden:!prop.edit_"
+                v-on="
+                    blur   : updateProp(this),
+                    keyup  : updateProp(this)        | key enter,
+                    keyup  : cancelPropUpdate(this)  | key esc
+                "
+            >
           </dd>
         </dl>
       </li>
       <li class="input-group">
-        <input class="form-control"
-               placeholder="Value"
-               type="text"
-               v-el="propertyValue"
-               v-on="keydown:validateInputChange, paste:validateInputChange">
+        <input
+            class="form-control"
+            placeholder="Value"
+            type="text"
+            v-el="propertyValue"
+            v-on="keydown:validateInputChange, paste:validateInputChange"
+        >
         <div class="input-group-btn" role="group">
-          <button type="button"
-                  class="btn btn-default dropdown-toggle disabled"
-                  data-toggle="dropdown"
-                  v-el="addDropdownBtn">
+          <button
+              type="button"
+              class="btn btn-default dropdown-toggle disabled"
+              data-toggle="dropdown"
+              v-el="addDropdownBtn"
+          >
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" role="menu">
@@ -158,7 +144,9 @@
         </div>
       </li>
     </ul>
-  </template>
-</div>
+    <button class="btn btn-default submit" v-class="hidden:!isNew, disabled:!hasChanges">Create</button>
+    <button class="btn btn-default submit" v-class="hidden:isNew, disabled:!hasChanges">Save</button>
+  </div>
+</template>
 
 @views.html.graph.ghostlink()

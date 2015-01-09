@@ -40,11 +40,15 @@ define([
 
   Node.toJSON = function (node) {
     var json = { id: node.id };
-    json.data = _.clone(node.data);
-    json.data.clientDisplay = {
-      x: node.x,
-      y: node.y,
-      fixed: node.fixed
+    //json.data = _.clone(node.data);
+
+    json.data = {
+      properties: [],
+      clientDisplay: {
+        x: node.x,
+        y: node.y,
+        fixed: node.fixed
+      }
     };
 
     return json;
@@ -72,7 +76,7 @@ define([
           data: JSON.stringify({ data: nodesJson })
         })
         .then(function(response) {
-          return Node.parseJSON(response);
+          return _.map(response, Node.parseJSON);
         });
   };
 

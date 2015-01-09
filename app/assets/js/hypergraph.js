@@ -738,6 +738,9 @@ define([
               });
 
               panelBar.setPanel(nodePanel);
+            },
+            saveGraph: function() {
+              Node.update(hypergraphID, nodesAry);
             }
           }
         });
@@ -760,6 +763,7 @@ define([
     data: function() {
       return {
         isNew: false,
+        hasChanges: false,
         editingLabel: false,
         labelCache: '',
         node: {
@@ -815,17 +819,17 @@ define([
 
         $propertyValueEl.value = '';
         this.validateInputChange();
+        this.hasChanges = true;
       },
 
       removeProp: function(propVm) {
-        console.log('removeProp');
         var propIndex = _.indexOf(this.node.data.properties, propVm.prop);
 
         if (propIndex < 0) {
           throw "Trying to remove property that apparently doesn't exist.";
         }
 
-        console.log(this.node.data.properties.$remove(propIndex));
+        this.hasChanges = true;
       },
 
       save: function() {
@@ -876,9 +880,6 @@ define([
         if (!node.data.properties) {
           this.$add('node.data.properties', []);
         }
-
-
-
       }
 
     }
@@ -956,6 +957,10 @@ define([
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
+        var toPrint = _.map(nodes, function(n) {
+          return _.clone(n.data);
+        });
+
         nodes.forEach(function (n) {
           links.forEach(function (l) {
             if (l.sourceId == n.id) l.source = n;

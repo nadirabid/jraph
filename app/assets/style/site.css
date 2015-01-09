@@ -1,6 +1,6 @@
-/*
-  Uncategorized
-*/
+/***
+    Uncategorized
+***/
 
 .disable-pointer-events {
     pointer-events: none;
@@ -89,9 +89,9 @@ html, body {
     padding: 2em;
 }
 
-/*
-  HTML Info view styles
-*/
+/***
+    HTML Info view styles
+***/
 
 .info-panel {
     order: 1;
@@ -126,17 +126,17 @@ html, body {
     display: inline-block;
 }
 
-/*
-  Sidebar
-*/
+/***
+    Sidebar
+***/
 
 .sidebar-menu {
     padding : 1.8em;
 }
 
-/*
-  Graph view styles
-*/
+/***
+    Graph view styles
+***/
 
 .graph-container > svg {
     flex: 1 1 auto;
@@ -208,4 +208,55 @@ html, body {
     letter-spacing: 0em;
     stroke-width: 0;
     fill: #ecf0f1;
+}
+
+/***
+    Node Properties List
+***/
+
+.node-property-list > dt {
+    line-height:2.5em;
+    font-size:1.2em;
+}
+
+.node-property-list > dd {
+    line-height:1.8em;
+    font-size:1.1em;
+}
+
+.node-property-list > dd > div {
+    position:relative;
+}
+
+.node-property-list > dd > div > button {
+    position:absolute;
+    right:1em;
+    top:0;
+}
+
+.node-property-list > dd > div > button > span {
+    text-shadow:0 0 0 #000;
+    font-size:1em;
+    color: #fff;
+}
+
+.node-property-list > dd > div > .close {
+    display:none;
+}
+
+.node-property-list > dd:hover .close,
+.node-property-list dd:active .close  {
+    display:inherit;
+}
+
+.node-panel > .close > span {
+    text-shadow: 0 0 0 #000;
+    font-size:1.3em;
+    color:#fff;
+}
+
+.node-panel > .submit {
+    position:absolute;
+    right:1em;
+    bottom:1em;
 }
