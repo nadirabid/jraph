@@ -36,22 +36,18 @@ define([
     datum.py = datum.y;
 
     datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
-    console.log(_.clone(datum));
+
     return datum;
   };
 
   Node.toJSON = function (node) {
     var json = { id: node.id };
-    //json.data = _.clone(node.data);
+    json.data = _.clone(node.data) || {};
 
-    json.data = {
-      name: "Name",
-      properties: [],
-      clientDisplay: {
-        x: node.x,
-        y: node.y,
-        fixed: node.fixed
-      }
+    json.data.clientDisplay = {
+      x: node.x,
+      y: node.y,
+      fixed: node.fixed
     };
 
     return json;

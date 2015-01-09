@@ -91,10 +91,17 @@ define([
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
+    var dragFlag = false;
+
     this.click = function() {
+      if (dragFlag) {
+        dragFlag = false;
+        return;
+      }
+
       var nodePanel = new NodePanel({
         data: {
-          isNew: true,
+          isNew: false,
           node: ctx.$data
         }
       });
@@ -159,6 +166,8 @@ define([
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
+
+      dragFlag = true;
 
       ctx.state.$layout.resume();
     };
@@ -795,7 +804,7 @@ define([
 
     methods: {
 
-      cancelAddNode: function() {
+      closeNodePanel: function() {
         panelBar.removePanel();
       },
 
@@ -893,6 +902,7 @@ define([
     events: {
 
       'hook:created': function() {
+        console.log(this.node.data.properties);
         var node = this.node;
 
         if (!node.data) {
@@ -915,7 +925,7 @@ define([
       removePanel: function() {
         if (this.$.currentPanel) {
           this.$.currentPanel.$destroy(true);
-          delete this.$.currentPanel;
+          //delete this.$.currentPanel;
         }
       },
 

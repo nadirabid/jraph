@@ -72,7 +72,7 @@
 
 <template id="node.panel">
   <div class="node-panel">
-    <button type="button" class="close" aria-label="Close" v-on="click: cancelAddNode">
+    <button type="button" class="close" aria-label="Close" v-on="click:closeNodePanel">
       <span aria-hidden="true">&times;</span>
     </button>
     <h3 v-on="dblclick:editName()" v-class="hidden:editingName">{{node.data.name}}</h3>
