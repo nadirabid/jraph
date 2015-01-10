@@ -824,7 +824,7 @@ define([
         });
       },
 
-      addPropAs: function(propertyType) {
+      addProp: function(propertyType) {
         var $propertyValueEl = this.$$.propertyValue;
 
         this.node.data.properties.push({
@@ -902,7 +902,6 @@ define([
     events: {
 
       'hook:created': function() {
-        console.log(this.node.data.properties);
         var node = this.node;
 
         if (!node.data) {

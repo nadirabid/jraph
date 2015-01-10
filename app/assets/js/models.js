@@ -27,7 +27,7 @@ define([
   Node.parseJSON = function (datum) {
     var clientDisplay = datum.data.clientDisplay;
 
-    datum.data.properties.push({ "p1": "v1" });
+    datum.data.properties.push({ type:"text", value: "v" + Math.floor(Math.random() * 100) });
 
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
