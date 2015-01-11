@@ -27,8 +27,6 @@ define([
   Node.parseJSON = function (datum) {
     var clientDisplay = datum.data.clientDisplay;
 
-    datum.data.properties.push({ type:"text", value: "v" + Math.floor(Math.random() * 100) });
-
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
@@ -79,13 +77,15 @@ define([
         });
   };
 
-  Node.create = function(hypergraphID, data) {
+  Node.create = function(hypergraphID, node) {
     return util
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hypernode',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
-          data: JSON.stringify({ data: data })
+          data: JSON.stringify({
+            data: Node.toJSON(node).data
+          })
         })
         .then(function(response) {
           return Node.parseJSON(response);

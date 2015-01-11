@@ -749,7 +749,9 @@ define([
                 data: {
                   isNew: true,
                   node: {
-                    clientDisplay: { x: p.x, y: p.y }
+                    x: p.x,
+                    y: p.y,
+                    fixed: false
                   }
                 }
               });
@@ -855,7 +857,7 @@ define([
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
-              self.nodes.push(node);
+              nodesAry.push(node);
             });
       },
 
