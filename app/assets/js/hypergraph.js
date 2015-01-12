@@ -20,8 +20,6 @@ define([
     NavbarComponent) {
   'use strict';
 
-  Vue.config.debug = true;
-
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
 
@@ -284,6 +282,22 @@ define([
     },
 
     methods: {
+
+      nodeContextMenu: function(e) {
+        if (e.target != this.$$.nodeCircle) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        nodeContextMenu.show(e.clientX, e.clientY);
+
+        var closeContextMenu = function () {
+          nodeContextMenu.hide();
+          window.removeEventListener('click', closeContextMenu);
+        };
+
+        window.addEventListener('click', closeContextMenu);
+      },
 
       updateName: function () {
         var nameDistance = (this.radius * 12) + this.nameDistance;
@@ -627,58 +641,6 @@ define([
         });
       },
 
-      createLink: function (link) {
-        var self = this;
-
-        var linkJson = {
-          sourceId: link.source.id,
-          targetId: link.target.id
-        };
-
-        return util.ajax({
-          url: '/hyperlink',
-          type: 'POST',
-          contentType: 'application/json; charset=utf-8',
-          data: JSON.stringify(linkJson),
-          success: function (response) {
-            var createdLink = response.results[0].data[0].row[0];
-
-            self.nodes.forEach(function (n) {
-              if (n.id == createdLink.sourceId) {
-                createdLink.source = n;
-              }
-              if (n.id == createdLink.targetId) {
-                createdLink.target = n;
-              }
-            });
-
-            self.links.push(createdLink);
-          }
-        });
-      },
-
-      deleteNode: function (e, nodeId) {
-        var self = this;
-
-        e.stopImmediatePropagation();
-
-        util.ajax({
-          url: '/hypernode/' + nodeId,
-          type: 'DELETE',
-          success: function () {
-            //test: make sure events bound to arrays are still active
-
-            self.links = self.links.filter(function (l) {
-              return l.sourceId != nodeId && l.targetId != nodeId;
-            });
-
-            self.nodes = self.nodes.filter(function (n) {
-              return n.id != nodeId;
-            });
-          }
-        });
-      },
-
       contextMenu: function (e) {
         if (e.target != this.$el) return;
 
@@ -764,7 +726,7 @@ define([
           }
         });
 
-        this.$.contextMenu.$mount('#contextMenu');
+        this.$.contextMenu.$mount('#graphContextMenu');
 
         this.resize();
       }
@@ -953,6 +915,10 @@ define([
 
     methods: {
       show: function(x, y) {
+        if (this.beforeShow) {
+          this.beforeShow.apply(this, arguments);
+        }
+
         this.x = x;
         this.y = y;
 
@@ -978,6 +944,19 @@ define([
   /*
    Main application code
    */
+
+  var nodeContextMenu = new ContextMenu({
+    methods: {
+      beforeShow: function(x, y, node) {
+        this.$.node = node;
+      },
+      deleteNode: function(node) {
+        console.log(node.name);
+      }
+    }
+  });
+
+  nodeContextMenu.$mount('#nodeContextMenu');
 
   var graphComponent = new GraphComponent({ data: { state: state } });
   graphComponent.$mount('#graph');

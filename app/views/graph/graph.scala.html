@@ -34,7 +34,11 @@
     <x-node v-repeat="nodes" track-by="id"></x-node>
   </svg>
 
-  <ul id="contextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+  <ul id="nodeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+    <li role="presentation" v-on="click:deleteNode"><a role="menuitem" tabindex="-1">Delete Node</a></li>
+  </ul>
+
+  <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
     <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
     <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
   </ul>
@@ -53,8 +57,12 @@
 </template>
 
 <template id="graph.node">
-  <g class="node enable-pointer-events" v-attr="id: id, transform: nodeTranslate">
-    <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle"></circle>
+  <g
+      class="node enable-pointer-events"
+      v-attr="id: id, transform: nodeTranslate"
+
+  >
+    <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle" v-on="contextmenu:nodeContextMenu"></circle>
     <text
         class="node-name"
         text-anchor="middle"
