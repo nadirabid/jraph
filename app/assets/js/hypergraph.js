@@ -289,7 +289,7 @@ define([
         e.stopPropagation();
         e.preventDefault();
 
-        nodeContextMenu.show(e.clientX, e.clientY);
+        nodeContextMenu.show(e.clientX, e.clientY, this);
 
         var closeContextMenu = function () {
           nodeContextMenu.hide();
@@ -357,33 +357,27 @@ define([
       },
 
       mouseover: function () {
-        var state = this.getState();
-        return state.mouseover.apply(state, arguments);
+        return this.getState().mouseover.apply(state, arguments);
       },
 
       mouseout: function () {
-        var state = this.getState();
-        return state.mouseout.apply(state, arguments);
+        return this.getState().mouseout.apply(state, arguments);
       },
 
       click: function (e) {
-        var state = this.getState();
-        return state.click.apply(state, arguments);
+        return this.getState().click.apply(state, arguments);
       },
 
       drag: function () {
-        var state = this.getState();
-        return state.drag.apply(state, arguments);
+        return this.getState().drag.apply(state, arguments);
       },
 
       dragstart: function () {
-        var state = this.getState();
-        return state.dragstart.apply(state, arguments);
+        return this.getState().dragstart.apply(state, arguments);
       },
 
       dragend: function () {
-        var state = this.getState();
-        return state.dragend.apply(state, arguments);
+        return this.getState().dragend.apply(state, arguments);
       }
 
     },
@@ -936,6 +930,10 @@ define([
 
         $el.classList.add('hidden');
         $el.classList.remove('show');
+
+        if (this.afterHide) {
+          this.afterHide.apply(this, arguments);
+        }
       }
     }
 
@@ -947,11 +945,28 @@ define([
 
   var nodeContextMenu = new ContextMenu({
     methods: {
+      /*
+        Called with the arguements passed to show
+        before the menu is actually shown.
+       */
       beforeShow: function(x, y, node) {
         this.$.node = node;
       },
-      deleteNode: function(node) {
-        console.log(node.name);
+      afterHide: function() {
+        this.$.node = null;
+      },
+      deleteNode: function() {
+        var node = this.$.node;
+
+        Node.delete(hypergraphID, node)
+            .done(function() {
+              nodesAry.$remove(node.$index);
+            });
+      }
+    },
+    events: {
+      'hook:created': function() {
+        this.$.node = null;
       }
     }
   });

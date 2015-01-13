@@ -78,7 +78,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   }
 
   def delete(hypergraphID: UUID,
-             hypernodeID: UUID) = SecuredAction.async(parse.json) { req =>
+             hypernodeID: UUID) = SecuredAction.async(parse.anyContent) { req =>
 
     Hypernode.delete(req.identity.email, hypergraphID, hypernodeID) map {
       case true => Ok(Json.toJson(true))

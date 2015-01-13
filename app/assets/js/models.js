@@ -92,6 +92,14 @@ define([
         });
   };
 
+  Node.delete = function(hypergraphID, node) {
+    return util
+        .ajax({
+          url: '/hypergraph/' + hypergraphID + '/hypernode/' + node.id,
+          type: 'DELETE'
+        });
+  };
+
   return {
     Node: Node,
     Link: Link

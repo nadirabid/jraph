@@ -144,10 +144,7 @@ class HypernodeControllerSpec extends WordSpec
       // delete hypernode
       //
 
-      val deleteReqJson = Json.obj("email" -> userEmail)
-
       val deleteReq = FakeRequest(DELETE, s"$baseUrl/$createUuidString")
-        .withJsonBody(deleteReqJson)
         .withAuthenticator(identity.loginInfo)
 
       val deleteRes = route(deleteReq).get
