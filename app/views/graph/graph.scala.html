@@ -35,7 +35,8 @@
   </svg>
 
   <ul id="nodeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-    <li role="presentation" v-on="click:deleteNode"><a role="menuitem" tabindex="-1">Delete Node</a></li>
+    <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Node</a></li>
+    <li role="presentation" v-on="click:link"><a role="menuitem" tabindex="-1">Link Node</a></li>
   </ul>
 
   <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
@@ -74,6 +75,13 @@
   </g>
 </template>
 
+<template id="graph.ghostLink">
+  <line class="ghost-link link"
+        marker-end="url(#def-marker-ghost-arrow)"
+        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y">
+  </line>
+</template>
+
 <div class="sidebar-container">
   <div id="panelBar" class="sidebar-menu"></div>
 </div>
@@ -83,7 +91,7 @@
     <button type="button" class="close" aria-label="Close" v-on="click:closeNodePanel">
       <span aria-hidden="true">&times;</span>
     </button>
-    <h3 v-on="dblclick:editName()" v-class="hidden:editingName">{{node.data.name}}</h3>
+    <h3 v-on="click:editName" v-class="hidden:editingName">{{node.data.name}}</h3>
     <input
         type="text"
         class="form-control input-lg"

@@ -3,10 +3,35 @@ define([
 ], function(util) {
   // Link Model
 
+  /*
+     Link: {
+       sourceId: UUID,
+       targetId: UUID,
+       data: {}
+     }
+   */
+
   var Link = {};
 
   Link.parseJSON = function (datum) {
     return datum;
+  };
+
+  Link.toJSON = function(link) {
+    return link;
+  };
+
+  Link.create = function(hypergraphID, link) {
+    return util
+        .ajax({
+          url: '/hypergraph/' + hypergraphID + '/hyperlink',
+          type: 'POST',
+          contentType: 'application/json; charset=utf-8',
+          data: JSON.stringify(Link.toJSON(link))
+        })
+        .then(function(response) {
+          return Link.parseJSON(response);
+        });
   };
 
   Link.fetchAll = function (hypergraphID) {

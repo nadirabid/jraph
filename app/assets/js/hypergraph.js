@@ -47,45 +47,6 @@ define([
    Graph view
    */
 
-  var GhostLinkComponent = Vue.extend({
-
-    replace: true,
-
-    template: document.getElementById('graph.ghostLink').innerHTML,
-
-    data: function () {
-      return {
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 }
-      };
-    },
-
-    methods: {
-
-      mousemove: function (e) {
-        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
-      }
-
-    },
-
-    events: {
-
-      'hook:attached': function () {
-        this.source = this.linkSource;
-        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
-
-        this._mousemove = this.mousemove.bind(this);
-        util.on('mousemove', this._mousemove);
-      },
-
-      'hook:beforeDestroy': function () {
-        util.off('mousemove', this._mousemove);
-      }
-
-    }
-
-  });
-
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
@@ -217,10 +178,9 @@ define([
       var sourceCtx = mouse.data.source;
 
       if (sourceCtx.id != ctx.id) {
-        ctx.$parent
-            .createLink({ source: sourceCtx, target: ctx })
-            .then(function () {
-              ctx.state.$layout.resume();
+        Link.create(hypergraphID, { sourceId: sourceCtx.id, targetId: ctx.id, data: {} })
+            .done(function(link) {
+              //todo: add to linksAry
             });
       }
       else {
@@ -283,6 +243,15 @@ define([
 
     methods: {
 
+      delete: function() {
+        var self = this;
+
+        Node.delete(hypergraphID, this)
+            .done(function() {
+              nodesAry.$remove(self.$index);
+            });
+      },
+
       nodeContextMenu: function(e) {
         if (e.target != this.$$.nodeCircle) return;
 
@@ -299,7 +268,7 @@ define([
         window.addEventListener('click', closeContextMenu);
       },
 
-      updateName: function () {
+      updateNameTranslation: function () {
         var nameDistance = (this.radius * 12) + this.nameDistance;
         var bBox = this.$$.nodeName.getBBox();
 
@@ -324,10 +293,8 @@ define([
         this.nameY = tY + shiftY;
       },
 
-      setLinkSource: function (e) {
+      setLinkSource: function () {
         var self = this;
-
-        e.stopPropagation();
 
         util.animationFrame(function() {
           self.$el.querySelector('.node-circle')
@@ -341,15 +308,10 @@ define([
         state.nodeState = 'linking';
         mouse.data.source = this;
 
-        var ghostLink = this.$.ghostLink = new GhostLinkComponent({
-          data: { linkSource: this }
-        }).$mount();
+        var ghostLink = this.$.ghostLink =
+            new GhostLinkComponent({ data: { linkSource: this } }).$mount();
 
-        var dynamicContent = this.$parent.$$.dynamicContent;
-
-        util.animationFrame(function() {
-          ghostLink.$appendTo(dynamicContent);
-        });
+        ghostLink.$appendTo(this.$parent.$$.dynamicContent);
       },
 
       getState: function () {
@@ -393,9 +355,10 @@ define([
 
         this.state = this.$parent.state;
 
-        this.$watch('x', this.updateName.bind(this));
-        this.$watch('nameDistance', this.updateName.bind(this));
-        this.$watch('radius', this.updateName.bind(this));
+        this.$watch('x', this.updateNameTranslation.bind(this));
+        this.$watch('y', this.updateNameTranslation.bind(this));
+        this.$watch('nameDistance', this.updateNameTranslation.bind(this));
+        this.$watch('radius', this.updateNameTranslation.bind(this));
       },
 
       'hook:ready': function () {
@@ -408,7 +371,7 @@ define([
         $nodeGroup.on('drag', this.drag.bind(this));
         $nodeGroup.on('dragend', this.dragend.bind(this));
 
-        this.updateName();
+        this.updateNameTranslation();
       },
 
       'hook:beforeDestroyed': function () {
@@ -908,6 +871,7 @@ define([
     },
 
     methods: {
+
       show: function(x, y) {
         if (this.beforeShow) {
           this.beforeShow.apply(this, arguments);
@@ -925,6 +889,7 @@ define([
         $el.style.top = y + 'px';
         $el.style.position = 'absolute';
       },
+
       hide: function() {
         var $el = this.$el;
 
@@ -935,6 +900,46 @@ define([
           this.afterHide.apply(this, arguments);
         }
       }
+
+    }
+
+  });
+
+  var GhostLinkComponent = Vue.extend({
+
+    replace: true,
+
+    template: document.getElementById('graph.ghostLink').innerHTML,
+
+    data: function () {
+      return {
+        source: { x: 0, y: 0 },
+        target: { x: 0, y: 0 }
+      };
+    },
+
+    methods: {
+
+      mousemove: function (e) {
+        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
+      }
+
+    },
+
+    events: {
+
+      'hook:ready': function () {
+        this.source = this.linkSource;
+        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
+
+        this._mousemove = this.mousemove.bind(this);
+        util.on('mousemove', this._mousemove);
+      },
+
+      'hook:beforeDestroy': function () {
+        util.off('mousemove', this._mousemove);
+      }
+
     }
 
   });
@@ -944,7 +949,9 @@ define([
    */
 
   var nodeContextMenu = new ContextMenu({
+
     methods: {
+
       /*
         Called with the arguements passed to show
         before the menu is actually shown.
@@ -952,23 +959,29 @@ define([
       beforeShow: function(x, y, node) {
         this.$.node = node;
       },
+
       afterHide: function() {
         this.$.node = null;
       },
-      deleteNode: function() {
-        var node = this.$.node;
 
-        Node.delete(hypergraphID, node)
-            .done(function() {
-              nodesAry.$remove(node.$index);
-            });
+      delete: function() {
+        this.$.node.delete();
+      },
+
+      link: function() {
+        this.$.node.setLinkSource();
       }
+
     },
+
     events: {
+
       'hook:created': function() {
         this.$.node = null;
       }
+
     }
+
   });
 
   nodeContextMenu.$mount('#nodeContextMenu');
