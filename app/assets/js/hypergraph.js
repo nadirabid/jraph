@@ -180,7 +180,12 @@ define([
       if (sourceCtx.id != ctx.id) {
         Link.create(hypergraphID, { sourceId: sourceCtx.id, targetId: ctx.id, data: {} })
             .done(function(link) {
-              //todo: add to linksAry
+              nodesAry.forEach(function(n) {
+                if (link.sourceId == n.id) link.source = n;
+                if (link.targetId == n.id) link.target = n;
+              });
+
+              linksAry.push(link);
             });
       }
       else {
@@ -997,10 +1002,6 @@ define([
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {
-        var toPrint = _.map(nodes, function(n) {
-          return _.clone(n.data);
-        });
-
         nodes.forEach(function (n) {
           links.forEach(function (l) {
             if (l.sourceId == n.id) l.source = n;
