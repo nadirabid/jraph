@@ -255,6 +255,25 @@ define([
       };
     }
 
+    function selectText(textEl) {
+      var doc = document;
+      var range;
+      var selection;
+
+      if (doc.body.createTextRange) {
+        range = document.body.createTextRange();
+        range.moveToElementText(textEl);
+        range.select();
+      } else if (window.getSelection) {
+        selection = window.getSelection();
+        range = document.createRange();
+        range.selectNodeContents(textEl);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+
+    Util.selectText = selectText;
     Util.isNullOrUndefined = isNullOrUndefined;
     Util.animationFrame = animationFrame;
     Util.chainEvalVm = chainEvalVm;

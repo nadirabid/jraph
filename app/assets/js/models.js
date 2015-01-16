@@ -34,6 +34,14 @@ define([
         });
   };
 
+  Link.delete = function(hypergraphID, link) {
+    return util
+        .ajax({
+          url: '/hypergraph/' + hypergraphID + '/hyperlink/' + link.id,
+          type: 'DELETE'
+        });
+  };
+
   Link.fetchAll = function (hypergraphID) {
     return util
         .getJSON('/hypergraph/' + hypergraphID + '/hyperlink')

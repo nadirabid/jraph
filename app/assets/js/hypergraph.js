@@ -29,9 +29,6 @@ define([
   var state = new State();
   var mouse = util.mouse;
 
-  var nodesAry = [];
-  var linksAry = [];
-
   var hypergraphID = window.location.pathname.split('/')[2];
 
   function StateEventHandlers() {
@@ -180,12 +177,12 @@ define([
       if (sourceCtx.id != ctx.id) {
         Link.create(hypergraphID, { sourceId: sourceCtx.id, targetId: ctx.id, data: {} })
             .done(function(link) {
-              nodesAry.forEach(function(n) {
+              graphComponent.nodes.forEach(function(n) {
                 if (link.sourceId == n.id) link.source = n;
                 if (link.targetId == n.id) link.target = n;
               });
 
-              linksAry.push(link);
+              graphComponent.links.push(link);
             });
       }
       else {
@@ -253,7 +250,11 @@ define([
 
         Node.delete(hypergraphID, this)
             .done(function() {
-              nodesAry.$remove(self.$index);
+              graphComponent.links = graphComponent.links.filter(function(l) {
+                return l.sourceId != self.id && l.targetId != self.id;
+              });
+
+              graphComponent.nodes.$remove(self.$index);
             });
       },
 
@@ -395,6 +396,31 @@ define([
     template: document.getElementById('graph.link').innerHTML,
 
     methods: {
+
+      delete: function() {
+        var self = this;
+
+        Link.delete(hypergraphID, this)
+            .done(function() {
+              graphComponent.links.$remove(self.$index);
+            });
+      },
+
+      linkContextMenu: function(e) {
+        if (e.target != this.$$.arrowMarkerLine) return;
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        linkContextMenu.show(e.clientX, e.clientY, this);
+
+        var closeContextMenu = function () {
+          linkContextMenu.hide();
+          window.removeEventListener('click', closeContextMenu);
+        };
+
+        window.addEventListener('click', closeContextMenu);
+      },
 
       freezePosition: function () {
         if (state.nodeState !== 'initial' ||
@@ -683,7 +709,7 @@ define([
               panelBar.setPanel(nodePanel);
             },
             saveGraph: function() {
-              Node.update(hypergraphID, nodesAry);
+              Node.update(hypergraphID, self.nodes);
             }
           }
         });
@@ -781,7 +807,7 @@ define([
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
-              nodesAry.push(node);
+              graphComponent.nodes.push(node);
             });
       },
 
@@ -800,8 +826,10 @@ define([
         this.nameCache = this.node.data.name;
 
         var $nameInput = this.$$.nameInput;
+        var test = this.$$.test;
         util.animationFrame(function() {
           $nameInput.focus();
+          $nameInput.setSelectionRange(0, $nameInput.value.length);
         });
       },
 
@@ -977,19 +1005,33 @@ define([
         this.$.node.setLinkSource();
       }
 
-    },
+    }
 
-    events: {
+  });
 
-      'hook:created': function() {
-        this.$.node = null;
+  nodeContextMenu.$mount('#nodeContextMenu');
+
+  var linkContextMenu = new ContextMenu({
+
+    methods: {
+
+      beforeShow: function(x, y, link) {
+        this.$.link = link;
+      },
+
+      afterHide: function() {
+        this.$.link = null;
+      },
+
+      delete: function() {
+        this.$.link.delete();
       }
 
     }
 
   });
 
-  nodeContextMenu.$mount('#nodeContextMenu');
+  linkContextMenu.$mount('#linkContextMenu');
 
   var graphComponent = new GraphComponent({ data: { state: state } });
   graphComponent.$mount('#graph');
@@ -1008,9 +1050,6 @@ define([
             if (l.targetId == n.id) l.target = n;
           });
         });
-
-        nodesAry = nodes;
-        linksAry = links;
 
         graphComponent.$add('nodes', nodes);
         graphComponent.$add('links', links);

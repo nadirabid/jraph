@@ -39,6 +39,10 @@
     <li role="presentation" v-on="click:link"><a role="menuitem" tabindex="-1">Link Node</a></li>
   </ul>
 
+  <ul id="linkContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+    <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Link</a></li>
+  </ul>
+
   <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
     <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
     <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
@@ -46,13 +50,14 @@
 </div>
 
 <template id="graph.link">
-  <g class="enable-pointer-events">
+  <g class="enable-pointer-events" v-on="contextmenu:linkContextMenu">
     <line
-      class="link"
-      v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
+        class="link"
+        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
     <line
         class="marker-arrow"
         marker-end="url(#def-marker-arrow)"
+        v-el="arrowMarkerLine"
         v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"></line>
   </g>
 </template>
@@ -63,7 +68,11 @@
       v-attr="id: id, transform: nodeTranslate"
 
   >
-    <circle class="node-circle" v-attr="r:radius + 'em'" v-el="nodeCircle" v-on="contextmenu:nodeContextMenu"></circle>
+    <circle
+        class="node-circle"
+        v-attr="r:radius + 'em'"
+        v-el="nodeCircle"
+        v-on="contextmenu:nodeContextMenu"></circle>
     <text
         class="node-name"
         text-anchor="middle"
@@ -76,9 +85,11 @@
 </template>
 
 <template id="graph.ghostLink">
-  <line class="ghost-link link"
-        marker-end="url(#def-marker-ghost-arrow)"
-        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y">
+  <line
+      class="ghost-link link"
+      marker-end="url(#def-marker-ghost-arrow)"
+      v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
+  >
   </line>
 </template>
 
