@@ -13,6 +13,7 @@ libraryDependencies ++= Seq(
   ws,
   "org.scalatestplus" %% "play" % "1.2.0" % "test",
   "com.mohiva" %% "play-silhouette" % "2.0-SNAPSHOT",
+  "com.mohiva" %% "play-silhouette-testkit" % "2.0-SNAPSHOT" % "test",
   "net.codingwell" %% "scala-guice" % "4.0.0-beta4"
 )
 

@@ -855,7 +855,7 @@ define([
 
     events: {
 
-      'hook:created': function() {
+      'hook:ready': function() {
         var node = this.node;
 
         if (!node.data) {
@@ -864,6 +864,10 @@ define([
 
         if (!node.data.properties) {
           this.$add('node.data.properties', []);
+        }
+
+        if (this.isNew) {
+          this.editName();
         }
       }
 
