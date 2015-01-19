@@ -284,7 +284,12 @@ define([
     }
 
     function validatePhoneNumber(phoneNumber) {
-      return phoneNumber.match(/\d/g).length===10;
+      var matches = phoneNumber.match(/\d/g);
+
+      if (!matches)
+        return false;
+
+      return matches.length === 10;
     }
 
     Util.validateEmail = validateEmail;

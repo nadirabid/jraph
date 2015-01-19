@@ -777,16 +777,45 @@ define([
       },
 
       addProp: function(propertyType) {
+        var $propertyInputGroupEl = this.$$.propertyInputGroup;
         var $propertyValueEl = this.$$.propertyValue;
 
-        this.node.data.properties.push({
-          value: $propertyValueEl.value,
-          type: propertyType
-        });
+        var validPropertyType = false;
 
-        $propertyValueEl.value = '';
-        this.validateInputChange();
-        this.hasChanges = true;
+        switch(propertyType) {
+          case 'email':
+            validPropertyType = util.validateEmail($propertyValueEl.value);
+            break;
+          case 'phone':
+            validPropertyType = util.validatePhoneNumber($propertyValueEl.value);
+            break;
+          case 'link':
+            validPropertyType = util.validateLink($propertyValueEl.value);
+            break;
+          default:
+            validPropertyType = true; //case text
+        }
+
+        if (validPropertyType) {
+          this.node.data.properties.push({
+            value: $propertyValueEl.value,
+            type: propertyType
+          });
+
+          this.validateInputChange();
+          this.hasChanges = true;
+
+          util.animationFrame(function() {
+            $propertyValueEl.value = '';
+            $propertyInputGroupEl.classList.remove('has-error');
+          });
+        }
+        else {
+          util.animationFrame(function() {
+            $propertyInputGroupEl.classList.add('has-error');
+          });
+        }
+
       },
 
       removeProp: function(propVm) {
