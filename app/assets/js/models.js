@@ -85,7 +85,7 @@ define([
   };
 
   Node.fetchAll = function (hypergraphID) {
-    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hypernode')
+    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hypernode/all')
         .then(function (response) {
           return _.map(response, Node.parseJSON);
         });

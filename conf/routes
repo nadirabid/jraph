@@ -24,8 +24,9 @@ GET           /hypergraph                                      @controllers.Hype
 DELETE        /hypergraph/:hypergraphID                        @controllers.HypergraphController.delete(hypergraphID: UUID)
 
 POST          /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.create(hypergraphID: UUID)
+GET           /hypergraph/:hypergraphID/hypernode/all          @controllers.HypernodeController.readAll(hypergraphID: UUID)
 GET           /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.read(hypergraphID: UUID, uuid: UUID)
-GET           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.readAll(hypergraphID: UUID)
+GET           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.batchRead(hypergraphID: UUID, hypernodeIDs: List[UUID])
 PUT           /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.update(hypergraphID: UUID, uuid: UUID)
 PUT           /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.batchUpdate(hypergraphID: UUID)
 DELETE        /hypergraph/:hypergraphID/hypernode/:uuid        @controllers.HypernodeController.delete(hypergraphID: UUID, uuid: UUID)

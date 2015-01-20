@@ -12,6 +12,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json._
 
+import scala.concurrent.Future
+
 class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
@@ -41,6 +43,13 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
     Hypernode.read(req.identity.email, hypergraphID, hypernodeID) map {
       case Some(hypernode) => Ok(Json.toJson(hypernode))
+      case None => ServiceUnavailable
+    }
+  }
+
+  def batchRead(hypergraphID: UUID, hypernodeIDs: List[UUID]) = SecuredAction.async { req =>
+    Hypernode.batchRead(req.identity.email, hypergraphID, hypernodeIDs) map {
+      case Some(hypernodes) => Ok(Json.toJson(hypernodes))
       case None => ServiceUnavailable
     }
   }

@@ -119,6 +119,46 @@ object Hypernode {
     }
   }
 
+  val cypherBatchRead =
+    """
+      | MATCH (h:Hypernode)
+      | WHERE h.id IN {hypernodeIDs}
+      | RETURN h;
+    """.stripMargin
+
+  def batchRead(userEmail: String,
+                hypergraphID: UUID,
+                hypernodeIDs: Seq[UUID]): Future[Option[Seq[Hypernode]]] = {
+
+    val neo4jReqJson = Json.obj(
+      "statements" -> Json.arr(
+        Json.obj(
+          "statement" -> cypherBatchRead,
+          "parameters" -> Json.obj(
+            "hypernodeIDs" -> hypernodeIDs
+          )
+        )
+      )
+    )
+
+    val holder = WS
+      .url(dbUrl)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accept" -> "application/json; charset=UTF-8"
+      )
+
+    // TODO: need to sanitize the response before returning it to client
+    holder.post(neo4jReqJson).map { neo4jRes =>
+      val hypernodes = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hypernode]]
+
+      hypernodes match {
+        case s: JsSuccess[Seq[Hypernode]] => Some(s.get)
+        case e: JsError => None
+      }
+    }
+  }
+
   val cypherReadAll =
     """
       | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
