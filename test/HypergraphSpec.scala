@@ -7,12 +7,15 @@ import com.mohiva.play.silhouette.test._
 
 import models.{User, Hypergraph}
 
+import org.joda.time.DateTime
+
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play._
 
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.libs.json.Json
 
 class HypergraphSpec extends WordSpec
   with ScalaFutures
@@ -50,7 +53,13 @@ class HypergraphSpec extends WordSpec
 
   "The Hypergraph model and companion object" should {
     "create, find, and delete the given new unique Hypergraph model" in {
-      val hypergraphModel = Hypergraph(hypergraphID, hypergraphName)
+      val hypergraphModel = Hypergraph(
+        hypergraphID,
+        hypergraphName,
+        DateTime.now,
+        DateTime.now,
+        Some(Json.obj("name" -> hypergraphName))
+      )
 
       val createResult = Hypergraph.create(userEmail, hypergraphModel)
 
@@ -71,6 +80,21 @@ class HypergraphSpec extends WordSpec
       whenReady(findAllResult) { opt =>
         opt.value.size shouldBe 2 //including the default graph
         opt.value.count(_.id == hypergraphID) shouldBe 1
+      }
+
+      val modelUpdate = Hypergraph(
+        hypergraphID,
+        hypergraphName,
+        DateTime.now,
+        null,
+        Some(Json.obj("name" -> hypergraphName, "p1" -> "v1"))
+      )
+
+      val updateResult = Hypergraph.update(userEmail, modelUpdate)
+
+      whenReady(updateResult) { opt =>
+        opt.value.id shouldBe hypergraphID
+        (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)

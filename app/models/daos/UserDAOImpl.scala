@@ -128,7 +128,8 @@ class UserDAOImpl extends UserDAO {
               "id" -> UUID.randomUUID(),
               "name" -> "default",
               "createdAt" -> timestamp,
-              "updateAt" -> timestamp
+              "updatedAt" -> timestamp,
+              "data" -> Json.stringify(JsNull)
             ),
             "userData" -> Json.obj(
               "email" -> user.email,

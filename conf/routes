@@ -21,6 +21,7 @@ DELETE        /account/delete                                  @controllers.Acco
 POST          /hypergraph                                      @controllers.HypergraphController.create
 GET           /hypergraph/:hypergraphID                        @controllers.HypergraphController.read(hypergraphID: UUID)
 GET           /hypergraph                                      @controllers.HypergraphController.readAll
+PUT           /hypergraph/:hypergraphID                        @controllers.HypergraphController.update(hypergraphID: UUID)
 DELETE        /hypergraph/:hypergraphID                        @controllers.HypergraphController.delete(hypergraphID: UUID)
 
 POST          /hypergraph/:hypergraphID/hypernode              @controllers.HypernodeController.create(hypergraphID: UUID)

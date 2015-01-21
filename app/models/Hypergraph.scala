@@ -2,6 +2,7 @@ package models
 
 import java.util.UUID
 
+import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -13,7 +14,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Hypergraph(
   id: UUID,
-  name: String
+  name: String,
+  updatedAt: DateTime,
+  createdAt: DateTime,
+  data: Option[JsObject]
 )
 
 object Hypergraph {
@@ -21,8 +25,11 @@ object Hypergraph {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
-    ((JsPath \ "row")(0) \ "id").read[UUID] and
-    ((JsPath \ "row")(0)\ "name").read[String]
+    ((__ \ "row")(0) \ "id").read[UUID] and
+    ((__ \ "row")(0) \ "name").read[String] and
+    ((__ \ "row")(0) \ "createdAt").read[DateTime] and
+    ((__ \ "row")(0) \ "updatedAt").read[DateTime] and
+    ((__ \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hypergraph.apply _)
 
   val cypherCreate =
@@ -41,7 +48,10 @@ object Hypergraph {
             "userEmail" -> userEmail,
             "hypergraphData" -> Json.obj(
               "id" -> hypergraph.id,
-              "name" -> hypergraph.name
+              "name" -> hypergraph.name,
+              "createdAt" -> hypergraph.createdAt.getMillis,
+              "updatedAt" -> hypergraph.updatedAt.getMillis,
+              "data" -> Json.stringify(hypergraph.data.getOrElse(JsNull))
             )
           )
         )
@@ -134,6 +144,46 @@ object Hypergraph {
 
       hypergraphs match {
         case s: JsSuccess[Seq[Hypergraph]] => Some(s.get)
+        case e: JsError => None
+      }
+    }
+  }
+
+  val cypherUpdate =
+    """
+      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
+      | SET hg.data = {data}, hg.updatedAt = {updatedAt}
+      | RETURN hg;
+    """.stripMargin
+
+  def update(userEmail: String, hypergraph: Hypergraph): Future[Option[Hypergraph]] = {
+    val neo4jReqJson = Json.obj(
+      "statements" -> Json.arr(
+        Json.obj(
+          "statement" -> cypherUpdate,
+          "parameters" -> Json.obj(
+            "userEmail" -> userEmail,
+            "hypergraphID" -> hypergraph.id,
+            "data" -> Json.stringify(hypergraph.data.getOrElse(JsNull)),
+            "updatedAt" -> hypergraph.updatedAt.getMillis
+          )
+        )
+      )
+    )
+
+    val holder = WS
+      .url(dbUrl)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accept" -> "application/json; charset=UTF-8"
+      )
+
+    // TODO: need to sanitize the response before returning it to client
+    holder.post(neo4jReqJson).map { neo4jRes =>
+      val hypergraph = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypergraph]
+
+      hypergraph match {
+        case s: JsSuccess[Hypergraph] => Some(s.get)
         case e: JsError => None
       }
     }
