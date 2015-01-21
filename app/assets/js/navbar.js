@@ -11,6 +11,7 @@ define([
       return {
         editingGraphName: false,
         graphNameCache: '',
+        userName: 'Nadir Muzaffar',
         graph: {
           name: 'Graph'
         }
