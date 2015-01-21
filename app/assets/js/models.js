@@ -1,7 +1,9 @@
 define([
     'util'
 ], function(util) {
+  //
   // Link Model
+  //
 
   /*
      Link: {
@@ -53,7 +55,9 @@ define([
         });
   };
 
+  //
   // Node Model
+  //
 
   var Node = {};
 
@@ -130,6 +134,20 @@ define([
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hypernode/' + node.id,
           type: 'DELETE'
+        });
+  };
+
+  //
+  // Hypergraph Model
+  //
+
+  var Hypergraph = {};
+
+  Hypergraph.fetch = function(hypergraphID) {
+    return util
+        .getJSON('/hypergraph/' + hypergraphID)
+        .then(function(resp) {
+          console.log(resp);
         });
   };
 

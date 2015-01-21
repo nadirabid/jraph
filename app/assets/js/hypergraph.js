@@ -855,7 +855,7 @@ define([
         this.nameCache = this.node.data.name;
 
         var $nameInput = this.$$.nameInput;
-        var test = this.$$.test;
+
         util.animationFrame(function() {
           $nameInput.focus();
           $nameInput.setSelectionRange(0, $nameInput.value.length);

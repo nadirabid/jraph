@@ -1,15 +1,44 @@
 <div id="navbar" class="container-fluid" v-cloak>
-  <ul class="nav navbar-nav">
-    <li>
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-        {{layout}} <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu" role="menu">
-        <li><a href="#" v-on="click:setLayout('Static')">Static</a></li>
-        <li><a href="#" v-on="click:setLayout('Force Directed')">Force Directed</a></li>
-      </ul>
-    </li>
-  </ul>
+  <span
+      class="navbar-brand"
+      v-class="hidden:editingGraphName"
+      v-on="click:editGraphName"
+  >
+    {{graph.name}}
+  </span>
+  <form class="navbar-form navbar-left">
+    <input
+        type="text"
+        class="form-control"
+        v-class="hidden:!editingGraphName"
+        v-el="graphNameInput"
+        v-model="graph.name"
+        v-on="
+            blur   : updateGraphName,
+            keyup  : updateGraphName       | key enter,
+            keyup  : cancelGraphNameUpdate | key esc
+        "
+    >
+  </form>
+
+  <p class="navbar-text">Layout</p>
+  <div class="nav btn-group" role="group">
+    <button
+        type="button" class="btn btn-default navbar-btn"
+        v-class="active:this.layout=='Force Directed'"
+        v-on="click:setLayout('Force Directed')"
+    >
+      Force Directed
+    </button>
+    <button
+        type="button" class="btn btn-default navbar-btn"
+        v-class="active:this.layout=='Static'"
+        v-on="click:setLayout('Static')"
+    >
+      Static
+    </button>
+  </div>
+
   <ul class="nav navbar-nav navbar-right">
     <li>
       <a href="#" class="dropdown-toggle" data-toggle="dropdown">Username</a>
