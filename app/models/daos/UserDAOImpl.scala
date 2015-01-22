@@ -129,7 +129,9 @@ class UserDAOImpl extends UserDAO {
               "name" -> "default",
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp,
-              "data" -> Json.stringify(JsNull)
+              "data" -> Json.stringify(Json.obj(
+                "name" -> "default"
+              ))
             ),
             "userData" -> Json.obj(
               "email" -> user.email,

@@ -1,8 +1,11 @@
 define([
     'vue',
-    'util'
-], function(Vue, util) {
+    'util',
+    'models'
+], function(Vue, util, models) {
   'use strict';
+
+  var Hypergraph = models.Hypergraph;
 
   var NavbarComponent = Vue.extend({
 
@@ -13,7 +16,9 @@ define([
         graphNameCache: '',
         userName: 'Nadir Muzaffar',
         graph: {
-          name: 'Graph'
+          data: {
+            name: 'Graph'
+          }
         }
       };
 
@@ -41,7 +46,7 @@ define([
 
       editGraphName: function() {
         this.editingGraphName = true;
-        this.graphNameCache = this.graph.name;
+        this.graphNameCache = this.graph.data.name;
 
         var $graphNameInputEl = this.$$.graphNameInput;
         util.animationFrame(function() {
@@ -53,8 +58,8 @@ define([
       updateGraphName: function() {
         if (!this.editingGraphName) return; //blur is called redundantly after 'enter' and 'esc' action
 
-        if (!this.graph.name) {
-          this.graph.name = this.graphNameCache;
+        if (!this.graph.data.name) {
+          this.graph.data.name = this.graphNameCache;
         }
         else {
           //update hypergraph name
@@ -65,7 +70,7 @@ define([
 
       cancelGraphNameUpdate: function() {
         this.editingGraphName = false;
-        this.graph.name = this.graphNameCache;
+        this.graph.data.name = this.graphNameCache;
       }
 
     },
@@ -73,12 +78,20 @@ define([
     events: {
 
       'hook:created': function() {
+        var self = this;
+
         if (this.state.$layout.enabled) {
           this.$add('layout', 'Force Directed');
         }
         else {
           this.$add('layout', 'Static');
         }
+
+        Hypergraph
+            .fetch(this.hypergraphID)
+            .done(function(hypergraph) {
+              self.graph = hypergraph;
+            });
       }
 
     }

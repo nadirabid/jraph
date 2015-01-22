@@ -1014,6 +1014,8 @@ define([
    Main application code
    */
 
+  // ready components
+
   var nodeContextMenu = new ContextMenu({
 
     methods: {
@@ -1066,14 +1068,26 @@ define([
 
   linkContextMenu.$mount('#linkContextMenu');
 
-  var graphComponent = new GraphComponent({ data: { state: state } });
+  var graphComponent = new GraphComponent({
+    data: {
+      state: state
+    }
+  });
+
   graphComponent.$mount('#graph');
 
-  var navbarComponent = new NavbarComponent({ data: { state: state } });
+  var navbarComponent = new NavbarComponent({
+    data: {
+      hypergraphID: hypergraphID,
+      state: state
+    }
+  });
   navbarComponent.$mount('#navbar');
 
   var panelBar = new PanelBar();
   panelBar.$mount('#panelBar');
+
+  // fetch data
 
   util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
       .done(function (nodes, links) {

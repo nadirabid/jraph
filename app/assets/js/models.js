@@ -143,15 +143,24 @@ define([
 
   var Hypergraph = {};
 
-  Hypergraph.fetch = function(hypergraphID) {
+  Hypergraph.update = function(hypergraph) {
     return util
-        .getJSON('/hypergraph/' + hypergraphID)
-        .then(function(resp) {
-          console.log(resp);
+        .ajax({
+          url: '/hypergraph/' + hypergraph.id,
+          type: 'PUT',
+          contentType: 'application/json; charset=utf-8',
+          data: JSON.stringify({
+            data: hypergraph.data
+          })
         });
   };
 
+  Hypergraph.fetch = function(hypergraphID) {
+    return util.getJSON('/hypergraph/' + hypergraphID);
+  };
+
   return {
+    Hypergraph: Hypergraph,
     Node: Node,
     Link: Link
   };

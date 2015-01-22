@@ -2,6 +2,10 @@
     Bootstrap related
 ***/
 
+.navbar-brand:first-letter {
+    text-transform: capitalize;
+}
+
 .btn:focus,.btn:active {
     outline: none !important;
 }
@@ -9,6 +13,8 @@
 /***
     Uncategorized
 ***/
+
+[v-cloak] { display: none } /* hide element with v-cloak attribute */
 
 .disable-pointer-events {
     pointer-events: none;
