@@ -71,7 +71,11 @@
         class="node-circle"
         v-attr="r:radius + 'em'"
         v-el="nodeCircle"
-        v-on="contextmenu:nodeContextMenu"></circle>
+        v-on="
+            contextmenu:nodeContextMenu,
+            dblclick:dblclick
+        "
+    ></circle>
     <text
         class="node-name"
         text-anchor="middle"

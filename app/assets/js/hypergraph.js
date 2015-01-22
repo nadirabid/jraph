@@ -33,6 +33,7 @@ define([
 
   function StateEventHandlers() {
     this.click = util.noop;
+    this.dblclick = util.noop;
     this.mouseover = util.noop;
     this.mouseout = util.noop;
     this.drag = util.noop;
@@ -63,6 +64,42 @@ define([
       });
 
       panelBar.setPanel(nodePanel);
+    };
+
+    this.dblclick = function() {
+      var graphCmp = ctx.$parent;
+
+      var minX = graphCmp.minX;
+      var minY = graphCmp.minY;
+
+      var width = graphCmp.width;
+      var height = graphCmp.height;
+
+      var p = util.transformPointFromViewportToEl(
+          (width / 2),
+          (height / 2),
+          ctx.$el);
+
+      var dx = p.x - ctx.x,
+          dy = p.y - ctx.y;
+
+      var iX = d3.interpolateRound(minX, minX - dx),
+          iY = d3.interpolateRound(minY, minY - dy);
+
+      var coff = Math.sqrt(dx*dx + dy*dy) / Math.sqrt(width*width + height*height);
+      var animDuration = 1000 * Math.max(0.15, coff);
+
+      var ease = d3.ease('sin');
+
+      d3.timer(function (elapsed) {
+        var t = elapsed / animDuration;
+        var easedT = ease(t);
+
+        graphCmp.minX = iX(easedT);
+        graphCmp.minY = iY(easedT);
+
+        return t > 1;
+      });
     };
 
     //show menu
@@ -332,8 +369,12 @@ define([
         return this.getState().mouseout.apply(state, arguments);
       },
 
-      click: function (e) {
+      click: function () {
         return this.getState().click.apply(state, arguments);
+      },
+
+      dblclick: function() {
+        return this.getState().dblclick.apply(state, arguments);
       },
 
       drag: function () {
@@ -368,14 +409,14 @@ define([
       },
 
       'hook:ready': function () {
-        var $nodeGroup = util(this.$$.nodeCircle);
+        var $nodeCircle = util(this.$$.nodeCircle);
 
-        $nodeGroup.on('click', this.click.bind(this));
-        $nodeGroup.on('mouseover', this.mouseover.bind(this));
-        $nodeGroup.on('mouseout', this.mouseout.bind(this));
-        $nodeGroup.on('dragstart', this.dragstart.bind(this));
-        $nodeGroup.on('drag', this.drag.bind(this));
-        $nodeGroup.on('dragend', this.dragend.bind(this));
+        $nodeCircle.on('click', this.click.bind(this));
+        $nodeCircle.on('mouseover', this.mouseover.bind(this));
+        $nodeCircle.on('mouseout', this.mouseout.bind(this));
+        $nodeCircle.on('dragstart', this.dragstart.bind(this));
+        $nodeCircle.on('drag', this.drag.bind(this));
+        $nodeCircle.on('dragend', this.dragend.bind(this));
 
         this.updateNameTranslation();
       },
