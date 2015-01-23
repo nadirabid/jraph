@@ -17,7 +17,7 @@ define([
         userName: 'Nadir Muzaffar',
         graph: {
           data: {
-            name: 'Graph'
+            name: ''
           }
         }
       };

@@ -20,22 +20,41 @@
         "
     >
   </form>
-  <p class="navbar-text">Layout</p>
-  <div class="nav btn-group" role="group">
-    <button
-        type="button" class="btn btn-default navbar-btn"
-        v-class="active:this.layout=='Force Directed'"
-        v-on="click:setLayout('Force Directed')"
-    >
-      Force Directed
-    </button>
-    <button
-        type="button" class="btn btn-default navbar-btn"
-        v-class="active:this.layout=='Static'"
-        v-on="click:setLayout('Static')"
-    >
-      Static
-    </button>
+
+  <div class="navbar-left">
+    <p class="navbar-text"><span class="label label-default">Layout</span></p>
+    <div class="nav btn-group" role="group">
+      <button
+          type="button" class="btn btn-default navbar-btn"
+          v-class="active:this.layout=='Force Directed'"
+          v-on="click:setLayout('Force Directed')"
+      >
+        Force Directed
+      </button>
+      <button
+          type="button" class="btn btn-default navbar-btn"
+          v-class="active:this.layout=='Static'"
+          v-on="click:setLayout('Static')"
+      >
+        Static
+      </button>
+    </div>
+  </div>
+
+  <div class="navbar-left" style="margin-left:1.5em;">
+    <p class="navbar-text"><span class="label label-default">Zoom</span></p>
+    <div class="nav btn-group" role="group">
+      <button
+        type="button" class="btn btn-default navbar-btn active"
+      >
+        Scale
+      </button>
+      <button
+          type="button" class="btn btn-default navbar-btn"
+      >
+        Semantic
+      </button>
+    </div>
   </div>
 
   <ul class="nav navbar-nav navbar-right">

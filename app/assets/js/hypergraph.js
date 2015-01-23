@@ -7,7 +7,8 @@ define([
     'globals',
     'models',
     'state',
-    'navbar'
+    'navbar',
+    'jquery'
 ], function (
     _,
     Mousetrap,
@@ -17,7 +18,9 @@ define([
     glob,
     models,
     State,
-    NavbarComponent) {
+    NavbarComponent,
+    $
+) {
   'use strict';
 
   var HALF_PI = glob.HALF_PI;
@@ -598,7 +601,8 @@ define([
         minX: 0,
         minY: 0,
         cmX: 0,
-        cmY: 0
+        cmY: 0,
+        scaleZoomFactor: 1
       };
     },
 
@@ -606,11 +610,23 @@ define([
 
       viewBox: function () {
         return this.minX + ' ' + this.minY + ' ' + this.width + ' ' + this.height;
+      },
+
+      scaleZoomTransform: function() {
+        return 'scale(' + Math.max(this.scaleZoomFactor, 0.5) + ')';
       }
 
     },
 
     methods: {
+
+      zoomUpdate: function(e) {
+        var zoomFactor = this.scaleZoomFactor;
+
+        var deltaX = e.wheelDelta;
+
+        this.scaleZoomFactor = Math.min(Math.max(0.5, zoomFactor - (deltaX / 2200)), 1.5);
+      },
 
       toggleForce: function () {
         var layout = this.state.layout;
@@ -731,6 +747,8 @@ define([
         $svg.on('drag', this.pan.bind(this));
         $svg.on('dragend', this.panEnd.bind(this));
 
+        this.resize();
+
         this.$.contextMenu = new ContextMenu({
           methods: {
             addNode: function(e) {
@@ -756,8 +774,6 @@ define([
         });
 
         this.$.contextMenu.$mount('#graphContextMenu');
-
-        this.resize();
       }
 
     }

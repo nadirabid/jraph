@@ -91,18 +91,6 @@ html, body {
     background-color: #34495E;
 }
 
-.overlay-container {
-    order: 0;
-    display: flex;
-    -webkit-order: 0;
-    display: -webkit-flex;
-
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    padding: 2em;
-}
-
 /***
     HTML Info view styles
 ***/
@@ -152,7 +140,7 @@ html, body {
     Graph view styles
 ***/
 
-.graph-container > svg {
+#graph {
     flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
 }
