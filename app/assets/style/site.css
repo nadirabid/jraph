@@ -48,6 +48,7 @@
 */
 html, body {
     height: 100%;
+    overflow:hidden; /* prevent browser effect of "no more page to scroll" effect */
 }
 
 #all {

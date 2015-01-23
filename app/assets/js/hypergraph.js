@@ -602,7 +602,7 @@ define([
         minY: 0,
         cmX: 0,
         cmY: 0,
-        scaleZoomFactor: 1
+        zoomScale: 1
       };
     },
 
@@ -610,10 +610,6 @@ define([
 
       viewBox: function () {
         return this.minX + ' ' + this.minY + ' ' + this.width + ' ' + this.height;
-      },
-
-      scaleZoomTransform: function() {
-        return 'scale(' + Math.max(this.scaleZoomFactor, 0.5) + ')';
       }
 
     },
@@ -621,11 +617,15 @@ define([
     methods: {
 
       zoomUpdate: function(e) {
-        var zoomFactor = this.scaleZoomFactor;
+        console.log(e);
+        var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
+        var zoomScale = this.zoomScale =
+            Math.min(Math.max(0.5, this.zoomScale - (e.wheelDeltaY / 2200)), 1.5);
 
-        var deltaX = e.wheelDelta;
-
-        this.scaleZoomFactor = Math.min(Math.max(0.5, zoomFactor - (deltaX / 2200)), 1.5);
+        var p = util.transformPointFromClientToEl(e.clientX, e.clientY, nodesAndLinksGroupEl);
+        var k = this.$el.createSVGMatrix().translate(p.x, p.y).scale(zoomScale).translate(-p.x, -p.y);
+        
+        util.setCTM(nodesAndLinksGroupEl, k);
       },
 
       toggleForce: function () {

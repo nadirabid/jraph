@@ -132,13 +132,6 @@ define([
       });
     }
 
-    function setCTM(element, matrix) {
-      var m = matrix;
-      var s = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")";
-
-      element.setAttributeNS(null, "transform", s);
-    }
-
     function extendClass(parentClass, childClass) {
       if (!childClass) {
         childClass = function () {
@@ -171,6 +164,13 @@ define([
       else {
         return chainEvalVm(vm.$parent, varName);
       }
+    }
+
+    function setCTM(element, matrix) {
+      var m = matrix;
+      var s = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")";
+
+      element.setAttributeNS(null, "transform", s);
     }
 
     function transformPointFromViewportToEl(x, y, el) {
@@ -330,6 +330,11 @@ define([
     }, true);
 
     document.addEventListener('mousemove', function (e) {
+      // TODO: (BUG) sometimes mouse position is required before
+      // mousemove event. like scrolling for zoom. so we should initially
+      // bind to all events that reveal mouse location and then remove
+      // them when mousemove is finally called
+
       mouse.x = e.clientX;
       mouse.y = e.clientY;
 
