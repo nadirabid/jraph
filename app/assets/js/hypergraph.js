@@ -600,9 +600,8 @@ define([
         height: 0,
         minX: 0,
         minY: 0,
-        cmX: 0,
-        cmY: 0,
-        zoomSensitivity: 0.3
+        zoomSensitivity: 0.22,
+        totalZoomFactor: 1
       };
     },
 
@@ -610,7 +609,13 @@ define([
 
       zoomUpdate: function(e) {
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
+        var totalZoomFactor = this.totalZoomFactor * zoomFactor;
 
+        if (totalZoomFactor < 0.55 || 1.55 < totalZoomFactor) {
+          return;
+        }
+
+        this.totalZoomFactor = totalZoomFactor;
 
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
         var ctm = nodesAndLinksGroupEl.getCTM();
