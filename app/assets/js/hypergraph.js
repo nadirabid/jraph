@@ -1,25 +1,21 @@
 define([
     'lodash',
     'mousetrap',
-    'page',
     'vue',
     'util',
     'globals',
     'models',
     'state',
-    'navbar',
-    'jquery'
+    'navbar'
 ], function (
     _,
     Mousetrap,
-    page,
     Vue,
     util,
     glob,
     models,
     State,
-    NavbarComponent,
-    $
+    NavbarComponent
 ) {
   'use strict';
 
@@ -157,8 +153,12 @@ define([
     };
 
     this.drag = function (e) {
-      var p = util.transformPointFromClientToEl(
-          e.clientX, e.clientY, ctx.$el);
+      var ctm = ctx.$parent.$$.nodesAndLinksGroup.getScreenCTM();
+      var p = ctx.$parent.$el.createSVGPoint();
+
+      p.x = e.clientX;
+      p.y = e.clientY;
+      p = p.matrixTransform(ctm.inverse());
 
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
@@ -606,25 +606,26 @@ define([
       };
     },
 
-    computed: {
-
-      viewBox: function () {
-        return this.minX + ' ' + this.minY + ' ' + this.width + ' ' + this.height;
-      }
-
-    },
-
     methods: {
 
       zoomUpdate: function(e) {
-        console.log(e);
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
-        var zoomScale = this.zoomScale =
-            Math.min(Math.max(0.5, this.zoomScale - (e.wheelDeltaY / 2200)), 1.5);
+        var zoomScale = Math.min(Math.max(0.5, this.zoomScale - (e.wheelDeltaY / 2200)), 1.5);
 
-        var p = util.transformPointFromClientToEl(e.clientX, e.clientY, nodesAndLinksGroupEl);
+        if (zoomScale == this.zoomScale) {
+          return;
+        }
+
+        this.zoomScale = zoomScale;
+
+        var p = this.$el.createSVGPoint();
+        p.x = e.clientX;
+        p.y = e.clientY;
+
+        p = p.matrixTransform(this.$el.getCTM().inverse());
+
         var k = this.$el.createSVGMatrix().translate(p.x, p.y).scale(zoomScale).translate(-p.x, -p.y);
-        
+
         util.setCTM(nodesAndLinksGroupEl, k);
       },
 
@@ -657,8 +658,7 @@ define([
 
         var self = this;
 
-        this._pMinX = this.minX;
-        this._pMinY = this.minY;
+        this._ctm = this.$$.nodesAndLinksGroup.getCTM();
 
         util.animationFrame(function() {
           self.$el.style.setProperty('cursor', 'move');
@@ -670,8 +670,7 @@ define([
           return;
         }
 
-        this.minX = this._pMinX - e.dx;
-        this.minY = this._pMinY - e.dy;
+        util.setCTM(this.$$.nodesAndLinksGroup, this._ctm.translate(e.dx, e.dy));
       },
 
       panEnd: function() {
@@ -680,6 +679,8 @@ define([
         }
 
         var self = this;
+
+        this._ctm = null;
 
         util.animationFrame(function() {
           self.$el.style.setProperty('cursor', 'auto');

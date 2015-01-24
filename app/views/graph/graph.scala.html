@@ -1,12 +1,5 @@
 <div class="graph-container">
-  <svg
-      id="graph"
-      v-attr="viewBox:viewBox"
-      v-on="
-          contextmenu:contextMenu,
-          wheel:zoomUpdate
-      "
-  >
+  <svg id="graph" v-on="contextmenu:contextMenu, wheel:zoomUpdate">
     <!-- Definitions -->
     <defs>
       <marker

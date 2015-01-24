@@ -191,11 +191,10 @@ define([
       return svgPoint;
     }
 
-    function transformVectorFromViewportToEl(x, y, el) {
-      var viewportEl = el.nearestViewportElement;
-      var ctm = viewportEl.getCTM().inverse();
-      ctm.e = ctm.f = 0;
+    function transformPointFromClientToEl(x, y, el) {
+      var viewportEl = el.nearestViewportElement || el;
 
+      var ctm = viewportEl.getScreenCTM().inverse();
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
 
@@ -210,10 +209,11 @@ define([
       return svgPoint;
     }
 
-    function transformPointFromClientToEl(x, y, el) {
-      var viewportEl = el.nearestViewportElement || el;
+    function transformVectorFromViewportToEl(x, y, el) {
+      var viewportEl = el.nearestViewportElement;
+      var ctm = viewportEl.getCTM().inverse();
+      ctm.e = ctm.f = 0;
 
-      var ctm = viewportEl.getScreenCTM().inverse();
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
 
