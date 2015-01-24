@@ -601,7 +601,9 @@ define([
         minX: 0,
         minY: 0,
         zoomSensitivity: 0.22,
-        totalZoomFactor: 1
+        totalZoomFactor: 1,
+        maxZoomFactor: 1.55,
+        minZoomFactor: 0.55
       };
     },
 
@@ -610,8 +612,9 @@ define([
       zoomUpdate: function(e) {
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
-
-        if (totalZoomFactor < 0.55 || 1.55 < totalZoomFactor) {
+        totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
+        
+        if (totalZoomFactor === this.totalZoomFactor) {
           return;
         }
 
