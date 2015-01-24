@@ -613,7 +613,7 @@ define([
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
-        
+
         if (totalZoomFactor === this.totalZoomFactor) {
           return;
         }
@@ -677,7 +677,10 @@ define([
           return;
         }
 
-        util.setCTM(this.$$.nodesAndLinksGroup, this._ctm.translate(e.dx, e.dy));
+        var ctm = this._ctm;
+
+        var p = util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
+        util.setCTM(this.$$.nodesAndLinksGroup, ctm.translate(p.x, p.y));
       },
 
       panEnd: function() {
