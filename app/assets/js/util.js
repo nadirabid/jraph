@@ -212,7 +212,7 @@ define([
     function transformVectorFromViewportToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement;
       var ctm = viewportEl.getCTM().inverse();
-      ctm.e = ctm.f = 0;
+      ctm.e = ctm.f = 0; // specifically for dealing with vectors
 
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
@@ -231,7 +231,7 @@ define([
     function transformVectorFromClientToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement;
       var ctm = viewportEl.getScreenCTM().inverse();
-      ctm.e = ctm.f = 0;
+      ctm.e = ctm.f = 0; // specifically for dealing with vectors
 
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;

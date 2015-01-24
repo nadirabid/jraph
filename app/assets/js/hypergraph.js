@@ -160,8 +160,11 @@ define([
       p.y = e.clientY;
       p = p.matrixTransform(ctm.inverse());
 
-      ctx.px = ctx.x = p.x;
-      ctx.py = ctx.y = p.y;
+      console.log('normal:', p.x, p.y);
+      console.log('scaled:', ctx.$parent.x(p.x), ctx.$parent.y(p.y));
+
+      ctx.px = ctx.x = ctx.$parent.x(p.x);
+      ctx.py = ctx.y = ctx.$parent.y(p.y);
 
       dragFlag = true;
 
@@ -274,7 +277,7 @@ define([
     computed: {
 
       nodeTranslate: function() {
-        return 'translate(' + this.x + ',' + this.y + ')';
+        return 'translate(' + this.$parent.x(this.x) + ',' + this.$parent.y(this.y) + ')';
       },
 
       nameTranslate: function() {
@@ -439,6 +442,21 @@ define([
 
     template: document.getElementById('graph.link').innerHTML,
 
+    computed: {
+      sourceX: function() {
+        return this.$parent.x(this.source.x);
+      },
+      sourceY: function() {
+        return this.$parent.y(this.source.y);
+      },
+      targetX: function() {
+        return this.$parent.x(this.target.x);
+      },
+      targetY: function() {
+        return this.$parent.y(this.target.y);
+      }
+    },
+
     methods: {
 
       delete: function() {
@@ -548,11 +566,11 @@ define([
         var v = util.transformVectorFromClientToEl(
             e.dx, e.dy, this.$el);
 
-        source.px = source.x = this.source_x + v.x;
-        source.py = source.y = this.source_y + v.y;
+        source.px = source.x = this.$parent.x(this.source_x + v.x);
+        source.py = source.y = this.$parent.y(this.source_y + v.y);
 
-        target.px = target.x = this.target_x + v.x;
-        target.py = target.y = this.target_y + v.y;
+        target.px = target.x = this.$parent.x(this.target_x + v.x);
+        target.py = target.y = this.$parent.y(this.target_y + v.y);
 
         this.state.$layout.resume();
       },
@@ -594,6 +612,8 @@ define([
 
     data: function () {
       return {
+        x: null,
+        y: null,
         nodes: [ ],
         links: [ ],
         width: 0,
@@ -610,6 +630,7 @@ define([
     methods: {
 
       zoomUpdate: function(e) {
+
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
@@ -620,6 +641,18 @@ define([
 
         this.totalZoomFactor = totalZoomFactor;
 
+        var scaledWidth = this.width * totalZoomFactor;
+        var scaledHeight = this.height * totalZoomFactor;
+
+        this.x = d3.scale.linear()
+            .domain([0, this.width])
+            .range([0, scaledWidth]);
+
+        this.y = d3.scale.linear()
+            .domain([0, this.height])
+            .range([0, scaledHeight]);
+
+        /*
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
         var ctm = nodesAndLinksGroupEl.getCTM();
 
@@ -634,6 +667,7 @@ define([
             .translate(-p.x, -p.y);
 
         util.setCTM(nodesAndLinksGroupEl, ctm.multiply(k));
+        */
       },
 
       toggleForce: function () {
@@ -653,6 +687,14 @@ define([
         var layout = this.state.$layout;
         layout.size([ newWidth, newHeight ]);
         layout.resume();
+
+        this.x = d3.scale.linear()
+            .domain([0, newWidth])
+            .range([0, newWidth]);
+
+        this.y = d3.scale.linear()
+            .domain([0, newHeight])
+            .range([0, newHeight]);
 
         this.width = newWidth;
         this.height = newHeight;

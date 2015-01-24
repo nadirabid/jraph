@@ -66,7 +66,7 @@
         "
     ></circle>
     <text
-        class="node-name"
+        class="node-name disable-pointer-events"
         text-anchor="middle"
         v-attr="transform: nameTranslate"
         v-el="nodeName"
@@ -80,13 +80,13 @@
   <g class="enable-pointer-events" v-on="contextmenu:linkContextMenu">
     <line
         class="link"
-        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
+        v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
     ></line>
     <line
         class="marker-arrow"
         marker-end="url(#def-marker-arrow)"
         v-el="arrowMarkerLine"
-        v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
+        v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
     ></line>
   </g>
 </template>

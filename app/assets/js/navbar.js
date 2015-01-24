@@ -56,13 +56,26 @@ define([
       },
 
       updateGraphName: function() {
-        if (!this.editingGraphName) return; //blur is called redundantly after 'enter' and 'esc' action
+        if (!this.editingGraphName) { //blur is called redundantly after 'enter' and 'esc' action
+          return;
+        }
+
+        var self = this;
 
         if (!this.graph.data.name) {
           this.graph.data.name = this.graphNameCache;
         }
         else {
-          //update hypergraph name
+          Hypergraph
+              .update({
+                id: this.graph.id,
+                data: {
+                  name: this.graph.name
+                }
+              })
+              .done(function(hypergraph) {
+                self.graph = hypergraph;
+              });
         }
 
         this.editingGraphName = false;
