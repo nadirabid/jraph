@@ -102,6 +102,7 @@ define([
     initData = initData || {};
 
     this.nodeState = 'initial';
+    this.zoomType = 'scale';
     this.links = initData.links || [];
     this.nodes = initData.nodes || [];
     this.$layout = new ForceLayout();

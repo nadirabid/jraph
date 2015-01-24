@@ -26,6 +26,14 @@ define([
 
     methods: {
 
+      setZoomType: function(zoomType) {
+        if (this.state.zoomType == zoomType) {
+          return;
+        }
+
+        this.state.zoomType = zoomType;
+      },
+
       setLayout: function(layout) {
         if (this.layout === layout) {
           return;

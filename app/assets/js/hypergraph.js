@@ -623,14 +623,15 @@ define([
         zoomSensitivity: 0.22,
         totalZoomFactor: 1,
         maxZoomFactor: 1.55,
-        minZoomFactor: 0.55
+        minZoomFactor: 0.55,
+        zoomTranslateX: 0,
+        zoomTranslateY: 0
       };
     },
 
     methods: {
 
       zoomUpdate: function(e) {
-
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
@@ -641,18 +642,19 @@ define([
 
         this.totalZoomFactor = totalZoomFactor;
 
-        var scaledWidth = this.width * totalZoomFactor;
-        var scaledHeight = this.height * totalZoomFactor;
+        switch(this.state.zoomType) {
+          case 'scale':
+            this.scaleZoom(e, zoomFactor);
+            break;
+          case 'semantic':
+            this.semanticZoom(e, totalZoomFactor);
+            break;
+          default:
+            console.error('Unknown zoomType:', this.state.zoomType);
+        }
+      },
 
-        this.x = d3.scale.linear()
-            .domain([0, this.width])
-            .range([0, scaledWidth]);
-
-        this.y = d3.scale.linear()
-            .domain([0, this.height])
-            .range([0, scaledHeight]);
-
-        /*
+      scaleZoom: function(e, zoomFactor) {
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
         var ctm = nodesAndLinksGroupEl.getCTM();
 
@@ -667,7 +669,19 @@ define([
             .translate(-p.x, -p.y);
 
         util.setCTM(nodesAndLinksGroupEl, ctm.multiply(k));
-        */
+      },
+
+      semanticZoom: function(e, totalZoomFactor) {
+        var scaledWidth = this.width * totalZoomFactor;
+        var scaledHeight = this.height * totalZoomFactor;
+
+        this.x = d3.scale.linear()
+            .domain([0, this.width])
+            .range([0, scaledWidth]);
+
+        this.y = d3.scale.linear()
+            .domain([0, this.height])
+            .range([0, scaledHeight]);
       },
 
       toggleForce: function () {

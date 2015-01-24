@@ -46,11 +46,15 @@
     <div class="nav btn-group" role="group">
       <button
         type="button" class="btn btn-default navbar-btn active"
+        v-class="active:this.state.zoomType == 'scale'"
+        v-on="click:setZoomType('scale')"
       >
         Scale
       </button>
       <button
           type="button" class="btn btn-default navbar-btn"
+          v-class="active:this.state.zoomType == 'semantic'"
+          v-on="click:setZoomType('semantic')"
       >
         Semantic
       </button>
