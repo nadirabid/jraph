@@ -87,7 +87,7 @@ class HypergraphSpec extends WordSpec
         hypergraphName,
         DateTime.now,
         null,
-        Some(Json.obj("name" -> hypergraphName, "p1" -> "v1"))
+        Some(Json.obj("name" -> "newName", "p1" -> "v1"))
       )
 
       val updateResult = Hypergraph.update(userEmail, modelUpdate)
@@ -95,6 +95,7 @@ class HypergraphSpec extends WordSpec
       whenReady(updateResult) { opt =>
         opt.value.id shouldBe hypergraphID
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
+        (opt.value.data.get \ "name").as[String] shouldBe "newName"
       }
 
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)

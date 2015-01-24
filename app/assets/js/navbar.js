@@ -78,7 +78,7 @@ define([
               .update({
                 id: this.graph.id,
                 data: {
-                  name: this.graph.name
+                  name: this.graph.data.name
                 }
               })
               .done(function(hypergraph) {
