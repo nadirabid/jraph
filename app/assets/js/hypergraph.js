@@ -602,31 +602,30 @@ define([
         minY: 0,
         cmX: 0,
         cmY: 0,
-        zoomScale: 1
+        zoomSensitivity: 0.3
       };
     },
 
     methods: {
 
       zoomUpdate: function(e) {
+        var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
+
+
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
-        var zoomScale = Math.min(Math.max(0.5, this.zoomScale - (e.wheelDeltaY / 2200)), 1.5);
-
-        if (zoomScale == this.zoomScale) {
-          return;
-        }
-
-        this.zoomScale = zoomScale;
+        var ctm = nodesAndLinksGroupEl.getCTM();
 
         var p = this.$el.createSVGPoint();
         p.x = e.clientX;
         p.y = e.clientY;
+        p = p.matrixTransform(ctm.inverse());
 
-        p = p.matrixTransform(this.$el.getCTM().inverse());
+        var k = this.$el.createSVGMatrix()
+            .translate(p.x, p.y)
+            .scale(zoomFactor)
+            .translate(-p.x, -p.y);
 
-        var k = this.$el.createSVGMatrix().translate(p.x, p.y).scale(zoomScale).translate(-p.x, -p.y);
-
-        util.setCTM(nodesAndLinksGroupEl, k);
+        util.setCTM(nodesAndLinksGroupEl, ctm.multiply(k));
       },
 
       toggleForce: function () {
