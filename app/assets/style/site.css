@@ -96,6 +96,18 @@ html, body {
     HTML Info view styles
 ***/
 
+.floating-panel-bar {
+    position:absolute;
+    width: 26em;
+
+    pointer-events: auto;
+    background-color: rgba(255, 255, 255, .93);
+    white-space: nowrap;
+    padding: 2em;
+    box-shadow: 0 .05em .2em 0em rgba(1, 1, 1, .2);
+    border: 1px solid #eee;
+}
+
 .info-panel {
     order: 1;
     -webkit-order: 1;

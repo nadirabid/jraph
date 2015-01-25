@@ -1,5 +1,6 @@
 define([
     'lodash',
+    'jquery',
     'mousetrap',
     'vue',
     'util',
@@ -9,6 +10,7 @@ define([
     'navbar'
 ], function (
     _,
+    $,
     Mousetrap,
     Vue,
     util,
@@ -62,7 +64,7 @@ define([
         }
       });
 
-      panelBar.setPanel(nodePanel);
+      floatingPanelBar.setPanel(nodePanel);
     };
 
     this.dblclick = function() {
@@ -852,7 +854,7 @@ define([
                 }
               });
 
-              panelBar.setPanel(nodePanel);
+              floatingPanelBar.setPanel(nodePanel);
             },
             saveGraph: function() {
               Node.update(hypergraphID, self.nodes);
@@ -1074,6 +1076,52 @@ define([
 
   });
 
+  var FloatingPanelBar = Vue.extend({
+
+    methods: {
+      updateDimensionsAndPosition: function() {
+        var $nav = $('#nav');
+
+        var padding = 24;
+        var navHeight = $nav.outerHeight();
+
+        $(this.$el).css({
+          top: navHeight + padding + 'px',
+          right: padding + 'px'
+        });
+
+        $(this.$el).outerHeight($(window).outerHeight() - navHeight - 2*padding);
+      },
+
+      removePanel: function() {
+        if (this.$.currentPanel) {
+          this.$.currentPanel.$destroy(true);
+          //delete this.$.currentPanel;
+        }
+      },
+
+      setPanel: function(panel) {
+        if (this.$.currentPanel) {
+          this.$.currentPanel.$destroy(true);
+          delete this.$.currentPanel;
+        }
+
+        this.$.currentPanel = panel;
+        panel.$mount();
+        panel.$appendTo(this.$el);
+      }
+    },
+
+    events: {
+
+      'hook:ready': function() {
+        this.updateDimensionsAndPosition();
+        window.addEventListener('resize', this.updateDimensionsAndPosition.bind(this));
+      }
+
+    }
+  });
+
   var ContextMenu = Vue.extend({
 
     data: function() {
@@ -1230,6 +1278,9 @@ define([
 
   var panelBar = new PanelBar();
   panelBar.$mount('#panelBar');
+
+  var floatingPanelBar = new FloatingPanelBar();
+  floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data
 
