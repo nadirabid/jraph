@@ -644,10 +644,10 @@ define([
 
         switch(this.state.zoomType) {
           case 'scale':
-            this.scaleZoom(e, zoomFactor);
+            this.scaleZoom(e, zoomFactor, totalZoomFactor);
             break;
           case 'semantic':
-            this.semanticZoom(e, totalZoomFactor);
+            this.semanticZoom(e, zoomFactor, totalZoomFactor);
             break;
           default:
             console.error('Unknown zoomType:', this.state.zoomType);
@@ -668,20 +668,40 @@ define([
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
 
-        util.setCTM(nodesAndLinksGroupEl, ctm.multiply(k));
+        util.animationFrame(function() {
+          util.setCTM(nodesAndLinksGroupEl, ctm.multiply(k));
+        });
       },
 
-      semanticZoom: function(e, totalZoomFactor) {
+      semanticZoom: function(e, zoomFactor, totalZoomFactor) {
         var scaledWidth = this.width * totalZoomFactor;
         var scaledHeight = this.height * totalZoomFactor;
+        var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
+        var ctm = nodesAndLinksGroupEl.getCTM();
+
+        var p = this.$el.createSVGPoint();
+        p.x = e.clientX;
+        p.y = e.clientY;
+        p = p.matrixTransform(ctm.inverse());
+
+        var p2 = { x: p.x*zoomFactor, y: p.y*zoomFactor };
+
+        if (!this._t) {
+          this._t = { x: 0, y: 0};
+        }
+
+        var t = this._t;
+
+        t.x += (p2.x - p.x);
+        t.y += (p2.y - p.y);
 
         this.x = d3.scale.linear()
             .domain([0, this.width])
-            .range([0, scaledWidth]);
+            .range([(0 - t.x)/zoomFactor, (scaledWidth - t.x)/zoomFactor]);
 
         this.y = d3.scale.linear()
             .domain([0, this.height])
-            .range([0, scaledHeight]);
+            .range([(0 - t.y)/zoomFactor, (scaledHeight - t.y)/zoomFactor]);
       },
 
       toggleForce: function () {
