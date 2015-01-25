@@ -1096,7 +1096,7 @@ define([
       removePanel: function() {
         if (this.$.currentPanel) {
           this.$.currentPanel.$destroy(true);
-          //delete this.$.currentPanel;
+          delete this.$.currentPanel;
         }
       },
 
