@@ -97,7 +97,7 @@ html, body {
 ***/
 
 .floating-panel-bar {
-
+    overflow:scroll;
     position:absolute;
     width: 26em;
 
@@ -253,7 +253,6 @@ html, body {
 .node-property-list > dd > div > button > span {
     text-shadow:0 0 0 #000;
     font-size:1em;
-    color: #fff;
 }
 
 .node-property-list > dd > div > .close {

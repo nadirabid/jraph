@@ -129,7 +129,9 @@
         <dl class="node-property-list">
           <dt>{{$key}}</dt>
           <dd v-repeat="prop: propsGroup">
-            <div v-class="hidden:prop.edit_">
+            <div
+                v-class="hidden:prop.edit_"
+            >
                 {{prop.value}}
               <button
                   aria-label="Close"
