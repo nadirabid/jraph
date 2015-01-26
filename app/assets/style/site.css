@@ -14,7 +14,7 @@
     Uncategorized
 ***/
 
-[v-cloak] { display: none } /* hide element with v-cloak attribute */
+[v-cloak] { display: none !important; } /* hide element with v-cloak attribute */
 
 .disable-pointer-events {
     pointer-events: none;
@@ -190,7 +190,7 @@ html, body {
 }
 
 .node-name {
-    fill: #ecf0f1;
+    fill: #000;
 }
 
 .node-menu {

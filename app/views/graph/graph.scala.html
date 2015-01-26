@@ -76,6 +76,26 @@
   </g>
 </template>
 
+<template id="graph.node.rect">
+  <g
+    class="node enable-pointer-events"
+    v-attr="id: id, transform: nodeTranslate"
+  >
+    <rect
+        fill="white"
+        v-el="nodeRect"
+        v-attr="width:width, height:height, transform:rectTranslate"
+    ></rect>
+    <text
+        class="node-name disable-pointer-events"
+        text-anchor="middle"
+        v-el="nodeName"
+    >
+      {{data.name}}
+    </text>
+  </g>
+</template>
+
 <template id="graph.link">
   <g class="enable-pointer-events" v-on="contextmenu:linkContextMenu">
     <line

@@ -260,10 +260,12 @@ define([
 
     replace: true,
 
-    template: document.getElementById('graph.node').innerHTML,
+    template: document.getElementById('graph.node.rect').innerHTML,
 
     data: function () {
       return {
+        width: 0,
+        height: 0,
         name: 'Name',
         menu: false,
         nameDistance: 15,
@@ -284,6 +286,10 @@ define([
 
       nameTranslate: function() {
         return 'translate(' + this.nameX + ',' + this.nameY + ')';
+      },
+
+      rectTranslate: function() {
+        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 12)/2) + ')';
       }
 
     },
@@ -317,6 +323,15 @@ define([
         };
 
         window.addEventListener('click', closeContextMenu);
+      },
+
+      updateDimensionsOfNodeRect: function() {
+        var bBox = this.$$.nodeName.getBBox();
+
+        console.log(bBox);
+
+        this.width = bBox.width + 24;
+        this.height = bBox.height + 12;
       },
 
       updateNameTranslation: function () {
@@ -410,13 +425,16 @@ define([
 
         this.state = this.$parent.state;
 
+        /*
         this.$watch('x', this.updateNameTranslation.bind(this));
         this.$watch('y', this.updateNameTranslation.bind(this));
         this.$watch('nameDistance', this.updateNameTranslation.bind(this));
         this.$watch('radius', this.updateNameTranslation.bind(this));
+        */
       },
 
       'hook:ready': function () {
+        /*
         var $nodeCircle = util(this.$$.nodeCircle);
 
         $nodeCircle.on('click', this.click.bind(this));
@@ -427,6 +445,18 @@ define([
         $nodeCircle.on('dragend', this.dragend.bind(this));
 
         this.updateNameTranslation();
+        */
+
+        var $nodeCircle = util(this.$$.nodeRect);
+
+        $nodeCircle.on('click', this.click.bind(this));
+        $nodeCircle.on('mouseover', this.mouseover.bind(this));
+        $nodeCircle.on('mouseout', this.mouseout.bind(this));
+        $nodeCircle.on('dragstart', this.dragstart.bind(this));
+        $nodeCircle.on('drag', this.drag.bind(this));
+        $nodeCircle.on('dragend', this.dragend.bind(this));
+
+        this.updateDimensionsOfNodeRect();
       },
 
       'hook:beforeDestroyed': function () {
