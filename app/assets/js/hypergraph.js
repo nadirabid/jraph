@@ -903,7 +903,8 @@ define([
     methods: {
 
       closeNodePanel: function() {
-        panelBar.removePanel();
+        console.log(this.$parent);
+        floatingPanelBar.removePanel();
       },
 
       validateInputChange: function() {
@@ -1050,32 +1051,6 @@ define([
 
   });
 
-  var PanelBar = Vue.extend({
-
-    methods: {
-
-      removePanel: function() {
-        if (this.$.currentPanel) {
-          this.$.currentPanel.$destroy(true);
-          //delete this.$.currentPanel;
-        }
-      },
-
-      setPanel: function(panel) {
-        if (this.$.currentPanel) {
-          this.$.currentPanel.$destroy(true);
-          delete this.$.currentPanel;
-        }
-
-        this.$.currentPanel = panel;
-        panel.$mount();
-        panel.$appendTo(this.$el);
-      }
-
-    }
-
-  });
-
   var FloatingPanelBar = Vue.extend({
 
     methods: {
@@ -1093,10 +1068,23 @@ define([
         $(this.$el).outerHeight($(window).outerHeight() - navHeight - 2*padding);
       },
 
+      show: function() {
+        this.$el.classList.remove('hide');
+        this.$el.classList.add('show');
+        this.updateDimensionsAndPosition();
+      },
+
+      hide: function() {
+        this.$el.classList.remove('show');
+        this.$el.classList.add('hide');
+        this.updateDimensionsAndPosition();
+      },
+
       removePanel: function() {
         if (this.$.currentPanel) {
           this.$.currentPanel.$destroy(true);
           delete this.$.currentPanel;
+          this.hide();
         }
       },
 
@@ -1105,6 +1093,8 @@ define([
           this.$.currentPanel.$destroy(true);
           delete this.$.currentPanel;
         }
+
+        this.show();
 
         this.$.currentPanel = panel;
         panel.$mount();
@@ -1275,9 +1265,6 @@ define([
     }
   });
   navbarComponent.$mount('#navbar');
-
-  var panelBar = new PanelBar();
-  panelBar.$mount('#panelBar');
 
   var floatingPanelBar = new FloatingPanelBar();
   floatingPanelBar.$mount('#floatingPanelBar');

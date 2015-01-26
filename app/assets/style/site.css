@@ -267,7 +267,6 @@ html, body {
 .node-panel > .close > span {
     text-shadow: 0 0 0 #000;
     font-size:1.3em;
-    color:#fff;
 }
 
 .node-panel > .submit {
