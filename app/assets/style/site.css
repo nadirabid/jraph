@@ -181,6 +181,11 @@ html, body {
     stroke: #fff;
 }
 
+.node-rect {
+    stroke-width: 0;
+    fill: #fff;
+}
+
 .node-linking-target.hover {
     fill: #00bcd4;
 }

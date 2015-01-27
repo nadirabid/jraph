@@ -136,7 +136,7 @@ define([
       // to stop drag event from propagating to panning handler on svg
       e.stopPropagation();
 
-      if (e.target !== ctx.$$.nodeCircle) {
+      if (e.target !== ctx.$$.nodeRect) {
         return;
       }
 
@@ -149,8 +149,7 @@ define([
       ctx.menu = false;
 
       util.animationFrame(function() {
-        ctx.$el.nearestViewportElement
-            .style.setProperty('cursor', 'move');
+        ctx.$parent.$el.style.setProperty('cursor', 'move');
       });
     };
 
@@ -161,9 +160,6 @@ define([
       p.x = e.clientX;
       p.y = e.clientY;
       p = p.matrixTransform(ctm.inverse());
-
-      console.log('normal:', p.x, p.y);
-      console.log('scaled:', ctx.$parent.x(p.x), ctx.$parent.y(p.y));
 
       ctx.px = ctx.x = ctx.$parent.x(p.x);
       ctx.py = ctx.y = ctx.$parent.y(p.y);
@@ -177,7 +173,7 @@ define([
       ctx.menu = true;
 
       util.animationFrame(function() {
-        ctx.$el.nearestViewportElement.style.setProperty('cursor', 'auto');
+        ctx.$parent.$el.style.setProperty('cursor', 'auto');
       });
     };
   });
@@ -266,7 +262,7 @@ define([
       return {
         width: 0,
         height: 0,
-        name: 'Name',
+        name: '',
         menu: false,
         nameDistance: 15,
         radius: 1.5,
@@ -274,6 +270,7 @@ define([
         nameY: 0,
         nameTranslate: 'translate(0, 0)',
         nodeTranslate: 'translate(0, 0)',
+        rectTranslate: 'translate(0, 0)',
         fixed: false //d3.force doesn't pick it up if not explicitly linked
       };
     },
@@ -327,8 +324,6 @@ define([
 
       updateDimensionsOfNodeRect: function() {
         var bBox = this.$$.nodeName.getBBox();
-
-        console.log(bBox);
 
         this.width = bBox.width + 24;
         this.height = bBox.height + 12;
@@ -424,6 +419,8 @@ define([
         };
 
         this.state = this.$parent.state;
+
+        this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
 
         /*
         this.$watch('x', this.updateNameTranslation.bind(this));
@@ -581,9 +578,7 @@ define([
         this.target_y = target.py = target.y;
 
         util.animationFrame(function() {
-          self.$el.nearestViewportElement
-              .style
-              .setProperty('cursor', 'move');
+          self.$parent.$el.style.setProperty('cursor', 'move');
         });
       },
 
@@ -611,13 +606,8 @@ define([
         var self = this;
 
         util.animationFrame(function() {
-          self.$el.querySelector('.link')
-              .classList
-              .remove('hover');
-
-          self.$el.nearestViewportElement
-              .style
-              .setProperty('cursor', 'auto');
+          self.$el.querySelector('.link').classList.remove('hover');
+          self.$parent.$el.style.removeProperty('cursor', 'auto');
         });
       }
 
@@ -933,7 +923,6 @@ define([
     methods: {
 
       closeNodePanel: function() {
-        console.log(this.$parent);
         floatingPanelBar.removePanel();
       },
 
@@ -1040,12 +1029,14 @@ define([
       },
 
       updateName: function() {
-        if (!this.editingName) return; //blur is called redundantly after 'enter' and 'esc' action
-
-        if (!this.node.name) {
-          this.node.name = this.nameCache;
+        if (!this.editingName) { //blur is called redundantly after 'enter' and 'esc' action
+          return;
         }
-        else {
+
+        if (!this.node.data.name) {
+          this.node.data.name = this.nameCache;
+        }
+        else if (this.node.data.name !== this.nameCache) {
           this.hasChanges = true;
         }
 
