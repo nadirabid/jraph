@@ -309,7 +309,9 @@ define([
       },
 
       nodeContextMenu: function(e) {
-        if (e.target != this.$$.nodeCircle) return;
+        if (e.target != this.$$.nodeRect) {
+          return;
+        }
 
         e.stopPropagation();
         e.preventDefault();
@@ -329,6 +331,12 @@ define([
 
         this.width = bBox.width + 24;
         this.height = bBox.height + 12;
+      },
+
+      updateDimensionsOfNodeCircle: function() {
+        var bBox = this.$$.nodeName.getBBox();
+
+        this.radius = (bBox.width / 2) + 12;
       },
 
       updateNameTranslation: function () {
@@ -422,7 +430,7 @@ define([
 
         this.state = this.$parent.state;
 
-        this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
+        this.$watch('data.name', this.updateDimensionsOfNodeCircle.bind(this));
 
         /*
         this.$watch('x', this.updateNameTranslation.bind(this));
@@ -446,14 +454,14 @@ define([
         this.updateNameTranslation();
         */
 
-        var $nodeCircle = util(this.$$.nodeRect);
+        var $nodeRect = util(this.$$.nodeRect);
 
-        $nodeCircle.on('click', this.click.bind(this));
-        $nodeCircle.on('mouseover', this.mouseover.bind(this));
-        $nodeCircle.on('mouseout', this.mouseout.bind(this));
-        $nodeCircle.on('dragstart', this.dragstart.bind(this));
-        $nodeCircle.on('drag', this.drag.bind(this));
-        $nodeCircle.on('dragend', this.dragend.bind(this));
+        $nodeRect.on('click', this.click.bind(this));
+        $nodeRect.on('mouseover', this.mouseover.bind(this));
+        $nodeRect.on('mouseout', this.mouseout.bind(this));
+        $nodeRect.on('dragstart', this.dragstart.bind(this));
+        $nodeRect.on('drag', this.drag.bind(this));
+        $nodeRect.on('dragend', this.dragend.bind(this));
 
         this.updateDimensionsOfNodeRect();
       },
@@ -667,12 +675,11 @@ define([
         this.zoomUpdate(e, e.wheelDelta / 360);
       },
 
-      zoomUpdate: function(e, zoomFactor) {
-        zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomFactor);
+      zoomUpdate: function(e, zoomDelta) {
+        var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
 
-        console.log(totalZoomFactor, this.totalZoomFactor);
         if (totalZoomFactor === this.totalZoomFactor) {
           return;
         }

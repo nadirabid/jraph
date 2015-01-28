@@ -51,20 +51,20 @@
   </ul>
 </div>
 
-<template id="graph.node">
+<template id="graph.node.circle">
   <g
       class="node enable-pointer-events"
       v-attr="id: id, transform: nodeTranslate"
   >
-    <circle
-        class="node-circle"
-        v-attr="r:radius + 'em'"
-        v-el="nodeCircle"
-        v-on="
-            contextmenu:nodeContextMenu,
-            dblclick:dblclick
-        "
-    ></circle>
+      <circle
+          class="node-circle"
+          v-attr="r:radius + 'em'"
+          v-el="nodeCircle"
+          v-on="
+              contextmenu:nodeContextMenu,
+              dblclick:dblclick
+          "
+      ></circle>
     <text
         class="node-name disable-pointer-events"
         text-anchor="middle"
@@ -87,6 +87,7 @@
         ry="4"
         v-el="nodeRect"
         v-attr="width:width, height:height, transform:rectTranslate"
+        v-on="contextmenu:nodeContextMenu"
     ></rect>
     <text
         class="node-name disable-pointer-events"
