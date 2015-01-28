@@ -655,12 +655,20 @@ define([
 
     methods: {
 
-      zoomUp: function() {
-
+      incrementZoomLevel: function() {
+        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, 5);
       },
 
-      zoomUpdate: function(e) {
-        var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
+      decrementZoomLevel: function() {
+        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, 5);
+      },
+
+      mousewheelZoom: function(e) {
+        this.zoomUpdate(e, e.wheelDelta / 360);
+      },
+
+      zoomUpdate: function(e, zoomFactor) {
+        zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomFactor);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
 
