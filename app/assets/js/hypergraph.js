@@ -21,6 +21,10 @@ define([
 ) {
   'use strict';
 
+  ///
+  /// DEFINITIONS
+  ///
+
   var HALF_PI = glob.HALF_PI;
   var E_MINUS_1 = glob.E_MINUS_1;
 
@@ -42,9 +46,7 @@ define([
     this.dragend = util.noop;
   }
 
-  /*
-   Graph view
-   */
+  /// GRAPH VIEW COMPONENTS
 
   var DisabledNodeState = util.extendClass(StateEventHandlers);
 
@@ -889,6 +891,45 @@ define([
 
   });
 
+  var GhostLinkComponent = Vue.extend({
+
+    replace: true,
+
+    template: document.getElementById('graph.ghostLink').innerHTML,
+
+    data: function () {
+      return {
+        source: { x: 0, y: 0 },
+        target: { x: 0, y: 0 }
+      };
+    },
+
+    methods: {
+
+      mousemove: function (e) {
+        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
+      }
+
+    },
+
+    events: {
+
+      'hook:ready': function () {
+        this.source = this.linkSource;
+        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
+
+        this._mousemove = this.mousemove.bind(this);
+        util.on('mousemove', this._mousemove);
+      },
+
+      'hook:beforeDestroy': function () {
+        util.off('mousemove', this._mousemove);
+      }
+
+    }
+
+  });
+
   var NodePanel = Vue.extend({
 
     replace: true,
@@ -1174,50 +1215,9 @@ define([
 
   });
 
-  var GhostLinkComponent = Vue.extend({
-
-    replace: true,
-
-    template: document.getElementById('graph.ghostLink').innerHTML,
-
-    data: function () {
-      return {
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 }
-      };
-    },
-
-    methods: {
-
-      mousemove: function (e) {
-        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
-      }
-
-    },
-
-    events: {
-
-      'hook:ready': function () {
-        this.source = this.linkSource;
-        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
-
-        this._mousemove = this.mousemove.bind(this);
-        util.on('mousemove', this._mousemove);
-      },
-
-      'hook:beforeDestroy': function () {
-        util.off('mousemove', this._mousemove);
-      }
-
-    }
-
-  });
-
-  /*
-   Main application code
-   */
-
-  // ready components
+  ///
+  /// MAIN APP CODE
+  ///
 
   var nodeContextMenu = new ContextMenu({
 
