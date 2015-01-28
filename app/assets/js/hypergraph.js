@@ -656,11 +656,11 @@ define([
     methods: {
 
       incrementZoomLevel: function() {
-        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, 5);
+        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, 0.25);
       },
 
       decrementZoomLevel: function() {
-        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, -5);
+        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, -0.25);
       },
 
       mousewheelZoom: function(e) {
@@ -672,6 +672,7 @@ define([
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
         totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
 
+        console.log(totalZoomFactor, this.totalZoomFactor);
         if (totalZoomFactor === this.totalZoomFactor) {
           return;
         }
