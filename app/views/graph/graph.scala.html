@@ -128,6 +128,17 @@
     v-cloak>
 </div>
 
+<div id="zoomBar" style="position:absolute;" v-cloak>
+  <div class="btn-group-vertical zoom-bar" role="group">
+    <button type=button class="btn btn-default">
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    <button type=button class="btn btn-default">
+      <span class="glyphicon glyphicon-minus"></span>
+    </button>
+  </div>
+</div>
+
 <template id="node.panel">
   <div class="node-panel">
     <button type="button" class="close" aria-label="Close" v-on="click:closeNodePanel">

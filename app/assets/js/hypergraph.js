@@ -655,6 +655,10 @@ define([
 
     methods: {
 
+      zoomUp: function() {
+
+      },
+
       zoomUpdate: function(e) {
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, e.wheelDelta / 360);
         var totalZoomFactor = this.totalZoomFactor * zoomFactor;
@@ -1215,9 +1219,37 @@ define([
 
   });
 
+  var ZoomBarComponent = Vue.extend({
+
+    methods: {
+
+      updatePosition: function() {
+        var $nav = $('#nav');
+
+        var padding = 12;
+
+        this.$el.style.setProperty('bottom', padding + 'px');
+        this.$el.style.setProperty('left', padding + 'px');
+      }
+
+    },
+
+    events: {
+
+      'hook:ready': function() {
+        this.updatePosition();
+        window.addEventListener('resize', this.updatePosition.bind(this));
+      }
+
+    }
+
+  });
+
   ///
   /// MAIN APP CODE
   ///
+
+  var zoomBar = new ZoomBarComponent().$mount('#zoomBar');
 
   var nodeContextMenu = new ContextMenu({
 

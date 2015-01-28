@@ -43,6 +43,10 @@
     margin-top: 200px;
 }
 
+.zoom-bar .btn {
+    padding: 8px 6px;
+}
+
 /*
   Main layout
 */
