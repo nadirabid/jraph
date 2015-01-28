@@ -660,7 +660,7 @@ define([
       },
 
       decrementZoomLevel: function() {
-        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, 5);
+        this.zoomUpdate({ clientX: this.width/2, clientY: this.height/2 }, -5);
       },
 
       mousewheelZoom: function(e) {
@@ -1238,6 +1238,14 @@ define([
 
         this.$el.style.setProperty('bottom', padding + 'px');
         this.$el.style.setProperty('left', padding + 'px');
+      },
+
+      incrementZoomLevel: function() {
+        graphComponent.incrementZoomLevel();
+      },
+
+      decrementZoomLevel: function() {
+        graphComponent.decrementZoomLevel();
       }
 
     },

@@ -130,10 +130,10 @@
 
 <div id="zoomBar" style="position:absolute;" v-cloak>
   <div class="btn-group-vertical zoom-bar" role="group">
-    <button type=button class="btn btn-default">
+    <button type=button class="btn btn-default" v-on="click:incrementZoomLevel">
       <span class="glyphicon glyphicon-plus"></span>
     </button>
-    <button type=button class="btn btn-default">
+    <button type=button class="btn btn-default" v-on="click:decrementZoomLevel">
       <span class="glyphicon glyphicon-minus"></span>
     </button>
   </div>
