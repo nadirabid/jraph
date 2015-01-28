@@ -163,8 +163,8 @@ define([
       p.y = e.clientY;
       p = p.matrixTransform(ctm.inverse());
 
-      ctx.px = ctx.x = ctx.$parent.x(p.x);
-      ctx.py = ctx.y = ctx.$parent.y(p.y);
+      ctx.px = ctx.x = p.x;
+      ctx.py = ctx.y = p.y;
 
       dragFlag = true;
 
@@ -280,7 +280,7 @@ define([
     computed: {
 
       nodeTranslate: function() {
-        return 'translate(' + this.$parent.x(this.x) + ',' + this.$parent.y(this.y) + ')';
+        return 'translate(' + this.x + ',' + this.y + ')';
       },
 
       nameTranslate: function() {
@@ -483,16 +483,16 @@ define([
 
     computed: {
       sourceX: function() {
-        return this.$parent.x(this.source.x);
+        return this.source.x;
       },
       sourceY: function() {
-        return this.$parent.y(this.source.y);
+        return this.source.y;
       },
       targetX: function() {
-        return this.$parent.x(this.target.x);
+        return this.target.x;
       },
       targetY: function() {
-        return this.$parent.y(this.target.y);
+        return this.target.y;
       }
     },
 
@@ -603,11 +603,11 @@ define([
         var v = util.transformVectorFromClientToEl(
             e.dx, e.dy, this.$el);
 
-        source.px = source.x = this.$parent.x(this.source_x + v.x);
-        source.py = source.y = this.$parent.y(this.source_y + v.y);
+        source.px = source.x = this.source_x + v.x;
+        source.py = source.y = this.source_y + v.y;
 
-        target.px = target.x = this.$parent.x(this.target_x + v.x);
-        target.py = target.y = this.$parent.y(this.target_y + v.y);
+        target.px = target.x = this.target_x + v.x;
+        target.py = target.y = this.target_y + v.y;
 
         this.state.$layout.resume();
       },
