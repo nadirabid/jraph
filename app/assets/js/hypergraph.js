@@ -301,17 +301,6 @@ define([
     };
   }
 
-  window.lb = liangBarsky;
-
-  function getRectBoundingEdges(x, y, width, height) {
-    return {
-      left: x,
-      right: x + width,
-      top: y,
-      bottom: y + height
-    };
-  }
-
   Vue.component('x-node', {
 
     inherit: true,
@@ -322,15 +311,12 @@ define([
 
     data: function () {
       return {
-        rectX:0,
-        rectY:0,
         leftEdge: 0,
         rightEdge: 0,
         bottomEdge: 0,
         topEdge: 0,
         width: 0,
         height: 0,
-        name: '',
         menu: false,
         nameDistance: 15,
         radius: 1.5,
@@ -339,7 +325,10 @@ define([
         nameTranslate: 'translate(0, 0)',
         nodeTranslate: 'translate(0, 0)',
         rectTranslate: 'translate(0, 0)',
-        fixed: false //d3.force doesn't pick it up if not explicitly linked
+        fixed: false, //d3.force doesn't pick it up if not explicitly linked
+        data: {
+          name: ''
+        }
       };
     },
 
@@ -371,14 +360,10 @@ define([
 
         p = p.matrixTransform(ctm);
 
-        var rectBoundingEdges = getRectBoundingEdges(p.x, p.y, bBox.width, bBox.height);
-
-        this.rectX = p.x;
-        this.rectY = p.y;
-        this.leftEdge = rectBoundingEdges.left;
-        this.rightEdge = rectBoundingEdges.right;
-        this.bottomEdge = rectBoundingEdges.bottom;
-        this.topEdge = rectBoundingEdges.top;
+        this.leftEdge = p.x;
+        this.rightEdge = p.x + bBox.width;
+        this.topEdge = p.y;
+        this.bottomEdge = p.y + bBox.height;
       },
 
       delete: function() {
@@ -476,7 +461,6 @@ define([
       },
 
       mouseover: function () {
-        this.liangBarskyTest();
         return this.getState().mouseover.apply(state, arguments);
       },
 
@@ -517,7 +501,7 @@ define([
 
         this.state = this.$parent.state;
 
-        this.$watch('data.name', this.updateDimensionsOfNodeCircle.bind(this));
+        this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
 
         this.$watch('x', this.calculateRectBoundingEdges.bind(this));
         this.$watch('y', this.calculateRectBoundingEdges.bind(this));
@@ -597,7 +581,7 @@ define([
 
       liangBarskyTest: function() {
         //TODO: bug with translate transforms
-        
+
         var source = this.source;
         var target = this.target;
 
@@ -614,8 +598,6 @@ define([
 
         this.targetClipX = clippings.x0Clip;
         this.targetClipY = clippings.y0Clip;
-
-        console.log('liangBarskyTest', clippings.x0Clip, clippings.y0Clip);
       },
 
       delete: function() {
