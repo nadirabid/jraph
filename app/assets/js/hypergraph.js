@@ -571,6 +571,13 @@ define([
 
     template: document.getElementById('graph.link').innerHTML,
 
+    data: function() {
+      return {
+        targetClipX: 0,
+        targetClipY: 0
+      };
+    },
+
     computed: {
       sourceX: function() {
         return this.source.x;
@@ -603,7 +610,10 @@ define([
             target.y
         );
 
-        console.log('liangBarskyTest', clippings);
+        this.targetClipX = clippings.x0Clip;
+        this.targetClipY = clippings.y0Clip;
+
+        console.log('liangBarskyTest', clippings.x0Clip, clippings.y0Clip);
       },
 
       delete: function() {
@@ -740,6 +750,8 @@ define([
         this.$watch('target.y', this.liangBarskyTest.bind(this));
         this.$watch('source.x', this.liangBarskyTest.bind(this));
         this.$watch('source.y', this.liangBarskyTest.bind(this));
+
+        this.liangBarskyTest();
 
         var $g = util(this.$el);
         $g.on('mouseover', this.freezePosition.bind(this));

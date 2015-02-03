@@ -6,7 +6,7 @@
           id="def-marker-arrow"
           markerWidth="2"
           markerHeight="2"
-          refx="8"
+          refx="2"
           refy="1"
           orient="auto"
       >
@@ -68,7 +68,6 @@
     <text
         class="node-name disable-pointer-events"
         text-anchor="middle"
-
         v-el="nodeName"
     >
         {{data.name}}
@@ -109,7 +108,7 @@
         class="marker-arrow"
         marker-end="url(#def-marker-arrow)"
         v-el="arrowMarkerLine"
-        v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
+        v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
     ></line>
   </g>
 </template>
