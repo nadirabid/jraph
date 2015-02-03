@@ -252,6 +252,66 @@ define([
     };
   });
 
+  function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
+                       x0src, y0src, x1src, y1src) {
+    var t0 = 0.0, t1 = 1.0;
+    var xdelta = x1src-x0src;
+    var ydelta = y1src-y0src;
+    var p,q,r;
+
+    for(var edge=0; edge<4; edge++) {   // Traverse through left, right, bottom, top edges.
+      if (edge === 0) {
+        p = -xdelta;
+        q = -(edgeLeft - x0src);
+      }
+      else if (edge === 1) {
+        p = xdelta;
+        q =  (edgeRight - x0src);
+      }
+      else if (edge === 2) {
+        p = -ydelta;
+        q = -(edgeBottom - y0src);
+      }
+      else if (edge === 3) {
+        p = ydelta;
+        q = (edgeTop - y0src);
+      }
+
+      r = q/p;
+
+      if (p === 0 && q < 0) {          // Don't draw line at all. (parallel line outside)
+        return false;
+      }
+
+      if (p < 0) {
+        if (r > t1) return false; // Don't draw line at all.
+        else if (r > t0) t0=r;    // Line is clipped!
+      }
+      else if (p > 0) {
+        if (r < t0) return false; // Don't draw line at all.
+        else if (r<t1) t1=r;      // Line is clipped!
+      }
+    }
+
+    return {
+      x0Clip: x0src + (t0 * xdelta), // x0clip
+      y0Clip: y0src + (t0 * ydelta), // y0clip
+      x1Clip: x0src + (t1 * xdelta), // x1clip
+      y1Clip: y0src + (t1 * ydelta)  // y1clip
+    };
+  }
+
+  window.lb = liangBarsky;
+
+  function getRectBoundingEdges(x, y, width, height) {
+    return {
+      left: x,
+      right: x + width,
+      top: y,
+      bottom: y + height
+    };
+  }
+
   Vue.component('x-node', {
 
     inherit: true,
@@ -262,6 +322,12 @@ define([
 
     data: function () {
       return {
+        rectX:0,
+        rectY:0,
+        leftEdge: 0,
+        rightEdge: 0,
+        bottomEdge: 0,
+        topEdge: 0,
         width: 0,
         height: 0,
         name: '',
@@ -294,6 +360,26 @@ define([
     },
 
     methods: {
+
+      liangBarskyTest: function() {
+        var ctm = this.$$.nodeRect.getCTM();
+        var bBox = this.$$.nodeRect.getBBox();
+        var p = this.$parent.$el.createSVGPoint();
+
+        p.x = bBox.x;
+        p.y = bBox.y;
+
+        p = p.matrixTransform(ctm);
+
+        var rectBoundingEdges = getRectBoundingEdges(p.x, p.y, bBox.width, bBox.height);
+
+        this.rectX = p.x;
+        this.rectY = p.y;
+        this.leftEdge = rectBoundingEdges.left;
+        this.rightEdge = rectBoundingEdges.right;
+        this.bottomEdge = rectBoundingEdges.bottom;
+        this.topEdge = rectBoundingEdges.top;
+      },
 
       delete: function() {
         var self = this;
@@ -390,6 +476,7 @@ define([
       },
 
       mouseover: function () {
+        this.liangBarskyTest();
         return this.getState().mouseover.apply(state, arguments);
       },
 
@@ -432,6 +519,8 @@ define([
 
         this.$watch('data.name', this.updateDimensionsOfNodeCircle.bind(this));
 
+        this.$watch('x', this.liangBarskyTest.bind(this));
+        this.$watch('y', this.liangBarskyTest.bind(this));
         /*
         this.$watch('x', this.updateNameTranslation.bind(this));
         this.$watch('y', this.updateNameTranslation.bind(this));
@@ -464,6 +553,7 @@ define([
         $nodeRect.on('dragend', this.dragend.bind(this));
 
         this.updateDimensionsOfNodeRect();
+        this.liangBarskyTest();
       },
 
       'hook:beforeDestroyed': function () {
@@ -497,6 +587,24 @@ define([
     },
 
     methods: {
+
+      liangBarskyTest: function() {
+        var source = this.source;
+        var target = this.target;
+
+        var clippings = liangBarsky(
+            target.leftEdge,
+            target.rightEdge,
+            target.topEdge,
+            target.bottomEdge,
+            source.x,
+            source.y,
+            target.x,
+            target.y
+        );
+
+        console.log('liangBarskyTest', clippings);
+      },
 
       delete: function() {
         var self = this;
@@ -627,6 +735,11 @@ define([
 
       'hook:ready': function () {
         this.state = this.$parent.state;
+
+        this.$watch('target.x', this.liangBarskyTest.bind(this));
+        this.$watch('target.y', this.liangBarskyTest.bind(this));
+        this.$watch('source.x', this.liangBarskyTest.bind(this));
+        this.$watch('source.y', this.liangBarskyTest.bind(this));
 
         var $g = util(this.$el);
         $g.on('mouseover', this.freezePosition.bind(this));
