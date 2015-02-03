@@ -361,7 +361,7 @@ define([
 
     methods: {
 
-      liangBarskyTest: function() {
+      calculateRectBoundingEdges: function() {
         var ctm = this.$$.nodeRect.getCTM();
         var bBox = this.$$.nodeRect.getBBox();
         var p = this.$parent.$el.createSVGPoint();
@@ -519,8 +519,8 @@ define([
 
         this.$watch('data.name', this.updateDimensionsOfNodeCircle.bind(this));
 
-        this.$watch('x', this.liangBarskyTest.bind(this));
-        this.$watch('y', this.liangBarskyTest.bind(this));
+        this.$watch('x', this.calculateRectBoundingEdges.bind(this));
+        this.$watch('y', this.calculateRectBoundingEdges.bind(this));
         /*
         this.$watch('x', this.updateNameTranslation.bind(this));
         this.$watch('y', this.updateNameTranslation.bind(this));
@@ -553,7 +553,7 @@ define([
         $nodeRect.on('dragend', this.dragend.bind(this));
 
         this.updateDimensionsOfNodeRect();
-        this.liangBarskyTest();
+        this.calculateRectBoundingEdges();
       },
 
       'hook:beforeDestroyed': function () {
@@ -596,6 +596,8 @@ define([
     methods: {
 
       liangBarskyTest: function() {
+        //TODO: bug with translate transforms
+        
         var source = this.source;
         var target = this.target;
 
