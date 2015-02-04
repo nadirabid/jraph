@@ -301,7 +301,7 @@ define([
     };
   }
 
-  Vue.component('x-node', {
+  var NodeComponent = Vue.extend({
 
     inherit: true,
 
@@ -561,7 +561,9 @@ define([
 
   });
 
-  Vue.component('x-link', {
+  Vue.component('x-node', NodeComponent);
+
+  var LinkComponent = Vue.extend({
 
     replace: true,
 
@@ -760,6 +762,8 @@ define([
     }
 
   });
+
+  Vue.component('x-link', LinkComponent);
 
   var GraphComponent = Vue.extend({
 
