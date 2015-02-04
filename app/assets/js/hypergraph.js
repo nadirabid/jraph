@@ -351,50 +351,31 @@ define([
     methods: {
 
       calculateRectBoundingEdges: function() {
-        var ctm = this.$$.nodeRect.getCTM();
+        // we get the transform to nodesAndLinksGroup element
+        // because, in calculating the bounding edges, we only
+        // want the transforms applied to the node element itself
+        // while disregarding the transforms to nodesAndLinksGroup
+        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
         var bBox = this.$$.nodeRect.getBBox();
-        var p = this.$parent.$el.createSVGPoint();
+        var point = this.$parent.$el.createSVGPoint();
+        var dimensions = this.$parent.$el.createSVGPoint();
 
-        p.x = bBox.x;
-        p.y = bBox.y;
+        point.x = bBox.x;
+        point.y = bBox.y;
 
-        p = p.matrixTransform(ctm);
+        point = point.matrixTransform(ttm);
 
-        this.leftEdge = p.x;
-        this.rightEdge = p.x + bBox.width;
-        this.topEdge = p.y;
-        this.bottomEdge = p.y + bBox.height;
-      },
+        ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
 
-      delete: function() {
-        var self = this;
+        dimensions.x = bBox.width;
+        dimensions.y = bBox.height;
 
-        Node.delete(hypergraphID, this)
-            .done(function() {
-              graphComponent.links = graphComponent.links.filter(function(l) {
-                return l.sourceId != self.id && l.targetId != self.id;
-              });
+        dimensions = dimensions.matrixTransform(ttm);
 
-              graphComponent.nodes.$remove(self.$index);
-            });
-      },
-
-      nodeContextMenu: function(e) {
-        if (e.target != this.$$.nodeRect) {
-          return;
-        }
-
-        e.stopPropagation();
-        e.preventDefault();
-
-        nodeContextMenu.show(e.clientX, e.clientY, this);
-
-        var closeContextMenu = function () {
-          nodeContextMenu.hide();
-          window.removeEventListener('click', closeContextMenu);
-        };
-
-        window.addEventListener('click', closeContextMenu);
+        this.leftEdge = point.x;
+        this.rightEdge = point.x + dimensions.x;
+        this.topEdge = point.y;
+        this.bottomEdge = point.y + dimensions.y;
       },
 
       updateDimensionsOfNodeRect: function() {
@@ -435,6 +416,24 @@ define([
         this.nameY = tY + shiftY;
       },
 
+      nodeContextMenu: function(e) {
+        if (e.target != this.$$.nodeRect) {
+          return;
+        }
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        nodeContextMenu.show(e.clientX, e.clientY, this);
+
+        var closeContextMenu = function () {
+          nodeContextMenu.hide();
+          window.removeEventListener('click', closeContextMenu);
+        };
+
+        window.addEventListener('click', closeContextMenu);
+      },
+
       setLinkSource: function () {
         var self = this;
 
@@ -454,6 +453,19 @@ define([
             new GhostLinkComponent({ data: { linkSource: this } }).$mount();
 
         ghostLink.$appendTo(this.$parent.$$.dynamicContent);
+      },
+
+      delete: function() {
+        var self = this;
+
+        Node.delete(hypergraphID, this)
+            .done(function() {
+              graphComponent.links = graphComponent.links.filter(function(l) {
+                return l.sourceId != self.id && l.targetId != self.id;
+              });
+
+              graphComponent.nodes.$remove(self.$index);
+            });
       },
 
       getState: function () {
