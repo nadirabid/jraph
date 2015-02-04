@@ -1083,6 +1083,7 @@ define([
         hasChanges: false,
         editingName: false,
         nameCache: '',
+        propertiesCache: [],
         node: {
           data: {
             name: 'Name',
@@ -1193,7 +1194,8 @@ define([
 
         Node.update(hypergraphID, [ this.node ])
             .done(function(node) {
-              self.hasChanges = false;
+              self.nameCache = '';
+
               //TODO: replace node in nodesAry??
             });
       },
@@ -1235,7 +1237,11 @@ define([
     events: {
 
       'hook:ready': function() {
+        var self = this;
         var node = this.node;
+
+        this.nameCache = this.node.data.name;
+        this.propertiesCache = this.node.data.properties.slice(0);
 
         if (!node.data) {
           this.$add('node.data', { properties: [] });
@@ -1248,6 +1254,19 @@ define([
         if (this.isNew) {
           this.editName();
         }
+
+        Mousetrap.bind('esc', function() {
+          self.closeNodePanel();
+        });
+      },
+
+      'hook:beforeDestroy': function() {
+        if (!this.isNew && this.hasChanges) {
+          this.node.data.name = this.nameCache;
+          this.node.data.properties = this.propertiesCache;
+        }
+
+        Mousetrap.unbind('esc');
       }
 
     }
