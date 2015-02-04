@@ -1198,8 +1198,7 @@ define([
 
         Node.update(hypergraphID, [ this.node ])
             .done(function(node) {
-              self.nameCache = '';
-
+              self.hasChanges = false;
               //TODO: replace node in nodesAry??
             });
       },
