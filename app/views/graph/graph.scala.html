@@ -6,7 +6,7 @@
           id="def-marker-arrow"
           markerWidth="2"
           markerHeight="2"
-          refx="2"
+          refx="1.5"
           refy="1"
           orient="auto"
       >
@@ -102,7 +102,7 @@
   <g class="enable-pointer-events" v-on="contextmenu:linkContextMenu">
     <line
         class="link"
-        v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
+        v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
     ></line>
     <line
         class="marker-arrow"
