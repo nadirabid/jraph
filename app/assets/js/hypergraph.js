@@ -511,8 +511,6 @@ define([
           disabled: new DisabledNodeState(this)
         };
 
-        this.state = this.$parent.state;
-
         this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
 
         this.$watch('x', this.calculateRectBoundingEdges.bind(this));
@@ -1010,15 +1008,29 @@ define([
             addNode: function(e) {
               var p = util.transformPointFromClientToEl(e.clientX, e.clientY, self.$el);
 
+              var nodeData = {
+                x: p.x,
+                y: p.y,
+                fixed: false,
+                data: {
+                  name: 'Name',
+                  properties: []
+                }
+              };
+
+              var nodeComponent = self.$addChild({ data: nodeData}, NodeComponent);
+
+              nodeComponent.$mount(self.$$.dynamicContent);
+
               var nodePanel = new NodePanel({
                 data: {
                   isNew: true,
-                  node: {
-                    x: p.x,
-                    y: p.y,
-                    fixed: false
-                  }
+                  node: nodeData
                 }
+              });
+
+              nodePanel.$on('created', function() {
+                nodeComponent.$destroy(true);
               });
 
               floatingPanelBar.setPanel(nodePanel);
@@ -1087,13 +1099,7 @@ define([
         hasChanges: false,
         editingName: false,
         nameCache: '',
-        propertiesCache: [],
-        node: {
-          data: {
-            name: 'Name',
-            properties: []
-          }
-        }
+        propertiesCache: []
       };
     },
 
@@ -1189,6 +1195,7 @@ define([
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
+              self.$emit('created');
               graphComponent.nodes.push(node);
             });
       },
