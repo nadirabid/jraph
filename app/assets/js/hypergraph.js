@@ -188,9 +188,7 @@ define([
       }
 
       util.animationFrame(function() {
-        ctx.$el.querySelector('.node-circle')
-            .classList
-            .add('node-linking-target', 'hover');
+        ctx.$$.nodeRect.classList.add('node-linking-target', 'hover');
       });
 
       ctx.px = ctx.x;
@@ -199,15 +197,13 @@ define([
     };
 
     //unselect node target
-    this.mouseout = function (e) {
+    this.mouseout = function () {
       if (ctx.id == mouse.data.source.id) {
         return;
       }
 
       util.animationFrame(function() {
-        ctx.$el.querySelector('.node-circle')
-            .classList
-            .remove('node-linking-target', 'hover');
+        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
       });
 
       ctx.fixed = false;
@@ -236,13 +232,8 @@ define([
       sourceCtx.$.ghostLink = null;
 
       util.animationFrame(function() {
-        ctx.$el.querySelector('.node-circle')
-            .classList
-            .remove('node-linking-target', 'hover');
-
-        sourceCtx.$el.querySelector('.node-circle')
-            .classList
-            .remove('node-linking-source');
+        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
+        ctx.$$.nodeRect.classList.remove('node-linking-source');
       });
 
       sourceCtx.fixed = false;
@@ -438,9 +429,7 @@ define([
         var self = this;
 
         util.animationFrame(function() {
-          self.$el.querySelector('.node-circle')
-              .classList
-              .add('node-linking-source');
+          self.$$.nodeRect.classList.add('node-linking-source');
         });
 
         this.menu = false;
@@ -449,10 +438,10 @@ define([
         state.nodeState = 'linking';
         mouse.data.source = this;
 
-        var ghostLink = this.$.ghostLink =
-            new GhostLinkComponent({ data: { linkSource: this } }).$mount();
-
-        ghostLink.$appendTo(this.$parent.$$.dynamicContent);
+        this.$.ghostLink = this.$parent
+            .$addChild({ data: { linkSource: this } }, GhostLinkComponent)
+            .$mount()
+            .$appendTo(this.$parent.$$.dynamicContent);
       },
 
       delete: function() {
@@ -1018,9 +1007,9 @@ define([
                 }
               };
 
-              var nodeComponent = self.$addChild({ data: nodeData}, NodeComponent);
-
-              nodeComponent.$mount(self.$$.dynamicContent);
+              var nodeComponent = self
+                  .$addChild({ data: nodeData}, NodeComponent)
+                  .$mount(self.$$.dynamicContent);
 
               var nodePanel = new NodePanel({
                 data: {
