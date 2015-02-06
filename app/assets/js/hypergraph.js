@@ -1029,7 +1029,7 @@ define([
                 }
               });
 
-              nodePanel.$on('created', function() {
+              nodePanel.$once('removeGhostNode', function() {
                 nodeComponent.$destroy(true);
               });
 
@@ -1195,7 +1195,7 @@ define([
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
-              self.$emit('created');
+              self.$emit('removeGhostNode');
               graphComponent.nodes.push(node);
             });
       },
@@ -1274,6 +1274,10 @@ define([
         if (!this.isNew && this.hasChanges) {
           this.node.data.name = this.nameCache;
           this.node.data.properties = this.propertiesCache;
+        }
+
+        if (this.isNew) {
+          this.$emit('removeGhostNode');
         }
 
         Mousetrap.unbind('esc');
