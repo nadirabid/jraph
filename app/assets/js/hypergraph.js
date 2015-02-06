@@ -1053,7 +1053,13 @@ define([
     methods: {
 
       mousemove: function (e) {
-        this.target = util.transformPointFromClientToEl(e.clientX, e.clientY, this.$el);
+        var ctm = this.$parent.$$.nodesAndLinksGroup.getScreenCTM();
+        var p = this.$parent.$el.createSVGPoint();
+
+        p.x = e.clientX;
+        p.y = e.clientY;
+
+        this.target = p.matrixTransform(ctm.inverse());
       }
 
     },
@@ -1062,7 +1068,14 @@ define([
 
       'hook:ready': function () {
         this.source = this.linkSource;
-        this.target = util.transformPointFromClientToEl(mouse.x, mouse.y, this.$el);
+
+        var ctm = this.$parent.$$.nodesAndLinksGroup.getScreenCTM();
+        var p = this.$parent.$el.createSVGPoint();
+
+        p.x = mouse.x;
+        p.y = mouse.y;
+
+        this.target = p.matrixTransform(ctm.inverse());
 
         this._mousemove = this.mousemove.bind(this);
         util.on('mousemove', this._mousemove);
