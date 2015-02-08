@@ -1045,6 +1045,7 @@ define([
 
     data: function () {
       return {
+        distanceFromMouse: 13,
         source: { x: 0, y: 0 },
         target: { x: 0, y: 0 }
       };
@@ -1052,30 +1053,43 @@ define([
 
     methods: {
 
-      mousemove: function (e) {
+      mousemove: function(e) {
         var ctm = this.$parent.$$.nodesAndLinksGroup.getScreenCTM();
         var p = this.$parent.$el.createSVGPoint();
 
         p.x = e.clientX;
         p.y = e.clientY;
 
-        this.target = p.matrixTransform(ctm.inverse());
+        p = p.matrixTransform(ctm.inverse());
+
+        var dx = p.x  - this.source.x,
+            dy = p.y - this.source.y;
+
+        var theta = Math.atan(dy / dx);
+
+        var sX = this.distanceFromMouse * Math.cos(theta);
+        var sY = this.distanceFromMouse * Math.sin(theta);
+
+        if (dx >= 0) { // from π/2 to -π/2 inclusively
+          p.x -= sX;
+          p.y -= sY;
+        }
+        else { // from π/2 to 3π/2
+          p.x = p.x + sX;
+          p.y = p.y + sY;
+        }
+
+        this.target = p;
       }
 
     },
 
     events: {
 
-      'hook:ready': function () {
+      'hook:created': function () {
         this.source = this.linkSource;
 
-        var ctm = this.$parent.$$.nodesAndLinksGroup.getScreenCTM();
-        var p = this.$parent.$el.createSVGPoint();
-
-        p.x = mouse.x;
-        p.y = mouse.y;
-
-        this.target = p.matrixTransform(ctm.inverse());
+        this.mousemove({ clientX: mouse.x, clientY: mouse.y });
 
         this._mousemove = this.mousemove.bind(this);
         util.on('mousemove', this._mousemove);
