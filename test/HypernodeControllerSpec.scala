@@ -40,7 +40,7 @@ class HypernodeControllerSpec extends WordSpec
   after {
     running(FakeApplication()) {
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
-      implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+      implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
       val userDeleteRequest = FakeRequest(DELETE, "/account/delete")
         .withAuthenticator(identity.loginInfo)
@@ -53,7 +53,7 @@ class HypernodeControllerSpec extends WordSpec
   "The Hypernode controller" should {
     "create, find, read, delete a new node given JSON data and user email" in {
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
-      implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+      implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
       val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
         .find(_.name == "default").get

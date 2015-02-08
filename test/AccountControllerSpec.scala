@@ -32,7 +32,7 @@ class AccountControllerSpec extends WordSpec
 
     "should delete the newly created user account" in {
       val identity = User(userEmail, LoginInfo(CredentialsProvider.ID, userEmail))
-      implicit val env = FakeEnvironment[User, SessionAuthenticator](identity)
+      implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
       val userDeleteRequest = FakeRequest(DELETE, "/account/delete")
         .withAuthenticator(identity.loginInfo)
