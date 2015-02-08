@@ -1306,6 +1306,7 @@ define([
   var FloatingPanelBar = Vue.extend({
 
     methods: {
+
       updateDimensionsAndPosition: function() {
         var $nav = $('#nav');
 
@@ -1362,6 +1363,7 @@ define([
       }
 
     }
+
   });
 
   var ContextMenu = Vue.extend({
@@ -1471,9 +1473,7 @@ define([
 
     }
 
-  });
-
-  nodeContextMenu.$mount('#nodeContextMenu');
+  }).$mount('#nodeContextMenu');
 
   var linkContextMenu = new ContextMenu({
 
@@ -1493,28 +1493,26 @@ define([
 
     }
 
-  });
-
-  linkContextMenu.$mount('#linkContextMenu');
+  }).$mount('#linkContextMenu');
 
   var graphComponent = new GraphComponent({
+
     data: {
       state: state
     }
-  });
 
-  graphComponent.$mount('#graph');
+  }).$mount('#graph');
 
   var navbarComponent = new NavbarComponent({
+
     data: {
       hypergraphID: hypergraphID,
       state: state
     }
-  });
-  navbarComponent.$mount('#navbar');
 
-  var floatingPanelBar = new FloatingPanelBar();
-  floatingPanelBar.$mount('#floatingPanelBar');
+  }).$mount('#navbar');
+
+  var floatingPanelBar = new FloatingPanelBar().$mount('#floatingPanelBar');
 
   // fetch data
 
