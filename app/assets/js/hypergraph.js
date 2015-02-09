@@ -1211,8 +1211,8 @@ define([
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
-              self.$emit('removeGhostNode');
               graphComponent.nodes.push(node);
+              self.$emit('removeGhostNode');
             });
       },
 
