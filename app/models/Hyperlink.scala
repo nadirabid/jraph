@@ -54,6 +54,10 @@ object Hyperlink {
     ((__ \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hyperlink.apply _)
 
+
+  // NOTE: if we want to add the constraint of single one directional links between nodes,
+  // we'll have to manually query against the db to make sure it doesn't exist
+
   val cypherCreate =
     """
       | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
