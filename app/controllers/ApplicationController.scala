@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 import forms._
+import play.api.libs.json.{Json, Writes}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,9 +19,19 @@ import models.{Hypergraph, User}
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
+  implicit val hypergraphWrites = new Writes[Hypergraph] {
+    def writes(hypergraph: Hypergraph) = Json.obj(
+      "id" -> hypergraph.id,
+      "name" -> hypergraph.name,
+      "updatedAt" -> hypergraph.updatedAt,
+      "createdAt" -> hypergraph.createdAt,
+      "data" -> hypergraph.data
+    )
+  }
+
   def index = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
-      case Some(hypergraphs) => Ok(views.html.account.index(hypergraphs))
+      case Some(hypergraphs) => Ok(views.html.account.index(Json.toJson(hypergraphs)))
       case None => ServiceUnavailable
     }
   }
