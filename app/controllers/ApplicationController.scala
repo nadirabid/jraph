@@ -14,7 +14,7 @@ import play.api.mvc._
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 
-import models.{Hypergraph, User}
+import models._
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
@@ -31,7 +31,9 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def index = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
-      case Some(hypergraphs) => Ok(views.html.account.index(Json.toJson(hypergraphs)))
+      case Some(hypergraphs) => {
+        Ok(views.html.account.index(Json.toJson(hypergraphs)))
+      }
       case None => ServiceUnavailable
     }
   }

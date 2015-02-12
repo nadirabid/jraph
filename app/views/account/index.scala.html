@@ -21,14 +21,41 @@
       }
     </style>
     <script>
-      var hypergraph = @Html(Json.stringify(hypergraphs)) ;
 
-      console.log(hypergraph);
     </script>
   </head>
   <body>
     <div class="graphs-container">
+      <ul id="graphsList">
+        <li v-repeat="graphs">
 
+        </li>
+      </ul>
     </div>
   </body>
+  <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
+
+  <script>
+    require.config({
+      baseUrl: '/assets/js',
+      paths: {
+        d3: 'dependencies/d3',
+        jquery: 'dependencies/jquery-2.1.1',
+        lodash: 'dependencies/lodash',
+        mousetrap: 'dependencies/mousetrap',
+        q: 'dependencies/q',
+        snap: 'dependencies/snap.svg',
+        vue: 'dependencies/vue',
+        bootstrap: 'dependencies/bootstrap',
+        page: 'dependencies/page'
+      }
+    });
+
+    require([
+        'vue'
+    ], function(Vue){
+      var hypergraphs = @Html(Json.stringify(hypergraphs)) ;
+      console.log(hypergraphs);
+    });
+  </script>
 </html>
