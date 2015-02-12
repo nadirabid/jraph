@@ -15,9 +15,13 @@
 
       .graphs-container {
         background-color: #eee;
-        height:100%;
         width: 700px;
         margin: 0 auto;
+        padding: 0;
+      }
+
+      .graph-min-view {
+        background-color:#34495E;
       }
     </style>
     <script>
@@ -26,11 +30,26 @@
   </head>
   <body>
     <div class="graphs-container">
-      <ul id="graphsList">
-        <li v-repeat="graphs">
+      <dl id="graphsList" class="dl-horizontal">
+        <dt>Persons</dt>
+        <dd>
+          <svg class="graph-min-view" width="500" height="300">
 
-        </li>
-      </ul>
+          </svg>
+        </dd>
+        <dt>Tasks</dt>
+        <dd>
+          <svg class="graph-min-view" width="500" height="300">
+
+          </svg>
+        </dd>
+        <dt>East of Eden</dt>
+        <dd>
+          <svg class="graph-min-view" width="500" height="300">
+
+          </svg>
+        </dd>
+      </dl>
     </div>
   </body>
   <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
