@@ -75,10 +75,30 @@
     });
 
     require([
-        'vue'
-    ], function(Vue){
-      var hypergraphs = @Html(Json.stringify(hypergraphs)) ;
-      console.log(hypergraphs);
+        'lodash',
+        'jquery',
+        'vue',
+        'models'
+    ], function(_, $, Vue, models){
+      var Node = models.Node;
+      var Link = models.Link;
+
+      var hypergraphs = @Html(Json.stringify(hypergraphs)); //bootstrap json data into view template
+
+      var hypergraphsData = _.map(hypergraphs, function(hg) {
+        return $
+            .when(Node.fetchAll(hg.id), Node.fetchAll(hg.id))
+            .then(function(nodes, links) {
+              nodes.forEach(function (n) {
+                links.forEach(function (l) {
+                  if (l.sourceId == n.id) l.source = n;
+                  if (l.targetId == n.id) l.target = n;
+                });
+              });
+            });
+      });
+
+
     });
   </script>
 </html>
