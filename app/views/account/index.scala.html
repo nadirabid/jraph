@@ -68,20 +68,25 @@
 
           <!-- Nodes -->
           <g v-repeat="nodes">
-            <rect
-                class="node-rect"
-                rx="4"
-                ry="4"
-                v-el="nodeRect"
-                v-attr="width:width, height:height, transform:rectTranslate"
-            ></rect>
-            <text
-                class="node-name disable-pointer-events"
-                text-anchor="middle"
-                v-el="nodeName"
+            <g
+                class="node enable-pointer-events"
+                v-attr="id: id, transform: nodeTranslate"
             >
-              {{data.name}}
-            </text>
+              <rect
+                  class="node-rect"
+                  rx="4"
+                  ry="4"
+                  v-el="nodeRect"
+                  v-attr="width:width, height:height, transform:rectTranslate"
+              ></rect>
+              <text
+                  class="node-name disable-pointer-events"
+                  text-anchor="middle"
+                  v-el="nodeName"
+              >
+                {{data.name}}
+              </text>
+            </g>
           </g>
 
           <!-- Links -->
@@ -137,7 +142,7 @@
 
       var deferredHypergraphsData = _.map(userGraphs, function(hg) {
         return $
-            .when(Node.fetchAll(hg.id), Node.fetchAll(hg.id))
+            .when(Node.fetchAll(hg.id), Link.fetchAll(hg.id))
             .then(function(nodes, links) {
               nodes.forEach(function (n) {
                 links.forEach(function (l) {
@@ -192,7 +197,6 @@
       });
 
       Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
-
 
       // init code
       var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
