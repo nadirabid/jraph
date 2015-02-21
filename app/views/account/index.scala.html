@@ -33,37 +33,16 @@
     </script>
   </head>
   <body>
-    <div class="graphs-list-container">
+    <div id="graphsListContainer" class="graphs-list-container">
       <dl class="dl-horizontal graphs-list">
-        <dt>Persons</dt>
-        <dd>
-          <svg class="graph-min-view" width="500" height="300">
-
-          </svg>
-        </dd>
-        <dt>Tasks</dt>
-        <dd>
-          <svg class="graph-min-view" width="500" height="300">
-
-          </svg>
-        </dd>
-        <dt>East of Eden</dt>
-        <dd>
-          <svg class="graph-min-view" width="500" height="300">
-
-          </svg>
-        </dd>
+        <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </dl>
     </div>
 
-    <div id="graphsListContainer" class="graphs-list-container">
-      <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
-    </div>
-
     <template id="graph.thumbnail">
-      <dt>Graph Name</dt>
+      <dt>{{graph.data.name}}</dt>
       <dd>
-        <svg>
+        <svg class="graph-min-view" width="500" height="300">
           <defs>
             <marker
                 id="def-marker-arrow"
@@ -125,6 +104,7 @@
   <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
 
   <script>
+
     require.config({
       baseUrl: '/assets/js',
       paths: {
@@ -140,19 +120,22 @@
       }
     });
 
+    var userGraphs = @Html(Json.stringify(hypergraphs)); //bootstrap json data into view template
+  </script>
+
+  <script>
     require([
         'lodash',
         'jquery',
         'vue',
         'models'
-    ], function(_, $, Vue, models){
+    ],
+    function(_, $, Vue, models){
 
       var Node = models.Node;
       var Link = models.Link;
 
-      var hypergraphs = @Html(Json.stringify(hypergraphs)); //bootstrap json data into view template
-
-      var hypergraphsData = _.map(hypergraphs, function(hg) {
+      var deferredHypergraphsData = _.map(userGraphs, function(hg) {
         return $
             .when(Node.fetchAll(hg.id), Node.fetchAll(hg.id))
             .then(function(nodes, links) {
@@ -164,37 +147,48 @@
               });
 
               return {
+                graph: hg,
                 nodes: nodes,
                 links: links
-              }
+              };
             });
       });
 
       var GraphThumbnailsContainerComponent = Vue.extend({
+
         data: function() {
-          hypergraphs: []
+          return {
+            hypergraphs :[ ]
+          };
         },
+
         events: {
-          'hook:created': function() {
+
+          'hook:ready': function() {
             var self = this;
 
-            $
-              .when.apply($,hypergraphsData)
-              .then(function() {
-                self.hypergraphs = Array.prototype.slice.call(arguments);
-                console.log(self.hypergraphs);
-              });
+            $.when.apply($, deferredHypergraphsData).then(function() {
+              self.hypergraphs = Array.prototype.slice.call(arguments);
+            });
           }
+
         }
+
       });
 
       var GraphThumbnailComponent = Vue.extend({
+
+        template: '#graph.thumbnail',
+
+        replace: true,
+
         data: function() {
           return {
             links: [],
             nodes: []
           };
         }
+
       });
 
       Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
@@ -202,7 +196,6 @@
 
       // init code
       var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
-
     });
   </script>
 </html>
