@@ -27,6 +27,23 @@
       .graph-min-view {
         background-color:#34495E;
       }
+
+      .marker-arrow {
+        fill: rgba(255, 255, 255, 1);
+        stroke-opacity: 0;
+        stroke-width: .25em;
+      }
+
+      .link {
+        opacity: .3;
+        stroke: #eee;
+        stroke-width: .25em;
+      }
+
+      .node-rect {
+        stroke-width: 0;
+        fill: #fff;
+      }
     </style>
     <script>
 
@@ -39,10 +56,47 @@
       </dl>
     </div>
 
+    <template id="link.thumbnail">
+      <g>
+        <line
+          class="link"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+        ></line>
+        <line
+          class="marker-arrow"
+          marker-end="url(#def-marker-arrow)"
+          v-el="arrowMarkerLine"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+        ></line>
+      </g>
+    </template>
+
+    <template id="node.thumbnail">
+      <g
+        class="node enable-pointer-events"
+        v-attr="id: id, transform: nodeTranslate"
+      >
+        <rect
+          class="node-rect"
+          rx="4"
+          ry="4"
+          v-el="nodeRect"
+          v-attr="width:width, height:height, transform:rectTranslate"
+        ></rect>
+        <text
+          class="node-name disable-pointer-events"
+          text-anchor="middle"
+          v-el="nodeName"
+        >
+          {{data.name}}
+        </text>
+      </g>
+    </template>
+
     <template id="graph.thumbnail">
       <dt>{{graph.data.name}}</dt>
       <dd>
-        <svg class="graph-min-view" width="500" height="300">
+        <svg class="graph-min-view" width="500" height="300" v-el="svg">
           <defs>
             <marker
                 id="def-marker-arrow"
@@ -66,46 +120,18 @@
             </marker>
           </defs>
 
-          <!-- Nodes -->
-          <g v-repeat="nodes">
-            <g
-                class="node enable-pointer-events"
-                v-attr="id: id, transform: nodeTranslate"
-            >
-              <rect
-                  class="node-rect"
-                  rx="4"
-                  ry="4"
-                  v-el="nodeRect"
-                  v-attr="width:width, height:height, transform:rectTranslate"
-              ></rect>
-              <text
-                  class="node-name disable-pointer-events"
-                  text-anchor="middle"
-                  v-el="nodeName"
-              >
-                {{data.name}}
-              </text>
-            </g>
-          </g>
+          <g v-el="nodesAndLinksGroup">
+            <!-- Nodes -->
+            <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
 
-          <!-- Links -->
-          <g v-repeat="links">
-            <line
-                class="link"
-                v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
-            ></line>
-            <line
-                class="marker-arrow"
-                marker-end="url(#def-marker-arrow)"
-                v-el="arrowMarkerLine"
-                v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
-            ></line>
+            <!-- Links -->
+            <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
           </g>
         </svg>
       </dd>
     </template>
   </body>
+
   <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
 
   <script>
@@ -159,6 +185,231 @@
             });
       });
 
+
+      function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
+                           x0src, y0src, x1src, y1src) {
+        var t0 = 0.0, t1 = 1.0;
+        var xdelta = x1src-x0src;
+        var ydelta = y1src-y0src;
+        var p,q,r;
+
+        for(var edge=0; edge<4; edge++) {   // Traverse through left, right, bottom, top edges.
+          if (edge === 0) {
+            p = -xdelta;
+            q = -(edgeLeft - x0src);
+          }
+          else if (edge === 1) {
+            p = xdelta;
+            q =  (edgeRight - x0src);
+          }
+          else if (edge === 2) {
+            p = -ydelta;
+            q = -(edgeBottom - y0src);
+          }
+          else if (edge === 3) {
+            p = ydelta;
+            q = (edgeTop - y0src);
+          }
+
+          r = q/p;
+
+          if (p === 0 && q < 0) {          // Don't draw line at all. (parallel line outside)
+            return false;
+          }
+
+          if (p < 0) {
+            if (r > t1) return false; // Don't draw line at all.
+            else if (r > t0) t0=r;    // Line is clipped!
+          }
+          else if (p > 0) {
+            if (r < t0) return false; // Don't draw line at all.
+            else if (r<t1) t1=r;      // Line is clipped!
+          }
+        }
+
+        return {
+          x0Clip: x0src + (t0 * xdelta), // x0clip
+          y0Clip: y0src + (t0 * ydelta), // y0clip
+          x1Clip: x0src + (t1 * xdelta), // x1clip
+          y1Clip: y0src + (t1 * ydelta)  // y1clip
+        };
+      }
+
+      var LinkThumbnailComponent = Vue.extend({
+
+        template: document.getElementById('link.thumbnail').innerHTML,
+
+        replace: true,
+
+        data: function() {
+          return {
+            targetClipX: 0,
+            targetClipY: 0
+          };
+        },
+
+        computed: {
+          sourceX: function() {
+            return this.source.x;
+          },
+          sourceY: function() {
+            return this.source.y;
+          },
+          targetX: function() {
+            return this.target.x;
+          },
+          targetY: function() {
+            return this.target.y;
+          }
+        },
+
+
+        methods: {
+
+          liangBarskyTest : function ( ) {
+            //TODO: bug with translate transforms
+
+            var source = this.source ;
+            var target = this.target ;
+
+            var clippings = liangBarsky(
+              target.leftEdge,
+              target.rightEdge,
+              target.topEdge,
+              target.bottomEdge,
+              source.x,
+              source.y,
+              target.x,
+              target.y
+            );
+
+            this.targetClipX = clippings.x0Clip;
+            this.targetClipY = clippings.y0Clip;
+          }
+
+        },
+
+        events: {
+
+          'hook:ready': function() {
+            this.liangBarskyTest();
+          }
+
+        }
+
+      });
+
+      Vue.component('x-link-thumbnail', LinkThumbnailComponent);
+
+      var NodeThumbnailComponent = Vue.extend({
+
+        template: document.getElementById('node.thumbnail').innerHTML,
+
+        replace: true,
+
+        data: function() {
+          return {
+            x : 0,
+            y : 0,
+            leftEdge : 0,
+            rightEdge : 0,
+            bottomEdge : 0,
+            topEdge : 0,
+            nameX : 0,
+            nameY : 0,
+            width : 0,
+            height : 0,
+            data: {
+              name: ''
+            }
+          };
+        },
+
+        computed: {
+
+          nodeTranslate: function() {
+            return 'translate(' + this.x + ',' + this.y + ')';
+          },
+
+          nameTranslate: function() {
+            return 'translate(' + this.nameX + ',' + this.nameY + ')';
+          },
+
+          rectTranslate: function() {
+            return 'translate(' + (-this.width/2) + ',' + (-(this.height + 12)/2) + ')';
+          }
+
+        },
+
+        methods: {
+
+          calculateRectBoundingEdges: function() {
+            // we get the transform to nodesAndLinksGroup element
+            // because, in calculating the bounding edges, we only
+            // want the transforms applied to the node element itself
+            // while disregarding the transforms to nodesAndLinksGroup
+            var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
+            var bBox = this.$$.nodeRect.getBBox();
+            var point = this.$parent.$$.svg.createSVGPoint();
+            var dimensions = this.$parent.$$.svg.createSVGPoint();
+
+            point.x = bBox.x;
+            point.y = bBox.y;
+
+            point = point.matrixTransform(ttm);
+
+            ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
+
+            dimensions.x = bBox.width;
+            dimensions.y = bBox.height;
+
+            dimensions = dimensions.matrixTransform(ttm);
+
+            this.leftEdge = point.x;
+            this.rightEdge = point.x + dimensions.x;
+            this.topEdge = point.y;
+            this.bottomEdge = point.y + dimensions.y;
+          },
+
+          updateDimensionsOfNodeRect: function() {
+            var bBox = this.$$.nodeName.getBBox();
+
+            this.width = bBox.width + 24;
+            this.height = bBox.height + 12;
+          }
+
+        },
+
+        events: {
+
+          'hook:ready': function() {
+            this.updateDimensionsOfNodeRect();
+            this.calculateRectBoundingEdges();
+          }
+
+        }
+
+      });
+
+      Vue.component('x-node-thumbnail', NodeThumbnailComponent);
+
+      var GraphThumbnailComponent = Vue.extend({
+
+        template: '#graph.thumbnail',
+
+        replace: true,
+
+        data: function() {
+          return {
+            links: [],
+            nodes: []
+          };
+        }
+
+      });
+
+      Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
+
       var GraphThumbnailsContainerComponent = Vue.extend({
 
         data: function() {
@@ -180,23 +431,6 @@
         }
 
       });
-
-      var GraphThumbnailComponent = Vue.extend({
-
-        template: '#graph.thumbnail',
-
-        replace: true,
-
-        data: function() {
-          return {
-            links: [],
-            nodes: []
-          };
-        }
-
-      });
-
-      Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
 
       // init code
       var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
