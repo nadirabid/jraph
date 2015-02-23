@@ -13,6 +13,14 @@
         height: 100%;
       }
 
+      .cursor-pointer {
+        cursor: pointer;
+      }
+
+      .disable-pointer-events {
+        pointer-events: none;
+      }
+
       .graphs-list {
         margin-bottom: 0;
       }
@@ -96,7 +104,12 @@
     <template id="graph.thumbnail">
       <dt>{{graph.data.name}}</dt>
       <dd>
-        <svg class="graph-min-view" width="500" height="300" v-el="svg">
+        <svg
+            class="graph-min-view cursor-pointer"
+            width="500"
+            height="281"
+            viewBox="0 0 1200 675"
+            v-el="svg">
           <defs>
             <marker
                 id="def-marker-arrow"
@@ -120,7 +133,7 @@
             </marker>
           </defs>
 
-          <g v-el="nodesAndLinksGroup">
+          <g class="disable-pointer-events" v-el="nodesAndLinksGroup">
             <!-- Nodes -->
             <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
 
@@ -232,6 +245,13 @@
           y0Clip: y0src + (t0 * ydelta), // y0clip
           x1Clip: x0src + (t1 * xdelta), // x1clip
           y1Clip: y0src + (t1 * ydelta)  // y1clip
+        };
+      }
+
+      function viewBoundsToFitAllNodes(nodes) {
+        return {
+          width: 0,
+          height: 0
         };
       }
 
