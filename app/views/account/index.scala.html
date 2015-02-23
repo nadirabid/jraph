@@ -104,6 +104,7 @@
     <template id="graph.thumbnail">
       <dt>{{graph.data.name}}</dt>
       <dd>
+        <a href="/graph/{{graph.id}}">
         <svg
             class="graph-min-view cursor-pointer"
             width="500"
@@ -141,6 +142,7 @@
             <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
           </g>
         </svg>
+        </a>
       </dd>
     </template>
   </body>
