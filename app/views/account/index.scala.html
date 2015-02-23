@@ -108,7 +108,7 @@
             class="graph-min-view cursor-pointer"
             width="500"
             height="281"
-            viewBox="0 0 1200 675"
+            v-attr="viewBox:viewBox"
             v-el="svg">
           <defs>
             <marker
@@ -249,10 +249,25 @@
       }
 
       function viewBoundsToFitAllNodes(nodes) {
-        return {
-          width: 0,
-          height: 0
+        var bounds = {
+          xMin: Number.POSITIVE_INFINITY,
+          xMax: Number.NEGATIVE_INFINITY,
+          yMin: Number.POSITIVE_INFINITY,
+          yMax: Number.NEGATIVE_INFINITY
         };
+
+        bounds = _.reduce(nodes, function(bounds, n) {
+          if (n.x < bounds.xMin) bounds.xMin = n.x;
+          if (n.x > bounds.xMax) bounds.xMax = n.x;
+          if (n.y < bounds.yMin) bounds.yMin = n.y;
+          if (n.y > bounds.yMax) bounds.yMax = n.y;
+
+          console.log(n.x, n.y);
+
+          return bounds;
+        }, bounds);
+
+        return bounds;
       }
 
       var LinkThumbnailComponent = Vue.extend({
@@ -422,8 +437,31 @@
         data: function() {
           return {
             links: [],
-            nodes: []
+            nodes: [],
+            bounds: {
+              xMin: 0,
+              xMax: 1200,
+              yMin: 0,
+              yMax: 675
+            }
           };
+        },
+
+        computed: {
+
+          viewBox: function() {
+            var b = this.bounds;
+            return b.xMin + ' ' + b.yMin + ' ' + (b.xMax - b.xMin) + ' ' + (b.yMax - b.yMin);
+          }
+
+        },
+
+        events: {
+
+          'hook:ready': function() {
+            this.bounds = viewBoundsToFitAllNodes(this.nodes);
+          }
+
         }
 
       });
