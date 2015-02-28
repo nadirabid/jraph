@@ -17,24 +17,6 @@
         pointer-events: none;
       }
 
-      .graphs-list {
-        margin-bottom: 0;
-      }
-
-      .graphs-list-container {
-        background-color: #eee;
-        min-height:100%;
-        width: 700px;
-        margin: 0 auto;
-        padding: 0;
-      }
-
-      .graph-min-view {
-        border-radius:3px;
-        cursor: pointer;
-        background-color:#00596E;
-      }
-
       .marker-arrow {
         fill: rgba(255, 255, 255, 1);
         stroke-opacity: 0;
@@ -56,16 +38,49 @@
         color:transparent;
         text-decoration: none;
       }
+
+      .graph-thumbnail {
+        cursor:pointer;
+        overflow:hidden;
+        padding:0;
+        margin:0;
+        border-radius:2px;
+        background-color:#fff;
+        display:inline-block;
+        box-shadow: 0px 1px 8px rgba(0, 0, 0, .2),
+        0px 0px 2px rgba(0, 0, 0, .2),
+        inset 0px 1px 0px rgba(255, 255, 255, .25),
+        inset 0px -1px 0px rgba(0, 0, 0, .15);
+      }
+
+      .graph-thumbnail > svg {
+        background-color:#e74c3c;
+        display:block;
+      }
+
+      .graph-thumbnail > .caption {
+        position:relative;
+        padding:5px 10px;
+      }
+
+      .graph-thumbnail > .caption > .glyphicon {
+        position:absolute;
+        right:10px;
+        top:17px;
+      }
+
+      #graphsListContainer {
+        padding:2em;
+      }
     </style>
     <script>
 
     </script>
   </head>
   <body>
-    <div id="graphsListContainer" class="graphs-list-container">
-      <dl class="dl-horizontal graphs-list">
-        <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
-      </dl>
+
+    <div id="graphsListContainer">
+      <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
     </div>
 
     <template id="link.thumbnail">
@@ -90,8 +105,8 @@
       >
         <rect
           class="node-rect"
-          rx="4"
-          ry="4"
+          rx="2"
+          ry="2"
           v-el="nodeRect"
           v-attr="width:width, height:height, transform:rectTranslate"
         ></rect>
@@ -106,13 +121,11 @@
     </template>
 
     <template id="graph.thumbnail">
-      <dt>{{graph.data.name}}</dt>
-      <dd>
-        <a href="/graph/{{graph.id}}">
+
+        <div class="graph-thumbnail">
           <svg
-              class="panel panel-default graph-min-view"
-              width="500"
-              height="281"
+              width="300"
+              height="169"
               v-attr="viewBox:viewBox"
               v-el="svg">
             <defs>
@@ -120,7 +133,7 @@
                   id="def-marker-arrow"
                   markerWidth="2"
                   markerHeight="2"
-                  refx="1.5"
+                  refx="1.6"
                   refy="1"
                   orient="auto"
               >
@@ -146,8 +159,12 @@
               <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
             </g>
           </svg>
-        </a>
-      </dd>
+          <div class="caption">
+            <h5>{{graph.data.name}}</h5>
+            <span class="glyphicon glyphicon-trash" />
+          </div>
+        </div>
+
     </template>
   </body>
 
