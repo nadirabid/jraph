@@ -34,8 +34,13 @@
         fill: #fff;
       }
 
+      a {
+        text-decoration: none;
+        color:inherit;
+      }
+
       a:hover {
-        color:transparent;
+        color:inherit;
         text-decoration: none;
       }
 
@@ -121,7 +126,7 @@
     </template>
 
     <template id="graph.thumbnail">
-
+      <a href="/graph/{{graph.id}}">
         <div class="graph-thumbnail">
           <svg
               width="300"
@@ -164,7 +169,7 @@
             <span class="glyphicon glyphicon-trash" />
           </div>
         </div>
-
+      </a>
     </template>
   </body>
 
