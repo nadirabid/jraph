@@ -77,6 +77,19 @@
       #graphsListContainer {
         padding:2em;
       }
+
+      header {
+        position:fixed;
+        width:100%;
+        top:0;
+        height:70px;
+        background-color:#fff;
+        box-shadow:0px 1px 4px rgba(0,0,0,.3)
+      }
+
+      main {
+        margin-top: 80px;
+      }
     </style>
     <script>
 
@@ -84,9 +97,13 @@
   </head>
   <body>
 
-    <div id="graphsListContainer">
-      <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
-    </div>
+    <header></header>
+
+    <main>
+      <div id="graphsListContainer">
+        <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
+      </div>
+    </main>
 
     <template id="link.thumbnail">
       <g>
