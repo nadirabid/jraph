@@ -78,7 +78,7 @@
         padding:2em;
       }
 
-      header {
+      nav#navbar {
         position:fixed;
         width:100%;
         top:0;
@@ -91,13 +91,10 @@
         margin-top: 75px;
       }
     </style>
-    <script>
-
-    </script>
   </head>
   <body>
 
-    <header></header>
+    <nav id="navbar"></nav>
 
     <main>
       <div id="graphsListContainer">
@@ -536,7 +533,16 @@
 
       });
 
+      var NavbarComponent = Vue.extend({
+
+        data: {
+          userName: 'Nadir Muzaffar'
+        }
+
+      });
+
       // init code
+      var navbar = new NavbarComponent().$mount('#navbar');
       var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
     });
   </script>
