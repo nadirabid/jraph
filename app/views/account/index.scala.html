@@ -78,13 +78,26 @@
         padding:2em;
       }
 
-      nav#navbar {
+      .x-navbar {
         position:fixed;
         width:100%;
         top:0;
-        height:70px;
+        height:66px;
         background-color:#fff;
-        box-shadow:0px 1px 4px rgba(0,0,0,.34)
+        box-shadow:0px 1px 4px rgba(0,0,0,.34);
+        color:#404040;
+      }
+
+      .x-navbar-right {
+        margin-right:20px;
+        float:right;
+      }
+
+      .x-navbar > .x-navbar-nav {
+        line-height:20px;
+        font-size:13px;
+        padding-top:22px;
+        padding-bottom:22px;
       }
 
       main {
@@ -94,7 +107,11 @@
   </head>
   <body>
 
-    <nav id="navbar"></nav>
+    <nav id="navbar" class="x-navbar">
+      <div class="x-navbar-right x-navbar-nav">
+        Nadir Muzaffar
+      </div>
+    </nav>
 
     <main>
       <div id="graphsListContainer">
