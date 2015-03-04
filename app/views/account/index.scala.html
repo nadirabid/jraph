@@ -88,6 +88,10 @@
         color:#404040;
       }
 
+      .x-paper {
+        box-shadow:0px 1px 4px rgba(0,0,0,.30);
+      }
+
       .x-navbar-right {
         margin-right:20px;
         float:right;
@@ -95,26 +99,34 @@
 
       .x-navbar > .x-navbar-nav {
         line-height:20px;
-        font-size:13px;
+        font-size:14px;
         padding-top:22px;
         padding-bottom:22px;
       }
 
       main {
-        margin-top: 75px;
+        margin-right:320px;
+      }
+
+      .graph-thumbnails-container {
+        display:block;
+      }
+
+      .editor-panel {
+        padding:20px;
+        right:0;
+        position:fixed;
+        width:310px;
       }
     </style>
   </head>
   <body>
-
-    <nav id="navbar" class="x-navbar">
-      <div class="x-navbar-right x-navbar-nav">
-        Nadir Muzaffar
-      </div>
+    <nav id="editorPanel" class="x-paper editor-panel" v-cloak>
+      <h4>Editor Panel</h4>
     </nav>
 
     <main>
-      <div id="graphsListContainer">
+      <div id="graphsListContainer" class="graph-thumbnails-container">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
     </main>
@@ -196,7 +208,7 @@
             </g>
           </svg>
           <div class="caption">
-            <h5>{{graph.data.name}}</h5>
+            <h6>{{graph.data.name}}</h6>
             <span class="glyphicon glyphicon-trash" />
           </div>
         </div>
@@ -540,7 +552,7 @@
 
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
-              _.forEach(_.range(3), function() {
+              _.forEach(_.range(15), function() {
                 self.hypergraphs.push( _.clone(hypergraphs[0]));
               });
             });
@@ -554,12 +566,31 @@
 
         data: {
           userName: 'Nadir Muzaffar'
+        },
+
+        methods: {
+
+          updateDimensions: function() {
+            var viewportHeight = $(window).outerHeight();
+            $(this.$el ).outerHeight(viewportHeight);
+          }
+
+        },
+
+        events: {
+
+          'hook:ready': function() {
+            window.addEventListener('resize', this.updateDimensions.bind(this));
+            this.updateDimensions();
+          }
+
         }
+
 
       });
 
       // init code
-      var navbar = new NavbarComponent().$mount('#navbar');
+      var navbar = new NavbarComponent().$mount('#editorPanel');
       var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
     });
   </script>
