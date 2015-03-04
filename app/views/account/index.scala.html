@@ -101,11 +101,11 @@
       }
 
       main {
+        padding:20px;
         margin-left:270px;
       }
 
       .graph-thumbnails-container {
-        padding:20px;
         display:block;
       }
 
@@ -120,23 +120,37 @@
         margin-bottom: 10px;
       }
 
-      .editor-panel > .glyphicon {
-        font-size: 25px;
-        margin:10px;
+      .thumbnail-options {
+        width:100%;
+        position:relative;
       }
 
+      .thumbnail-options > div {
+        display:inline-block;
+        float:right;
+        right:0;
+      }
+
+      .thumbnail-options .glyphicon {
+        font-size: 16px;
+        margin:10px;
+      }
     </style>
   </head>
   <body>
     <nav id="editorPanel" class="editor-panel" v-cloak>
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
-      <span class="glyphicon glyphicon-sort-by-attributes"></span>
-      <span class="glyphicon glyphicon glyphicon-th"></span>
-      <span class="glyphicon glyphicon glyphicon-th-list"></span>
     </nav>
 
     <main>
-      <div id="graphsListContainer" class="graph-thumbnails-container">
+      <div class="thumbnail-options clearfix">
+        <div>
+          <span class="glyphicon glyphicon glyphicon-th"></span>
+          <span class="glyphicon glyphicon glyphicon-th-list"></span>
+          <span class="glyphicon glyphicon-sort-by-attributes"></span>
+        </div>
+      </div>
+      <div id="graphsListContainer" class="center-block graph-thumbnails-container">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
     </main>
