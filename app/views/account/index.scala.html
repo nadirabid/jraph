@@ -13,7 +13,6 @@
         height: 100%;
       }
 
-
       .x-navbar {
         position:fixed;
         width:100%;
@@ -71,6 +70,42 @@
         text-decoration: none;
       }
 
+      .main-panel {
+        width:610px;
+        margin-left:260px;
+        overflow:hidden;
+      }
+
+      .toolbar-wrapper {
+        background-color:#fff;
+        position:fixed;
+        padding: 20px 5px 0 5px;
+        z-index:1;
+      }
+
+      .thumbnails-list-toolbar {
+        width:600px;
+        border-bottom: solid 1px #ccc;
+        box-shadow: 0px 8px 8px -8px rgba(0,0,0,.34);
+      }
+
+      .thumbnails-list-toolbar > div {
+        float:right;
+        right:0;
+        bottom:0;
+      }
+
+      .thumbnails-list-toolbar > div > .glyphicon {
+        line-height:20px;
+        font-size: 16px;
+        margin:10px;
+      }
+
+      .thumbnails-list {
+        width:600px;
+        padding-top:80px;
+      }
+
       .graph-thumbnail {
         cursor:pointer;
         overflow:hidden;
@@ -80,9 +115,9 @@
         background-color:#fff;
         display:inline-block;
         box-shadow: 0px 1px 8px rgba(0, 0, 0, .2),
-                    0px 0px 2px rgba(0, 0, 0, .2),
-                    inset 0px 1px 0px rgba(255, 255, 255, .25),
-                    inset 0px -1px 0px rgba(0, 0, 0, .15);
+        0px 0px 2px rgba(0, 0, 0, .2),
+        inset 0px 1px 0px rgba(255, 255, 255, .25),
+        inset 0px -1px 0px rgba(0, 0, 0, .15);
       }
 
       .graph-thumbnail > svg {
@@ -101,41 +136,8 @@
         top:17px;
       }
 
-      .main-panel {
-        width:600px;
-        margin-left:260px;
-        overflow:hidden;
-      }
-
-      .thumbnails-list-toolbar {
-        padding-top:20px;
-        width:600px;
-        background-color:#fff;
-        border-bottom: solid 1px #aaa;
-        position:fixed;
-        z-index:1;
-        box-shadow: 0px 8px 8px -8px rgba(0,0,0,.70);
-      }
-
-      .thumbnails-list-toolbar > div {
-        float:right;
-        right:0;
-        bottom:0;
-      }
-
-      .thumbnails-list-toolbar .glyphicon {
-        
-        font-size: 16px;
-        margin:10px;
-      }
-
-      .graph-thumbnails-container {
-        padding-top:60px;
-        display:block;
-      }
-
       .side-panel {
-        padding:20px;
+        padding:60px 20px 20px 20px;
         left:0;
         position:fixed;
         width:260px;
@@ -147,20 +149,21 @@
     </style>
   </head>
   <body>
-    <div id="editorPanel" class="side-panel" v-cloak>
+    <div id="editorPanel" class="side-panel">
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
     </div>
 
     <div class="main-panel">
-      <div class="thumbnails-list-toolbar">
-        <div>
-          <span class="glyphicon glyphicon glyphicon-th"></span>
-          <span class="glyphicon glyphicon glyphicon-th-list"></span>
-          <span class="glyphicon glyphicon-sort-by-attributes"></span>
+      <div class="toolbar-wrapper">
+        <div class="thumbnails-list-toolbar clearfix center-block">
+          <div>
+            <span class="glyphicon glyphicon glyphicon-th"></span>
+            <span class="glyphicon glyphicon glyphicon-th-list"></span>
+            <span class="glyphicon glyphicon-sort-by-attributes"></span>
+          </div>
         </div>
       </div>
-
-      <div id="graphsListContainer" class="graph-thumbnails-container">
+      <div id="graphsListContainer" class="thumbnails-list center-block">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
     </div>
@@ -586,7 +589,7 @@
 
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
-              _.forEach(_.range(15), function() {
+              _.forEach(_.range(6), function() {
                 self.hypergraphs.push( _.clone(hypergraphs[0]));
               });
             });
