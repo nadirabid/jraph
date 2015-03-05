@@ -70,19 +70,6 @@
         text-decoration: none;
       }
 
-      .main-panel {
-        width:620px;
-        margin-left:250px;
-        overflow:hidden;
-      }
-
-      .toolbar-wrapper {
-        background-color:#fff;
-        position:fixed;
-        padding: 20px 10px 0 10px;
-        z-index:1;
-      }
-
       .curved-shadow {
         position:relative;
       }
@@ -99,19 +86,32 @@
         box-shadow:0 0 10px 4px rgba(0,0,0,0.30);
       }
 
+      .main-panel {
+        width:620px;
+        margin-left:250px;
+        overflow:hidden;
+      }
+
       .thumbnails-list-toolbar {
+        background-color:#fff;
+        position:fixed;
+        padding: 20px 10px 0 10px;
+        z-index:1;
+      }
+
+      .thumbnails-list-toolbar > div {
         background-color:inherit;
         width:600px;
         border-bottom: solid 1px rgba(0,0,0,0.30);;
       }
 
-      .thumbnails-list-toolbar > div {
+      .thumbnails-list-toolbar > div > .toolbar-buttons {
         float:right;
         right:0;
         bottom:0;
       }
 
-      .thumbnails-list-toolbar > div > .glyphicon {
+      .thumbnails-list-toolbar > div > .toolbar-buttons > .glyphicon {
         line-height:20px;
         font-size: 16px;
         margin:10px;
@@ -172,16 +172,16 @@
     </div>
 
     <div class="main-panel">
-      <div class="toolbar-wrapper">
-        <div class="thumbnails-list-toolbar curved-shadow clearfix center-block">
-          <div>
+      <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar">
+        <div class="curved-shadow clearfix center-block">
+          <div class="toolbar-buttons">
             <span class="glyphicon glyphicon glyphicon-th"></span>
             <span class="glyphicon glyphicon glyphicon-th-list"></span>
             <span class="glyphicon glyphicon-sort-by-attributes"></span>
           </div>
         </div>
       </div>
-      <div id="graphsListContainer" class="thumbnails-list center-block">
+      <div id="graphThumbnailsList" class="thumbnails-list center-block">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
     </div>
@@ -258,7 +258,10 @@
               <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
             </g>
           </svg>
-
+          <div class="caption">
+            <h6>{{graph.data.name}}</h6>
+            <span class="glyphicon glyphicon-trash" />
+          </div>
         </div>
       </a>
     </template>
@@ -345,7 +348,7 @@
 
           r = q/p;
 
-          if (p === 0 && q < 0) {          // Don't draw line at all. (parallel line outside)
+          if (p === 0 && q < 0) {     // Don't draw line at all. (parallel line outside)
             return false;
           }
 
@@ -610,11 +613,7 @@
 
       });
 
-      var NavbarComponent = Vue.extend({
-
-        data: {
-          userName: 'Nadir Muzaffar'
-        },
+      var EditorPanelComponent = Vue.extend({
 
         methods: {
 
@@ -638,8 +637,8 @@
       });
 
       // init code
-      var navbar = new NavbarComponent().$mount('#editorPanel');
-      var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphsListContainer')
+      var editorPanel = new EditorPanelComponent().$mount('#editorPanel');
+      var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphThumbnailsList')
     });
   </script>
 </html>
