@@ -71,7 +71,7 @@
       }
 
       .main-panel {
-        width:610px;
+        width:620px;
         margin-left:260px;
         overflow:hidden;
       }
@@ -79,14 +79,30 @@
       .toolbar-wrapper {
         background-color:#fff;
         position:fixed;
-        padding: 20px 5px 0 5px;
+        padding: 20px 10px 0 10px;
         z-index:1;
       }
 
+      .curved-shadow {
+        position:relative;
+      }
+
+      .curved-shadow:before {
+        content: "";
+        position:absolute;
+        z-index: -1;
+        width:96%;
+        bottom: 0;
+        height: 10px;
+        left: 2%;
+        border-radius: 100px / 5px;
+        box-shadow:0 0 10px 3px rgba(0,0,0,0.20);
+      }
+
       .thumbnails-list-toolbar {
+        background-color:inherit;
         width:600px;
         border-bottom: solid 1px #ccc;
-        box-shadow: 0px 8px 8px -8px rgba(0,0,0,.34);
       }
 
       .thumbnails-list-toolbar > div {
@@ -123,6 +139,8 @@
       .graph-thumbnail > svg {
         background-color:#e74c3c;
         display:block;
+        width:600px;
+        height:300px;
       }
 
       .graph-thumbnail > .caption {
@@ -155,7 +173,7 @@
 
     <div class="main-panel">
       <div class="toolbar-wrapper">
-        <div class="thumbnails-list-toolbar clearfix center-block">
+        <div class="thumbnails-list-toolbar curved-shadow clearfix center-block">
           <div>
             <span class="glyphicon glyphicon glyphicon-th"></span>
             <span class="glyphicon glyphicon glyphicon-th-list"></span>
@@ -208,11 +226,7 @@
     <template id="graph.thumbnail">
       <a href="/graph/{{graph.id}}">
         <div class="graph-thumbnail">
-          <svg
-              width="600"
-              height="300"
-              v-attr="viewBox:viewBox"
-              v-el="svg">
+          <svg v-attr="viewBox:viewBox" v-el="svg">
             <defs>
               <marker
                   id="def-marker-arrow"
