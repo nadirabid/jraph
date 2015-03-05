@@ -13,6 +13,33 @@
         height: 100%;
       }
 
+
+      .x-navbar {
+        position:fixed;
+        width:100%;
+        top:0;
+        height:66px;
+        background-color:#fff;
+        box-shadow:0px 1px 4px rgba(0,0,0,.34);
+        color:#404040;
+      }
+
+      .x-paper {
+        box-shadow:0px 1px 4px rgba(0,0,0,.30);
+      }
+
+      .x-navbar-right {
+        margin-right:20px;
+        float:right;
+      }
+
+      .x-navbar > .x-navbar-nav {
+        line-height:20px;
+        font-size:14px;
+        padding-top:22px;
+        padding-bottom:22px;
+      }
+
       .disable-pointer-events {
         pointer-events: none;
       }
@@ -74,86 +101,69 @@
         top:17px;
       }
 
-      .x-navbar {
-        position:fixed;
-        width:100%;
-        top:0;
-        height:66px;
+      .main-panel {
+        width:600px;
+        margin-left:260px;
+        overflow:hidden;
+      }
+
+      .thumbnails-list-toolbar {
+        padding-top:20px;
+        width:600px;
         background-color:#fff;
-        box-shadow:0px 1px 4px rgba(0,0,0,.34);
-        color:#404040;
+        border-bottom: solid 1px #aaa;
+        position:fixed;
+        z-index:1;
+        box-shadow: 0px 8px 8px -8px rgba(0,0,0,.70);
       }
 
-      .x-paper {
-        box-shadow:0px 1px 4px rgba(0,0,0,.30);
-      }
-
-      .x-navbar-right {
-        margin-right:20px;
+      .thumbnails-list-toolbar > div {
         float:right;
+        right:0;
+        bottom:0;
       }
 
-      .x-navbar > .x-navbar-nav {
-        line-height:20px;
-        font-size:14px;
-        padding-top:22px;
-        padding-bottom:22px;
-      }
-
-      main {
-        padding:20px;
-        margin-left:270px;
+      .thumbnails-list-toolbar .glyphicon {
+        
+        font-size: 16px;
+        margin:10px;
       }
 
       .graph-thumbnails-container {
+        padding-top:60px;
         display:block;
       }
 
-      .editor-panel {
+      .side-panel {
         padding:20px;
         left:0;
         position:fixed;
         width:260px;
       }
 
-      .editor-panel > button {
+      .side-panel > button {
         margin-bottom: 10px;
-      }
-
-      .thumbnail-options {
-        width:100%;
-        position:relative;
-      }
-
-      .thumbnail-options > div {
-        display:inline-block;
-        float:right;
-        right:0;
-      }
-
-      .thumbnail-options .glyphicon {
-        font-size: 16px;
-        margin:10px;
       }
     </style>
   </head>
   <body>
-    <nav id="editorPanel" class="editor-panel" v-cloak>
+    <div id="editorPanel" class="side-panel" v-cloak>
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
-    </nav>
+    </div>
 
-    <main>
-      <div class="thumbnail-options clearfix">
+    <div class="main-panel">
+      <div class="thumbnails-list-toolbar">
         <div>
           <span class="glyphicon glyphicon glyphicon-th"></span>
           <span class="glyphicon glyphicon glyphicon-th-list"></span>
           <span class="glyphicon glyphicon-sort-by-attributes"></span>
         </div>
       </div>
-      <div id="graphsListContainer" class="center-block graph-thumbnails-container">
+
+      <div id="graphsListContainer" class="graph-thumbnails-container">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
-    </main>
+    </div>
 
     <template id="link.thumbnail">
       <g>
@@ -196,8 +206,8 @@
       <a href="/graph/{{graph.id}}">
         <div class="graph-thumbnail">
           <svg
-              width="300"
-              height="169"
+              width="600"
+              height="300"
               v-attr="viewBox:viewBox"
               v-el="svg">
             <defs>
