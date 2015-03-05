@@ -72,7 +72,7 @@
 
       .main-panel {
         width:620px;
-        margin-left:260px;
+        margin-left:250px;
         overflow:hidden;
       }
 
@@ -96,13 +96,13 @@
         height: 10px;
         left: 2%;
         border-radius: 100px / 5px;
-        box-shadow:0 0 10px 3px rgba(0,0,0,0.20);
+        box-shadow:0 0 10px 4px rgba(0,0,0,0.30);
       }
 
       .thumbnails-list-toolbar {
         background-color:inherit;
         width:600px;
-        border-bottom: solid 1px #ccc;
+        border-bottom: solid 1px rgba(0,0,0,0.30);;
       }
 
       .thumbnails-list-toolbar > div {
@@ -258,10 +258,7 @@
               <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
             </g>
           </svg>
-          <div class="caption">
-            <h6>{{graph.data.name}}</h6>
-            <span class="glyphicon glyphicon-trash" />
-          </div>
+
         </div>
       </a>
     </template>
