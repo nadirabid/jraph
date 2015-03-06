@@ -7,6 +7,7 @@
   <head lang="en">
     <meta charset="UTF-8">
     <title>Graphs</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <style>
       html, body {
@@ -37,6 +38,20 @@
         font-size:14px;
         padding-top:22px;
         padding-bottom:22px;
+      }
+
+      .x-btn {
+        text-align:center;
+        border:solid 1px transparent;
+        border-radius: 2px;
+        display:inline-block;
+        vertical-align: middle;
+        padding:4px 8px;
+      }
+
+      .x-btn:hover {
+        border:solid 1px rgba(0,0,0,0.015);
+        background-color:rgba(0,0,0,0.1);
       }
 
       .disable-pointer-events {
@@ -117,10 +132,11 @@
         bottom:0;
       }
 
-      .thumbnails-list-toolbar > div > .toolbar-buttons > .glyphicon {
+      .thumbnails-list-toolbar > div > .toolbar-buttons > .fa {
         line-height:20px;
-        font-size: 16px;
-        margin:10px;
+        font-size: 17px;
+        margin-bottom:10px;
+        width:40px;
       }
 
       .thumbnails-list {
@@ -137,9 +153,9 @@
         background-color:#fff;
         display:inline-block;
         box-shadow: 0px 1px 8px rgba(0, 0, 0, .2),
-        0px 0px 2px rgba(0, 0, 0, .2),
-        inset 0px 1px 0px rgba(255, 255, 255, .25),
-        inset 0px -1px 0px rgba(0, 0, 0, .15);
+                    0px 0px 2px rgba(0, 0, 0, .2),
+                    inset 0px 1px 0px rgba(255, 255, 255, .25),
+                    inset 0px -1px 0px rgba(0, 0, 0, .15);
       }
 
       .graph-thumbnail > svg {
@@ -180,9 +196,8 @@
             v-class="show:pageYOffset > 0"
             v-el="toolbarButtons">
           <div class="toolbar-buttons">
-            <span class="glyphicon glyphicon glyphicon-th"></span>
-            <span class="glyphicon glyphicon glyphicon-th-list"></span>
-            <span class="glyphicon glyphicon-sort-by-attributes"></span>
+            <i class="x-btn fa fa-list"></i>
+            <i class="x-btn fa fa-sort"></i>
           </div>
         </div>
       </div>
