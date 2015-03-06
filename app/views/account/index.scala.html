@@ -169,7 +169,7 @@
 
     <div class="main-panel">
       <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar">
-        <div class="curved-shadow clearfix center-block">
+        <div class="clearfix center-block" v-class="curved-shadow:pageYOffset > 0">
           <div class="toolbar-buttons">
             <span class="glyphicon glyphicon glyphicon-th"></span>
             <span class="glyphicon glyphicon glyphicon-th-list"></span>
@@ -584,7 +584,7 @@
 
       Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
 
-      var GraphThumbnailsContainerComponent = Vue.extend({
+      var GraphThumbnailsListComponent = Vue.extend({
 
         data: function() {
           return {
@@ -599,7 +599,7 @@
 
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
-              _.forEach(_.range(6), function() {
+              _.forEach(_.range(3), function() {
                 self.hypergraphs.push( _.clone(hypergraphs[0]));
               });
             });
@@ -632,9 +632,30 @@
 
       });
 
+      var ThumbnailsListToolbarComponent = Vue.extend({
+
+        data: function() {
+          return {
+            pageYOffset: 0
+          };
+        },
+
+        events: {
+
+          'hook:ready': function() {
+            var self = this;
+            window.addEventListener('scroll', function() {
+              self.pageYOffset = window.pageYOffset;
+            });
+          }
+
+        }
+      });
+
       // init code
       var editorPanel = new EditorPanelComponent().$mount('#editorPanel');
-      var graphThumbnailsContainer = new GraphThumbnailsContainerComponent().$mount('#graphThumbnailsList')
+      var thumbnailsListToolbar = new ThumbnailsListToolbarComponent().$mount('#thumbnailsListToolbar');
+      var graphThumbnailsList = new GraphThumbnailsListComponent().$mount('#graphThumbnailsList')
     });
   </script>
 </html>
