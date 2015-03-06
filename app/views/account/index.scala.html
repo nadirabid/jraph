@@ -74,8 +74,9 @@
         position:relative;
       }
 
-      .curved-shadow:before {
-        content: "";
+      .curved-shadow::before {
+        transition: opacity .4s ease;
+        content: "hello";
         position:absolute;
         z-index: -1;
         width:96%;
@@ -84,6 +85,11 @@
         left: 2%;
         border-radius: 100px / 5px;
         box-shadow:0 0 10px 4px rgba(0,0,0,0.25);
+        opacity:0;
+      }
+
+      .curved-shadow.show::before {
+        opacity:1;
       }
 
       .main-panel {
@@ -169,7 +175,10 @@
 
     <div class="main-panel">
       <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar">
-        <div class="clearfix center-block" v-class="curved-shadow:pageYOffset > 0">
+        <div
+            class="curved-shadow clearfix center-block"
+            v-class="show:pageYOffset > 0"
+            v-el="toolbarButtons">
           <div class="toolbar-buttons">
             <span class="glyphicon glyphicon glyphicon-th"></span>
             <span class="glyphicon glyphicon glyphicon-th-list"></span>
