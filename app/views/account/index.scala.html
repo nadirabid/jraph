@@ -58,15 +58,41 @@
       }
 
       .x-popover-menu {
+        background:#fff;
         position:absolute;
         white-space: nowrap;
         list-style:none;
         border:none;
         border-radius:2px;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        text-align:left;
+        padding:5px 0;
       }
 
-      .x-popover-menu
+      .x-popover-menu > .x-popover-menu-item {
+        padding:5px 20px;
+        display:block;
+        cursor:pointer;
+        width:160px;
+        position:relative;
+      }
+
+      .x-popover-menu > .x-popover-menu-item.active::after {
+        content: "\f00c";
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size:inherit;
+        display:inline-block;
+        position:absolute;
+        right:20px;
+      }
+
+      .x-popover-menu > .x-popover-menu-item.active {
+        font-weight: bold;
+      }
+
+      .x-popover-menu > .x-popover-menu-item:hover {
+        background-color:rgba(0,0,0,.05);
+      }
 
       .disable-pointer-events {
         pointer-events: none;
@@ -105,7 +131,7 @@
 
       .curved-shadow::before {
         transition: opacity .4s ease;
-        content: "hello";
+        content: "";
         position:absolute;
         z-index: -1;
         width:96%;
@@ -215,10 +241,10 @@
             <div style="position:relative;display:inline-block;">
               <i class="x-flat-btn fa fa-sort" data-toggle="dropdown"></i>
               <div class="x-paper">
-                <ul class="list-group x-popover-menu">
-                  <li class="list-group-item">Date created</li>
-                  <li class="list-group-item">Date modified</li>
-                  <li class="list-group-item">Title</li>
+                <ul class="x-popover-menu">
+                  <li class="x-popover-menu-item">Date created</li>
+                  <li class="x-popover-menu-item active">Date modified</li>
+                  <li class="x-popover-menu-item">Title</li>
                 </ul>
               </div>
             </div>
