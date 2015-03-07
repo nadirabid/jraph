@@ -11,10 +11,10 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 libraryDependencies ++= Seq(
   cache,
   ws,
-  "org.scalatestplus" %% "play" % "1.2.0" % "test",
   "com.mohiva" %% "play-silhouette" % "2.0-SNAPSHOT",
-  "com.mohiva" %% "play-silhouette-testkit" % "2.0-SNAPSHOT" % "test",
-  "net.codingwell" %% "scala-guice" % "4.0.0-beta4"
+  "net.codingwell" %% "scala-guice" % "4.0.0-beta4",
+  "org.scalatestplus" %% "play" % "1.2.0" % "test",
+  "com.mohiva" %% "play-silhouette-testkit" % "2.0-SNAPSHOT" % "test"
 )
 
 PlayKeys.routesImport += "java.util.UUID"
