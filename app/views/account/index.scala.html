@@ -14,6 +14,16 @@
         height: 100%;
       }
 
+      .x-disable-pointer-events {
+        pointer-events: none;
+      }
+
+      .x-paper {
+        box-shadow: rgba(255,255,255,.9) 0px 1px 0px inset,
+        rgba(0,0,0,.03) 0px -1px 0px inset,
+        rgba(0,0,0,.2) 0px 1px 3px;
+      }
+
       .x-navbar {
         position:fixed;
         width:100%;
@@ -22,12 +32,6 @@
         background-color:#fff;
         box-shadow:0px 1px 4px rgba(0,0,0,.34);
         color:#404040;
-      }
-
-      .x-paper {
-        box-shadow: rgba(255,255,255,.9) 0px 1px 0px inset,
-                    rgba(0,0,0,.03) 0px -1px 0px inset,
-                    rgba(0,0,0,.2) 0px 1px 3px;
       }
 
       .x-navbar-right {
@@ -57,7 +61,7 @@
         background-color:rgba(0,0,0,0.1);
       }
 
-      .x-popover-menu {
+      .x-menu {
         background:#fff;
         position:absolute;
         white-space: nowrap;
@@ -69,33 +73,36 @@
         padding:5px 0;
       }
 
-      .x-popover-menu > .x-popover-menu-item {
+      .x-menu > .x-menu-item {
         padding:5px 20px;
         display:block;
         cursor:pointer;
-        width:160px;
+        width:100%;
         position:relative;
+        line-height:24px;
       }
 
-      .x-popover-menu > .x-popover-menu-item.active::after {
+      .x-menu > .x-menu-item.selected::after {
         content: "\f00c";
         font: normal normal normal 14px/1 FontAwesome;
         font-size:inherit;
         display:inline-block;
         position:absolute;
         right:20px;
+        top:9px;
       }
 
-      .x-popover-menu > .x-popover-menu-item.active {
+      .x-menu > .x-menu-item.selected {
         font-weight: bold;
       }
 
-      .x-popover-menu > .x-popover-menu-item:hover {
+      .x-menu > .x-menu-item:hover {
         background-color:rgba(0,0,0,.05);
       }
 
-      .disable-pointer-events {
-        pointer-events: none;
+      .toolbar-dropdown {
+        width:180px;
+        right:-40px;
       }
 
       .marker-arrow {
@@ -174,7 +181,11 @@
         bottom:0;
       }
 
-      .thumbnails-list-toolbar .toolbar-buttons .fa {
+      .toolbar-buttons > * {
+        display:inline-block;
+      }
+
+      .toolbar-buttons .x-flat-btn {
         line-height:20px;
         font-size: 17px;
         width:40px;
@@ -237,16 +248,16 @@
             v-class="show:pageYOffset > 0"
             v-el="toolbarButtons">
           <div class="toolbar-buttons">
-            <i class="x-flat-btn fa fa-list"></i>
-            <div style="position:relative;display:inline-block;">
-              <i class="x-flat-btn fa fa-sort" data-toggle="dropdown"></i>
-              <div class="x-paper">
-                <ul class="x-popover-menu">
-                  <li class="x-popover-menu-item">Date created</li>
-                  <li class="x-popover-menu-item active">Date modified</li>
-                  <li class="x-popover-menu-item">Title</li>
-                </ul>
-              </div>
+            <div class="x-flat-btn">
+              <i class="fa fa-list"></i>
+            </div>
+            <div class="x-flat-btn">
+              <i class="fa fa-sort" data-toggle="dropdown"></i>
+              <ul class="toolbar-dropdown hidden x-menu">
+                <li class="x-menu-item">Date created</li>
+                <li class="x-menu-item selected">Date modified</li>
+                <li class="x-menu-item">Title</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -284,7 +295,7 @@
           v-attr="width:width, height:height, transform:rectTranslate"
         ></rect>
         <text
-          class="node-name disable-pointer-events"
+          class="node-name x-disable-pointer-events"
           text-anchor="middle"
           v-el="nodeName"
         >
@@ -320,7 +331,7 @@
               </marker>
             </defs>
 
-            <g class="disable-pointer-events" v-el="nodesAndLinksGroup">
+            <g class="x-disable-pointer-events" v-el="nodesAndLinksGroup">
               <!-- Nodes -->
               <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
 
