@@ -25,7 +25,9 @@
       }
 
       .x-paper {
-        box-shadow:0px 1px 4px rgba(0,0,0,.30);
+        box-shadow: rgba(255,255,255,.9) 0px 1px 0px inset,
+                    rgba(0,0,0,.03) 0px -1px 0px inset,
+                    rgba(0,0,0,.2) 0px 1px 3px;
       }
 
       .x-navbar-right {
@@ -40,7 +42,8 @@
         padding-bottom:22px;
       }
 
-      .x-btn {
+      .x-flat-btn {
+        cursor:pointer;
         text-align:center;
         border:solid 1px transparent;
         border-radius: 2px;
@@ -49,10 +52,21 @@
         padding:4px 8px;
       }
 
-      .x-btn:hover {
-        border:solid 1px rgba(0,0,0,0.015);
+      .x-flat-btn:hover {
+        border:solid 1px rgba(0,0,0,0.03);
         background-color:rgba(0,0,0,0.1);
       }
+
+      .x-popover-menu {
+        position:absolute;
+        white-space: nowrap;
+        list-style:none;
+        border:none;
+        border-radius:2px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+
+      .x-popover-menu
 
       .disable-pointer-events {
         pointer-events: none;
@@ -128,13 +142,13 @@
         border-bottom: solid 1px rgba(0,0,0,0.20);
       }
 
-      .thumbnails-list-toolbar > div > .toolbar-buttons {
+      .thumbnails-list-toolbar .toolbar-buttons {
         float:right;
         right:0;
         bottom:0;
       }
 
-      .thumbnails-list-toolbar > div > .toolbar-buttons > .fa {
+      .thumbnails-list-toolbar .toolbar-buttons .fa {
         line-height:20px;
         font-size: 17px;
         width:40px;
@@ -197,8 +211,17 @@
             v-class="show:pageYOffset > 0"
             v-el="toolbarButtons">
           <div class="toolbar-buttons">
-            <i class="x-btn fa fa-list"></i>
-            <i class="x-btn fa fa-sort"></i>
+            <i class="x-flat-btn fa fa-list"></i>
+            <div style="position:relative;display:inline-block;">
+              <i class="x-flat-btn fa fa-sort" data-toggle="dropdown"></i>
+              <div class="x-paper">
+                <ul class="list-group x-popover-menu">
+                  <li class="list-group-item">Date created</li>
+                  <li class="list-group-item">Date modified</li>
+                  <li class="list-group-item">Title</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
