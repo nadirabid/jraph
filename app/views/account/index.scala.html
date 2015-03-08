@@ -246,8 +246,8 @@
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
     </div>
 
-    <div class="main-panel">
-      <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar" v-cloak>
+    <div id="graphThumbnailsList" class="main-panel">
+      <div class="thumbnails-list-toolbar">
         <div
             class="curved-shadow clearfix center-block"
             v-class="show:pageYOffset > 0"
@@ -267,7 +267,7 @@
           </div>
         </div>
       </div>
-      <div id="graphThumbnailsList" class="thumbnails-list center-block">
+      <div class="thumbnails-list center-block">
         <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
       </div>
     </div>
@@ -664,7 +664,7 @@
 
         events: {
 
-          'hook:ready': function() {
+          'hook:created': function() {
             this.bounds = viewBoundsToFitAllNodes(this.nodes);
           }
 
@@ -678,13 +678,15 @@
 
         data: function() {
           return {
+            pageYOffset: 0,
+            sortMenu: false,
             hypergraphs: [ ]
           };
         },
 
         events: {
 
-          'hook:ready': function() {
+          'hook:created': function() {
             var self = this;
 
             $.when.apply($, deferredHypergraphsData).then(function() {
@@ -693,75 +695,47 @@
                 self.hypergraphs.push( _.clone(hypergraphs[0]));
               });
             });
-          }
 
-        }
-
-      });
-
-      var EditorPanelComponent = Vue.extend({
-
-        methods: {
-
-          updateDimensions: function() {
-            $(this.$el).outerHeight($(window).outerHeight());
-          }
-
-        },
-
-        events: {
-
-          'hook:ready': function() {
-            window.addEventListener('resize', this.updateDimensions.bind(this));
-            this.updateDimensions();
-          }
-
-        }
-
-      });
-
-      var ThumbnailsListToolbarComponent = Vue.extend({
-
-        data: function() {
-          return {
-            pageYOffset: 0,
-            sortMenu: false
-          };
-        },
-
-        methods: {
-
-          toggleSortMenu: function(e) {
-            var self = this;
-            this.$$.sortMenu.classList.remove('hidden');
-
-            e.stopPropagation();
-
-            var closeMenu = function() {
-              self.$$.sortMenu.classList.add('hidden');
-              window.removeEventListener('click', closeMenu);
-            };
-
-            window.addEventListener('click', closeMenu);
-          }
-
-        },
-
-        events: {
-
-          'hook:ready': function() {
             var self = this;
             window.addEventListener('scroll', function() {
               self.pageYOffset = window.pageYOffset;
             });
           }
 
+        },
+
+        methods: {
+
+          sortBy: function(option) {
+
+          },
+
+          toggleSortMenu: function(e) {
+            var self = this;
+            this.sortMenu = !this.sortMenu;
+
+            if (this.sortMenu) {
+              this.$$.sortMenu.classList.remove('hidden');
+
+              e.stopPropagation();
+
+              var closeMenu = function() {
+                self.$$.sortMenu.classList.add('hidden');
+                window.removeEventListener('click', closeMenu);
+              };
+
+              window.addEventListener('click', closeMenu);
+            }
+            else {
+              this.$$.sortMenu.classList.add('hidden');
+            }
+          }
+
         }
+
       });
 
       // init code
-      var editorPanel = new EditorPanelComponent().$mount('#editorPanel');
-      var thumbnailsListToolbar = new ThumbnailsListToolbarComponent().$mount('#thumbnailsListToolbar');
       var graphThumbnailsList = new GraphThumbnailsListComponent().$mount('#graphThumbnailsList')
     });
   </script>
