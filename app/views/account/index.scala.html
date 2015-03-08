@@ -11,7 +11,11 @@
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <style>
       html, body {
-        height: 100%;
+        overflow-x:hidden;
+      }
+
+      [v-cloak] {
+        display:none !important;
       }
 
       .x-disable-pointer-events {
@@ -54,6 +58,7 @@
         display:inline-block;
         vertical-align: middle;
         padding:4px 8px;
+        font-size: 14px;
       }
 
       .x-flat-btn:hover {
@@ -242,23 +247,23 @@
     </div>
 
     <div class="main-panel">
-      <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar">
+      <div id="thumbnailsListToolbar" class="thumbnails-list-toolbar" v-cloak>
         <div
             class="curved-shadow clearfix center-block"
             v-class="show:pageYOffset > 0"
             v-el="toolbarButtons">
           <div class="toolbar-buttons">
-            <div class="x-flat-btn">
-              <i class="fa fa-list"></i>
-            </div>
-            <div class="x-flat-btn">
-              <i class="fa fa-sort" data-toggle="dropdown"></i>
-              <ul class="toolbar-dropdown hidden x-menu">
+            <span>
+              <i class="x-flat-btn fa fa-list"></i>
+            </span>
+            <span>
+              <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
+              <ul class="x-menu toolbar-dropdown hidden" v-el="sortMenu">
                 <li class="x-menu-item">Date created</li>
                 <li class="x-menu-item selected">Date modified</li>
                 <li class="x-menu-item">Title</li>
               </ul>
-            </div>
+            </span>
           </div>
         </div>
       </div>
@@ -699,8 +704,7 @@
         methods: {
 
           updateDimensions: function() {
-            var viewportHeight = $(window).outerHeight();
-            $(this.$el ).outerHeight(viewportHeight);
+            $(this.$el).outerHeight($(window).outerHeight());
           }
 
         },
@@ -714,15 +718,33 @@
 
         }
 
-
       });
 
       var ThumbnailsListToolbarComponent = Vue.extend({
 
         data: function() {
           return {
-            pageYOffset: 0
+            pageYOffset: 0,
+            sortMenu: false
           };
+        },
+
+        methods: {
+
+          toggleSortMenu: function(e) {
+            var self = this;
+            this.$$.sortMenu.classList.remove('hidden');
+
+            e.stopPropagation();
+
+            var closeMenu = function() {
+              self.$$.sortMenu.classList.add('hidden');
+              window.removeEventListener('click', closeMenu);
+            };
+
+            window.addEventListener('click', closeMenu);
+          }
+
         },
 
         events: {
