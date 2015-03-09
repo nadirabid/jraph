@@ -201,11 +201,14 @@
         padding-top:80px;
       }
 
+      .thumbnails-list > a {
+        margin-bottom:10px;
+        display:inline-block;
+      }
+
       .graph-thumbnail {
         cursor:pointer;
         overflow:hidden;
-        padding:0;
-        margin:0;
         border-radius:2px;
         background-color:#fff;
         display:inline-block;
@@ -227,7 +230,7 @@
         padding:5px 10px;
       }
 
-      .graph-thumbnail > .caption > .glyphicon {
+      .graph-thumbnail > .caption > .fa {
         position:absolute;
         right:10px;
         top:17px;
@@ -258,10 +261,28 @@
             </span>
             <span>
               <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
-              <ul class="x-menu toolbar-dropdown hidden" v-el="sortMenu">
-                <li class="x-menu-item">Date created</li>
-                <li class="x-menu-item selected">Date modified</li>
-                <li class="x-menu-item">Title</li>
+              <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='created'"
+                    v-on="click:sortBy('created')"
+                >
+                  Date created
+                </li>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='modified'"
+                    v-on="click:sortBy('modified')"
+                >
+                  Date modified
+                </li>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='title'"
+                    v-on="click:sortBy('title')"
+                >
+                  Title
+                </li>
               </ul>
             </span>
           </div>
@@ -346,7 +367,7 @@
           </svg>
           <div class="caption">
             <h6>{{graph.data.name}}</h6>
-            <span class="glyphicon glyphicon-trash" />
+            <i class="fa fa-ellipsis-v"></i>
           </div>
         </div>
       </a>
@@ -504,6 +525,13 @@
           }
         },
 
+        events: {
+
+          'hook:ready': function() {
+            this.liangBarskyTest();
+          }
+
+        },
 
         methods: {
 
@@ -526,14 +554,6 @@
 
             this.targetClipX = clippings.x0Clip;
             this.targetClipY = clippings.y0Clip;
-          }
-
-        },
-
-        events: {
-
-          'hook:ready': function() {
-            this.liangBarskyTest();
           }
 
         }
@@ -582,6 +602,15 @@
 
         },
 
+        events: {
+
+          'hook:ready': function() {
+            this.updateDimensionsOfNodeRect();
+            this.calculateRectBoundingEdges();
+          }
+
+        },
+
         methods: {
 
           calculateRectBoundingEdges: function() {
@@ -619,20 +648,14 @@
             this.height = bBox.height + 12;
           }
 
-        },
-
-        events: {
-
-          'hook:ready': function() {
-            this.updateDimensionsOfNodeRect();
-            this.calculateRectBoundingEdges();
-          }
-
         }
 
       });
 
       Vue.component('x-node-thumbnail', NodeThumbnailComponent);
+
+      var letters = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
+      var counter = 0;
 
       var GraphThumbnailComponent = Vue.extend({
 
@@ -679,6 +702,7 @@
         data: function() {
           return {
             pageYOffset: 0,
+            sortedBy: 'modified',
             sortMenu: false,
             hypergraphs: [ ]
           };
@@ -692,7 +716,12 @@
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
               _.forEach(_.range(3), function() {
-                self.hypergraphs.push( _.clone(hypergraphs[0]));
+                var hypergraph = _.cloneDeep(hypergraphs[0]);
+                hypergraph.graph.data.name = letters[counter];
+                hypergraph.graph.createdAt += counter;
+                hypergraph.graph.updatedAt -= counter;
+                counter++;
+                self.hypergraphs.push(hypergraph);
               });
             });
 
@@ -700,35 +729,55 @@
             window.addEventListener('scroll', function() {
               self.pageYOffset = window.pageYOffset;
             });
+
+            this.sortBy(this.sortedBy);
           }
 
         },
 
         methods: {
 
-          sortBy: function(option) {
+          sortBy: function(sortOption) {
+            console.log(sortOption);
+            this.sortedBy = sortOption;
 
+            var hypergraphs = this.hypergraphs;
+
+            switch(sortOption) {
+            case 'title':
+              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.data.name;
+              });
+              break;
+            case 'modified':
+              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.updatedAt;
+              });
+              break;
+            default:
+              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.createdAt;
+              });
+              break;
+            }
           },
 
           toggleSortMenu: function(e) {
+            if (this.sortMenu)
+              return;
+
+            e.stopPropagation();
+
+            this.sortMenu = true;
+
             var self = this;
-            this.sortMenu = !this.sortMenu;
 
-            if (this.sortMenu) {
-              this.$$.sortMenu.classList.remove('hidden');
+            var closeMenu = function() {
+              self.sortMenu = false;
+              window.removeEventListener('click', closeMenu);
+            };
 
-              e.stopPropagation();
-
-              var closeMenu = function() {
-                self.$$.sortMenu.classList.add('hidden');
-                window.removeEventListener('click', closeMenu);
-              };
-
-              window.addEventListener('click', closeMenu);
-            }
-            else {
-              this.$$.sortMenu.classList.add('hidden');
-            }
+            window.addEventListener('click', closeMenu);
           }
 
         }
