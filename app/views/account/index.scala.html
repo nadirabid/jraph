@@ -265,21 +265,21 @@
                 <li
                     class="x-menu-item"
                     v-class="selected:sortedBy=='created'"
-                    v-on="click:sortBy('created')"
+                    v-on="click:sortedBy='created'"
                 >
                   Date created
                 </li>
                 <li
                     class="x-menu-item"
                     v-class="selected:sortedBy=='modified'"
-                    v-on="click:sortBy('modified')"
+                    v-on="click:sortedBy='modified'"
                 >
                   Date modified
                 </li>
                 <li
                     class="x-menu-item"
                     v-class="selected:sortedBy=='title'"
-                    v-on="click:sortBy('title')"
+                    v-on="click:sortedBy='title'"
                 >
                   Title
                 </li>
@@ -289,7 +289,7 @@
         </div>
       </div>
       <div class="thumbnails-list center-block">
-        <x-graph-thumbnail v-repeat="hypergraphs"></x-graph-thumbnail>
+        <x-graph-thumbnail v-repeat="sortedHypergraphs"></x-graph-thumbnail>
       </div>
     </div>
 
@@ -654,9 +654,6 @@
 
       Vue.component('x-node-thumbnail', NodeThumbnailComponent);
 
-      var letters = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
-      var counter = 0;
-
       var GraphThumbnailComponent = Vue.extend({
 
         template: '#graph.thumbnail',
@@ -697,6 +694,9 @@
 
       Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
 
+      var letters = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
+      var counter = 0;
+
       var GraphThumbnailsListComponent = Vue.extend({
 
         data: function() {
@@ -708,6 +708,34 @@
           };
         },
 
+        computed: {
+
+          sortedHypergraphs: function() {
+            var hypergraphs = this.hypergraphs;
+
+            switch(this.sortedBy) {
+            case 'title':
+              hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.data.name;
+              });
+              break;
+            case 'modified':
+              hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.updatedAt;
+              });
+              break;
+            default:
+              hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
+                return hypergraph.graph.createdAt;
+              });
+              break;
+            }
+
+            return hypergraphs;
+          }
+
+        },
+
         events: {
 
           'hook:created': function() {
@@ -715,7 +743,8 @@
 
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
-              _.forEach(_.range(3), function() {
+
+              _.forEach(_.range(6), function() {
                 var hypergraph = _.cloneDeep(hypergraphs[0]);
                 hypergraph.graph.data.name = letters[counter];
                 hypergraph.graph.createdAt += counter;
@@ -729,38 +758,11 @@
             window.addEventListener('scroll', function() {
               self.pageYOffset = window.pageYOffset;
             });
-
-            this.sortBy(this.sortedBy);
           }
 
         },
 
         methods: {
-
-          sortBy: function(sortOption) {
-            console.log(sortOption);
-            this.sortedBy = sortOption;
-
-            var hypergraphs = this.hypergraphs;
-
-            switch(sortOption) {
-            case 'title':
-              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
-                return hypergraph.graph.data.name;
-              });
-              break;
-            case 'modified':
-              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
-                return hypergraph.graph.updatedAt;
-              });
-              break;
-            default:
-              this.hypergraphs = _.sortBy(hypergraphs, function(hypergraph) {
-                return hypergraph.graph.createdAt;
-              });
-              break;
-            }
-          },
 
           toggleSortMenu: function(e) {
             if (this.sortMenu)
