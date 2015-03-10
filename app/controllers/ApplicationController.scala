@@ -3,17 +3,18 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import forms._
 import play.api.libs.json.{Json, Writes}
+import play.api.mvc._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import play.api.mvc._
-
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 
+import org.apache.commons.codec.digest.DigestUtils
+
+import forms._
 import models._
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
@@ -32,7 +33,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def index = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
       case Some(hypergraphs) => {
-        Ok(views.html.account.index(Json.toJson(hypergraphs)))
+        val userEmail = "NadirAbid@gmail.com ".trim().toLowerCase()
+        Ok(views.html.account.index(Json.toJson(hypergraphs), DigestUtils.md5Hex(userEmail)))
       }
       case None => ServiceUnavailable
     }
