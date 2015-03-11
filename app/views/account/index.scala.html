@@ -28,26 +28,27 @@
         rgba(0,0,0,.2) 0px 1px 3px;
       }
 
-      .x-navbar {
+      .x-navbar, .x-flat-navbar {
         position:fixed;
         width:100%;
         top:0;
-        height:66px;
+        height:70px;
         background-color:#fff;
-        box-shadow:0px 1px 4px rgba(0,0,0,.34);
         color:#404040;
+        z-index:2;
+      }
+
+      .x-navbar {
+        box-shadow:0px 1px 4px rgba(0,0,0,.34);
+      }
+
+      .x-flat-navbar {
+        border-bottom: solid 1px rgba(0, 0, 0, 0.15);
       }
 
       .x-navbar-right {
         margin-right:20px;
         float:right;
-      }
-
-      .x-navbar > .x-navbar-nav {
-        line-height:20px;
-        font-size:14px;
-        padding-top:22px;
-        padding-bottom:22px;
       }
 
       .x-flat-btn {
@@ -86,7 +87,6 @@
         position:relative;
         line-height:24px;
       }
-
 
       .x-menu > .x-menu-item.selected {
         font-weight: bold;
@@ -128,16 +128,6 @@
         fill: #fff;
       }
 
-      a {
-        text-decoration: none;
-        color:inherit;
-      }
-
-      a:hover, a:visited {
-        color:inherit;
-        text-decoration: none;
-      }
-
       .curved-shadow {
         position:relative;
       }
@@ -160,31 +150,25 @@
         opacity:1;
       }
 
+      .left-panel {
+        padding:0 20px;
+        position:fixed;
+        top:80px;
+        left:0;
+        width:260px;
+      }
+
+      .right-panel {
+        padding:0 20px;
+        position:fixed;
+        top:80px;
+        right:0;
+      }
+
       .main-panel {
         width:620px;
         margin-left:250px;
         overflow:hidden;
-      }
-
-      .thumbnails-list-toolbar {
-        background-color:#fff;
-        position:fixed;
-        padding: 20px 10px 0 10px;
-        height: 60px;
-        z-index:1;
-      }
-
-      .thumbnails-list-toolbar > div {
-        background-color:inherit;
-        width:600px;
-        padding:5px 0 5px 0;
-        border-bottom: solid 1px rgba(0,0,0,0.15);
-      }
-
-      .thumbnails-list-toolbar .toolbar-buttons {
-        float:right;
-        right:0;
-        bottom:0;
       }
 
       .toolbar-buttons > * {
@@ -205,6 +189,13 @@
       .thumbnails-list > a {
         margin-bottom:10px;
         display:inline-block;
+        text-decoration: none;
+        color:inherit;
+      }
+
+      .thumbnails-list > a:hover, .thumbnails-list > a:visited {
+        color:inherit;
+        text-decoration: none;
       }
 
       .graph-thumbnail {
@@ -237,63 +228,94 @@
         top:17px;
       }
 
-      .left-panel {
-        padding:0 20px;
-        position:fixed;
-        top:60px;
-        left:0;
-        width:260px;
+      .nav > .x-navbar-nav {
+        margin-left:20px;
       }
 
-      .right-panel {
-        border-top:solid 1px rgba(0,0,0,.15);
-        width:260px;
-        margin:0 0 0 20px;
-        padding-top:20px;
-        position:fixed;
-        left:860px;
-        top:60px;
+      .nav > img {
+        position:absolute;
+        bottom:10px;
+        right:20px;
+        border-radius:2px;
+      }
+
+      ul.x-navbar-nav {
+        list-style:none;
+        padding:0;
+        margin:0;
+      }
+
+      .x-navbar-nav > li {
+        position:relative;
+        display:block; /* need this to have it fit the navbar lenght */
+        float:left; /* so the li elements displayed inline even though its a block element */
+      }
+
+      .x-navbar-nav > li > a {
+        display:block; /* need this to have it fit the navbar lenght */
+        line-height:70px;
+        font-size:14px;
+        font-weight:500;
+        padding:0 10px 0 10px;
+        height:70px;
+        text-decoration: none;
+        color:inherit;
+        transition:all 160ms ease-in-out;
+        border-bottom:solid 0 rgba(0,0,0,0);
+      }
+
+      .x-navbar-nav > li:hover > a {
+        border-bottom:solid 5px rgba(0,0,0,.25);
+      }
+
+      .x-navbar-nav > li > a, .x-navbar-nav > li > a:hover, .x-navbar-nav > li > a:visited {
+        text-decoration:none;
+        color:inherit;
       }
     </style>
   </head>
   <body>
-    <div id="editorPanel" class="left-panel">
-      <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
-    </div>
-
-    <div class="right-panel">
-      <img src="https://secure.gravatar.com/avatar/@userHash?s=160" width="80" height="80" />
-    </div>
-
-    <div id="graphThumbnailsList" class="main-panel">
-      <div class="thumbnails-list-toolbar">
-        <div
-            class="curved-shadow clearfix center-block"
-            v-class="show:pageYOffset > 0"
-            v-el="toolbarButtons">
-          <div class="toolbar-buttons">
-            <span>
-              <i class="x-flat-btn fa fa-list"></i>
-            </span>
-            <span>
-              <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
-              <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
-                <li class="x-menu-item" v-class="selected:sortedBy=='created'" v-on="click:sortedBy='created'">
-                  Date created
-                </li>
-                <li class="x-menu-item" v-class="selected:sortedBy=='modified'" v-on="click:sortedBy='modified'">
-                  Date modified
-                </li>
-                <li class="x-menu-item" v-class="selected:sortedBy=='title'" v-on="click:sortedBy='title'">
-                  Title
-                </li>
-              </ul>
-            </span>
-          </div>
+    <div id="graphThumbnailsList">
+      <div>
+        <div class="nav x-flat-navbar">
+          <ul class="x-navbar-nav">
+            <li><a href="#">Graphs</a></li>
+            <li><a href="#">Profile</a></li>
+          </ul>
+          <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
         </div>
       </div>
-      <div class="thumbnails-list center-block">
-        <x-graph-thumbnail v-repeat="sortedHypergraphs"></x-graph-thumbnail>
+
+      <div class="left-panel">
+        <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
+      </div>
+
+      <div class="right-panel">
+        <div class="toolbar-buttons">
+          <span>
+            <i class="x-flat-btn fa fa-list"></i>
+          </span>
+          <span>
+            <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
+            <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
+              <li class="x-menu-item" v-class="selected:sortedBy=='created'" v-on="click:sortedBy='created'">
+                Date created
+              </li>
+              <li class="x-menu-item" v-class="selected:sortedBy=='modified'" v-on="click:sortedBy='modified'">
+                Date modified
+              </li>
+              <li class="x-menu-item" v-class="selected:sortedBy=='title'" v-on="click:sortedBy='title'">
+                Title
+              </li>
+            </ul>
+          </span>
+        </div>
+      </div>
+
+      <div class="main-panel">
+        <div class="thumbnails-list center-block">
+          <x-graph-thumbnail v-repeat="sortedHypergraphs"></x-graph-thumbnail>
+        </div>
       </div>
     </div>
 
