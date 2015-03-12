@@ -71,7 +71,7 @@
         border-bottom:solid 0 rgba(0,0,0,0);
       }
 
-      .x-navbar-nav > li:hover > a {
+      .x-navbar-nav > li:hover > a, .x-navbar-nav > li.active > a {
         border-bottom:solid 5px rgba(0,0,0,.35);
       }
 
@@ -310,8 +310,12 @@
       <div>
         <div class="nav x-flat-navbar">
           <ul class="x-navbar-nav">
-            <li><a href="#">Graphs</a></li>
-            <li><a href="#">Profile</a></li>
+            <li class="active">
+              <a href="#">Graphs</a>
+            </li>
+            <li>
+              <a href="#">Profile</a>
+            </li>
           </ul>
           <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
         </div>
