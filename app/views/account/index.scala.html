@@ -46,9 +46,38 @@
         border-bottom: solid 1px rgba(0, 0, 0, 0.15);
       }
 
-      .x-navbar-right {
-        margin-right:20px;
-        float:right;
+      ul.x-navbar-nav {
+        list-style:none;
+        padding:0;
+        margin:0;
+      }
+
+      .x-navbar-nav > li {
+        position:relative;
+        display:block; /* need this to have it fit the navbar length */
+        float:left; /* so the li elements displayed inline even though its a block element */
+      }
+
+      .x-navbar-nav > li > a {
+        display:block; /* need this to have it fit the navbar length */
+        line-height:70px;
+        font-size:14px;
+        font-weight:500;
+        padding:0 5px 0 5px;
+        height:70px;
+        text-decoration: none;
+        color:inherit;
+        transition:all 160ms ease-in-out;
+        border-bottom:solid 0 rgba(0,0,0,0);
+      }
+
+      .x-navbar-nav > li:hover > a {
+        border-bottom:solid 5px rgba(0,0,0,.35);
+      }
+
+      .x-navbar-nav > li > a, .x-navbar-nav > li > a:hover, .x-navbar-nav > li > a:visited {
+        text-decoration:none;
+        color:inherit;
       }
 
       .x-flat-btn {
@@ -273,40 +302,6 @@
         bottom:10px;
         right:20px;
         border-radius:2px;
-      }
-
-      ul.x-navbar-nav {
-        list-style:none;
-        padding:0;
-        margin:0;
-      }
-
-      .x-navbar-nav > li {
-        position:relative;
-        display:block; /* need this to have it fit the navbar length */
-        float:left; /* so the li elements displayed inline even though its a block element */
-      }
-
-      .x-navbar-nav > li > a {
-        display:block; /* need this to have it fit the navbar length */
-        line-height:70px;
-        font-size:14px;
-        font-weight:500;
-        padding:0 5px 0 5px;
-        height:70px;
-        text-decoration: none;
-        color:inherit;
-        transition:all 160ms ease-in-out;
-        border-bottom:solid 0 rgba(0,0,0,0);
-      }
-
-      .x-navbar-nav > li:hover > a {
-        border-bottom:solid 5px rgba(0,0,0,.25);
-      }
-
-      .x-navbar-nav > li > a, .x-navbar-nav > li > a:hover, .x-navbar-nav > li > a:visited {
-        text-decoration:none;
-        color:inherit;
       }
     </style>
   </head>
