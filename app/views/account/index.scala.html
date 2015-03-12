@@ -67,12 +67,16 @@
         height:70px;
         text-decoration: none;
         color:inherit;
-        transition:all 160ms ease-in-out;
+        transition:all 150ms ease-in-out;
         border-bottom:solid 0 rgba(0,0,0,0);
       }
 
       .x-navbar-nav > li:hover > a, .x-navbar-nav > li.active > a {
-        border-bottom:solid 5px rgba(0,0,0,.35);
+        border-bottom:solid 5px #aaa;
+      }
+
+      .x-navbar-nav > li:hover > a:hover {
+        color:rgba(0,0,0,.5);
       }
 
       .x-navbar-nav > li > a, .x-navbar-nav > li > a:hover, .x-navbar-nav > li > a:visited {
