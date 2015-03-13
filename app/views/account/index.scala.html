@@ -111,6 +111,7 @@
         text-align:left;
         padding:5px 0;
         margin:0;
+        z-index:1000;
       }
 
       /* shared with before and after */
@@ -228,8 +229,8 @@
       }
 
       .main-panel {
-        width:620px;
         margin-left:250px;
+        padding-left:10px;
         overflow:hidden;
       }
 
@@ -251,7 +252,6 @@
       }
 
       .thumbnails-list {
-        width:600px;
         padding-top:80px;
       }
 
@@ -281,9 +281,9 @@
 
       .graph-thumbnail > svg {
         background-color:#e74c3c;
-        display:block; /* SVG has some weird default display mode, adding margins, so we explicity set it to block */
-        width:600px;
-        height:300px;
+        display:block;  /* SVG element default to display:inline; which causes weird padding/margin issues */
+        width:300px;
+        height:150px;
       }
 
       .graph-thumbnail > .caption {
@@ -307,22 +307,25 @@
         right:20px;
         border-radius:2px;
       }
+
+      .sub-nav {
+        top:65px;
+        background: #fff;
+      }
     </style>
   </head>
   <body>
     <div id="graphThumbnailsList">
-      <div>
-        <div class="nav x-flat-navbar">
-          <ul class="x-navbar-nav">
-            <li class="active">
-              <a href="#">Graphs</a>
-            </li>
-            <li>
-              <a href="#">Profile</a>
-            </li>
-          </ul>
-          <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
-        </div>
+      <div class="x-flat-navbar nav">
+        <ul class="x-navbar-nav">
+          <li class="active">
+            <a href="#">Graphs</a>
+          </li>
+          <li>
+            <a href="#">Profile</a>
+          </li>
+        </ul>
+        <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
       </div>
 
       <div class="left-panel">
@@ -745,7 +748,7 @@
 
       Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
 
-      var letters = [ 'A', 'B', 'C', 'D', 'E', 'F' ];
+      var letters = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ];
       var colors = [ '2e6d8c', '8c261b', 'e74c3c', '4694c6', 'dd6580', '626264' ];
       var counter = 0;
 
@@ -796,10 +799,10 @@
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
 
-              _.forEach(_.range(6), function() {
+              _.forEach(_.range(18), function() {
                 var hypergraph = _.cloneDeep(hypergraphs[0]);
-                hypergraph.graph.data.background = colors[counter];
-                hypergraph.graph.data.name = letters[counter];
+                hypergraph.graph.data.background = colors[counter % colors.length];
+                hypergraph.graph.data.name = letters[counter % letters.length];
                 hypergraph.graph.createdAt += counter + Math.floor(Math.random()*100);
                 hypergraph.graph.updatedAt -= counter + Math.floor(Math.random()*100);
                 counter++;
