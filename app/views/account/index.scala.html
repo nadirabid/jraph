@@ -281,7 +281,7 @@
 
       .graph-thumbnail > svg {
         background-color:#e74c3c;
-        display:block;
+        display:block; /* SVG has some weird default display mode, adding margins, so we explicity set it to block */
         width:600px;
         height:300px;
       }
@@ -362,13 +362,7 @@
       <g>
         <line
           class="link"
-          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
-        ></line>
-        <line
-          class="marker-arrow"
-          marker-end="url(#def-marker-arrow)"
-          v-el="arrowMarkerLine"
-          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
         ></line>
       </g>
     </template>
@@ -588,14 +582,6 @@
           targetY: function() {
             return this.target.y;
           }
-        },
-
-        events: {
-
-          'hook:ready': function() {
-            this.liangBarskyTest();
-          }
-
         },
 
         methods: {
