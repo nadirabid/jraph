@@ -7,7 +7,7 @@
   <head lang="en">
     <meta charset="UTF-8">
     <title>Graphs</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <style>
       html, body {
@@ -216,22 +216,36 @@
       .left-panel {
         padding:0 20px;
         position:fixed;
-        top:80px;
+        top:110px;
         left:0;
         width:260px;
       }
 
-      .right-panel {
-        padding:0 20px;
-        position:fixed;
-        top:80px;
-        right:0;
-      }
-
       .main-panel {
+        margin-top:70px;
         margin-left:250px;
         padding-left:10px;
         overflow:hidden;
+      }
+
+      .thumbnails-list-toolbar {
+        background-color:#fff;
+        position:fixed;
+        width:80%;
+        height: 43px;
+        z-index:1;
+      }
+
+      .thumbnails-list-toolbar > div {
+        background-color:inherit;
+        padding:5px 0 5px 0;
+        border-bottom: solid 1px rgba(0,0,0,0.20);
+      }
+
+      .thumbnails-list-toolbar .toolbar-buttons {
+        float:right;
+        right:0;
+        bottom:0;
       }
 
       .toolbar-dropdown {
@@ -252,7 +266,7 @@
       }
 
       .thumbnails-list {
-        padding-top:80px;
+        margin-top:63px;
       }
 
       .thumbnails-list > a {
@@ -332,29 +346,34 @@
         <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
       </div>
 
-      <div class="right-panel">
-        <div class="toolbar-buttons">
-          <span>
-            <i class="x-flat-btn fa fa-list"></i>
-          </span>
-          <span>
-            <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
-            <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
-              <li class="x-menu-item" v-class="selected:sortedBy=='created'" v-on="click:sortedBy='created'">
-                Date created
-              </li>
-              <li class="x-menu-item" v-class="selected:sortedBy=='modified'" v-on="click:sortedBy='modified'">
-                Date modified
-              </li>
-              <li class="x-menu-item" v-class="selected:sortedBy=='title'" v-on="click:sortedBy='title'">
-                Title
-              </li>
-            </ul>
-          </span>
-        </div>
-      </div>
-
       <div class="main-panel">
+        <div class="thumbnails-list-toolbar">
+          <div
+              class="curved-shadow clearfix center-block"
+              v-class="show:pageYOffset > 0"
+              v-el="toolbarButtons">
+            <div class="toolbar-buttons">
+              <span>
+                <i class="x-flat-btn fa fa-list"></i>
+              </span>
+              <span>
+                <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
+                <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
+                  <li class="x-menu-item" v-class="selected:sortedBy=='created'" v-on="click:sortedBy='created'">
+                    Date created
+                  </li>
+                  <li class="x-menu-item" v-class="selected:sortedBy=='modified'" v-on="click:sortedBy='modified'">
+                    Date modified
+                  </li>
+                  <li class="x-menu-item" v-class="selected:sortedBy=='title'" v-on="click:sortedBy='title'">
+                    Title
+                  </li>
+                </ul>
+              </span>
+            </div>
+          </div>
+        </div>
+
         <div class="thumbnails-list center-block">
           <x-graph-thumbnail v-repeat="sortedHypergraphs"></x-graph-thumbnail>
         </div>
