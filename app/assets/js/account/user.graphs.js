@@ -402,4 +402,6 @@ function(_, $, Vue, models){
 
   // init code
   var graphThumbnailsList = new GraphThumbnailsListComponent().$mount(document.body);
+
+  return graphThumbnailsList;
 });
