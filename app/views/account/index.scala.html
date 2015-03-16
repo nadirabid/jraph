@@ -395,7 +395,12 @@
     <g>
       <line
           class="link"
-          v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+      ></line>
+      <line
+          class="marker-arrow"
+          marker-end="url(#def-marker-arrow)"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
       ></line>
     </g>
   </template>
@@ -412,7 +417,7 @@
           v-el="nodeRect"
           v-attr="width:width, height:height, transform:rectTranslate"
           ></rect>
-          <text
+      <text
           class="node-name x-disable-pointer-events"
           text-anchor="middle"
           v-el="nodeName"
@@ -427,6 +432,7 @@
       <div class="graph-thumbnail">
         <svg
             style="background-color:#{{graph.data.background}};"
+            preserveAspectRatio="xMidYMid"
             v-attr="viewBox:viewBox"
             v-el="svg">
           <defs>
@@ -462,7 +468,6 @@
         </svg>
         <div class="caption">
           <h6>{{graph.data.name}}</h6>
-          <i class="fa fa-ellipsis-v"></i>
         </div>
       </div>
     </a>
@@ -619,9 +624,17 @@
           }
         },
 
+        events: {
+
+          'hook:ready': function() {
+            this.liangBarsky();
+          }
+
+        },
+
         methods: {
 
-          liangBarskyTest : function ( ) {
+          liangBarsky: function () {
             //TODO: bug with translate transforms
 
             var source = this.source ;
@@ -752,7 +765,7 @@
             nodes: [],
             bounds: {
               xMin: 0,
-              xMax: 1200,
+              xMax: 1280,
               yMin: 0,
               yMax: 675
             }
@@ -770,7 +783,7 @@
 
         events: {
 
-          'hook:created': function() {
+          'hook:ready': function() {
             this.bounds = viewBoundsToFitAllNodes(this.nodes);
           }
 
