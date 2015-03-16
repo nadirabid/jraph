@@ -7,7 +7,8 @@
   <head lang="en">
     <meta charset="UTF-8">
     <title>Graphs</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/account/user.graphs.css")">
   </head>
@@ -24,7 +25,10 @@
       <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
     </div>
 
-    <div class="x-navbar sub-nav" v-class="x-navbar-fixed-top: pageYOffset > 68">
+    <div
+        class="x-navbar sub-nav"
+        v-class="x-navbar-fixed-top: pageYOffset > 68"
+    >
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
       <div class="toolbar-buttons">
         <span>

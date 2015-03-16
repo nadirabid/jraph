@@ -358,7 +358,7 @@ function(_, $, Vue, models){
         $.when.apply($, deferredHypergraphsData).then(function() {
           var hypergraphs = Array.prototype.slice.call(arguments);
 
-          _.forEach(_.range(10), function() {
+          _.forEach(_.range(20), function() {
             var hypergraph = _.cloneDeep(hypergraphs[0]);
             hypergraph.graph.data.background = colors[counter % colors.length];
             hypergraph.graph.data.name = letters[counter % letters.length];
