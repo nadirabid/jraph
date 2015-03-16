@@ -432,7 +432,7 @@
       <div class="graph-thumbnail">
         <svg
             style="background-color:#{{graph.data.background}};"
-            preserveAspectRatio="xMidYMid"
+            preserveAspectRatio="xMidYMid meet"
             v-attr="viewBox:viewBox"
             v-el="svg">
           <defs>
@@ -763,6 +763,8 @@
           return {
             links: [],
             nodes: [],
+            width: 400,
+            height: 220,
             bounds: {
               xMin: 0,
               xMax: 1280,
@@ -776,7 +778,17 @@
 
           viewBox: function() {
             var b = this.bounds;
-            return b.xMin + ' ' + b.yMin + ' ' + (b.xMax - b.xMin) + ' ' + (b.yMax - b.yMin);
+
+            var xPadding = 20;
+            var yPadding = 10;
+
+            var xMin = b.xMin - xPadding;
+            var xMax = b.xMax + xPadding;
+            var yMin = ((this.height/this.width) * xMin) - yPadding;
+            var yMax = ((this.height/this.width) * xMax) + yPadding;
+
+            return xMin + ' ' + yMin + ' ' + (xMax - xMin) + ' ' + (yMax - yMin);
+            //return b.xMin + ' ' + b.yMin + ' ' + (b.xMax - b.xMin) + ' ' + (b.yMax - b.yMin);
           }
 
         },
@@ -844,14 +856,14 @@
             $.when.apply($, deferredHypergraphsData).then(function() {
               var hypergraphs = Array.prototype.slice.call(arguments);
 
-              _.forEach(_.range(5), function() {
+              _.forEach(_.range(10), function() {
                 var hypergraph = _.cloneDeep(hypergraphs[0]);
                 hypergraph.graph.data.background = colors[counter % colors.length];
                 hypergraph.graph.data.name = letters[counter % letters.length];
                 hypergraph.graph.createdAt += counter + Math.floor(Math.random()*100);
                 hypergraph.graph.updatedAt -= counter + Math.floor(Math.random()*100);
-                counter++;
                 self.hypergraphs.push(hypergraph);
+                counter++;
               });
             });
 
