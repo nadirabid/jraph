@@ -322,6 +322,7 @@ ul.x-navbar-nav {
 .sub-nav {
     height:60px;
     background: #fff;
+    transition:box-shadow 200ms ease-in-out;
 }
 
 .sub-nav:not(.x-navbar-fixed-top) {
