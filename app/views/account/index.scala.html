@@ -1,0 +1,146 @@
+@(hypergraphs: play.api.libs.json.JsValue, userHash: String)
+
+@import play.api.libs.json.Json
+
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>Graphs</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/account/user.graphs.css")">
+  </head>
+  <body>
+    <div class="x-flat-navbar nav">
+      <ul class="x-navbar-nav">
+        <li class="active">
+          <a href="#">Graphs</a>
+        </li>
+        <li>
+          <a href="#">Profile</a>
+        </li>
+      </ul>
+      <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
+    </div>
+
+    <div class="x-flat-navbar sub-nav">
+      <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
+      <div class="toolbar-buttons">
+        <span>
+          <i class="x-flat-btn fa fa-list"></i>
+        </span>
+        <span>
+          <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
+          <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
+            <li class="x-menu-item" v-class="selected:sortedBy=='created'" v-on="click:sortedBy='created'">
+              Date created
+            </li>
+            <li class="x-menu-item" v-class="selected:sortedBy=='modified'" v-on="click:sortedBy='modified'">
+              Date modified
+            </li>
+            <li class="x-menu-item" v-class="selected:sortedBy=='title'" v-on="click:sortedBy='title'">
+              Title
+            </li>
+          </ul>
+        </span>
+      </div>
+    </div>
+
+    <div class="main-panel center-block">
+      <div class="thumbnails-list">
+        <x-graph-thumbnail v-repeat="sortedHypergraphs"></x-graph-thumbnail>
+      </div>
+    </div>
+  </body>
+
+  <template id="link.thumbnail">
+    <g>
+      <line
+          class="link"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+      ></line>
+      <line
+          class="marker-arrow"
+          marker-end="url(#def-marker-arrow)"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+      ></line>
+    </g>
+  </template>
+
+  <template id="node.thumbnail">
+    <g
+        class="node enable-pointer-events"
+        v-attr="id: id, transform: nodeTranslate"
+    >
+      <rect
+          class="node-rect"
+          rx="2"
+          ry="2"
+          v-el="nodeRect"
+          v-attr="width:width, height:height, transform:rectTranslate"
+          ></rect>
+      <text
+          class="node-name x-disable-pointer-events"
+          text-anchor="middle"
+          v-el="nodeName"
+      >
+        {{data.name}}
+      </text>
+    </g>
+  </template>
+
+  <template id="graph.thumbnail">
+    <a href="/graph/{{graph.id}}">
+      <div class="graph-thumbnail">
+        <svg
+            style="background-color:#{{graph.data.background}};"
+            preserveAspectRatio="xMidYMid meet"
+            v-attr="viewBox:viewBox"
+            v-el="svg">
+          <defs>
+            <marker
+                id="def-marker-arrow"
+                markerWidth="2"
+                markerHeight="2"
+                refx="1.6"
+                refy="1"
+                orient="auto"
+            >
+              <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
+            </marker>
+            <marker
+                id="def-marker-ghost-arrow"
+                markerWidth="2"
+                markerHeight="2"
+                refx="0"
+                refy="1"
+                orient="auto"
+            >
+              <path d="M0,0 L0,2 L2,1 L0,0" class="marker-arrow"></path>
+            </marker>
+          </defs>
+
+          <g class="x-disable-pointer-events" v-el="nodesAndLinksGroup">
+            <!-- Nodes -->
+            <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
+
+            <!-- Links -->
+            <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
+          </g>
+        </svg>
+        <div class="caption">
+          <h6>{{graph.data.name}}</h6>
+        </div>
+      </div>
+    </a>
+  </template>
+
+  <script>
+    var userGraphs = @Html(Json.stringify(hypergraphs)); //bootstrap json data into view template
+  </script>
+
+  <script
+      data-main="@routes.Assets.at("js/account/main")"
+      src="@routes.Assets.at("js/dependencies/require.js")"></script>
+</html>
