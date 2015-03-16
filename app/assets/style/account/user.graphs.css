@@ -12,26 +12,24 @@ html, body {
 
 .x-paper {
     box-shadow: rgba(255,255,255,.9) 0px 1px 0px inset,
-    rgba(0,0,0,.03) 0px -1px 0px inset,
-    rgba(0,0,0,.2) 0px 1px 3px;
+                rgba(0,0,0,.03) 0px -1px 0px inset,
+                rgba(0,0,0,.2) 0px 1px 3px;
 }
 
-.x-navbar, .x-flat-navbar {
-    position:fixed;
+.x-navbar {
     width:100%;
-    top:0;
     height:70px;
     background-color:#fff;
     color:#404040;
     z-index:2;
-}
-
-.x-navbar {
-    box-shadow:0px 1px 4px rgba(0,0,0,.34);
-}
-
-.x-flat-navbar {
     border-bottom: solid 1px rgba(0, 0, 0, 0.15);
+    display:inline-block;
+    position:absolute;
+}
+
+.x-navbar-fixed-top {
+    position:fixed;
+    top:0;
 }
 
 ul.x-navbar-nav {
@@ -287,9 +285,9 @@ ul.x-navbar-nav {
     background-color:#fff;
     display:inline-block;
     box-shadow: 0px 1px 8px rgba(0, 0, 0, .2),
-    0px 0px 2px rgba(0, 0, 0, .2),
-    inset 0px 1px 0px rgba(255, 255, 255, .25),
-    inset 0px -1px 0px rgba(0, 0, 0, .15);
+                0px 0px 2px rgba(0, 0, 0, .2),
+                inset 0px 1px 0px rgba(255, 255, 255, .25),
+                inset 0px -1px 0px rgba(0, 0, 0, .15);
 }
 
 .graph-thumbnail > svg {
@@ -322,9 +320,12 @@ ul.x-navbar-nav {
 }
 
 .sub-nav {
-    top:70px;
     height:60px;
     background: #fff;
+}
+
+.sub-nav:not(.x-navbar-fixed-top) {
+    top:70px;
 }
 
 .sub-nav > button {

@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("style/account/user.graphs.css")">
   </head>
   <body>
-    <div class="x-flat-navbar nav">
+    <div class="x-navbar nav">
       <ul class="x-navbar-nav">
         <li class="active">
           <a href="#">Graphs</a>
@@ -24,7 +24,7 @@
       <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
     </div>
 
-    <div class="x-flat-navbar sub-nav">
+    <div class="x-navbar sub-nav" v-class="x-navbar-fixed-top: pageYOffset > 68">
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
       <div class="toolbar-buttons">
         <span>
@@ -137,7 +137,8 @@
   </template>
 
   <script>
-    var userGraphs = @Html(Json.stringify(hypergraphs)); //bootstrap json data into view template
+    //bootstrap json data into view template
+    var userGraphs = @Html(Json.stringify(hypergraphs));
   </script>
 
   <script
