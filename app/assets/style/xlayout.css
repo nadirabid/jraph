@@ -1,0 +1,155 @@
+.x-disable-pointer-events {
+    pointer-events: none;
+}
+
+.x-paper {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.x-navbar {
+    width:100%;
+    height:70px;
+    background-color:#fff;
+    color:#404040;
+    z-index:2;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.15);
+    display:inline-block;
+    position:absolute;
+}
+
+.x-navbar-fixed-top {
+    position:fixed;
+    top:0;
+}
+
+ul.x-navbar-nav {
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.x-navbar-nav > li {
+    position:relative;
+    display:block; /* need this to have it fit the navbar length */
+    float:left; /* so the li elements displayed inline even though its a block element */
+}
+
+.x-navbar-nav > li > a {
+    display:block; /* need this to have it fit the navbar length */
+    line-height:70px;
+    font-size:14px;
+    font-weight:500;
+    padding:0 5px 0 5px;
+    height:70px;
+    text-decoration: none;
+    color:inherit;
+    transition:all 150ms ease-in-out;
+    border-bottom:solid 0 rgba(0,0,0,0);
+}
+
+.x-navbar-nav > li:hover > a,
+.x-navbar-nav > li.active > a {
+    border-bottom:solid 5px #aaa;
+}
+
+.x-navbar-nav > li:hover > a:hover {
+    color:rgba(0,0,0,.5);
+}
+
+.x-navbar-nav > li > a,
+.x-navbar-nav > li > a:hover,
+.x-navbar-nav > li > a:visited {
+    text-decoration:none;
+    color:inherit;
+}
+
+.x-flat-btn {
+    cursor:pointer;
+    text-align:center;
+    border:solid 1px transparent;
+    border-radius: 2px;
+    display:inline-block;
+    vertical-align: middle;
+    padding:4px 8px;
+    font-size: 14px;
+}
+
+.x-flat-btn:hover {
+    border:solid 1px rgba(0,0,0,0.03);
+    background-color:rgba(0,0,0,0.1);
+}
+
+.x-menu {
+    background:#fff;
+    position:absolute;
+    white-space: nowrap;
+    list-style:none;
+    border:none;
+    border-radius:2px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    text-align:left;
+    padding:5px 0;
+    margin:0;
+    z-index:1000;
+}
+
+/* shared with before and after */
+.x-menu::before,
+.x-menu::after {
+    content: ' ';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 10px solid transparent; /* arrow size */
+}
+
+/* these arrows will point up */
+
+/* top-stacked, smaller arrow */
+.x-menu::before {
+    border-bottom-color: #fff;  /* arrow color */
+
+    /* positioning */
+    position: absolute;
+    top: -19px;
+    right: 10px;
+    z-index: 2;
+}
+
+/* arrow which acts as a background shadow */
+.x-menu::after {
+    border-bottom-color: rgba(0,0,0,0.05);  /* arrow color */
+
+    /* positioning */
+    position: absolute;
+    top: -20px;
+    right: 10px;
+    z-index: 1;
+}
+
+.x-menu > .x-menu-item {
+    padding:5px 20px;
+    display:block;
+    cursor:pointer;
+    width:100%;
+    position:relative;
+    line-height:24px;
+}
+
+.x-menu > .x-menu-item.selected {
+    font-weight: bold;
+}
+
+.x-menu > .x-menu-item.selected::after {
+    content: "\f00c";
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size:inherit;
+    display:inline-block;
+    position:absolute;
+    right:20px;
+    top:10px;
+}
+
+.x-menu > .x-menu-item:hover {
+    background-color:rgba(0,0,0,.05);
+}
