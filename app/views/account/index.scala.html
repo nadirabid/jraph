@@ -17,10 +17,10 @@
     <div class="x-navbar nav">
       <ul class="x-navbar-nav">
         <li class="active">
-          <a href="/">Graphs</a>
+          <a href="@routes.ApplicationController.index()">Graphs</a>
         </li>
         <li>
-          <a href="/profile">Profile</a>
+          <a href="@routes.ApplicationController.profile()">Profile</a>
         </li>
       </ul>
       <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
@@ -28,10 +28,7 @@
 
     <div
         class="x-navbar sub-nav"
-        v-class="
-            x-navbar-fixed-top: pageYOffset > 68,
-            x-paper: pageYOffset > 70
-        "
+        v-class="x-navbar-fixed-top: pageYOffset > 68"
     >
       <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
       <div class="toolbar-buttons">
