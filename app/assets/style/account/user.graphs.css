@@ -11,9 +11,7 @@ html, body {
 }
 
 .x-paper {
-    box-shadow: rgba(255,255,255,.9) 0px 1px 0px inset,
-                rgba(0,0,0,.03) 0px -1px 0px inset,
-                rgba(0,0,0,.2) 0px 1px 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .x-navbar {
@@ -57,7 +55,8 @@ ul.x-navbar-nav {
     border-bottom:solid 0 rgba(0,0,0,0);
 }
 
-.x-navbar-nav > li:hover > a, .x-navbar-nav > li.active > a {
+.x-navbar-nav > li:hover > a,
+.x-navbar-nav > li.active > a {
     border-bottom:solid 5px #aaa;
 }
 
@@ -65,7 +64,9 @@ ul.x-navbar-nav {
     color:rgba(0,0,0,.5);
 }
 
-.x-navbar-nav > li > a, .x-navbar-nav > li > a:hover, .x-navbar-nav > li > a:visited {
+.x-navbar-nav > li > a,
+.x-navbar-nav > li > a:hover,
+.x-navbar-nav > li > a:visited {
     text-decoration:none;
     color:inherit;
 }
@@ -101,7 +102,8 @@ ul.x-navbar-nav {
 }
 
 /* shared with before and after */
-.x-menu::before, .x-menu::after {
+.x-menu::before,
+.x-menu::after {
     content: ' ';
     height: 0;
     position: absolute;
@@ -273,7 +275,8 @@ ul.x-navbar-nav {
     margin-right:0;
 }
 
-.thumbnails-list > a:hover, .thumbnails-list > a:visited {
+.thumbnails-list > a:hover,
+.thumbnails-list > a:visited {
     color:inherit;
     text-decoration: none;
 }
