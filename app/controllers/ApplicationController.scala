@@ -33,11 +33,16 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def index = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).map {
       case Some(hypergraphs) => {
-        val userEmail = "NadirAbid@gmail.com ".trim().toLowerCase()
+        val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
         Ok(views.html.account.index(Json.toJson(hypergraphs), DigestUtils.md5Hex(userEmail)))
       }
       case None => ServiceUnavailable
     }
+  }
+
+  def profile = SecuredAction { req =>
+    val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
+    Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail)))
   }
 
   def hypergraph(hypergraphID: UUID) = SecuredAction { req =>

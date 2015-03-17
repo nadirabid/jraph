@@ -1,6 +1,4 @@
-@(hypergraphs: play.api.libs.json.JsValue, userHash: String)
-
-@import play.api.libs.json.Json
+@(userHash: String)
 
 <!DOCTYPE html>
 <html>
@@ -15,13 +13,14 @@
 <body>
   <div class="x-navbar nav">
     <ul class="x-navbar-nav">
-      <li class="active">
-        <a href="#">Graphs</a>
-      </li>
       <li>
-        <a href="#">Profile</a>
+        <a href="/">Graphs</a>
+      </li>
+      <li class="active">
+        <a href="/profile">Profile</a>
       </li>
     </ul>
+
     <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
   </div>
 </body>
