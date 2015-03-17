@@ -1,3 +1,7 @@
+@(hypergraphs: play.api.libs.json.JsValue, userHash: String)
+
+@import play.api.libs.json.Json
+
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -6,8 +10,19 @@
   <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
+  <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
 </head>
 <body>
-
+  <div class="x-navbar nav">
+    <ul class="x-navbar-nav">
+      <li class="active">
+        <a href="#">Graphs</a>
+      </li>
+      <li>
+        <a href="#">Profile</a>
+      </li>
+    </ul>
+    <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
+  </div>
 </body>
 </html>
