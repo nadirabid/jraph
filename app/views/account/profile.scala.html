@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
+  <style>
+
+  </style>
 </head>
 <body>
   <div class="x-navbar nav">
@@ -24,30 +27,53 @@
     <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
   </div>
 
-  <div style="margin-top:90px;max-width:1240px;">
+  <div class="center-block" style="margin-top:90px;max-width:1240px;">
     <form class="form-horizontal">
+      <h5>Your profile information:</h5>
       <div class="form-group">
         <label class="col-sm-2 control-label">First Name</label>
         <div class="col-sm-10">
-          <input type="text" autocomplete="off" class="form-control" placeholder="First Name">
+          <input type="text" autocomplete="off" class="form-control" placeholder="John">
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-2 control-label">Last Name</label>
         <div class="col-sm-10">
-          <input type="text" autocomplete="off" class="form-control" placeholder="First Name">
+          <input type="text" autocomplete="off" class="form-control" placeholder="Steinbeck">
         </div>
       </div>
       <div class="form-group">
         <label class="col-sm-2 control-label">Email</label>
         <div class="col-sm-10">
-          <input type="email" autocomplete="off" class="form-control" placeholder="Email">
+          <input type="email" autocomplete="off" class="form-control" placeholder="john.steinbeck@@eastofeden.com">
         </div>
       </div>
       <div class="form-group">
-        <label class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-default disabled">Save</button>
+        </div>
+      </div>
+    </form>
+
+    <form class="form-horizontal">
+      <h5>Change your password:</h5>
+
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Old password</label>
         <div class="col-sm-10">
-          <input type="password" autocomplete="off" class="form-control" placeholder="Password">
+          <input type="password" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">New password</label>
+        <div class="col-sm-10">
+          <input type="password" autocomplete="off" class="form-control">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Confirm new password</label>
+        <div class="col-sm-10">
+          <input type="password" autocomplete="off" class="form-control">
         </div>
       </div>
       <div class="form-group">
