@@ -1,4 +1,4 @@
-@(hypergraphs: play.api.libs.json.JsValue, graphsData: play.api.libs.json.JsValue, userHash: String)
+@(graphsData: play.api.libs.json.JsValue, userHash: String)
 
 @import play.api.libs.json.Json
 
@@ -141,13 +141,32 @@
     </a>
   </template>
 
+  <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
+
   <script>
-    //bootstrap json data into view template
-    var userGraphs = @Html(Json.stringify(hypergraphs));
-    var _graphsData = @Html(Json.stringify(graphsData));
+    'use strict';
+
+    require.config({
+      baseUrl: '/assets/js',
+      paths: {
+        d3: 'dependencies/d3',
+        jquery: 'dependencies/jquery-2.1.1',
+        lodash: 'dependencies/lodash',
+        mousetrap: 'dependencies/mousetrap',
+        vue: 'dependencies/vue',
+        bootstrap: 'dependencies/bootstrap'
+      }
+    });
+
+    require(['account/user.graphs', 'jquery'], function(app) {
+      require(['bootstrap'], function() {
+        document.app = app;
+      });
+    });
   </script>
 
-  <script
-      data-main="@routes.Assets.at("js/account/main")"
-      src="@routes.Assets.at("js/dependencies/require.js")"></script>
+  <script>
+    //bootstrap json data into view template
+    var _graphsData = @Html(Json.stringify(graphsData));
+  </script>
 </html>

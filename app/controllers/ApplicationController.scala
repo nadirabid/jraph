@@ -78,7 +78,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           }
 
           Ok(views.html.account.index(
-            Json.toJson(hypergraphs),
             Json.toJson(readiedGraphsData),
             DigestUtils.md5Hex(userEmail))
           )
