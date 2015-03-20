@@ -21,7 +21,9 @@ import models.{Hypergraph, Hypernode, Hyperlink, User}
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  case class HypergraphData(hypergraph: Hypergraph, nodes: Seq[Hypernode], links: Seq[Hyperlink])
+  case class HypergraphData(hypergraph: Hypergraph,
+                            nodes: Seq[Hypernode],
+                            links: Seq[Hyperlink])
 
   implicit val hypergraphWrites = new Writes[Hypergraph] {
     def writes(hypergraph: Hypergraph) = Json.obj(
