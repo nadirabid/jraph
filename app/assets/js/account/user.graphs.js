@@ -9,25 +9,22 @@ function(_, $, Vue, models){
   var Node = models.Node;
   var Link = models.Link;
 
-  var deferredHypergraphsData = _.map(userGraphs, function(hg) {
-    return $
-        .when(Node.fetchAll(hg.id), Link.fetchAll(hg.id))
-        .then(function(nodes, links) {
-          nodes.forEach(function (n) {
-            links.forEach(function (l) {
-              if (l.sourceId == n.id) l.source = n;
-              if (l.targetId == n.id) l.target = n;
-            });
-          });
+  var graphsData = _.map(_graphsData, function(graphData) {
+    graphData.nodes = graphData.nodes.map(function(n) {
+      return Node.parseJSON(n);
+    });
 
-          return {
-            graph: hg,
-            nodes: nodes,
-            links: links
-          };
-        });
+    graphData.nodes.forEach(function(n) {
+      graphData.links.forEach(function(l) {
+        if (l.sourceId == n.id) l.source = n;
+        if (l.targetId == n.id) l.target = n;
+      });
+
+      return n;
+    });
+
+    return graphData;
   });
-
 
   function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
                        x0src, y0src, x1src, y1src) {
@@ -139,8 +136,10 @@ function(_, $, Vue, models){
       liangBarsky: function () {
         //TODO: bug with translate transforms
 
-        var source = this.source ;
-        var target = this.target ;
+        var source = this.source;
+        var target = this.target;
+
+        console.log(JSON.parse(JSON.stringify(target)));
 
         var clippings = liangBarsky(
             target.leftEdge,
@@ -152,6 +151,8 @@ function(_, $, Vue, models){
             target.x,
             target.y
         );
+
+        console.log(clippings);
 
         this.targetClipX = clippings.x0Clip;
         this.targetClipY = clippings.y0Clip;
@@ -352,21 +353,18 @@ function(_, $, Vue, models){
 
     events: {
 
-      'hook:created': function() {
+      'hook:attached': function() {
         var self = this;
 
-        $.when.apply($, deferredHypergraphsData).then(function() {
-          var hypergraphs = Array.prototype.slice.call(arguments);
+        self.hypergraphs = _.map(_.range(20), function() {
+          var hypergraph = _.cloneDeep(graphsData[0]);
+          hypergraph.graph.data.background = colors[counter % colors.length];
+          hypergraph.graph.data.name = letters[counter % letters.length];
+          hypergraph.graph.createdAt += counter + Math.floor(Math.random()*100);
+          hypergraph.graph.updatedAt -= counter + Math.floor(Math.random()*100);
 
-          _.forEach(_.range(20), function() {
-            var hypergraph = _.cloneDeep(hypergraphs[0]);
-            hypergraph.graph.data.background = colors[counter % colors.length];
-            hypergraph.graph.data.name = letters[counter % letters.length];
-            hypergraph.graph.createdAt += counter + Math.floor(Math.random()*100);
-            hypergraph.graph.updatedAt -= counter + Math.floor(Math.random()*100);
-            self.hypergraphs.push(hypergraph);
-            counter++;
-          });
+          counter++;
+          return hypergraph;
         });
 
         window.addEventListener('scroll', function() {

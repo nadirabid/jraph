@@ -1,4 +1,4 @@
-@(hypergraphs: play.api.libs.json.JsValue, userHash: String)
+@(hypergraphs: play.api.libs.json.JsValue, graphsData: play.api.libs.json.JsValue, userHash: String)
 
 @import play.api.libs.json.Json
 
@@ -63,7 +63,7 @@
     <g>
       <line
           class="link"
-          v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
+          v-attr="x1:sourceX, y1:sourceY, x2:targetX, y2:targetY"
       ></line>
       <line
           class="marker-arrow"
@@ -144,6 +144,7 @@
   <script>
     //bootstrap json data into view template
     var userGraphs = @Html(Json.stringify(hypergraphs));
+    var _graphsData = @Html(Json.stringify(graphsData));
   </script>
 
   <script

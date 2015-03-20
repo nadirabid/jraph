@@ -3,22 +3,25 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import play.api.libs.json.{Json, Writes}
-import play.api.mvc._
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import com.mohiva.play.silhouette.api.{LogoutEvent, Silhouette, Environment}
+
+import play.api.libs.json.{JsPath, Json, Writes}
+import play.api.mvc.Action
+import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import com.mohiva.play.silhouette.api._
-import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-
 import org.apache.commons.codec.digest.DigestUtils
 
 import forms._
-import models._
+import models.{Hypergraph, Hypernode, Hyperlink, User}
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
+
+  case class HypergraphData(hypergraph: Hypergraph, nodes: Seq[Hypernode], links: Seq[Hyperlink])
 
   implicit val hypergraphWrites = new Writes[Hypergraph] {
     def writes(hypergraph: Hypergraph) = Json.obj(
@@ -30,13 +33,57 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
+  implicit val hypernodeWrites = new Writes[Hypernode] {
+    def writes(hypernode: Hypernode) = Json.obj(
+      "id" -> hypernode.id,
+      "createdAt" -> hypernode.createdAt.getMillis,
+      "updatedAt" -> hypernode.updatedAt.getMillis,
+      "data" -> hypernode.data
+    )
+  }
+
+  implicit val hyperlinkWrites = new Writes[Hyperlink] {
+    def writes(hyperlink: Hyperlink) = Json.obj(
+      "id" -> hyperlink.id,
+      "sourceId" -> hyperlink.sourceID,
+      "targetId" -> hyperlink.targetID,
+      "updatedAt" -> hyperlink.updatedAt.getMillis,
+      "createdAt" -> hyperlink.createdAt.getMillis,
+      "data" -> hyperlink.data
+    )
+  }
+
+  implicit  val hgDataWrite: Writes[HypergraphData] = (
+    (JsPath \ "graph").write[Hypergraph] and
+    (JsPath \ "nodes").write[Seq[Hypernode]] and
+    (JsPath \ "links").write[Seq[Hyperlink]]
+  )(unlift(HypergraphData.unapply))
+
   def index = SecuredAction.async { req =>
-    Hypergraph.readAll(req.identity.email).map {
-      case Some(hypergraphs) => {
+    Hypergraph.readAll(req.identity.email).flatMap {
+      case Some(hypergraphs) =>
+        val graphsDataRequests = hypergraphs.map { hg =>
+          val nodes = Hypernode.readAll(req.identity.email, hg.id)
+          val links = Hyperlink.readAll(req.identity.email, hg.id)
+
+          for { n <- nodes; l <- links } yield (hg, n, l)
+        }
+
         val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
-        Ok(views.html.account.index(Json.toJson(hypergraphs), DigestUtils.md5Hex(userEmail)))
-      }
-      case None => ServiceUnavailable
+
+        Future.sequence(graphsDataRequests).map { graphsData =>
+          val readiedGraphsData = graphsData.map {
+            case (hypergraph, Some(nodes), Some(links)) =>
+              HypergraphData(hypergraph, nodes, links)
+          }
+
+          Ok(views.html.account.index(
+            Json.toJson(hypergraphs),
+            Json.toJson(readiedGraphsData),
+            DigestUtils.md5Hex(userEmail))
+          )
+        }
+      case None => Future.successful(ServiceUnavailable)
     }
   }
 
