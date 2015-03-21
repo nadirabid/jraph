@@ -1,7 +1,5 @@
 @(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])
 
-@import bootstrap._
-
 <!DOCTYPE html>
 <html>
   <head lang="en">
@@ -12,8 +10,18 @@
     <fieldset>
       <legend class="col-md-6 col-md-offset-3">Sign in with your credentials</legend>
       @helper.form(action = routes.CredentialsAuthController.authenticate()) {
-        @text(signInForm("identifier"), "Email")
-        @password(signInForm("password"), "Password")
+        <div class="form-group">
+          <input
+              type="text"
+              class="form-control"
+              id="@signInForm("identifier").id"
+              name="@signInForm("identifier").name"
+              value="@signInForm("identifier").value"
+              placeholder="Email"
+          >
+        </div>
+        
+        @bootstrap.password(signInForm("password"), "Password")
         <div class="form-group">
           <div class="col-md-6 col-md-offset-3">
             <button id="submit" type="submit" value="submit" class="btn btn-primary btn-block">Submit</button>
