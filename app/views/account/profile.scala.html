@@ -2,86 +2,139 @@
 
 <!DOCTYPE html>
 <html>
-<head lang="en">
-  <meta charset="UTF-8">
-  <title>User Profile</title>
-  <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
-  <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
-  <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
-  <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
-  <style>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
+    <style>
 
-  </style>
-</head>
-<body>
-  <div class="x-navbar nav">
-    <ul class="x-navbar-nav">
-      <li>
-        <a href="@routes.ApplicationController.index()">Graphs</a>
-      </li>
-      <li class="active">
-        <a href="@routes.ApplicationController.profile()">Profile</a>
-      </li>
-    </ul>
+    </style>
+  </head>
+  <body>
+    <div class="x-navbar nav">
+      <ul class="x-navbar-nav">
+        <li>
+          <a href="@routes.ApplicationController.index()">Graphs</a>
+        </li>
+        <li class="active">
+          <a href="@routes.ApplicationController.profile()">Profile</a>
+        </li>
+      </ul>
 
-    <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
-  </div>
+      <img src="https://secure.gravatar.com/avatar/@userHash?s=100" width="50" height="50" />
+    </div>
 
-  <div class="center-block" style="margin-top:90px;max-width:1240px;">
-    <form class="form-horizontal">
-      <h5>Your profile information:</h5>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">First Name</label>
-        <div class="col-sm-10">
-          <input type="text" autocomplete="off" class="form-control" placeholder="John">
+    <div class="center-block" style="margin-top:90px;max-width:1240px;">
+      <form
+          id="updateUserProfile"
+          action="@routes.ApplicationController.updateUserProfile()"
+          method="POST"
+          class="form-horizontal"
+      >
+        <h5>Your profile information:</h5>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">First Name</label>
+          <div class="col-sm-10">
+            <input
+                type="text"
+                autocomplete="off"
+                class="form-control"
+                placeholder="John"
+                v-model="firstName"
+            >
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Last Name</label>
-        <div class="col-sm-10">
-          <input type="text" autocomplete="off" class="form-control" placeholder="Steinbeck">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Last Name</label>
+          <div class="col-sm-10">
+            <input
+                type="text"
+                autocomplete="off"
+                class="form-control"
+                placeholder="Steinbeck"
+                v-model="lastName"
+            >
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Email</label>
-        <div class="col-sm-10">
-          <input type="email" autocomplete="off" class="form-control" placeholder="john.steinbeck@@eastofeden.com">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Email</label>
+          <div class="col-sm-10">
+            <input
+                type="email"
+                autocomplete="off"
+                class="form-control"
+                placeholder="jsteinbeck@@eastofeden.com"
+                v-model="email"
+            >
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default disabled">Save</button>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button
+                type="submit"
+                class="btn btn-default"
+                v-class="disabled: !hasUpdates">
+              Save
+            </button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
 
-    <form class="form-horizontal">
-      <h5>Change your password:</h5>
+      <form class="form-horizontal">
+        <h5>Change your password:</h5>
 
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Old password</label>
-        <div class="col-sm-10">
-          <input type="password" class="form-control">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Old password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control">
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">New password</label>
-        <div class="col-sm-10">
-          <input type="password" autocomplete="off" class="form-control">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">New password</label>
+          <div class="col-sm-10">
+            <input type="password" autocomplete="off" class="form-control">
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Confirm new password</label>
-        <div class="col-sm-10">
-          <input type="password" autocomplete="off" class="form-control">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Confirm new password</label>
+          <div class="col-sm-10">
+            <input type="password" autocomplete="off" class="form-control">
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-          <button type="submit" class="btn btn-default disabled">Save</button>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default disabled">Save</button>
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
-</body>
+      </form>
+    </div>
+  </body>
+
+
+  <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
+
+  <script>
+    'use strict';
+
+    require.config({
+      baseUrl: '/assets/js',
+      paths: {
+        d3: 'dependencies/d3',
+        jquery: 'dependencies/jquery-2.1.1',
+        lodash: 'dependencies/lodash',
+        mousetrap: 'dependencies/mousetrap',
+        vue: 'dependencies/vue',
+        bootstrap: 'dependencies/bootstrap'
+      }
+    });
+
+    require(['account/user.profile', 'jquery'], function(app) {
+      require(['bootstrap'], function() {
+        document.app = app;
+      });
+    });
+  </script>
 </html>

@@ -97,12 +97,12 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Ok(views.html.graph.index())
   }
 
-  def trimTrailingForwardSlash(path: String) = Action {
-    MovedPermanently("/" + path)
-  }
-
   def test = UserAwareAction {
     Ok(views.html.test.index())
+  }
+
+  def updateUserProfile = SecuredAction.async { implicit request =>
+    Future.successful(Redirect(routes.ApplicationController.profile()))
   }
 
   def signIn = UserAwareAction.async { implicit request =>
@@ -122,5 +122,9 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def signOut = SecuredAction.async { implicit request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
     Future.successful(request.authenticator.discard(Redirect(routes.ApplicationController.index())))
+  }
+
+  def trimTrailingForwardSlash(path: String) = Action {
+    MovedPermanently("/" + path)
   }
 }
