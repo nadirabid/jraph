@@ -14,6 +14,10 @@ function(_, $, Vue, models){
       return Node.parseJSON(n);
     });
 
+    graphData.links = graphData.links.map(function(l) {
+      return Link.parseJSON(l);
+    });
+
     graphData.nodes.forEach(function(n) {
       graphData.links.forEach(function(l) {
         if (l.sourceId == n.id) l.source = n;
@@ -312,15 +316,15 @@ function(_, $, Vue, models){
   var colors = [ '2e6d8c', '8c261b', 'e74c3c', '4694c6', 'dd6580', '626264' ];
   var counter = 0;
 
-  var GraphThumbnailsListComponent = Vue.extend({
+  var graphThumbnailsList = new Vue({
 
-    data: function() {
-      return {
-        pageYOffset: 0,
-        sortedBy: 'modified',
-        sortMenu: false,
-        hypergraphs: [ ]
-      };
+    el: document.body,
+
+    data: {
+      pageYOffset: 0,
+      sortedBy: 'modified',
+      sortMenu: false,
+      hypergraphs: [ ]
     },
 
     computed: {
@@ -356,7 +360,7 @@ function(_, $, Vue, models){
       'hook:attached': function() {
         var self = this;
 
-        self.hypergraphs = _.map(_.range(14), function() {
+        self.hypergraphs = _.map(_.range(8), function() {
           var hypergraph = _.cloneDeep(graphsData[0]);
           hypergraph.graph.data.background = colors[counter % colors.length];
           hypergraph.graph.data.name = letters[counter % letters.length];
@@ -397,9 +401,6 @@ function(_, $, Vue, models){
     }
 
   });
-
-  // init code
-  var graphThumbnailsList = new GraphThumbnailsListComponent().$mount(document.body);
 
   return graphThumbnailsList;
 });
