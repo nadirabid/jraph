@@ -104,8 +104,11 @@
                 v-model="email"
                 v-on="blur:validateEmail(true), keyup:validateEmail"
             >
-            <p class="help-block" v-class="hide:validated.email" v-cloak>
+            <p class="help-block" v-class="hide:validated.email || email === ''" v-cloak>
               Email must have valid format. (e.g. jsteinbeck@@eastofeden.com)
+            </p>
+            <p class="help-block" v-class="hide:validated.email || email !== ''" v-cloak>
+              A valid email address is required.
             </p>
           </div>
         </div>

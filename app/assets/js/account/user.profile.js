@@ -58,7 +58,7 @@ function(_, $, Vue, util){
 
       validateEmail: function(blurFlag) {
         if (blurFlag === true || !this.validated.email) {
-          this.validated.email = this.email === '' || util.validateEmail(this.email);
+          this.validated.email = util.validateEmail(this.email);
         }
       }
     },
