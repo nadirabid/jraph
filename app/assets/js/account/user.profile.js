@@ -50,6 +50,12 @@ function(_, $, Vue, util){
         }
       },
 
+      validateLastName: function(blurFlag) {
+        if (blurFlag === true || !this.validated.lastName) {
+          this.validated.lastName = this.lastName === '' || util.validateAlphanumeric(this.lastName);
+        }
+      },
+
       validateEmail: function(blurFlag) {
         if (blurFlag === true || !this.validated.email) {
           this.validated.email = this.email === '' || util.validateEmail(this.email);
@@ -57,10 +63,14 @@ function(_, $, Vue, util){
       }
     },
 
-    ready: function() {
+    compiled: function() { //any sooner and it seems the data wont be ready
       this.cache.firstName = this.firstName;
       this.cache.lastName = this.lastName;
       this.cache.email = this.email;
+
+      this.validateFirstName(true);
+      this.validateLastName(true);
+      this.validateEmail(true);
     }
 
   });

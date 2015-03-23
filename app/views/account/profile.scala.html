@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
+    <style>
+      [v-cloak] {
+        display:none !important;
+      }
+    </style>
   </head>
   <body>
     <div class="x-navbar nav">
@@ -50,16 +55,19 @@
                 value="@userProfileForm("firstName").value"
                 placeholder="John"
                 v-model="firstName"
-                v-on="blur:validateFirstName(true)"
+                v-on="blur:validateFirstName(true), keyup:validateFirstName"
             >
-            <p class="help-block" v-class="hide:validated.firstName || !isAlphanumeric(firstName)">
+            <p class="help-block" v-class="hide:validated.firstName && isAlphanumeric(firstName)" v-cloak>
               First name can only contain alphanumeric characters.
             </p>
           </div>
         </div>
         <div
             class="form-group @{if (userProfileForm.hasErrors) Html("has-error")}"
-            v-class="has-warning:!isAlphanumeric(lastName)"
+            v-class="
+                has-warning:!isAlphanumeric(lastName),
+                has-error:!validated.lastName
+            "
         >
           <label class="col-sm-2 control-label">Last Name</label>
           <div class="col-sm-10">
@@ -72,8 +80,9 @@
                 value="@userProfileForm("lastName").value"
                 placeholder="Steinbeck"
                 v-model="lastName"
+                v-on="blur:validateLastName(true), keyup:validateLastName"
             >
-            <p class="help-block" v-class="hide:isAlphanumeric(lastName)">
+            <p class="help-block" v-class="hide:validated.lastName && isAlphanumeric(lastName)" v-cloak>
               Last name can only contain alphanumeric characters.
             </p>
           </div>
@@ -95,7 +104,7 @@
                 v-model="email"
                 v-on="blur:validateEmail(true), keyup:validateEmail"
             >
-            <p class="help-block" v-class="hide:validated.email">
+            <p class="help-block" v-class="hide:validated.email" v-cloak>
               Email must have valid format. (e.g. jsteinbeck@@eastofeden.com)
             </p>
           </div>
