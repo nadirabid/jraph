@@ -9,13 +9,13 @@ import play.api.data.Forms._
 object UserProfileForm {
   val form = Form(
     mapping(
-      "firstName" -> text,
-      "lastName" -> text,
+      "firstName" -> optional(text),
+      "lastName" -> optional(text),
       "email" -> email
     )(UserProfileData.apply)(UserProfileData.unapply)
   )
 
-  case class UserProfileData(firstName: String,
-                             lastName: String,
+  case class UserProfileData(firstName: Option[String],
+                             lastName: Option[String],
                              email: String) // TODO: should changing the email invalidate auth?
 }

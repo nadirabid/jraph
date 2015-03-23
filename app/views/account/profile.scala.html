@@ -1,4 +1,4 @@
-@(userHash: String)
+@(userHash: String, userProfileForm: Form[forms.UserProfileForm.UserProfileData])
 
 <!DOCTYPE html>
 <html>
@@ -9,9 +9,6 @@
     <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
-    <style>
-
-    </style>
   </head>
   <body>
     <div class="x-navbar nav">
@@ -35,40 +32,72 @@
           class="form-horizontal"
       >
         <h5>Your profile information:</h5>
-        <div class="form-group">
+        <div
+            class="form-group @{if (userProfileForm.hasErrors) Html("has-error")}"
+            v-class="
+                has-warning:!isAlphanumeric(firstName),
+                has-error:!validated.firstName
+            "
+        >
           <label class="col-sm-2 control-label">First Name</label>
           <div class="col-sm-10">
             <input
                 type="text"
                 autocomplete="off"
                 class="form-control"
+                id="@userProfileForm("firstName").id"
+                name="@userProfileForm("firstName").name"
+                value="@userProfileForm("firstName").value"
                 placeholder="John"
                 v-model="firstName"
+                v-on="blur:validateFirstName(true)"
             >
+            <p class="help-block" v-class="hide:validated.firstName || !isAlphanumeric(firstName)">
+              First name can only contain alphanumeric characters.
+            </p>
           </div>
         </div>
-        <div class="form-group">
+        <div
+            class="form-group @{if (userProfileForm.hasErrors) Html("has-error")}"
+            v-class="has-warning:!isAlphanumeric(lastName)"
+        >
           <label class="col-sm-2 control-label">Last Name</label>
           <div class="col-sm-10">
             <input
                 type="text"
                 autocomplete="off"
                 class="form-control"
+                id="@userProfileForm("lastName").id"
+                name="@userProfileForm("lastName").name"
+                value="@userProfileForm("lastName").value"
                 placeholder="Steinbeck"
                 v-model="lastName"
             >
+            <p class="help-block" v-class="hide:isAlphanumeric(lastName)">
+              Last name can only contain alphanumeric characters.
+            </p>
           </div>
         </div>
-        <div class="form-group">
+        <div
+            class="form-group @{if (userProfileForm.hasErrors) Html("has-error") }"
+            v-class="has-error:!validated.email"
+        >
           <label class="col-sm-2 control-label">Email</label>
           <div class="col-sm-10">
             <input
                 type="email"
                 autocomplete="off"
                 class="form-control"
+                id="@userProfileForm("email").id"
+                name="@userProfileForm("email").name"
+                value="@userProfileForm("email").value"
                 placeholder="jsteinbeck@@eastofeden.com"
                 v-model="email"
+                v-on="blur:validateEmail(true), keyup:validateEmail"
             >
+            <p class="help-block" v-class="hide:validated.email">
+              Email must have valid format. (e.g. jsteinbeck@@eastofeden.com)
+            </p>
           </div>
         </div>
         <div class="form-group">
@@ -125,7 +154,6 @@
         d3: 'dependencies/d3',
         jquery: 'dependencies/jquery-2.1.1',
         lodash: 'dependencies/lodash',
-        mousetrap: 'dependencies/mousetrap',
         vue: 'dependencies/vue',
         bootstrap: 'dependencies/bootstrap'
       }

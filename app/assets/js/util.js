@@ -292,6 +292,12 @@ define([
       return matches.length === 10;
     }
 
+    function validateAlphanumeric(str) {
+      var alphaNumericReg = /^[a-z0-9]+$/i;
+      return alphaNumericReg.test(str);
+    }
+
+    Util.validateAlphanumeric = validateAlphanumeric;
     Util.validateEmail = validateEmail;
     Util.validateLink = validateLink;
     Util.validatePhoneNumber = validatePhoneNumber;

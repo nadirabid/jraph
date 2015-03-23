@@ -55,11 +55,13 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  implicit  val hgDataWrite: Writes[HypergraphData] = (
-    (JsPath \ "graph").write[Hypergraph] and
-    (JsPath \ "nodes").write[Seq[Hypernode]] and
-    (JsPath \ "links").write[Seq[Hyperlink]]
-  )(unlift(HypergraphData.unapply))
+  implicit val hypergraphDataWrite = new Writes[HypergraphData] {
+    def writes(hypergraphData: HypergraphData) = Json.obj(
+      "graph" -> hypergraphData.hypergraph,
+      "nodes" -> hypergraphData.nodes,
+      "links" -> hypergraphData.links
+    )
+  }
 
   def index = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).flatMap {
@@ -90,7 +92,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def profile = SecuredAction { req =>
     val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
-    Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail)))
+    val userProfileForm = UserProfileForm.form.fill(UserProfileForm.UserProfileData(None, None, "test@email.com"))
+    Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail), userProfileForm))
   }
 
   def hypergraph(hypergraphID: UUID) = SecuredAction { req =>
@@ -101,27 +104,36 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Ok(views.html.test.index())
   }
 
-  def updateUserProfile = SecuredAction.async { implicit request =>
+  def updateUserProfile = SecuredAction.async { implicit req =>
+    UserProfileForm.form.bindFromRequest.fold(
+      formWithErrors => {
+        val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
+        BadRequest(views.html.account.profile(DigestUtils.md5Hex(userEmail), formWithErrors))
+      },
+      userProfile => {
+        Redirect(routes.ApplicationController.profile())
+      }
+    )
     Future.successful(Redirect(routes.ApplicationController.profile()))
   }
 
-  def signIn = UserAwareAction.async { implicit request =>
-    request.identity match {
+  def signIn = UserAwareAction.async { req =>
+    req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None => Future.successful(Ok(views.html.account.signIn(SignInForm.form)))
     }
   }
 
-  def signUp = UserAwareAction.async { implicit request =>
-    request.identity match {
+  def signUp = UserAwareAction.async { req =>
+    req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None => Future.successful(Ok(views.html.account.signUp(SignUpForm.form)))
     }
   }
 
-  def signOut = SecuredAction.async { implicit request =>
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
-    Future.successful(request.authenticator.discard(Redirect(routes.ApplicationController.index())))
+  def signOut = SecuredAction.async { implicit req =>
+    env.eventBus.publish(LogoutEvent(req.identity, req, request2lang))
+    Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
   }
 
   def trimTrailingForwardSlash(path: String) = Action {
