@@ -143,8 +143,6 @@ function(_, $, Vue, models){
         var source = this.source;
         var target = this.target;
 
-        console.log(JSON.parse(JSON.stringify(target)));
-
         var clippings = liangBarsky(
             target.leftEdge,
             target.rightEdge,
@@ -155,8 +153,6 @@ function(_, $, Vue, models){
             target.x,
             target.y
         );
-
-        console.log(clippings);
 
         this.targetClipX = clippings.x0Clip;
         this.targetClipY = clippings.y0Clip;
