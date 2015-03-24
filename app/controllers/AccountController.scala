@@ -30,7 +30,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         val authInfo = passwordHasher.hash(data.password)
-        val user = User(data.email, loginInfo)
+        val user = User(data.email, None, None, loginInfo)
         for {
           user <- userService.save(user.copy())
           authInfo <- authInfoService.save(loginInfo, authInfo)

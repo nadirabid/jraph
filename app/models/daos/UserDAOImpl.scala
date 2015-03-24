@@ -39,6 +39,8 @@ class UserDAOImpl extends UserDAO {
 
   implicit val userReads: Reads[User] = (
     (JsPath \ "email").read[String](email) and
+    (JsPath \ "firstName").readNullable[String] and
+    (JsPath \ "lastName").readNullable[String] and
     JsPath.read[LoginInfo]
   )(User.apply _)
 
