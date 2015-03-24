@@ -6,9 +6,8 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LogoutEvent, Silhouette, Environment}
 
-import play.api.libs.json.{JsPath, Json, Writes}
+import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
-import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
