@@ -109,10 +109,11 @@ html, body {
 
 .thumbnails-list > a {
     display:inline-block;
-    margin-right:15px;
+    margin-right:16px;
     margin-bottom:15px;
     text-decoration: none;
     color:inherit;
+    transition: none;
 }
 
 .thumbnails-list > a:nth-child(3n) {
