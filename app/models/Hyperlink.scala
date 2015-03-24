@@ -61,7 +61,7 @@ object Hyperlink {
   val cypherCreate =
     """
       | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
-      | CREATE UNIQUE (source)-[HL:HYPERLINK {hyperlinkData}]->(target)
+      | CREATE (source)-[HL:HYPERLINK {hyperlinkData}]->(target)
       | RETURN HL;
     """.stripMargin
 
