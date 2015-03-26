@@ -42,7 +42,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   val cypherRead =
     """
-      | MATCH (user:User { email: {providerKey} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+      | MATCH (user:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
       | WHERE user.id = passwordInfo.providerKey
       | RETURN passwordInfo;
     """.stripMargin

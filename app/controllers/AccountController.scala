@@ -31,15 +31,15 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
-          case Some(user) => Future.successful(Redirect(routes.ApplicationController.signUp)
+          case Some(user) => Future.successful(Redirect(routes.ApplicationController.signUp())
             .flashing("error" -> Messages("user.exists")))
           case None =>
-            val authInfo = passwordHasher.hash(data.password)
+            val passwordInfo = passwordHasher.hash(data.password)
             val user = User(java.util.UUID.randomUUID(), data.email, None, None, loginInfo)
 
             for {
               user <- userService.save(user.copy())
-              authInfo <- authInfoService.save(loginInfo, authInfo)
+              authInfo <- authInfoService.save(loginInfo, passwordInfo)
               authenticator <- env.authenticatorService.create(user.loginInfo)
               value <- env.authenticatorService.init(authenticator)
               result <- env.authenticatorService.embed(value, Future.successful(
