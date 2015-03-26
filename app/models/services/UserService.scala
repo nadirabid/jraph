@@ -1,5 +1,7 @@
 package models.services
 
+import java.util.UUID
+
 import com.mohiva.play.silhouette.api.services.IdentityService
 import models.User
 
@@ -24,5 +26,5 @@ trait UserService extends IdentityService[User] {
    * @param userID The ID of the user to delete.
    * @return
    */
-  def delete(userID: String): Future[Boolean]
+  def delete(userID: UUID): Future[Boolean]
 }

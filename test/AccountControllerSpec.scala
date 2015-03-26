@@ -19,7 +19,7 @@ class AccountControllerSpec extends WordSpec
   with ShouldMatchers
   with OneAppPerTest {
 
-  val userEmail = UUID.randomUUID().toString + "@test.com"
+  val userEmail = UUID.randomUUID.toString + "@test.com"
 
   "The Account controller" should {
     "should create a new user given unique username and password" in {
@@ -31,7 +31,7 @@ class AccountControllerSpec extends WordSpec
     }
 
     "should delete the newly created user account" in {
-      val identity = User(userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
+      val identity = User(UUID.randomUUID, userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
       val userDeleteRequest = FakeRequest(DELETE, "/account/delete")

@@ -4,6 +4,8 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 
+import java.util.UUID
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Play.current
@@ -40,7 +42,8 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   val cypherRead =
     """
-      | MATCH (passwordInfo:PasswordInfo { providerKey: {providerKey} })
+      | MATCH (user:User { email: {providerKey} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+      | WHERE user.id = passwordInfo.providerKey
       | RETURN passwordInfo;
     """.stripMargin
 
@@ -50,7 +53,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
         Json.obj(
           "statement" -> cypherRead,
           "parameters" -> Json.obj(
-            "providerKey" -> loginInfo.providerKey
+            "email" -> loginInfo.providerKey
           )
         )
       )
@@ -75,11 +78,12 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   val cypherCreate =
   """
-    | CREATE (passwordInfo:PasswordInfo {passwordInfoData})
+    | MATCH (user:User { email: {email} })
+    | CREATE (user)-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo {passwordInfoData})
     | RETURN passwordInfo;
   """.stripMargin
 
-  def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
+  def save(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
     val timestamp = System.currentTimeMillis
 
     // ASK: Do we need a UUID to identify a User node
@@ -89,16 +93,17 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     // Currently using BCryptPasswordHasher which does not set salt value
     // so we're ignoring it below all together
 
+
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
+            "email" -> loginInfo.providerKey,
             "passwordInfoData" -> Json.obj(
-              "providerKey" -> loginInfo.providerKey,
-              "hasher" -> authInfo.hasher,
-              "password" -> authInfo.password,
-              //"salt" -> authInfo.salt,
+              "hasher" -> passwordInfo.hasher,
+              "password" -> passwordInfo.password,
+              //"salt" -> passwordInfo.salt,
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
             )
@@ -114,6 +119,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
         "Accept" -> "application/json; charset=UTF-8"
       )
 
-    holder.post(neo4jReq).map{ res => authInfo }
+    holder.post(neo4jReq).map{ res => passwordInfo }
   }
 }

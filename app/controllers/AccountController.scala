@@ -35,7 +35,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
             .flashing("error" -> Messages("user.exists")))
           case None =>
             val authInfo = passwordHasher.hash(data.password)
-            val user = User(data.email, None, None, loginInfo)
+            val user = User(java.util.UUID.randomUUID(), data.email, None, None, loginInfo)
 
             for {
               user <- userService.save(user.copy())
@@ -56,7 +56,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
   }
 
   def delete = SecuredAction.async { implicit request =>
-    userService.delete(request.identity.email).map {
+    userService.delete(request.identity.id).map {
       case true => Ok
       case false => ServiceUnavailable
     }

@@ -40,7 +40,8 @@ class HypergraphSpec extends WordSpec
 
   after {
     running(FakeApplication()) {
-      val identity = User(userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
+      val identity2 = User
+      val identity = User(UUID.randomUUID, userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
       val userDeleteRequest = FakeRequest(DELETE, "/account/delete")

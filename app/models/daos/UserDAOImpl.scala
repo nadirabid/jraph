@@ -38,13 +38,14 @@ class UserDAOImpl extends UserDAO {
   )(LoginInfo.apply _)
 
   implicit val userReads: Reads[User] = (
-    (JsPath \ "email").read[String](email) and
-    (JsPath \ "firstName").readNullable[String] and
-    (JsPath \ "lastName").readNullable[String] and
-    JsPath.read[LoginInfo]
+      (JsPath \ "id").read[UUID] and
+      (JsPath \ "email").read[String](email) and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
+      JsPath.read[LoginInfo]
   )(User.apply _)
 
-  val cypherRead =
+  val cypherReadByEmail =
     """
       | MATCH (user:User { email: {email} })
       | RETURN user;
@@ -54,7 +55,7 @@ class UserDAOImpl extends UserDAO {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherRead,
+          "statement" -> cypherReadByEmail,
           "parameters" -> Json.obj(
             "email" -> loginInfo.providerKey
           )
@@ -79,13 +80,19 @@ class UserDAOImpl extends UserDAO {
     }
   }
 
-  def find(userID: String) = {
+  val cypherReadByID =
+    """
+      | MATCH (user:User { id: {userID} })
+      | RETURN user;
+    """.stripMargin
+
+  def find(userID: UUID) = {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
-          "statement" -> cypherRead,
+          "statement" -> cypherReadByID,
           "parameters" -> Json.obj(
-            "email" -> userID
+            "userID" -> userID
           )
         )
       )
@@ -127,7 +134,7 @@ class UserDAOImpl extends UserDAO {
           "statement" -> cypherCreate,
           "parameters" -> Json.obj(
             "hypergraphData" -> Json.obj(
-              "id" -> UUID.randomUUID(),
+              "id" -> UUID.randomUUID,
               "name" -> "default",
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp,
@@ -136,6 +143,7 @@ class UserDAOImpl extends UserDAO {
               ))
             ),
             "userData" -> Json.obj(
+              "id" -> user.id,
               "email" -> user.email,
               "providerID" -> user.loginInfo.providerID,
               "createdAt" -> timestamp,
@@ -147,33 +155,69 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     //TODO: check if post returned with error
     holder.post(neo4jReq).map { _ => user}
   }
 
+  val cypherUpdate =
+    """
+      | MATCH (user:User { id: {userID} })
+      | SET user += {userData}
+      | RETURN user;
+    """.stripMargin
+
+  def update(user: User) = {
+    val neo4jReq = Json.obj(
+      "statements" -> Json.arr(
+        Json.obj(
+          "statement" -> cypherUpdate,
+          "parameters" -> Json.obj(
+            "userID" -> user.id,
+            "userData" -> Json.obj(
+              "firstName" -> user.firstName,
+              "lastName" -> user.lastName,
+              "email" -> user.email,
+              "updatedAt" -> System.currentTimeMillis
+            )
+          )
+        )
+      )
+    )
+
+    val holder: WSRequestHolder = WS
+        .url(dbUrl)
+        .withHeaders(
+            "Content-Type" -> "application/json",
+            "Accept" -> "application/json; charset=UTF-8"
+        )
+
+    //TODO: check if post returned with error
+    holder.post(neo4jReq).map { _ => user }
+  }
+
   val cypherDelete =
     """
-      | MATCH (user:User { email: {email} }),
-      |       (passwordInfo:PasswordInfo { providerKey: {email} })
+      | MATCH (user:User { id: {userID} }),
+      |       (passwordInfo:PasswordInfo { providerKey: {userID} })
       | OPTIONAL MATCH (user)-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph)
       | OPTIONAL MATCH (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
       | OPTIONAL MATCH (hn)-[HL:HYPERLINK]->(:Hypernode)
       | DELETE OWNS_HG, OWNS_HN, HL, user, passwordInfo, hg, hn;
     """.stripMargin
 
-  def delete(userID: String) = {
+  def delete(userID: UUID) = {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
-            "email" -> userID
+            "userID" -> userID
           ),
           "includeStats" -> true
         )
@@ -181,11 +225,11 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accepts" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accepts" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: check if there was any error and the stats confirm at least one deleted node
     holder.post(neo4jReq).map { _ => true }

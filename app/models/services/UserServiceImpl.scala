@@ -1,5 +1,6 @@
 package models.services
 
+import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
@@ -37,5 +38,5 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param userID The ID of the user to delete.
    * @return
    */
-  def delete(userID: String) = userDAO.delete(userID)
+  def delete(userID: UUID) = userDAO.delete(userID)
 }
