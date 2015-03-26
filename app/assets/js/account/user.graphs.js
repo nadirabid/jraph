@@ -356,7 +356,7 @@ function(_, $, Vue, models){
       'hook:attached': function() {
         var self = this;
 
-        self.hypergraphs = _.map(_.range(8), function() {
+        self.hypergraphs = _.map(_.range(12), function() {
           var hypergraph = _.cloneDeep(graphsData[0]);
           hypergraph.graph.data.background = colors[counter % colors.length];
           hypergraph.graph.data.name = letters[counter % letters.length];
