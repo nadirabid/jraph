@@ -25,6 +25,8 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
                                    val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
+  // TODO: make sure we don't create an account with a user email/id that already exists
+
   def create = Action.async { implicit request =>
     SignUpForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.account.signUp(form))),
@@ -38,7 +40,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
             val user = User(java.util.UUID.randomUUID(), data.email, None, None, loginInfo)
 
             for {
-              user <- userService.save(user.copy())
+              user <- userService.create(user.copy())
               authInfo <- authInfoService.save(loginInfo, passwordInfo)
               authenticator <- env.authenticatorService.create(user.loginInfo)
               value <- env.authenticatorService.init(authenticator)

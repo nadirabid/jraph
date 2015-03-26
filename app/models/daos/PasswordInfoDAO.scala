@@ -43,7 +43,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   val cypherRead =
     """
       | MATCH (user:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
-      | WHERE user.id = passwordInfo.providerKey
       | RETURN passwordInfo;
     """.stripMargin
 
@@ -80,6 +79,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   """
     | MATCH (user:User { email: {email} })
     | CREATE (user)-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo {passwordInfoData})
+    | SET passwordInfo.providerKey = user.id
     | RETURN passwordInfo;
   """.stripMargin
 
@@ -92,7 +92,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     // TODO: how to deal with possibly Null salt value. use Writer maybe?
     // Currently using BCryptPasswordHasher which does not set salt value
     // so we're ignoring it below all together
-
 
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(

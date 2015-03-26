@@ -30,7 +30,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = userDAO.save(user)
+  def create(user: User) = userDAO.create(user)
 
   /**
    * Deletes the user of the specified ID.

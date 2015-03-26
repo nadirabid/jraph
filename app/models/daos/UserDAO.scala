@@ -29,12 +29,12 @@ trait UserDAO {
   def find(userID: UUID): Future[Option[User]]
 
   /**
-   * Saves a user.
+   * Creates a user.
    *
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User): Future[User]
+  def create(user: User): Future[User]
 
   /**
    * Updates a user. (Maybe save should be called create? or do both create and update?)

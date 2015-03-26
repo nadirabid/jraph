@@ -122,7 +122,7 @@ class UserDAOImpl extends UserDAO {
       | RETURN user;
     """.stripMargin
 
-  def save(user: User) = {
+  def create(user: User) = {
     val timestamp = System.currentTimeMillis
 
     // ASK: Do we need a UUID to identify a User node
