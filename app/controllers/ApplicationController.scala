@@ -80,10 +80,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               HypergraphData(hypergraph, nodes, links)
           }
 
-          Ok(views.html.account.index(
-            Json.toJson(readiedGraphsData),
-            DigestUtils.md5Hex(userEmail))
-          )
+          Ok(views.html.account.index(Json.toJson(readiedGraphsData), DigestUtils.md5Hex(userEmail)))
         }
       case None => Future.successful(ServiceUnavailable)
     }
