@@ -79,7 +79,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   """
     | MATCH (user:User { email: {email} })
     | CREATE (user)-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo {passwordInfoData})
-    | SET passwordInfo.providerKey = user.id
     | RETURN passwordInfo;
   """.stripMargin
 

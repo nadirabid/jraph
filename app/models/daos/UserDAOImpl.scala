@@ -82,17 +82,17 @@ class UserDAOImpl extends UserDAO {
 
   val cypherReadByID =
     """
-      | MATCH (user:User { id: {userID} })
+      | MATCH (user:User { email: {email} })
       | RETURN user;
     """.stripMargin
 
-  def find(userID: UUID) = {
+  def find(email: String) = {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherReadByID,
           "parameters" -> Json.obj(
-            "userID" -> userID
+            "email" -> email
           )
         )
       )
@@ -167,7 +167,7 @@ class UserDAOImpl extends UserDAO {
 
   val cypherUpdate =
     """
-      | MATCH (user:User { id: {userID} })
+      | MATCH (user:User { email: {email} })
       | SET user += {userData}
       | RETURN user;
     """.stripMargin
@@ -178,7 +178,7 @@ class UserDAOImpl extends UserDAO {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
-            "userID" -> user.id,
+            "email" -> user.email,
             "userData" -> Json.obj(
               "firstName" -> user.firstName,
               "lastName" -> user.lastName,
@@ -203,21 +203,20 @@ class UserDAOImpl extends UserDAO {
 
   val cypherDelete =
     """
-      | MATCH (user:User { id: {userID} }),
-      |       (passwordInfo:PasswordInfo { providerKey: {userID} })
+      | MATCH (user:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
       | OPTIONAL MATCH (user)-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph)
       | OPTIONAL MATCH (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
       | OPTIONAL MATCH (hn)-[HL:HYPERLINK]->(:Hypernode)
       | DELETE OWNS_HG, OWNS_HN, HL, user, passwordInfo, hg, hn;
     """.stripMargin
 
-  def delete(userID: UUID) = {
+  def delete(email: String) = {
     val neo4jReq = Json.obj(
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherDelete,
           "parameters" -> Json.obj(
-            "userID" -> userID
+            "email" -> email
           ),
           "includeStats" -> true
         )

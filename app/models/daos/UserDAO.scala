@@ -23,10 +23,10 @@ trait UserDAO {
   /**
    * Finds a user by its user ID.
    *
-   * @param userID The ID of the user to find.
+   * @param email The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def find(userID: UUID): Future[Option[User]]
+  def find(email: String): Future[Option[User]]
 
   /**
    * Creates a user.
@@ -47,8 +47,8 @@ trait UserDAO {
   /**
    * Deletes a user of the specified ID.
    *
-   * @param userID The ID of the user to find.
+   * @param email The ID of the user to find.
    * @return
    */
-  def delete(userID: UUID): Future[Boolean]
+  def delete(email: String): Future[Boolean]
 }

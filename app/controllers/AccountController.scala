@@ -59,7 +59,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
   }
 
   def delete = SecuredAction.async { implicit request =>
-    userService.delete(request.identity.id).map {
+    userService.delete(request.identity.email).map {
       case true => Ok
       case false => ServiceUnavailable
     }

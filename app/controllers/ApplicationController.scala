@@ -72,7 +72,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           for { n <- nodes; l <- links } yield (hg, n, l)
         }
 
-        val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
+        val userEmail = req.identity.email.trim.toLowerCase
 
         Future.sequence(graphsDataRequests).map { graphsData =>
           val readiedGraphsData = graphsData.map {
@@ -90,8 +90,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def profile = SecuredAction { req =>
-    val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
-    val userProfileForm = UserProfileForm.form.fill(UserProfileForm.UserProfileData(None, None, "test@email.com"))
+    val userEmail = req.identity.email.trim.toLowerCase
+    val userProfileForm = UserProfileForm.form.fill(UserProfileForm.UserProfileData(None, None, userEmail))
     Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail), userProfileForm))
   }
 
@@ -106,7 +106,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def updateUserProfile = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => {
-        val userEmail = "NadirAbid@gmail.com ".trim.toLowerCase
+        val userEmail = req.identity.email.trim.toLowerCase
         BadRequest(views.html.account.profile(DigestUtils.md5Hex(userEmail), formWithErrors))
       },
       userProfile => {

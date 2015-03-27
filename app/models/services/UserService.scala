@@ -23,8 +23,8 @@ trait UserService extends IdentityService[User] {
   /**
    * Deletes the user of the specified ID.
    *
-   * @param userID The ID of the user to delete.
+   * @param email The ID of the user to delete.
    * @return
    */
-  def delete(userID: UUID): Future[Boolean]
+  def delete(email: String): Future[Boolean]
 }
