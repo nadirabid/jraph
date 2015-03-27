@@ -1,5 +1,6 @@
 package controllers
 
+import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api._
@@ -12,8 +13,8 @@ import forms.SignUpForm
 
 import models.User
 import models.services.UserService
-import play.api.i18n.Messages
 
+import play.api.i18n.Messages
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
@@ -37,17 +38,17 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
             .flashing("error" -> Messages("user.exists")))
           case None =>
             val passwordInfo = passwordHasher.hash(data.password)
-            val user = User(java.util.UUID.randomUUID(), data.email, None, None, loginInfo)
+            val user = User(UUID.randomUUID(), data.email, None, None, loginInfo)
 
             for {
               user <- userService.create(user.copy())
-              authInfo <- authInfoService.save(loginInfo, passwordInfo)
+              savedPasswordInfo <- authInfoService.save(loginInfo, passwordInfo)
               authenticator <- env.authenticatorService.create(user.loginInfo)
               value <- env.authenticatorService.init(authenticator)
               result <- env.authenticatorService.embed(value, Future.successful(
                 Redirect(routes.ApplicationController.index())
               ))
-            } yield  {
+            } yield {
               env.eventBus.publish(SignUpEvent(user, request, request2lang))
               env.eventBus.publish(LoginEvent(user, request, request2lang))
               result

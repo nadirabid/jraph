@@ -40,11 +40,12 @@ class CredentialsAuthController @Inject()(implicit val env: Environment[User, Se
           case Some(p: CredentialsProvider) => p.authenticate(credentials)
           case _ => Future.failed(new ConfigurationException(s"Cannot find credentials provider"))
         }).flatMap { loginInfo =>
+          val result = Redirect(routes.ApplicationController.index())
           userService.retrieve(loginInfo).flatMap {
             case Some(user) => env.authenticatorService.create(user.loginInfo).flatMap { authenticator =>
               env.eventBus.publish(LoginEvent(user, request, request2lang))
               env.authenticatorService.init(authenticator).flatMap { v =>
-                env.authenticatorService.embed(v, Future.successful(Redirect(routes.ApplicationController.index())))
+                env.authenticatorService.embed(v, Future.successful(result))
               }
             }
             case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
