@@ -4,7 +4,9 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import com.mohiva.play.silhouette.api.{LogoutEvent, Silhouette, Environment}
+import com.mohiva.play.silhouette.api.{LoginInfo, LogoutEvent, Silhouette, Environment}
+import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import models.services.UserService
 
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
@@ -17,7 +19,8 @@ import org.apache.commons.codec.digest.DigestUtils
 import forms._
 import models.{Hypergraph, Hypernode, Hyperlink, User}
 
-class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
+class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
+                                       val userService: UserService)
   extends Silhouette[User, SessionAuthenticator] {
 
   case class HypergraphData(hypergraph: Hypergraph,
@@ -88,7 +91,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def profile = SecuredAction { req =>
     val userEmail = req.identity.email.trim.toLowerCase
-    val userProfileForm = UserProfileForm.form.fill(UserProfileForm.UserProfileData(None, None, userEmail))
+    val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
+    val userProfileForm = UserProfileForm.form.fill(userProfileData)
     Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail), userProfileForm))
   }
 
@@ -96,21 +100,28 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Ok(views.html.graph.index())
   }
 
-  def test = UserAwareAction {
-    Ok(views.html.test.index())
-  }
-
   def updateUserProfile = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
-        BadRequest(views.html.account.profile(DigestUtils.md5Hex(userEmail), formWithErrors))
+        val result = BadRequest(views.html.account.profile(DigestUtils.md5Hex(userEmail), formWithErrors))
+        Future.successful(result)
       },
       userProfile => {
-        Redirect(routes.ApplicationController.profile())
+        val user = req.identity.copy(
+          email = userProfile.email,
+          firstName = userProfile.firstName,
+          lastName = userProfile.lastName,
+          loginInfo = LoginInfo(CredentialsProvider.ID, userProfile.email)
+        )
+
+        val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
+
+        userService.update(user).flatMap { _ =>
+          authenticator.renew(Future.successful(Redirect(routes.ApplicationController.profile())))
+        }
       }
     )
-    Future.successful(Redirect(routes.ApplicationController.profile()))
   }
 
   def signIn = UserAwareAction.async { req =>
@@ -130,6 +141,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   def signOut = SecuredAction.async { implicit req =>
     env.eventBus.publish(LogoutEvent(req.identity, req, request2lang))
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
+  }
+
+  def test = UserAwareAction {
+    Ok(views.html.test.index())
   }
 
   def trimTrailingForwardSlash(path: String) = Action {

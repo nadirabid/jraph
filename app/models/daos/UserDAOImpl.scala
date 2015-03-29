@@ -145,6 +145,8 @@ class UserDAOImpl extends UserDAO {
             "userData" -> Json.obj(
               "id" -> user.id,
               "email" -> user.email,
+              "firstName" -> user.firstName,
+              "lastName" -> user.lastName,
               "providerID" -> user.loginInfo.providerID,
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
@@ -167,7 +169,7 @@ class UserDAOImpl extends UserDAO {
 
   val cypherUpdate =
     """
-      | MATCH (user:User { email: {email} })
+      | MATCH (user:User { id: {id} })
       | SET user += {userData}
       | RETURN user;
     """.stripMargin
@@ -178,7 +180,7 @@ class UserDAOImpl extends UserDAO {
         Json.obj(
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
-            "email" -> user.email,
+            "id" -> user.id,
             "userData" -> Json.obj(
               "firstName" -> user.firstName,
               "lastName" -> user.lastName,

@@ -33,6 +33,14 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
   def create(user: User) = userDAO.create(user)
 
   /**
+   * Updates a user.
+   *
+   * @param user
+   * @return
+   */
+  def update(user: User) = userDAO.update(user)
+
+  /**
    * Deletes the user of the specified ID.
    *
    * @param email The ID of the user to delete.

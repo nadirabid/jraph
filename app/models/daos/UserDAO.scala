@@ -12,6 +12,8 @@ import scala.concurrent.Future
  */
 trait UserDAO {
 
+  // TODO: update the API to return Future[Option[User]] instead of Future[User]
+
   /**
    * Finds a user by its login info.
    *

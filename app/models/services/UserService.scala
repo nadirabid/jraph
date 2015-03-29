@@ -21,6 +21,14 @@ trait UserService extends IdentityService[User] {
   def create(user: User): Future[User]
 
   /**
+   * Updates a user.
+   *
+   * @param user
+   * @return
+   */
+  def update(user: User): Future[User]
+
+  /**
    * Deletes the user of the specified ID.
    *
    * @param email The ID of the user to delete.

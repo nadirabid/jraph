@@ -12,10 +12,10 @@ object UserProfileForm {
       "firstName" -> optional(text),
       "lastName" -> optional(text),
       "email" -> email
-    )(UserProfileData.apply)(UserProfileData.unapply)
+    )(Data.apply)(Data.unapply)
   )
 
-  case class UserProfileData(firstName: Option[String],
-                             lastName: Option[String],
-                             email: String) // TODO: should changing the email invalidate auth?
+  case class Data(firstName: Option[String],
+                  lastName: Option[String],
+                  email: String) // TODO: should changing the email invalidate auth?
 }
