@@ -150,3 +150,8 @@ ul.x-navbar-nav {
 .x-menu > .x-menu-item:hover {
     background-color:rgba(0,0,0,.05);
 }
+
+.x-menu > .x-menu-item > a, .x-menu > .x-menu-item > a:hover {
+    color:inherit;
+    text-decoration:none;
+}

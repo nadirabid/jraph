@@ -297,6 +297,16 @@ define([
       return alphaNumericReg.test(str);
     }
 
+    function addEventListenerOnce(el, eventName, callback) {
+      var callbackWrapper = function() {
+        callback.apply(this, arguments);
+        el.removeEventListener(eventName, callbackWrapper);
+      };
+
+      el.addEventListener(eventName, callbackWrapper);
+    }
+
+    Util.addEventListenerOnce = addEventListenerOnce;
     Util.validateAlphanumeric = validateAlphanumeric;
     Util.validateEmail = validateEmail;
     Util.validateLink = validateLink;

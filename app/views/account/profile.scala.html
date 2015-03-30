@@ -43,7 +43,7 @@
     </style>
   </head>
   <body>
-    <div class="x-navbar nav">
+    <div id="navbar" class="x-navbar nav">
       <ul class="x-navbar-nav">
         <li>
           <a href="@routes.ApplicationController.index()">Graphs</a>
@@ -54,13 +54,16 @@
       </ul>
 
       <span class="profile-picture">
-        <img src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50" />
-        <ul class="x-menu profile-picture-dropdown" v-class="hidden:!sortMenu">
+        <img
+            src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
+            v-on="click:toggleProfilePictureDropdown"
+        >
+        <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
           <li class="x-menu-item">
-              Profile
+              <a href="@routes.ApplicationController.profile()">Profile</a>
           </li>
           <li class="x-menu-item">
-              Sign out
+              <a href="@routes.ApplicationController.signOut()">Sign out</a>
           </li>
         </ul>
       </span>
