@@ -1,8 +1,9 @@
 require([
-      'lodash',
-      'jquery',
-      'vue',
-      'models'
+    'lodash',
+    'jquery',
+    'vue',
+    'models',
+    'account/user'
 ],
 function(_, $, Vue, models){
 
@@ -314,7 +315,7 @@ function(_, $, Vue, models){
 
   var graphThumbnailsList = new Vue({
 
-    el: document.body,
+    el: '#userGraphs',
 
     data: {
       pageYOffset: 0,
