@@ -160,18 +160,13 @@ html, body {
     margin-left:20px;
 }
 
-.nav > img, .nav > .profile-picture {
+.nav > img {
     display:inline-block;
     position:absolute;
     bottom:10px;
     right:20px;
     border-radius:2px;
 }
-
-.nav > .profile-picture > img {
-    border-radius:2px;
-}
-
 
 .sub-nav {
     height:60px;
