@@ -13,6 +13,32 @@
       [v-cloak] {
         display:none !important;
       }
+      .nav > .profile-picture {
+        display:inline-block;
+        position:absolute;
+        bottom:10px;
+        right:20px;
+      }
+
+      .nav > .profile-picture > img {
+        cursor:pointer;
+        border-radius:2px;
+      }
+
+      .profile-picture-dropdown {
+        width:140px;
+        right:0;
+        top:60px;
+      }
+
+      .profile-picture-dropdown::before, .profile-picture-dropdown::after {
+        right:15px;
+      }
+
+      .user-profile-form {
+        margin-top:90px;
+        max-width:1240px;
+      }
     </style>
   </head>
   <body>
@@ -26,10 +52,20 @@
         </li>
       </ul>
 
-      <img src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50" />
+      <span class="profile-picture">
+        <img src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50" />
+        <ul class="x-menu profile-picture-dropdown" v-class="hidden:!sortMenu">
+          <li class="x-menu-item">
+              Profile
+          </li>
+          <li class="x-menu-item">
+              Sign out
+          </li>
+        </ul>
+      </span>
     </div>
 
-    <div class="center-block" style="margin-top:90px;max-width:1240px;">
+    <div class="center-block user-profile-form">
       <form
           id="updateUserProfile"
           action="@routes.ApplicationController.updateUserProfile()"

@@ -101,6 +101,7 @@ ul.x-navbar-nav {
     position: absolute;
     width: 0;
     border: 10px solid transparent; /* arrow size */
+    right:10px;
 }
 
 /* these arrows will point up */
@@ -110,9 +111,7 @@ ul.x-navbar-nav {
     border-bottom-color: #fff;  /* arrow color */
 
     /* positioning */
-    position: absolute;
     top: -19px;
-    right: 10px;
     z-index: 2;
 }
 
@@ -121,9 +120,7 @@ ul.x-navbar-nav {
     border-bottom-color: rgba(0,0,0,0.05);  /* arrow color */
 
     /* positioning */
-    position: absolute;
     top: -20px;
-    right: 10px;
     z-index: 1;
 }
 
