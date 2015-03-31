@@ -6,6 +6,7 @@ import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.ws.WS
+import play.api.libs.ws.WSAuthScheme
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
@@ -42,6 +43,8 @@ object Hyperlink {
   // TODO: hyperlink queries do not use hypergraphID or userEmail currently, use them!
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+  val dbUsername = "neo4j"
+  val dbPassword = "nadir"
 
   // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
 
@@ -90,11 +93,12 @@ object Hyperlink {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
@@ -128,11 +132,12 @@ object Hyperlink {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
@@ -167,11 +172,12 @@ object Hyperlink {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -210,11 +216,12 @@ object Hyperlink {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -249,11 +256,12 @@ object Hyperlink {
     )
 
     val holder = WS
-      .url("http://localhost:7474/db/data/transaction/commit")
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReqJson).map { _ => true }
   }

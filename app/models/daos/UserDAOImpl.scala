@@ -12,10 +12,13 @@ import play.api.Play.current
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
-import play.api.libs.ws.{WS, WSRequestHolder}
+import play.api.libs.ws.WS
+import play.api.libs.ws.WSAuthScheme
 
 class UserDAOImpl extends UserDAO {
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+  val dbUsername = "neo4j"
+  val dbPassword = "nadir"
 
   /**
    * Example JSON result of Transactional Cypher HTTP endpoint
@@ -62,13 +65,13 @@ class UserDAOImpl extends UserDAO {
         )
       )
     )
-
-    val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+    val holder = WS
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReq).map { neo4jRes =>
       val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]
@@ -98,12 +101,13 @@ class UserDAOImpl extends UserDAO {
       )
     )
 
-    val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+    val holder = WS
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReq).map { neo4jRes =>
       val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]
@@ -156,8 +160,9 @@ class UserDAOImpl extends UserDAO {
       )
     )
 
-    val holder: WSRequestHolder = WS
+    val holder = WS
         .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
           "Accept" -> "application/json; charset=UTF-8"
@@ -192,11 +197,12 @@ class UserDAOImpl extends UserDAO {
       )
     )
 
-    val holder: WSRequestHolder = WS
+    val holder = WS
         .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
-            "Content-Type" -> "application/json",
-            "Accept" -> "application/json; charset=UTF-8"
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
         )
 
     //TODO: check if post returned with error
@@ -225,11 +231,12 @@ class UserDAOImpl extends UserDAO {
       )
     )
 
-    val holder: WSRequestHolder = WS
+    val holder = WS
         .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
-          "Accepts" -> "application/json; charset=UTF-8"
+          "Accept" -> "application/json; charset=UTF-8"
         )
 
     // TODO: check if there was any error and the stats confirm at least one deleted node

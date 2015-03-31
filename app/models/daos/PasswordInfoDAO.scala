@@ -4,8 +4,6 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 
-import java.util.UUID
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Play.current
@@ -13,6 +11,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.ws.{WS, WSRequestHolder}
+import play.api.libs.ws.WSAuthScheme
 
 import scala.concurrent.Future
 
@@ -33,6 +32,8 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    */
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+  val dbUsername = "neo4j"
+  val dbPassword = "nadir"
 
   implicit val passwordInfoReads: Reads[PasswordInfo] = (
     (JsPath \ "hasher").read[String] and
@@ -59,11 +60,12 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     )
 
     val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReq).map { neo4jRes =>
       val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[PasswordInfo]
@@ -111,11 +113,12 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     )
 
     val holder: WSRequestHolder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     holder.post(neo4jReq).map{ res => passwordInfo }
   }

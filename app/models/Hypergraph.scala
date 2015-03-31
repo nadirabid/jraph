@@ -7,6 +7,7 @@ import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.ws.WS
+import play.api.libs.ws.WSAuthScheme
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
@@ -23,6 +24,8 @@ case class Hypergraph(
 object Hypergraph {
 
   val dbUrl = "http://localhost:7474/db/data/transaction/commit"
+  val dbUsername = "neo4j"
+  val dbPassword = "nadir"
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
     ((__ \ "row")(0) \ "id").read[UUID] and
@@ -59,11 +62,12 @@ object Hypergraph {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -96,11 +100,12 @@ object Hypergraph {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -132,11 +137,12 @@ object Hypergraph {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -172,11 +178,12 @@ object Hypergraph {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -211,11 +218,12 @@ object Hypergraph {
     )
 
     val holder = WS
-      .url(dbUrl)
-      .withHeaders(
-        "Content-Type" -> "application/json",
-        "Accept" -> "application/json; charset=UTF-8"
-      )
+        .url(dbUrl)
+        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+        .withHeaders(
+          "Content-Type" -> "application/json",
+          "Accept" -> "application/json; charset=UTF-8"
+        )
 
     // TODO: check if there was any error and the stats confirm at least one deleted node
     holder.post(neo4jReqJson).map { _ => true }
