@@ -117,7 +117,7 @@ ul.x-navbar-nav {
 
 /* arrow which acts as a background shadow */
 .x-menu::after {
-    border-bottom-color: rgba(0,0,0,0.1);  /* arrow color */
+    border-bottom-color: rgba(0,0,0,0.08);  /* arrow color */
 
     /* positioning */
     top: -20px;
