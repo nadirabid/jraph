@@ -152,6 +152,7 @@ ul.x-navbar-nav {
 }
 
 .x-menu > .x-menu-item > a, .x-menu > .x-menu-item > a:hover {
+    display:block;
     color:inherit;
     text-decoration:none;
 }
