@@ -13,7 +13,7 @@ GET           /signOut                                         @controllers.Appl
 GET           /graph/:hypergraphID                             @controllers.ApplicationController.hypergraph(hypergraphID: UUID)
 GET           /test                                            @controllers.ApplicationController.test
 
-GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate
+GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate(email:Option[String] ?= None)
 GET           /account/profile                                 @controllers.ApplicationController.profile
 POST          /account/profile/update                          @controllers.ApplicationController.updateUserProfile
 

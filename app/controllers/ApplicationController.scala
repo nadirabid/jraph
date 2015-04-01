@@ -90,15 +90,15 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
+  def hypergraph(hypergraphID: UUID) = SecuredAction { req =>
+    Ok(views.html.graph.index())
+  }
+
   def profile = SecuredAction { req =>
     val userEmail = req.identity.email.trim.toLowerCase
     val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
     val userProfileForm = UserProfileForm.form.fill(userProfileData)
     Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail), userProfileForm))
-  }
-
-  def hypergraph(hypergraphID: UUID) = SecuredAction { req =>
-    Ok(views.html.graph.index())
   }
 
   def updateUserProfile = SecuredAction.async { implicit req =>
@@ -119,7 +119,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
 
         userService.update(user).flatMap { _ =>
-          authenticator.renew(Future.successful(Redirect(routes.ApplicationController.profile())))
+          val result = routes.ApplicationController.reauthenticate(Some(user.email))
+          authenticator.discard(Future.successful(Redirect(result)))
         }
       }
     )
@@ -144,13 +145,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
   }
 
-  def reauthenticate = UserAwareAction.async { req =>
+  def reauthenticate(email: Option[String]) = UserAwareAction.async { req =>
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None =>
-
-
-        req.getQueryString("userEmail") match {
+        email match {
           case Some(email) =>
             val userEmail = email.trim.toLowerCase
             val signInForm = SignInForm.form.fill(Credentials(userEmail, ""))
