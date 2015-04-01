@@ -6,7 +6,7 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, LogoutEvent, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import models.services.UserService
+import com.mohiva.play.silhouette.api.util.Credentials
 
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
@@ -18,6 +18,7 @@ import org.apache.commons.codec.digest.DigestUtils
 
 import forms._
 import models.{Hypergraph, Hypernode, Hyperlink, User}
+import models.services.UserService
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
                                        val userService: UserService)
@@ -143,11 +144,26 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
   }
 
-  def reauthenticate = Action {
-    val userEmail = "nadirabid@gmail.com"
-    import com.mohiva.play.silhouette.api.util.Credentials
-    val signInForm = SignInForm.form.fill(Credentials(userEmail, ""))
-    Ok(views.html.account.reauthenticate(signInForm, DigestUtils.md5Hex(userEmail)))
+  def reauthenticate = UserAwareAction.async { req =>
+    req.identity match {
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case None =>
+
+
+        req.getQueryString("userEmail") match {
+          case Some(email) =>
+            val userEmail = email.trim.toLowerCase
+            val signInForm = SignInForm.form.fill(Credentials(userEmail, ""))
+            val result = Ok(views.html.account.reauthenticate(signInForm, DigestUtils.md5Hex(userEmail)))
+
+            userService.find(userEmail) flatMap {
+              case Some(user) => Future.successful(result)
+              case None => Future.successful(Redirect(routes.ApplicationController.signIn()))
+            }
+          case None =>
+            Future.successful(Redirect(routes.ApplicationController.signIn()))
+        }
+    }
   }
 
   def test = UserAwareAction {

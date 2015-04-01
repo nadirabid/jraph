@@ -21,6 +21,14 @@ trait UserService extends IdentityService[User] {
   def create(user: User): Future[User]
 
   /**
+   * Find user by email.
+   *
+   * @param email
+   * @return
+   */
+  def find(email: String): Future[Option[User]]
+
+  /**
    * Updates a user.
    *
    * @param user

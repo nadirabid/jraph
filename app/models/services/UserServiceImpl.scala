@@ -33,6 +33,14 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
   def create(user: User) = userDAO.create(user)
 
   /**
+   * Finds user by email.
+   *
+   * @param email
+   * @return The user associated with the email.
+   */
+  def find(email: String) = userDAO.find(email)
+
+  /**
    * Updates a user.
    *
    * @param user
