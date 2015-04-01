@@ -13,9 +13,9 @@ GET           /signOut                                         @controllers.Appl
 GET           /graph/:hypergraphID                             @controllers.ApplicationController.hypergraph(hypergraphID: UUID)
 GET           /test                                            @controllers.ApplicationController.test
 
-GET           /user/verifyPassword                             @controllers.ApplicationController.verifyPassword
-GET           /user/profile                                    @controllers.ApplicationController.profile
-POST          /user/profile/update                             @controllers.ApplicationController.updateUserProfile
+GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate
+GET           /account/profile                                 @controllers.ApplicationController.profile
+POST          /account/profile/update                          @controllers.ApplicationController.updateUserProfile
 
 POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
 

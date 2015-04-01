@@ -1,0 +1,63 @@
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials], userHash: String)
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
+  <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
+</head>
+<body>
+  <div
+      class="panel center-block"
+      style="
+          width:400px;
+          padding:20px;
+          position:relative;
+          top:220px;
+          border-radius:2px;
+      "
+  >
+    <div class="media">
+      <form
+          action="@routes.CredentialsAuthController.authenticate()"
+          method="POST"
+          style="padding:5px;"
+      >
+        <div class="form-group">
+          <div class="form-group">
+            <label class="sr-only">Email</label>
+            <h5 class="form-control-static">@signInForm("identifier").value</h5>
+            <div class="form-control hidden disabled">
+              <input
+                type="text"
+                class="form-control"
+                id="@signInForm("identifier").id"
+                name="@signInForm("identifier").name"
+                value="@signInForm("identifier").value"
+                placeholder="Email"
+              >
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="sr-only">Password</label>
+            <input
+                type="password"
+                autocomplete="off"
+                class="form-control input-lg"
+                placeholder="Password"
+                id="@signInForm("password").id"
+                name="@signInForm("password").name"
+                value="@signInForm("password").value"
+            >
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-default btn-lg btn-block">Verify</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
