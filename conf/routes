@@ -10,10 +10,12 @@ GET           /*path/                                          @controllers.Appl
 GET           /signIn                                          @controllers.ApplicationController.signIn
 GET           /signUp                                          @controllers.ApplicationController.signUp
 GET           /signOut                                         @controllers.ApplicationController.signOut
-GET           /profile                                         @controllers.ApplicationController.profile
 GET           /graph/:hypergraphID                             @controllers.ApplicationController.hypergraph(hypergraphID: UUID)
 GET           /test                                            @controllers.ApplicationController.test
-POST          /userprofile/update                              @controllers.ApplicationController.updateUserProfile
+
+GET           /user/verifyPassword                             @controllers.ApplicationController.verifyPassword
+GET           /user/profile                                    @controllers.ApplicationController.profile
+POST          /user/profile/update                             @controllers.ApplicationController.updateUserProfile
 
 POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
 

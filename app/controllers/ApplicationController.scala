@@ -138,6 +138,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
+  def verifyPassword = Action {
+    val userEmail = "nadirabid@gmail.com"
+    Ok(views.html.account.verifyPassword(userEmail, DigestUtils.md5Hex(userEmail)))
+  }
+
   def signOut = SecuredAction.async { implicit req =>
     env.eventBus.publish(LogoutEvent(req.identity, req, request2lang))
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
