@@ -119,7 +119,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
 
         userService.update(user).flatMap { _ =>
-          val result = routes.ApplicationController.reauthenticate(Some(user.email))
+          val continueToURLAfterRedirect = routes.ApplicationController.profile().toString()
+          val result = routes.ApplicationController.reauthenticate(Some(user.email), Some(continueToURLAfterRedirect))
           authenticator.discard(Future.successful(Redirect(result)))
         }
       }
@@ -145,15 +146,21 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
   }
 
-  def reauthenticate(email: Option[String]) = UserAwareAction.async { req =>
+  def reauthenticate(email: Option[String], continueTo: Option[String]) = UserAwareAction.async { req =>
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None =>
         email match {
-          case Some(email) =>
-            val userEmail = email.trim.toLowerCase
-            val signInForm = SignInForm.form.fill(Credentials(userEmail, ""))
-            val result = Ok(views.html.account.reauthenticate(signInForm, DigestUtils.md5Hex(userEmail)))
+          case Some(userEmail) =>
+            val cleanUserEmail = userEmail.trim.toLowerCase
+            val continueToURL = continueTo.getOrElse(routes.ApplicationController.index().toString())
+            val signInForm = SignInForm.form.fill(Credentials(cleanUserEmail, ""))
+
+            val result = Ok(views.html.account.reauthenticate(
+              signInForm,
+              DigestUtils.md5Hex(cleanUserEmail),
+              continueToURL
+            ))
 
             userService.find(userEmail) flatMap {
               case Some(user) => Future.successful(result)

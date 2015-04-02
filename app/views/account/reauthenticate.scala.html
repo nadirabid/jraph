@@ -1,4 +1,4 @@
-@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials], userHash: String)
+@(signInForm:Form[com.mohiva.play.silhouette.api.util.Credentials], userHash:String, continueToURL:String)
 
 <!DOCTYPE html>
 <html>
@@ -21,7 +21,7 @@
   >
     <div class="media">
       <form
-          action="@routes.CredentialsAuthController.authenticate()"
+          action="@routes.CredentialsAuthController.authenticate(Some(continueToURL))"
           method="POST"
           style="padding:5px;"
       >

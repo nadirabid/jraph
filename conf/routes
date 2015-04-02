@@ -13,11 +13,11 @@ GET           /signOut                                         @controllers.Appl
 GET           /graph/:hypergraphID                             @controllers.ApplicationController.hypergraph(hypergraphID: UUID)
 GET           /test                                            @controllers.ApplicationController.test
 
-GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate(email:Option[String] ?= None)
+GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate(email:Option[String], continueTo:Option[String])
 GET           /account/profile                                 @controllers.ApplicationController.profile
 POST          /account/profile/update                          @controllers.ApplicationController.updateUserProfile
 
-POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
+POST          /credentials                                     @controllers.CredentialsAuthController.authenticate(continueTo:Option[String] ?= None)
 
 POST          /account/create                                  @controllers.AccountController.create
 DELETE        /account/delete                                  @controllers.AccountController.delete
