@@ -96,16 +96,28 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def profile = SecuredAction { req =>
     val userEmail = req.identity.email.trim.toLowerCase
+
     val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
     val userProfileForm = UserProfileForm.form.fill(userProfileData)
-    Ok(views.html.account.profile(DigestUtils.md5Hex(userEmail), userProfileForm))
+
+    Ok(views.html.account.profile(
+      DigestUtils.md5Hex(userEmail),
+      userProfileForm,
+      ChangeUserPasswordForm.form
+    ))
   }
 
-  def updateUserProfile = SecuredAction.async { implicit req =>
+  def updateUserInfo = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
-        val result = BadRequest(views.html.account.profile(DigestUtils.md5Hex(userEmail), formWithErrors))
+
+        val result = BadRequest(views.html.account.profile(
+          DigestUtils.md5Hex(userEmail),
+          formWithErrors,
+          ChangeUserPasswordForm.form
+        ))
+
         Future.successful(result)
       },
       userProfile => {
@@ -125,6 +137,27 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         }
       }
     )
+  }
+
+  def updateUserPassword = SecuredAction.async { implicit req =>
+    ChangeUserPasswordForm.form.bindFromRequest.fold(
+      fromWithErrors => {
+        val userEmail = req.identity.email.trim.toLowerCase
+
+        val result = BadRequest(views.html.account.profile(
+          DigestUtils.md5Hex(userEmail),
+          UserProfileForm.form,
+          fromWithErrors
+        ))
+
+        Future.successful(result)
+      },
+      changeUserPasswordFrom => {
+
+      }
+    )
+
+    Future.successful(Redirect(routes.ApplicationController.profile()))
   }
 
   def signIn = UserAwareAction.async { req =>

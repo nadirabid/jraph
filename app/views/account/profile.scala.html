@@ -1,4 +1,8 @@
-@(userHash: String, userProfileForm: Form[forms.UserProfileForm.Data])
+@(
+    userHash: String,
+    userProfileForm: Form[forms.UserProfileForm.Data],
+    changeUserPasswordForm: Form[forms.ChangeUserPasswordForm.Data]
+)
 
 <!DOCTYPE html>
 <html>
@@ -39,8 +43,8 @@
 
     <div class="center-block user-profile-form">
       <form
-          id="updateUserProfile"
-          action="@routes.ApplicationController.updateUserProfile()"
+          id="updateUserInfo"
+          action="@routes.ApplicationController.updateUserInfo()"
           method="POST"
           class="form-horizontal"
       >
@@ -125,37 +129,103 @@
             <button
                 type="submit"
                 class="btn btn-default"
-                v-class="disabled: !hasUpdates">
+                v-class="disabled: !hasUpdates"
+            >
               Save
             </button>
           </div>
         </div>
       </form>
 
-      <form class="form-horizontal">
+      <form
+          id="changeUserPassword"
+          action="@routes.ApplicationController.updateUserPassword()"
+          method="POST"
+          class="form-horizontal"
+      >
         <h5>Change your password:</h5>
 
         <div class="form-group">
           <label class="col-sm-2 control-label">Old password</label>
           <div class="col-sm-10">
-            <input type="password" class="form-control">
+            <input
+                type="password"
+                autocomplete="off"
+                class="form-control"
+                id="@changeUserPasswordForm("oldPassword").id"
+                name="@changeUserPasswordForm("oldPassword").name"
+                value="@changeUserPasswordForm("oldPassword").value"
+                v-model="oldPassword"
+                v-on="
+                    blur:validateNewPassword(true),
+                    keyup:validateNewPassword
+                "
+            >
           </div>
         </div>
-        <div class="form-group">
+        <div
+            class="form-group"
+            v-class="
+                has-error:!validated.newPassword,
+                has-error:!validated.confirmPassword
+            "
+        >
           <label class="col-sm-2 control-label">New password</label>
           <div class="col-sm-10">
-            <input type="password" autocomplete="off" class="form-control">
+            <input
+                type="password"
+                autocomplete="off"
+                class="form-control"
+                id="@changeUserPasswordForm("newPassword").id"
+                name="@changeUserPasswordForm("newPassword").name"
+                value="@changeUserPasswordForm("newPassword").value"
+                v-model="newPassword"
+                v-on="
+                    blur:validateNewPassword(true),
+                    keyup:validateNewPassword
+                "
+            >
+            <p class="help-block" v-class="hide:validated.newPassword" v-cloak>
+              New password can't be the same as the old password. What would be the point in it?
+            </p>
+            <p class="help-block" v-class="hide:validated.confirmPassword" v-cloak>
+              Password confirmation did not match.
+            </p>
           </div>
         </div>
-        <div class="form-group">
+        <div
+            class="form-group"
+            v-class="has-error:!validated.confirmPassword"
+        >
           <label class="col-sm-2 control-label">Confirm new password</label>
           <div class="col-sm-10">
-            <input type="password" autocomplete="off" class="form-control">
+            <input
+                type="password"
+                autocomplete="off"
+                class="form-control"
+                id="@changeUserPasswordForm("confirmPassword").id"
+                name="@changeUserPasswordForm("confirmPassword").name"
+                value="@changeUserPasswordForm("confirmPassword").value"
+                v-model="confirmPassword"
+                v-on="
+                    blur:validateNewPasswordConfirmation(true),
+                    keyup:validateNewPasswordConfirmation
+                "
+            >
+            <p class="help-block" v-class="hide:validated.confirmPassword" v-cloak>
+              Password confirmation did not match.
+            </p>
           </div>
         </div>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default disabled">Save</button>
+            <button
+                type="submit"
+                class="btn btn-default"
+                v-class="disabled: !hasChanges"
+            >
+              Save
+            </button>
           </div>
         </div>
       </form>

@@ -9,7 +9,7 @@ function(_, $, Vue, util){
 
   var updateUserProfile = new Vue({
 
-    el: '#updateUserProfile',
+    el: '#updateUserInfo',
 
     computed: {
 
@@ -70,6 +70,52 @@ function(_, $, Vue, util){
       this.validateFirstName(true);
       this.validateLastName(true);
       this.validateEmail(true);
+    }
+
+  });
+
+  var changeUserPassword = new Vue({
+
+    el: '#changeUserPassword',
+
+    computed: {
+
+      hasChanges: function() {
+        console.log(this.oldPassword, this.newPassword, this.confirmPassword);
+        return  this.oldPassword !== '' &&
+                this.newPassword !== '' &&
+                this.newPassword !== this.oldPassword &&
+                this.newPassword === this.confirmPassword;
+      }
+
+    },
+
+    data: {
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+      validated: {
+        newPassword: true,
+        confirmPassword: true
+      }
+    },
+
+    methods: {
+
+      validateNewPassword: function(blurFlag) {
+        if (blurFlag === true || !this.validated.newPassword) {
+          this.validated.newPassword =  this.newPassword === '' ||
+                                        this.newPassword !== this.oldPassword;
+        }
+      },
+
+      validateNewPasswordConfirmation: function(blurFlag) {
+        if (blurFlag === true || !this.validated.confirmPassword) {
+          this.validated.confirmPassword =  this.confirmPassword === '' ||
+                                            this.newPassword === this.confirmPassword;
+        }
+      }
+
     }
 
   });
