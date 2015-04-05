@@ -44,7 +44,6 @@ class CredentialsAuthController @Inject()(implicit val env: Environment[User, Se
 
           userService.retrieve(loginInfo).flatMap {
             case Some(user) => env.authenticatorService.create(user.loginInfo).flatMap { authenticator =>
-              env.eventBus.publish(LoginEvent(user, req, request2lang))
               env.authenticatorService.init(authenticator).flatMap { v =>
                 env.authenticatorService.embed(v, Future.successful(Redirect(continueToURL)))
               }

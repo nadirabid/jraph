@@ -49,8 +49,6 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
                 Redirect(routes.ApplicationController.index())
               ))
             } yield {
-              env.eventBus.publish(SignUpEvent(user, request, request2lang))
-              env.eventBus.publish(LoginEvent(user, request, request2lang))
               result
             }
         }
