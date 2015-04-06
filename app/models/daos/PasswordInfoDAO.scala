@@ -43,7 +43,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   val cypherRead =
     """
-      | MATCH (user:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+      | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
       | RETURN passwordInfo;
     """.stripMargin
 
@@ -119,6 +119,43 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
           "Content-Type" -> "application/json",
           "Accept" -> "application/json; charset=UTF-8"
         )
+
+    holder.post(neo4jReq).map{ res => passwordInfo }
+  }
+
+  val cypherUpdate =
+    """
+      | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+      | SET passwordInfo += passwordInfoData
+      | RETURN passwordInfo;
+    """.stripMargin
+
+  // TODO: should return Future[Option[PasswordInfo]]
+  def update(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
+    val neo4jReq = Json.obj(
+      "statements" -> Json.arr(
+        Json.obj(
+          "statement" -> cypherUpdate,
+          "parameters" -> Json.obj(
+            "email" -> loginInfo.providerKey,
+            "passwordInfoData" -> Json.obj(
+              "hasher" -> passwordInfo.hasher,
+              "password" -> passwordInfo.password,
+              //"salt" -> passwordInfo.salt,
+              "updatedAt" -> System.currentTimeMillis
+            )
+          )
+        )
+      )
+    )
+
+    val holder: WSRequestHolder = WS
+      .url(dbUrl)
+      .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accept" -> "application/json; charset=UTF-8"
+      )
 
     holder.post(neo4jReq).map{ res => passwordInfo }
   }

@@ -3,25 +3,30 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
+import com.mohiva.play.silhouette.api.services.AuthInfoService
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import com.mohiva.play.silhouette.api.{LoginInfo, LogoutEvent, Silhouette, Environment}
+import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.mohiva.play.silhouette.api.util.Credentials
+import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, PasswordInfo}
+import models.daos.PasswordInfoDAO
 
+import org.apache.commons.codec.digest.DigestUtils
+
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import org.apache.commons.codec.digest.DigestUtils
-
 import forms._
 import models.{Hypergraph, Hypernode, Hyperlink, User}
 import models.services.UserService
 
 class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                       val userService: UserService)
+                                       val authInfoService: AuthInfoService,
+                                       val userService: UserService,
+                                       val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
   case class HypergraphData(hypergraph: Hypergraph,
@@ -107,7 +112,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     ))
   }
 
-  def updateUserInfo = SecuredAction.async { implicit req =>
+  def handleUserInfoUpdate = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
@@ -139,7 +144,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def updateUserPassword = SecuredAction.async { implicit req =>
+  def handleUserPasswordUpdate = SecuredAction.async { implicit req =>
     ChangeUserPasswordForm.form.bindFromRequest.fold(
       fromWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
@@ -152,12 +157,25 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
         Future.successful(result)
       },
-      changeUserPasswordFrom => {
+      changeUserPasswordForm => {
+        val oldPassword = changeUserPasswordForm.oldPassword
+        val loginInfo = LoginInfo(CredentialsProvider.ID, req.identity.email)
 
+        val result = Redirect(routes.ApplicationController.profile())
+
+        authInfoService.retrieve[PasswordInfo](loginInfo).flatMap {
+          case Some(passwordInfo) if passwordHasher.matches(passwordInfo, oldPassword) =>
+            val passwordInfoDAO = new PasswordInfoDAO
+            passwordInfoDAO.update(loginInfo, passwordInfo).flatMap { _ =>
+              Future.successful(result)
+            }
+          case Some(passwordInfo) =>
+            Future.successful(result.flashing("error" -> Messages("invalid.credentials")))
+          case None =>
+            Redirect(result.flashing("error" -> Messages("invalid.id"))
+        }
       }
     )
-
-    Future.successful(Redirect(routes.ApplicationController.profile()))
   }
 
   def signIn = UserAwareAction.async { req =>

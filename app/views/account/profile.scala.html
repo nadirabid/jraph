@@ -44,7 +44,7 @@
     <div class="center-block user-profile-form">
       <form
           id="updateUserInfo"
-          action="@routes.ApplicationController.updateUserInfo()"
+          action="@routes.ApplicationController.handleUserInfoUpdate()"
           method="POST"
           class="form-horizontal"
       >
@@ -139,7 +139,7 @@
 
       <form
           id="changeUserPassword"
-          action="@routes.ApplicationController.updateUserPassword()"
+          action="@routes.ApplicationController.handleUserPasswordUpdate()"
           method="POST"
           class="form-horizontal"
       >

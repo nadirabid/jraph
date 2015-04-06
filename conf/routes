@@ -15,8 +15,8 @@ GET           /test                                            @controllers.Appl
 
 GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate(email:Option[String], continueTo:Option[String])
 GET           /account/profile                                 @controllers.ApplicationController.profile
-POST          /account/profile/update                          @controllers.ApplicationController.updateUserInfo
-POST          /account/password/update                         @controllers.ApplicationController.updateUserPassword
+POST          /account/profile/update                          @controllers.ApplicationController.handleUserInfoUpdate
+POST          /account/password/update                         @controllers.ApplicationController.handleUserPasswordUpdate
 
 POST          /credentials                                     @controllers.CredentialsAuthController.authenticate(continueTo:Option[String] ?= None)
 
