@@ -172,7 +172,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           case Some(passwordInfo) =>
             Future.successful(result.flashing("error" -> Messages("invalid.credentials")))
           case None =>
-            Redirect(result.flashing("error" -> Messages("invalid.id"))
+            Future.successful(result.flashing("error" -> Messages("invalid.id")))
         }
       }
     )
