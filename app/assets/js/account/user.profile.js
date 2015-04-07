@@ -81,22 +81,22 @@ function(_, $, Vue, util){
     computed: {
 
       hasChanges: function() {
-        console.log(this.oldPassword, this.newPassword, this.confirmPassword);
-        return  this.oldPassword !== '' &&
+        console.log(this.currentPassword, this.newPassword, this.passwordConfirmation);
+        return  this.currentPassword !== '' &&
                 this.newPassword !== '' &&
-                this.newPassword !== this.oldPassword &&
-                this.newPassword === this.confirmPassword;
+                this.newPassword !== this.currentPassword &&
+                this.newPassword === this.passwordConfirmation;
       }
 
     },
 
     data: {
-      oldPassword: '',
+      currentPassword: '',
       newPassword: '',
-      confirmPassword: '',
+      passwordConfirmation: '',
       validated: {
         newPassword: true,
-        confirmPassword: true
+        passwordConfirmation: true
       }
     },
 
@@ -105,14 +105,14 @@ function(_, $, Vue, util){
       validateNewPassword: function(blurFlag) {
         if (blurFlag === true || !this.validated.newPassword) {
           this.validated.newPassword =  this.newPassword === '' ||
-                                        this.newPassword !== this.oldPassword;
+                                        this.newPassword !== this.currentPassword;
         }
       },
 
       validateNewPasswordConfirmation: function(blurFlag) {
-        if (blurFlag === true || !this.validated.confirmPassword) {
-          this.validated.confirmPassword =  this.confirmPassword === '' ||
-                                            this.newPassword === this.confirmPassword;
+        if (blurFlag === true || !this.validated.passwordConfirmation) {
+          this.validated.passwordConfirmation = this.passwordConfirmation === '' ||
+                                                this.newPassword === this.passwordConfirmation;
         }
       }
 

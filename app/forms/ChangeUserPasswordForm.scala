@@ -7,12 +7,12 @@ object ChangeUserPasswordForm {
 
   val form = Form(
     mapping(
-      "oldPassword" -> nonEmptyText,
+      "currentPassword" -> nonEmptyText,
       "newPassword" -> nonEmptyText,
-      "confirmPassword" -> nonEmptyText
+      "passwordConfirmation" -> nonEmptyText
     )(Data.apply)(Data.unapply)
   )
-  case class Data(oldPassword: String,
+  case class Data(currentPassword: String,
                   newPassword: String,
-                  confirmPassword: String)
+                  passwordConfirmation: String)
 }

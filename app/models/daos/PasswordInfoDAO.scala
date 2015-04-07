@@ -126,7 +126,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   val cypherUpdate =
     """
       | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
-      | SET passwordInfo += passwordInfoData
+      | SET passwordInfo += {passwordInfoData}
       | RETURN passwordInfo;
     """.stripMargin
 

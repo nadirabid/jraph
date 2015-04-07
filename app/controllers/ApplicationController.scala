@@ -149,27 +149,28 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
       fromWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
 
+        val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
+
         val result = BadRequest(views.html.account.profile(
           DigestUtils.md5Hex(userEmail),
-          UserProfileForm.form,
-          fromWithErrors
+          UserProfileForm.form.fill(userProfileData),
+          ChangeUserPasswordForm.form
         ))
 
         Future.successful(result)
       },
       changeUserPasswordForm => {
-        val oldPassword = changeUserPasswordForm.oldPassword
+        val currentPassword = changeUserPasswordForm.currentPassword
         val loginInfo = LoginInfo(CredentialsProvider.ID, req.identity.email)
-
         val result = Redirect(routes.ApplicationController.profile())
 
         authInfoService.retrieve[PasswordInfo](loginInfo).flatMap {
-          case Some(passwordInfo) if passwordHasher.matches(passwordInfo, oldPassword) =>
-            val passwordInfoDAO = new PasswordInfoDAO
-            passwordInfoDAO.update(loginInfo, passwordInfo).flatMap { _ =>
+          case Some(currentPasswordInfo) if passwordHasher.matches(currentPasswordInfo, currentPassword) =>
+            val newPasswordInfo = passwordHasher.hash(changeUserPasswordForm.newPassword)
+            (new PasswordInfoDAO).update(loginInfo, newPasswordInfo).flatMap { _ =>
               Future.successful(result)
             }
-          case Some(passwordInfo) =>
+          case Some(currentPasswordInfo) =>
             Future.successful(result.flashing("error" -> Messages("invalid.credentials")))
           case None =>
             Future.successful(result.flashing("error" -> Messages("invalid.id")))

@@ -146,16 +146,16 @@
         <h5>Change your password:</h5>
 
         <div class="form-group">
-          <label class="col-sm-2 control-label">Old password</label>
+          <label class="col-sm-2 control-label">Current password</label>
           <div class="col-sm-10">
             <input
                 type="password"
                 autocomplete="off"
                 class="form-control"
-                id="@changeUserPasswordForm("oldPassword").id"
-                name="@changeUserPasswordForm("oldPassword").name"
-                value="@changeUserPasswordForm("oldPassword").value"
-                v-model="oldPassword"
+                id="@changeUserPasswordForm("currentPassword").id"
+                name="@changeUserPasswordForm("currentPassword").name"
+                value="@changeUserPasswordForm("currentPassword").value"
+                v-model="currentPassword"
                 v-on="
                     blur:validateNewPassword(true),
                     keyup:validateNewPassword
@@ -167,7 +167,7 @@
             class="form-group"
             v-class="
                 has-error:!validated.newPassword,
-                has-error:!validated.confirmPassword
+                has-error:!validated.passwordConfirmation
             "
         >
           <label class="col-sm-2 control-label">New password</label>
@@ -186,16 +186,16 @@
                 "
             >
             <p class="help-block" v-class="hide:validated.newPassword" v-cloak>
-              New password can't be the same as the old password. What would be the point in it?
+              New password can't be the same as the current password. What would be the point in it?
             </p>
-            <p class="help-block" v-class="hide:validated.confirmPassword" v-cloak>
+            <p class="help-block" v-class="hide:validated.passwordConfirmation" v-cloak>
               Password confirmation did not match.
             </p>
           </div>
         </div>
         <div
             class="form-group"
-            v-class="has-error:!validated.confirmPassword"
+            v-class="has-error:!validated.passwordConfirmation"
         >
           <label class="col-sm-2 control-label">Confirm new password</label>
           <div class="col-sm-10">
@@ -203,16 +203,16 @@
                 type="password"
                 autocomplete="off"
                 class="form-control"
-                id="@changeUserPasswordForm("confirmPassword").id"
-                name="@changeUserPasswordForm("confirmPassword").name"
-                value="@changeUserPasswordForm("confirmPassword").value"
-                v-model="confirmPassword"
+                id="@changeUserPasswordForm("passwordConfirmation").id"
+                name="@changeUserPasswordForm("passwordConfirmation").name"
+                value="@changeUserPasswordForm("passwordConfirmation").value"
+                v-model="passwordConfirmation"
                 v-on="
                     blur:validateNewPasswordConfirmation(true),
                     keyup:validateNewPasswordConfirmation
                 "
             >
-            <p class="help-block" v-class="hide:validated.confirmPassword" v-cloak>
+            <p class="help-block" v-class="hide:validated.passwordConfirmation" v-cloak>
               Password confirmation did not match.
             </p>
           </div>
