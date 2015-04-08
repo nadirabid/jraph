@@ -204,8 +204,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         email match {
           case Some(userEmail) =>
             val cleanUserEmail = userEmail.trim.toLowerCase
-            val continueToURL = continueTo.getOrElse(routes.ApplicationController.index().toString())
             val signInForm = SignInForm.form.fill(Credentials(cleanUserEmail, ""))
+            val continueToURL = continueTo getOrElse routes.ApplicationController.index().toString()
 
             val result = Ok(views.html.account.reauthenticate(
               signInForm,
@@ -213,7 +213,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               continueToURL
             ))
 
-            userService.find(userEmail) flatMap {
+            userService find userEmail flatMap {
               case Some(user) => Future.successful(result)
               case None => Future.successful(Redirect(routes.ApplicationController.signIn()))
             }
