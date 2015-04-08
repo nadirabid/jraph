@@ -131,7 +131,10 @@ function(_, $, Vue, models){
     events: {
 
       'hook:ready': function() {
-        this.liangBarsky();
+        var self = this;
+        Vue.nextTick(function() {
+          self.liangBarsky();
+        });
       }
 
     },
@@ -139,8 +142,6 @@ function(_, $, Vue, models){
     methods: {
 
       liangBarsky: function () {
-        //TODO: bug with translate transforms
-
         var source = this.source;
         var target = this.target;
 
@@ -208,6 +209,7 @@ function(_, $, Vue, models){
     events: {
 
       'hook:ready': function() {
+        console.log('Node:ready');
         this.updateDimensionsOfNodeRect();
         this.calculateRectBoundingEdges();
       }

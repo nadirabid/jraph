@@ -125,7 +125,7 @@
       <div class="graph-thumbnail">
         <svg
             style="background-color:#{{graph.data.background}};"
-            preserveAspectRatio="xMidYMid meet"
+            preserveAspectRatio="xMidYMid"
             v-attr="viewBox:viewBox"
             v-el="svg">
           <defs>
@@ -152,11 +152,11 @@
           </defs>
 
           <g class="x-disable-pointer-events" v-el="nodesAndLinksGroup">
-            <!-- Nodes -->
-            <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
-
             <!-- Links -->
             <x-link-thumbnail v-repeat="links"></x-link-thumbnail>
+
+            <!-- Nodes -->
+            <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
           </g>
         </svg>
         <div class="caption">
