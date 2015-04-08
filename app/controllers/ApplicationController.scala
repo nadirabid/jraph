@@ -146,34 +146,44 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def handleUserPasswordUpdate = SecuredAction.async { implicit req =>
     ChangeUserPasswordForm.form.bindFromRequest.fold(
-      fromWithErrors => {
+      formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
-
         val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
 
-        val result = BadRequest(views.html.account.profile(
+        Future.successful(BadRequest(views.html.account.profile(
           DigestUtils.md5Hex(userEmail),
           UserProfileForm.form.fill(userProfileData),
-          ChangeUserPasswordForm.form
-        ))
-
-        Future.successful(result)
+          formWithErrors
+        )))
       },
-      changeUserPasswordForm => {
-        val currentPassword = changeUserPasswordForm.currentPassword
+      changeUserPasswordFormData => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, req.identity.email)
-        val result = Redirect(routes.ApplicationController.profile())
+        val currentPassword = changeUserPasswordFormData.currentPassword
 
         authInfoService.retrieve[PasswordInfo](loginInfo).flatMap {
           case Some(currentPasswordInfo) if passwordHasher.matches(currentPasswordInfo, currentPassword) =>
-            val newPasswordInfo = passwordHasher.hash(changeUserPasswordForm.newPassword)
+            val newPasswordInfo = passwordHasher.hash(changeUserPasswordFormData.newPassword)
             (new PasswordInfoDAO).update(loginInfo, newPasswordInfo).flatMap { _ =>
-              Future.successful(result)
+              Future.successful(Redirect(routes.ApplicationController.profile()))
             }
-          case Some(currentPasswordInfo) =>
-            Future.successful(result.flashing("error" -> Messages("invalid.credentials")))
+          case Some(currentPasswordInfo) => // password didn't match
+            val userEmail = req.identity.email.trim.toLowerCase
+            val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
+
+            val changeUserPasswordForm = ChangeUserPasswordForm.form
+              .fill(changeUserPasswordFormData)
+              .withError("currentPassword", "Incorrect password")
+
+            Future.successful(BadRequest(views.html.account.profile(
+              DigestUtils.md5Hex(userEmail),
+              UserProfileForm.form.fill(userProfileData),
+              changeUserPasswordForm
+            )))
           case None =>
-            Future.successful(result.flashing("error" -> Messages("invalid.id")))
+            // shit just got bad
+            Future.successful(
+              Redirect(routes.ApplicationController.profile()).flashing("error" -> Messages("invalid.id"))
+            )
         }
       }
     )

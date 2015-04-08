@@ -70,7 +70,7 @@
                 v-on="blur:validateFirstName(true), keyup:validateFirstName"
             >
             <p class="help-block" v-class="hide:validated.firstName && isAlphanumeric(firstName)" v-cloak>
-              First name can only contain alphanumeric characters.
+              First name can only contain alphanumeric characters
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@
                 v-on="blur:validateLastName(true), keyup:validateLastName"
             >
             <p class="help-block" v-class="hide:validated.lastName && isAlphanumeric(lastName)" v-cloak>
-              Last name can only contain alphanumeric characters.
+              Last name can only contain alphanumeric characters
             </p>
           </div>
         </div>
@@ -117,10 +117,10 @@
                 v-on="blur:validateEmail(true), keyup:validateEmail"
             >
             <p class="help-block" v-class="hide:validated.email || email === ''" v-cloak>
-              Email must have valid format. (e.g. jsteinbeck@@eastofeden.com)
+              Email must have valid format (e.g. jsteinbeck@@eastofeden.com)
             </p>
             <p class="help-block" v-class="hide:validated.email || email !== ''" v-cloak>
-              A valid email address is required.
+              A valid email address is required
             </p>
           </div>
         </div>
@@ -145,7 +145,12 @@
       >
         <h5>Change your password:</h5>
 
-        <div class="form-group">
+        <div
+            class="
+                form-group
+                @changeUserPasswordForm.error("currentPassword").map(_ => Html("has-error"))
+            "
+        >
           <label class="col-sm-2 control-label">Current password</label>
           <div class="col-sm-10">
             <input
@@ -161,14 +166,14 @@
                     keyup:validateNewPassword
                 "
             >
+            @changeUserPasswordForm.error("currentPassword").map { formError =>
+              <p class="help-block"> @formError.message </p>
+            }
           </div>
         </div>
         <div
             class="form-group"
-            v-class="
-                has-error:!validated.newPassword,
-                has-error:!validated.passwordConfirmation
-            "
+            v-class="has-error:!validated.newPassword || !validated.passwordConfirmation"
         >
           <label class="col-sm-2 control-label">New password</label>
           <div class="col-sm-10">
@@ -182,14 +187,13 @@
                 v-model="newPassword"
                 v-on="
                     blur:validateNewPassword(true),
-                    keyup:validateNewPassword
+                    blur:validateNewPasswordConfirmation(true),
+                    keyup:validateNewPassword,
+                    keyup:validateNewPasswordConfirmation,
                 "
             >
             <p class="help-block" v-class="hide:validated.newPassword" v-cloak>
               New password can't be the same as the current password. What would be the point in it?
-            </p>
-            <p class="help-block" v-class="hide:validated.passwordConfirmation" v-cloak>
-              Password confirmation did not match.
             </p>
           </div>
         </div>
@@ -213,7 +217,7 @@
                 "
             >
             <p class="help-block" v-class="hide:validated.passwordConfirmation" v-cloak>
-              Password confirmation did not match.
+              Password confirmation did not match
             </p>
           </div>
         </div>
