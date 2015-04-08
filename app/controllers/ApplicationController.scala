@@ -213,7 +213,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               continueToURL
             ))
 
-            userService find userEmail flatMap {
+            userService.find(userEmail) flatMap {
               case Some(user) => Future.successful(result)
               case None => Future.successful(Redirect(routes.ApplicationController.signIn()))
             }
