@@ -10,9 +10,8 @@ import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, PasswordInfo}
 import models.daos.PasswordInfoDAO
 
-import org.apache.commons.codec.digest.DigestUtils
-
 import play.api.i18n.Messages
+import play.api.libs.Codecs
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
 
@@ -91,7 +90,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               HypergraphData(hypergraph, nodes, links)
           }
 
-          Ok(views.html.account.index(Json.toJson(readiedGraphsData), DigestUtils.md5Hex(userEmail)))
+          Ok(views.html.account.index(Json.toJson(readiedGraphsData), Codecs.md5(userEmail.getBytes)))
         }
       case None => Future.successful(ServiceUnavailable)
     }
@@ -108,7 +107,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     val userProfileForm = UserProfileForm.form.fill(userProfileData)
 
     Ok(views.html.account.profile(
-      DigestUtils.md5Hex(userEmail),
+      Codecs.md5(userEmail.getBytes),
       userProfileForm,
       ChangeUserPasswordForm.form
     ))
@@ -120,7 +119,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         val userEmail = req.identity.email.trim.toLowerCase
 
         val result = BadRequest(views.html.account.profile(
-          DigestUtils.md5Hex(userEmail),
+          Codecs.md5(userEmail.getBytes),
           formWithErrors,
           ChangeUserPasswordForm.form
         ))
@@ -153,7 +152,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
 
         Future.successful(BadRequest(views.html.account.profile(
-          DigestUtils.md5Hex(userEmail),
+          Codecs.md5(userEmail.getBytes),
           UserProfileForm.form.fill(userProfileData),
           formWithErrors
         )))
@@ -177,7 +176,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               .withError("currentPassword", "Incorrect password")
 
             Future.successful(BadRequest(views.html.account.profile(
-              DigestUtils.md5Hex(userEmail),
+              Codecs.md5(userEmail.getBytes),
               UserProfileForm.form.fill(userProfileData),
               changeUserPasswordForm
             )))
@@ -221,7 +220,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
             val result = Ok(views.html.account.reauthenticate(
               signInForm,
-              DigestUtils.md5Hex(cleanUserEmail),
+              Codecs.md5(cleanUserEmail.getBytes),
               continueToURL
             ))
 
