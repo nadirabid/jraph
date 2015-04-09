@@ -361,7 +361,6 @@ function(_, $, Vue, models){
 
         graphsData.forEach(function(graphData) {
           graphData.graph.data.background = colors[counter % colors.length];
-          graphData.graph.data.name = letters[counter % letters.length];
 
           counter++;
         });
