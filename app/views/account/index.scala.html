@@ -15,67 +15,71 @@
   </head>
   <body>
     <div id="navbar" class="x-navbar nav">
-      <ul class="x-navbar-nav">
-        <li class="active">
-          <a href="@routes.ApplicationController.index()">Graphs</a>
-        </li>
-        <li>
-          <a href="@routes.ApplicationController.profile()">Profile</a>
-        </li>
-      </ul>
-
-      <span class="profile-picture">
-        <img
-          src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
-          v-on="click:toggleProfilePictureDropdown"
-        >
-        <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
-          <li class="x-menu-item">
+      <div class="x-navbar-content">
+        <ul class="x-navbar-nav">
+          <li class="active">
+            <a href="@routes.ApplicationController.index()">Graphs</a>
+          </li>
+          <li>
             <a href="@routes.ApplicationController.profile()">Profile</a>
           </li>
-          <li class="x-menu-item">
-            <a href="@routes.ApplicationController.signOut()">Sign out</a>
-          </li>
         </ul>
-      </span>
+
+        <span class="profile-picture">
+          <img
+            src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
+            v-on="click:toggleProfilePictureDropdown"
+          >
+          <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
+            <li class="x-menu-item">
+              <a href="@routes.ApplicationController.profile()">Profile</a>
+            </li>
+            <li class="x-menu-item">
+              <a href="@routes.ApplicationController.signOut()">Sign out</a>
+            </li>
+          </ul>
+        </span>
+      </div>
     </div>
 
     <div id="userGraphs">
       <div class="x-navbar sub-nav" v-class="x-navbar-fixed-top: pageYOffset > 68">
-        <button
-            type="button"
-            class="btn btn-default btn-lg btn-block"
-            v-on="click:createNewGraph"
-        >
-          New Graph
-        </button>
-        <div class="toolbar-buttons">
-          <span>
-            <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
-            <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
-              <li
-                  class="x-menu-item"
-                  v-class="selected:sortedBy=='created'"
-                  v-on="click:sortedBy='created'"
-              >
-                Date created
-              </li>
-              <li
-                  class="x-menu-item"
-                  v-class="selected:sortedBy=='modified'"
-                  v-on="click:sortedBy='modified'"
-              >
-                Date modified
-              </li>
-              <li
-                  class="x-menu-item"
-                  v-class="selected:sortedBy=='title'"
-                  v-on="click:sortedBy='title'"
-              >
-                Title
-              </li>
-            </ul>
-          </span>
+        <div class="x-navbar-content">
+          <button
+              type="button"
+              class="btn btn-default btn-lg btn-block"
+              v-on="click:createNewGraph"
+          >
+            New Graph
+          </button>
+          <div class="toolbar-buttons">
+            <span>
+              <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>
+              <ul class="x-menu toolbar-dropdown" v-class="hidden:!sortMenu" v-cloak>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='created'"
+                    v-on="click:sortedBy='created'"
+                >
+                  Date created
+                </li>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='modified'"
+                    v-on="click:sortedBy='modified'"
+                >
+                  Date modified
+                </li>
+                <li
+                    class="x-menu-item"
+                    v-class="selected:sortedBy=='title'"
+                    v-on="click:sortedBy='title'"
+                >
+                  Title
+                </li>
+              </ul>
+            </span>
+          </div>
         </div>
       </div>
 

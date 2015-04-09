@@ -16,29 +16,31 @@
   </head>
   <body>
     <div id="navbar" class="x-navbar nav">
-      <ul class="x-navbar-nav">
-        <li>
-          <a href="@routes.ApplicationController.index()">Graphs</a>
-        </li>
-        <li class="active">
-          <a href="@routes.ApplicationController.profile()">Profile</a>
-        </li>
-      </ul>
-
-      <span class="profile-picture">
-        <img
-            src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
-            v-on="click:toggleProfilePictureDropdown"
-        >
-        <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
-          <li class="x-menu-item">
-              <a href="@routes.ApplicationController.profile()">Profile</a>
+      <div class="x-navbar-content">
+        <ul class="x-navbar-nav">
+          <li>
+            <a href="@routes.ApplicationController.index()">Graphs</a>
           </li>
-          <li class="x-menu-item">
-              <a href="@routes.ApplicationController.signOut()">Sign out</a>
+          <li class="active">
+            <a href="@routes.ApplicationController.profile()">Profile</a>
           </li>
         </ul>
-      </span>
+
+        <span class="profile-picture">
+          <img
+              src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
+              v-on="click:toggleProfilePictureDropdown"
+          >
+          <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
+            <li class="x-menu-item">
+                <a href="@routes.ApplicationController.profile()">Profile</a>
+            </li>
+            <li class="x-menu-item">
+                <a href="@routes.ApplicationController.signOut()">Sign out</a>
+            </li>
+          </ul>
+        </span>
+      </div>
     </div>
 
     <div class="center-block user-profile-form">

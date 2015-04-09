@@ -88,7 +88,6 @@ html, body {
 
 .toolbar-buttons {
     float:right;
-    margin-right:20px;
     margin-top:15px;
 }
 
@@ -156,22 +155,14 @@ html, body {
     top:17px;
 }
 
-.nav > .x-navbar-nav {
-    margin-left:20px;
-}
-
-.nav > img {
-    display:inline-block;
-    position:absolute;
-    bottom:10px;
-    right:20px;
-    border-radius:2px;
-}
-
 .sub-nav {
     height:60px;
     background: #fff;
     transition:box-shadow 200ms ease-in-out;
+}
+
+.sub-nav > .x-navbar-content {
+    height:60px;
 }
 
 .sub-nav.x-navbar-fixed-top {
@@ -182,26 +173,25 @@ html, body {
     top:70px;
 }
 
-.sub-nav > button {
+.sub-nav > * > button {
     padding:8px 16px;
     display:inline-block;
     width:160px;
     margin-top:10px;
-    margin-left:20px;
 }
 
 .nav {
     z-index:3;
 }
 
-.nav > .profile-picture {
+.nav > * > .profile-picture {
     display:inline-block;
     position:absolute;
     bottom:10px;
-    right:20px;
+    right:0;
 }
 
-.nav > .profile-picture > img {
+.nav > * > .profile-picture > img {
     cursor:pointer;
     border-radius:2px;
 }
