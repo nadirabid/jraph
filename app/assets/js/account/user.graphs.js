@@ -7,6 +7,7 @@ require([
 ],
 function(_, $, Vue, models){
 
+  var Hypergraph = models.Hypergraph;
   var Node = models.Node;
   var Link = models.Link;
 
@@ -209,7 +210,6 @@ function(_, $, Vue, models){
     events: {
 
       'hook:ready': function() {
-        console.log('Node:ready');
         this.updateDimensionsOfNodeRect();
         this.calculateRectBoundingEdges();
       }
@@ -359,16 +359,14 @@ function(_, $, Vue, models){
       'hook:attached': function() {
         var self = this;
 
-        self.hypergraphs = _.map(_.range(12), function() {
-          var hypergraph = _.cloneDeep(graphsData[0]);
-          hypergraph.graph.data.background = colors[counter % colors.length];
-          hypergraph.graph.data.name = letters[counter % letters.length];
-          hypergraph.graph.createdAt += counter + Math.floor(Math.random()*100);
-          hypergraph.graph.updatedAt -= counter + Math.floor(Math.random()*100);
+        graphsData.forEach(function(graphData) {
+          graphData.graph.data.background = colors[counter % colors.length];
+          graphData.graph.data.name = letters[counter % letters.length];
 
           counter++;
-          return hypergraph;
         });
+
+        self.hypergraphs = graphsData;
 
         window.addEventListener('scroll', function() {
           self.pageYOffset = window.pageYOffset;
@@ -378,6 +376,16 @@ function(_, $, Vue, models){
     },
 
     methods: {
+
+      createNewGraph: function() {
+        Hypergraph
+            .create({
+              data: { name: 'Graph Name' }
+            })
+            .done(function(hypergraph) {
+              window.location.href = '/graph/' + hypergraph.id;
+            });
+      },
 
       toggleSortMenu: function(e) {
         if (this.sortMenu)

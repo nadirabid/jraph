@@ -42,7 +42,13 @@
 
     <div id="userGraphs">
       <div class="x-navbar sub-nav" v-class="x-navbar-fixed-top: pageYOffset > 68">
-        <button type="button" class="btn btn-default btn-lg btn-block">New Graph</button>
+        <button
+            type="button"
+            class="btn btn-default btn-lg btn-block"
+            v-on="click:createNewGraph"
+        >
+          New Graph
+        </button>
         <div class="toolbar-buttons">
           <span>
             <i class="x-flat-btn fa fa-sort" v-on="click:toggleSortMenu"></i>

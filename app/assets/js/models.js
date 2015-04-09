@@ -143,6 +143,29 @@ define([
 
   var Hypergraph = {};
 
+  Hypergraph.parseJSON = function(datum) {
+    return datum;
+  };
+
+  Hypergraph.toJSON = function(hypergraph) {
+    return hypergraph;
+  };
+
+  Hypergraph.create = function(hypergraph) {
+    return util
+        .ajax({
+          url: '/hypergraph',
+          type: 'POST',
+          contentType: 'application/json; charset=utf-8',
+          data: JSON.stringify({
+            data: Hypergraph.toJSON(hypergraph).data
+          })
+        })
+        .then(function(response) {
+          return Hypergraph.parseJSON(response);
+        });
+  };
+
   Hypergraph.update = function(hypergraph) {
     return util
         .ajax({
