@@ -55,8 +55,12 @@ class HypernodeControllerSpec extends WordSpec
       val identity = User(UUID.randomUUID, userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
-        .find(_.name == "default").get
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get.find { hg =>
+        hg.data match {
+          case Some(json) => (json \ "name").as[String] == "default"
+          case None => false
+        }
+      }.get
 
       val baseUrl = s"/hypergraph/${defaultHypergraph.id}/hypernode"
 

@@ -56,7 +56,6 @@ class HypergraphSpec extends WordSpec
     "create, find, and delete the given new unique Hypergraph model" in {
       val hypergraphModel = Hypergraph(
         hypergraphID,
-        hypergraphName,
         DateTime.now,
         DateTime.now,
         Some(Json.obj("name" -> hypergraphName))
@@ -66,14 +65,14 @@ class HypergraphSpec extends WordSpec
 
       whenReady(createResult) { opt =>
         opt.value.id shouldBe hypergraphID
-        opt.value.name shouldBe hypergraphName
+        (opt.value.data.get \ "name").as[String] shouldBe hypergraphName
       }
 
       val findResult = Hypergraph.read(userEmail, hypergraphID)
 
       whenReady(findResult) { opt =>
         opt.value.id shouldBe hypergraphID
-        opt.value.name shouldBe hypergraphName
+        (opt.value.data.get \ "name").as[String] shouldBe hypergraphName
       }
 
       val findAllResult = Hypergraph.readAll(userEmail)
@@ -85,7 +84,6 @@ class HypergraphSpec extends WordSpec
 
       val modelUpdate = Hypergraph(
         hypergraphID,
-        hypergraphName,
         DateTime.now,
         null,
         Some(Json.obj("name" -> "newName", "p1" -> "v1"))

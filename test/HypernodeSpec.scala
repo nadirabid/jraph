@@ -54,8 +54,12 @@ class HypernodeSpec extends WordSpec
 
   "The Hypernode model and companion object" should {
     "create, find, and delete the given new unique Hypernode model" in {
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
-        .find(_.name == "default").get
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get.find { hg =>
+        hg.data match {
+          case Some(json) => (json \ "name").as[String] == "default"
+          case None => false
+        }
+      }.get
 
       val hypernodeModel = Hypernode(
         UUID.randomUUID(),

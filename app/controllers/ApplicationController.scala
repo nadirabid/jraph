@@ -36,7 +36,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   implicit val hypergraphWrites = new Writes[Hypergraph] {
     def writes(hypergraph: Hypergraph) = Json.obj(
       "id" -> hypergraph.id,
-      "name" -> hypergraph.name,
       "updatedAt" -> hypergraph.updatedAt,
       "createdAt" -> hypergraph.createdAt,
       "data" -> hypergraph.data
@@ -78,7 +77,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           val nodes = Hypernode.readAll(req.identity.email, hg.id)
           val links = Hyperlink.readAll(req.identity.email, hg.id)
 
-          for { n <- nodes; l <- links } yield (hg, n, l)
+          for {
+            n <- nodes
+            l <- links
+          } yield (hg, n, l)
         }
 
         val userEmail = req.identity.email.trim.toLowerCase

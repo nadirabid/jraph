@@ -21,7 +21,6 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
   implicit val hypergraphWrites = new Writes[Hypergraph] {
     def writes(hypergraph: Hypergraph) = Json.obj(
       "id" -> hypergraph.id,
-      "name" -> hypergraph.name,
       "updatedAt" -> hypergraph.updatedAt,
       "createdAt" -> hypergraph.createdAt,
       "data" -> hypergraph.data
@@ -31,7 +30,6 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
   def create = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(
       UUID.randomUUID(),
-      (req.body \ "name").as[String],
       DateTime.now,
       DateTime.now,
       (req.body \ "data").asOpt[JsObject]
@@ -60,7 +58,6 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
   def update(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(
       hypergraphID,
-      null,
       DateTime.now,
       null,
       (req.body \ "data").asOpt[JsObject]

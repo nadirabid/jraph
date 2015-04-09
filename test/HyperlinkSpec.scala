@@ -54,8 +54,12 @@ class HyperlinkSpec extends WordSpec
 
   "The Hyperlink model and companion object" should {
     "create, find, and delete the given new unique Hyperlink model" in {
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
-        .find(_.name == "default").get
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get.find { hg =>
+        hg.data match {
+          case Some(json) => (json \ "name").as[String] == "default"
+          case None => false
+        }
+      }.get
 
       val sourceNode = Hypernode(
         UUID.randomUUID(),
@@ -153,8 +157,12 @@ class HyperlinkSpec extends WordSpec
     }
 
     "create, find, and delete the given new unique Hyperlink model with a null data property" in {
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get
-        .find(_.name == "default").get
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get.find { hg =>
+        hg.data match {
+          case Some(json) => (json \ "name").as[String] == "default"
+          case None => false
+        }
+      }.get
 
       val sourceNode = Hypernode(
         UUID.randomUUID(),

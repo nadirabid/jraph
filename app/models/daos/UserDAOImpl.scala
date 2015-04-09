@@ -139,7 +139,6 @@ class UserDAOImpl extends UserDAO {
           "parameters" -> Json.obj(
             "hypergraphData" -> Json.obj(
               "id" -> UUID.randomUUID,
-              "name" -> "default",
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp,
               "data" -> Json.stringify(Json.obj(

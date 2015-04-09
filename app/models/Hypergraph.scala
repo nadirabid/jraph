@@ -15,7 +15,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Hypergraph(
   id: UUID,
-  name: String,
   updatedAt: DateTime,
   createdAt: DateTime,
   data: Option[JsObject]
@@ -29,7 +28,6 @@ object Hypergraph {
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
     ((__ \ "row")(0) \ "id").read[UUID] and
-    ((__ \ "row")(0) \ "name").read[String] and
     ((__ \ "row")(0) \ "createdAt").read[DateTime] and
     ((__ \ "row")(0) \ "updatedAt").read[DateTime] and
     ((__ \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
@@ -51,7 +49,6 @@ object Hypergraph {
             "userEmail" -> userEmail,
             "hypergraphData" -> Json.obj(
               "id" -> hypergraph.id,
-              "name" -> hypergraph.name,
               "createdAt" -> hypergraph.createdAt.getMillis,
               "updatedAt" -> hypergraph.updatedAt.getMillis,
               "data" -> Json.stringify(hypergraph.data.getOrElse(JsNull))
@@ -157,9 +154,9 @@ object Hypergraph {
 
   val cypherUpdate =
     """
-      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
-      | SET hg.data = {data}, hg.updatedAt = {updatedAt}
-      | RETURN hg;
+      | MATCH   (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
+      | SET     hg.data = {data}, hg.updatedAt = {updatedAt}
+      | RETURN  hg;
     """.stripMargin
 
   def update(userEmail: String, hypergraph: Hypergraph): Future[Option[Hypergraph]] = {
