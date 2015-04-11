@@ -37,7 +37,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   implicit val passwordInfoReads: Reads[PasswordInfo] = (
     (JsPath \ "hasher").read[String] and
-    (JsPath \ "password").read[String] and
+    (JsPath \ "passwordDigest").read[String] and
     (JsPath \ "salt").readNullable[String]
   )(PasswordInfo.apply _)
 
@@ -102,7 +102,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
             "email" -> loginInfo.providerKey,
             "passwordInfoData" -> Json.obj(
               "hasher" -> passwordInfo.hasher,
-              "password" -> passwordInfo.password,
+              "passwordDigest" -> passwordInfo.password,
               //"salt" -> passwordInfo.salt,
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
@@ -140,7 +140,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
             "email" -> loginInfo.providerKey,
             "passwordInfoData" -> Json.obj(
               "hasher" -> passwordInfo.hasher,
-              "password" -> passwordInfo.password,
+              "passwordDigest" -> passwordInfo.password,
               //"salt" -> passwordInfo.salt,
               "updatedAt" -> System.currentTimeMillis
             )
