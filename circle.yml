@@ -9,3 +9,8 @@ dependencies:
     - ~/.sbt
     - ~/.m2
     - ~/.ivy2
+  override:
+    - ./activator update
+test:
+  override:
+    - ./activator clean test
