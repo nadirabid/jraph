@@ -10,7 +10,7 @@ dependencies:
     - ~/.m2
     - ~/.ivy2
   override:
-    - ./activator update
+    - ./activator clean update
 test:
   override:
-    - ./activator clean test
+    - ./activator test
