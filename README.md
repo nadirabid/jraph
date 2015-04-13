@@ -1,1 +1,1 @@
-# analyte [![Build Status](https://magnum.travis-ci.com/nadirabid/hypergraph.svg?token=JUR3bGFQLkp9mcTgzzMb&branch=master)](https://magnum.travis-ci.com/nadirabid/hypergraph)
+# analyte [![Circle CI](https://circleci.com/gh/nadirabid/hypergraph/tree/master.svg?style=svg&circle-token=9897e473a5d267d30024fd79f51bd8d415767b34)](https://circleci.com/gh/nadirabid/hypergraph/tree/master)
