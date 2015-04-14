@@ -1,0 +1,1 @@
+class ApplicationException(msg: String) extends RuntimeException(msg)

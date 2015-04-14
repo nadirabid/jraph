@@ -1,13 +1,24 @@
+import java.io.File
+
 import com.google.inject.{Guice, Injector}
+
 import com.mohiva.play.silhouette.api.{Logger, SecuredSettings}
-import controllers.routes
-import play.api.GlobalSettings
+
+import com.typesafe.config.ConfigFactory
+
+import play.api.libs.ws.{WSRequestHolder, WSAuthScheme, WS}
+import play.api.{Mode, Configuration, GlobalSettings}
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
-import utils.silhouette.SilhouetteModule
+import play.api.Play.current
+import play.api.Application
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
+import utils.silhouette.SilhouetteModule
+import controllers.routes
 
 object Global extends GlobalSettings with SecuredSettings with Logger {
 
@@ -16,6 +27,35 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    */
   val injector = Guice.createInjector(new SilhouetteModule)
 
+
+  override def onStart(app: Application) = {
+    val dbDataUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data").get
+    val dbUsername = current.configuration.getString("neo4j.username").get
+    val dbPassword = current.configuration.getString("neo4j.password").get
+    val neo4jVersion = current.configuration.getString("neo4j.version").get
+
+    val holder:WSRequestHolder = WS
+      .url(dbDataUrl)
+      .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+      .withHeaders(
+        "Content-Type" -> "application/json",
+        "Accept" -> "application/json; charset=UTF-8"
+      )
+
+    holder.get().map {
+      neo4jRes => (neo4jRes.json \ "neo4j_version").asOpt[String] match {
+        case Some(version) if version != neo4jVersion =>
+          throw new ApplicationException("Unexpected version of Neo4j: " + version + ". Expected: " + neo4jVersion)
+        case None =>
+          throw new ApplicationException("Couldn't verify the connection with Neo4j")
+      }
+    }.recover {
+      case e =>
+        throw new ApplicationException(
+          "Couldn't establish a connection with Neo4j. You either messed up the configuration or forgot to start Neo4j" + e.getMessage
+        )
+    }
+  }
 
   /**
    * Loads the controller classes with the Guice injector,
@@ -27,6 +67,27 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
    */
   override def getControllerInstance[A](controllerClass: Class[A]) =
     injector.getInstance(controllerClass)
+
+  /**
+   * Override to allow loading configuration file specific to the environment/mode.
+   * Allows us to have configuration settings based on the environment we're running in.
+   *
+   * @param config
+   * @param path
+   * @param classLoader
+   * @param mode
+   * @return
+   */
+  override def onLoadConfig(config: Configuration,
+                            path: File, classLoader: ClassLoader,
+                            mode: Mode.Mode): Configuration = {
+
+    val modeSpecificConfig = config ++ Configuration(
+      ConfigFactory.load(s"application.${mode.toString.toLowerCase}.conf")
+    )
+
+    super.onLoadConfig(modeSpecificConfig, path, classLoader, mode)
+  }
 
   /**
    * Called when a user is not authenticated.
@@ -56,7 +117,8 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
                                lang: Lang): Option[Future[Result]] = {
 
     Some(Future.successful(
-      Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("access.denied"))
+      Redirect(routes.ApplicationController.signIn())
+        .flashing("error" -> Messages("access.denied"))
     ))
   }
 }
