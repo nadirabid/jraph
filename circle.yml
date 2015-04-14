@@ -12,7 +12,7 @@ dependencies:
     - ~/.m2
     - ~/.ivy2
   override:
-    - docker build -t tpires/neo4j .
+    - sudo docker build -t tpires/neo4j .
     - ./activator clean update
 test:
   override:
