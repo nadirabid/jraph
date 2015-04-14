@@ -1,4 +1,6 @@
 machine:
+  services:
+    - docker
   environment:
     JAVA_TOOL_OPTIONS: '-Dfile.encoding=UTF8 -Duser.timezone=UTC'
     _JAVA_OPTIONS: '-Xms512m -Xmx1024m -Xss2m'
@@ -13,4 +15,5 @@ dependencies:
     - ./activator clean update
 test:
   override:
+    - docker run -i -t -d --name neo4j --cap-add=SYS_RESOURCE -p 7474:7474 tpires/neo4j
     - ./activator test
