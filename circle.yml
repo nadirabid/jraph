@@ -12,7 +12,6 @@ dependencies:
     - ~/.m2
     - ~/.ivy2
   override:
-    - docker pull ahmetkizilay/docker-neo4j
     - ./activator clean update
 test:
   override:
