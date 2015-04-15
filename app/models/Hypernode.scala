@@ -23,9 +23,9 @@ case class Hypernode(
 
 object Hypernode {
 
-  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
-  val dbUsername = "neo4j"
-  val dbPassword = "nadir"
+  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbUsername = current.configuration.getString("neo4j.username").get
+  val dbPassword = current.configuration.getString("neo4j.password").get
 
   // TODO: refactor reads so we dont reindex down (__ \ "row")(0)
 
@@ -66,7 +66,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -105,7 +105,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -146,7 +146,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -187,7 +187,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -230,7 +230,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -266,7 +266,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -312,7 +312,7 @@ object Hypernode {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",

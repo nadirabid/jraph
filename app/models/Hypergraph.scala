@@ -22,9 +22,9 @@ case class Hypergraph(
 
 object Hypergraph {
 
-  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
-  val dbUsername = "neo4j"
-  val dbPassword = "nadir"
+  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbUsername = current.configuration.getString("neo4j.username").get
+  val dbPassword = current.configuration.getString("neo4j.password").get
 
   implicit val hypergraphReads: Reads[Hypergraph] = (
     ((__ \ "row")(0) \ "id").read[UUID] and
@@ -59,7 +59,7 @@ object Hypergraph {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -97,7 +97,7 @@ object Hypergraph {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -134,7 +134,7 @@ object Hypergraph {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -175,7 +175,7 @@ object Hypergraph {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -215,7 +215,7 @@ object Hypergraph {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",

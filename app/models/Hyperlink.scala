@@ -42,9 +42,9 @@ object Hyperlink {
 
   // TODO: hyperlink queries do not use hypergraphID or userEmail currently, use them!
 
-  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
-  val dbUsername = "neo4j"
-  val dbPassword = "nadir"
+  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbUsername = current.configuration.getString("neo4j.username").get
+  val dbPassword = current.configuration.getString("neo4j.password").get
 
   // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
 
@@ -93,7 +93,7 @@ object Hyperlink {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -132,7 +132,7 @@ object Hyperlink {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -172,7 +172,7 @@ object Hyperlink {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -216,7 +216,7 @@ object Hyperlink {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -256,7 +256,7 @@ object Hyperlink {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",

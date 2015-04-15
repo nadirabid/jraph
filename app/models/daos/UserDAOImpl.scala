@@ -16,9 +16,10 @@ import play.api.libs.ws.WS
 import play.api.libs.ws.WSAuthScheme
 
 class UserDAOImpl extends UserDAO {
-  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
-  val dbUsername = "neo4j"
-  val dbPassword = "nadir"
+
+  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbUsername = current.configuration.getString("neo4j.username").get
+  val dbPassword = current.configuration.getString("neo4j.password").get
 
   /**
    * Example JSON result of Transactional Cypher HTTP endpoint
@@ -66,7 +67,7 @@ class UserDAOImpl extends UserDAO {
       )
     )
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -102,7 +103,7 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -160,7 +161,7 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -197,7 +198,7 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -231,7 +232,7 @@ class UserDAOImpl extends UserDAO {
     )
 
     val holder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",

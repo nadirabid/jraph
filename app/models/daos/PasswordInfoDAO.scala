@@ -31,9 +31,9 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * }
    */
 
-  val dbUrl = "http://localhost:7474/db/data/transaction/commit"
-  val dbUsername = "neo4j"
-  val dbPassword = "nadir"
+  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbUsername = current.configuration.getString("neo4j.username").get
+  val dbPassword = current.configuration.getString("neo4j.password").get
 
   implicit val passwordInfoReads: Reads[PasswordInfo] = (
     (JsPath \ "hasher").read[String] and
@@ -60,7 +60,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     )
 
     val holder: WSRequestHolder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -113,7 +113,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     )
 
     val holder: WSRequestHolder = WS
-        .url(dbUrl)
+        .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
         .withHeaders(
           "Content-Type" -> "application/json",
@@ -150,7 +150,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     )
 
     val holder: WSRequestHolder = WS
-      .url(dbUrl)
+      .url(dbTxUrl)
       .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
       .withHeaders(
         "Content-Type" -> "application/json",
