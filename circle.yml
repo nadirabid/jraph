@@ -15,5 +15,5 @@ dependencies:
     - ./activator clean update
 test:
   override:
-    - docker run -i -t -d --name neo4j --cap-add=SYS_RESOURCE -p 7474:7474 tpires/neo4j
+    - docker run -i -t -e NEO4J_AUTH=neo4j:nadir –cap-add=SYS_RESOURCE -p 7474:7474 ahmetkizilay/docker-neo4j-auth
     - ./activator test
