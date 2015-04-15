@@ -13,6 +13,8 @@ dependencies:
     - ~/.ivy2
   override:
     - ./activator clean update
+database:
+  override:
     - docker run -i -t -d -p 7474:7474 -e NEO4J_AUTH=neo4j:password --name neo4j --cap-add=SYS_RESOURCE "ahmetkizilay/docker-neo4j"; sleep 10
 test:
   override:
