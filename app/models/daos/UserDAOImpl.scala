@@ -169,10 +169,7 @@ class UserDAOImpl extends UserDAO {
         )
 
     //TODO: check if post returned with error
-    holder.post(neo4jReq).map { res =>
-      println("res: ", Json.prettyPrint(res.json))
-      user
-    }
+    holder.post(neo4jReq).map { _ => user }
   }
 
   val cypherUpdate =
