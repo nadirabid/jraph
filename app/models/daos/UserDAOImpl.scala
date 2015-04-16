@@ -160,8 +160,6 @@ class UserDAOImpl extends UserDAO {
       )
     )
 
-    println("neo4jReq: ", Json.prettyPrint(neo4jReq))
-
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
