@@ -358,8 +358,9 @@ define([
 
         ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
 
-        dimensions.x = bBox.width;
-        dimensions.y = bBox.height;
+        console.log(this.width, this.height, bBox.width, bBox.height);
+        dimensions.x = this.width;
+        dimensions.y = this.height;
 
         dimensions = dimensions.matrixTransform(ttm);
 
@@ -504,6 +505,9 @@ define([
 
         this.$watch('x', this.calculateRectBoundingEdges.bind(this));
         this.$watch('y', this.calculateRectBoundingEdges.bind(this));
+        this.$watch('width', this.calculateRectBoundingEdges.bind(this));
+        this.$watch('height', this.calculateRectBoundingEdges.bind(this));
+
         /*
         this.$watch('x', this.updateNameTranslation.bind(this));
         this.$watch('y', this.updateNameTranslation.bind(this));
@@ -731,6 +735,8 @@ define([
       'hook:ready': function () {
         this.state = this.$parent.state;
 
+        this.$watch('target.leftEdge', this.liangBarskyTest.bind(this));
+        this.$watch('target.topEdge', this.liangBarskyTest.bind(this));
         this.$watch('target.x', this.liangBarskyTest.bind(this));
         this.$watch('target.y', this.liangBarskyTest.bind(this));
         this.$watch('source.x', this.liangBarskyTest.bind(this));
