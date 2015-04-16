@@ -149,8 +149,8 @@ class UserDAOImpl extends UserDAO {
             "userData" -> Json.obj(
               "id" -> user.id,
               "email" -> user.email,
-              "firstName" -> user.firstName,
-              "lastName" -> user.lastName,
+              "firstName" -> user.firstName.getOrElse[String](""),
+              "lastName" -> user.lastName.getOrElse[String](""),
               "providerID" -> user.loginInfo.providerID,
               "createdAt" -> timestamp,
               "updatedAt" -> timestamp
@@ -159,6 +159,8 @@ class UserDAOImpl extends UserDAO {
         )
       )
     )
+
+    println("neo4jReq: ", Json.prettyPrint(neo4jReq))
 
     val holder = WS
         .url(dbTxUrl)
@@ -169,7 +171,10 @@ class UserDAOImpl extends UserDAO {
         )
 
     //TODO: check if post returned with error
-    holder.post(neo4jReq).map { _ => user}
+    holder.post(neo4jReq).map { res =>
+      println("res: ", Json.prettyPrint(res.json))
+      user
+    }
   }
 
   val cypherUpdate =
