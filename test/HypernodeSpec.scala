@@ -9,6 +9,7 @@ import models.{User, Hypergraph, Hypernode}
 
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Span}
 import org.scalatestplus.play._
 
 import org.joda.time._
@@ -26,6 +27,9 @@ class HypernodeSpec extends WordSpec
   with OneAppPerTest
   with OptionValues
   with BeforeAndAfter {
+
+  implicit override val defaultPatience =
+    PatienceConfig(timeout = Span(2, Seconds), interval = Span(15, Millis))
 
   val userEmail = UUID.randomUUID().toString + "@test.com"
 
