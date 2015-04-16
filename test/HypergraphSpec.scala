@@ -7,11 +7,11 @@ import com.mohiva.play.silhouette.test._
 
 import models.{User, Hypergraph}
 
-import org.joda.time.{Seconds, DateTime}
+import org.joda.time.DateTime
 
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{Millis, Span}
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play._
 
 import play.api.test._
@@ -25,7 +25,7 @@ class HypergraphSpec extends WordSpec
   with OptionValues
   with BeforeAndAfter {
 
-  implicit override val defaultPatience =
+  implicit val defaultPatience =
     PatienceConfig(timeout = Span(2, Seconds), interval = Span(15, Millis))
 
   val userEmail = UUID.randomUUID().toString + "@test.com"
