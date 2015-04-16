@@ -211,11 +211,11 @@ class UserDAOImpl extends UserDAO {
 
   val cypherDelete =
     """
-      | MATCH (user:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+      | MATCH (user:User { email: {email} })-[HAS_PW:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
       | OPTIONAL MATCH (user)-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph)
       | OPTIONAL MATCH (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
       | OPTIONAL MATCH (hn)-[HL:HYPERLINK]->(:Hypernode)
-      | DELETE OWNS_HG, OWNS_HN, HL, user, passwordInfo, hg, hn;
+      | DELETE OWNS_HG, OWNS_HN, HAS_PW, HL, user, passwordInfo, hg, hn;
     """.stripMargin
 
   def delete(email: String) = {
