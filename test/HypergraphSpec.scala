@@ -26,7 +26,7 @@ class HypergraphSpec extends WordSpec
   with BeforeAndAfter {
 
   implicit val defaultPatience =
-    PatienceConfig(timeout = Span(2, Seconds), interval = Span(15, Millis))
+    PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
   val userEmail = UUID.randomUUID().toString + "@test.com"
   val hypergraphID = UUID.randomUUID()

@@ -29,7 +29,7 @@ class HyperlinkSpec extends WordSpec
   with BeforeAndAfter {
 
   implicit val defaultPatience =
-    PatienceConfig(timeout = Span(2, Seconds), interval = Span(15, Millis))
+    PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
   val userEmail = UUID.randomUUID().toString + "@test.com"
 
@@ -58,7 +58,7 @@ class HyperlinkSpec extends WordSpec
 
   "The Hyperlink model and companion object" should {
     "create, find, and delete the given new unique Hyperlink model" in {
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 1000.millis).get.find { hg =>
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 3000.millis).get.find { hg =>
         hg.data match {
           case Some(json) => (json \ "name").as[String] == "default"
           case None => false

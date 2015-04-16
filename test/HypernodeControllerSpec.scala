@@ -55,7 +55,7 @@ class HypernodeControllerSpec extends WordSpec
       val identity = User(UUID.randomUUID, userEmail, None, None, LoginInfo(CredentialsProvider.ID, userEmail))
       implicit val env = FakeEnvironment[User, SessionAuthenticator](Seq(identity.loginInfo -> identity))
 
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 1000.millis).get.find { hg =>
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 3000.millis).get.find { hg =>
         hg.data match {
           case Some(json) => (json \ "name").as[String] == "default"
           case None => false
