@@ -54,7 +54,7 @@ class HyperlinkSpec extends WordSpec
 
   "The Hyperlink model and companion object" should {
     "create, find, and delete the given new unique Hyperlink model" in {
-      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 500.millis).get.find { hg =>
+      val defaultHypergraph = Await.result(Hypergraph.readAll(userEmail), 1000.millis).get.find { hg =>
         hg.data match {
           case Some(json) => (json \ "name").as[String] == "default"
           case None => false
