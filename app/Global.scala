@@ -1,6 +1,6 @@
 import java.io.File
 
-import com.google.inject.{Guice, Injector}
+import com.google.inject.Guice
 
 import com.mohiva.play.silhouette.api.{Logger, SecuredSettings}
 
@@ -29,10 +29,24 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
 
 
   override def onStart(app: Application) = {
-    val dbDataUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data").get
-    val dbUsername = current.configuration.getString("neo4j.username").get
-    val dbPassword = current.configuration.getString("neo4j.password").get
-    val neo4jVersion = current.configuration.getString("neo4j.version").get
+    val dbDataUrl = current.configuration.getString("neo4j.host") match {
+      case Some(host) => host + "/db/data"
+      case None => throw new AppConfigurationException("neo4j.host is undefined")
+    }
+
+    val dbUsername = current.configuration.getString("neo4j.username") match {
+      case Some(username) => username
+      case None => throw new AppConfigurationException("neo4j.username is undefined")
+    }
+    val dbPassword = current.configuration.getString("neo4j.password") match {
+      case Some(password) => password
+      case None => throw new AppConfigurationException("neo4j.password is undefined")
+    }
+
+    val neo4jVersion = current.configuration.getString("neo4j.version") match {
+      case Some(version) => version
+      case None => throw new AppConfigurationException("neo4j.version is undefined")
+    }
 
     val holder:WSRequestHolder = WS
       .url(dbDataUrl)
@@ -45,14 +59,18 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
     holder.get().map {
       neo4jRes => (neo4jRes.json \ "neo4j_version").asOpt[String] match {
         case Some(version) if version != neo4jVersion =>
-          throw new ApplicationException("Unexpected version of Neo4j: " + version + ". Expected: " + neo4jVersion)
+          throw new AppConfigurationException(
+            "Unexpected version of Neo4j: " + version + ". Expected: " + neo4jVersion
+          )
         case None =>
-          throw new ApplicationException("Couldn't verify the connection with Neo4j")
+          throw new AppConfigurationException("Couldn't verify the connection with Neo4j")
       }
     }.recover {
       case e =>
-        throw new ApplicationException(
-          "Couldn't establish a connection with Neo4j. You either messed up the configuration or forgot to start Neo4j" + e.getMessage
+        throw new AppConfigurationException(
+          "Couldn't establish a connection with Neo4j. " +
+          "You either messed up the configuration or forgot to start Neo4j" +
+          e.getMessage
         )
     }
   }
