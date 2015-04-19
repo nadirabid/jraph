@@ -39,9 +39,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
       case None => throw new AppConfigurationException("neo4j.username is undefined")
     }
     val dbPassword = current.configuration.getString("neo4j.password") match {
-      case Some(password) =>
-        println("password: ", password)
-        password
+      case Some(password) => password
       case None => throw new AppConfigurationException("neo4j.password is undefined")
     }
 
@@ -64,9 +62,6 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
           throw new AppConfigurationException(
             "Unexpected version of Neo4j: " + version + ". Expected: " + neo4jVersion
           )
-          println("Neo4j version: " + version)
-        case Some(version) =>
-          println("Neo4j version: " + version)
         case None =>
           throw new AppConfigurationException("Couldn't verify the connection with Neo4j")
       }
