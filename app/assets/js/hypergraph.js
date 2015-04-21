@@ -358,7 +358,6 @@ define([
 
         ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
 
-        console.log(this.width, this.height, bBox.width, bBox.height);
         dimensions.x = this.width;
         dimensions.y = this.height;
 
