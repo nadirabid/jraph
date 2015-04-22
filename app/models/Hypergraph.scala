@@ -26,7 +26,7 @@ object Hypergraph {
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
-  val neo4jHeaders = Map(
+  val neo4jHeaders = Seq(
     "Content-Type" -> "application/json",
     "Accept" -> "application/json; charset=UTF-8"
   )
@@ -66,7 +66,7 @@ object Hypergraph {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -101,7 +101,7 @@ object Hypergraph {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -135,7 +135,7 @@ object Hypergraph {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -173,7 +173,7 @@ object Hypergraph {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -210,7 +210,7 @@ object Hypergraph {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: check if there was any error and the stats confirm at least one deleted node
     holder.post(neo4jReqJson).map { _ => true }

@@ -27,7 +27,7 @@ object Hypernode {
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
-  val neo4jHeaders = Map(
+  val neo4jHeaders = Seq(
     "Content-Type" -> "application/json",
     "Accept" -> "application/json; charset=UTF-8"
   )
@@ -73,7 +73,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypernode]
@@ -109,7 +109,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -147,7 +147,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -185,7 +185,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -225,7 +225,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -258,7 +258,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -301,7 +301,7 @@ object Hypernode {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     holder.post(neo4jReqJson).map { _ => true }
   }
