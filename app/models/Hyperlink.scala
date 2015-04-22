@@ -46,6 +46,11 @@ object Hyperlink {
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
+  val neo4jHeaders = Map(
+    "Content-Type" -> "application/json",
+    "Accept" -> "application/json; charset=UTF-8"
+  )
+
   // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
 
   implicit val hyperlinkReads: Reads[Hyperlink] = (
@@ -95,10 +100,7 @@ object Hyperlink {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
@@ -134,10 +136,7 @@ object Hyperlink {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     holder.post(neo4jReqJson).map { neo4jRes =>
       val hyperlink = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hyperlink]
@@ -174,10 +173,7 @@ object Hyperlink {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -218,10 +214,7 @@ object Hyperlink {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -258,10 +251,7 @@ object Hyperlink {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     holder.post(neo4jReqJson).map { _ => true }
   }

@@ -21,6 +21,11 @@ class UserDAOImpl extends UserDAO {
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
+  val neo4jHeaders = Map(
+    "Content-Type" -> "application/json",
+    "Accept" -> "application/json; charset=UTF-8"
+  )
+
   /**
    * Example JSON result of Transactional Cypher HTTP endpoint
    * ie. /db/data/transaction/commit
@@ -66,13 +71,11 @@ class UserDAOImpl extends UserDAO {
         )
       )
     )
+
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     holder.post(neo4jReq).map { neo4jRes =>
       val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]
@@ -105,10 +108,7 @@ class UserDAOImpl extends UserDAO {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     holder.post(neo4jReq).map { neo4jRes =>
       val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]
@@ -163,10 +163,7 @@ class UserDAOImpl extends UserDAO {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     //TODO: check if post returned with error
     holder.post(neo4jReq).map { _ => user }
@@ -200,10 +197,7 @@ class UserDAOImpl extends UserDAO {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     //TODO: check if post returned with error
     holder.post(neo4jReq).map { _ => user }
@@ -234,10 +228,7 @@ class UserDAOImpl extends UserDAO {
     val holder = WS
         .url(dbTxUrl)
         .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(
-          "Content-Type" -> "application/json",
-          "Accept" -> "application/json; charset=UTF-8"
-        )
+        .withHeaders(neo4jHeaders)
 
     // TODO: check if there was any error and the stats confirm at least one deleted node
     holder.post(neo4jReq).map { _ => true }
