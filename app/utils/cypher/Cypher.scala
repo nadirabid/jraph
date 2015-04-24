@@ -3,13 +3,39 @@ package utils.cypher
 import play.api.libs.ws.{WS, WSAuthScheme}
 import play.api.libs.json._
 
-/*
-  Cypher("match n return n").map { cypherResponse =>
-    row.validate[User] match {
-      case CypherResult[User](user) => println(user)
-      case CypherError(err) => println(err)
-    }
-  }
+/**
+ * Example JSON result of Transactional Cypher HTTP endpoint
+ * ie. /db/data/transaction/commit
+ *
+ * {
+ *  results : [{
+ *    columns: [ 'id(n)' ],
+ *    data: [{
+ *      row: [ 15 ]
+ *    }]
+ *  }],
+ *  errors: [ ]
+ * }
+ */
+
+/**
+ * Cypher("match n return n").map { cypherResponse =>
+ *  cypherResponse.validate[User] match {
+ *    case CypherResult[User](user) => println(user)
+ *    case CypherError(err) => println(err)
+ *  }
+ * }
+ *
+ * Cypher("match (u:User {userData}) return u")
+ *    .on(Json.obj(
+ *      "userData" -> Json.obj("id" -> "john.doe@email.com")
+ *    ))
+ *    .map { cypherResponse => {
+ *      cypherResponse.validate[User] match {
+ *        case CypherResult[User](user) => println(user)
+ *        case CypherError(err) => println(err)
+ *      }
+ *    }
 */
 
 class Neo4jConnection(host: String, port: Int, username: String, password: String) {
@@ -20,7 +46,7 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
     "Accept" -> "application/json; charset=UTF-8"
   )
 
-  def sendQuery(cypherQuery: String, parameters: Option[JsObject]) = {
+  def sendQuery(cypherStatement: String, parameters: JsObject = new JsObject()) = {
     val reqHolder = WS
         .url(url)
         .withAuth(username, password, WSAuthScheme.BASIC)
@@ -28,9 +54,14 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
 
     val reqJson = Json.obj(
       "statements" -> Json.obj(
-
+        Json.arr(
+          "statement" -> cypherStatement,
+          "parameters" -> parameters
+        )
       )
     )
+
+    reqHolder.post(reqJson)
   }
 }
 
