@@ -65,17 +65,13 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
   }
 }
 
-trait CypherResponse
+trait CypherResult[+T]
 
-class CypherResult {
+case class CypherSuccessStats(nodesDeleted:Int, relationshipsDeleted:Int)
 
-}
+case class CypherSuccess[T](stats: CypherSuccessStats) extends CypherResult[T]
 
-class CypherError {
-
-}
-
-
+case class CypherError(message:String, code:String) extends CypherResult[Nothing]
 
 object Neo4jConnection {
   def apply(host: String, port: Int, username: String, password: String) =
