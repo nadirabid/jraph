@@ -79,7 +79,7 @@ class UserDAOImpl extends UserDAO {
         .withHeaders(neo4jHeaders:_*)
 
     holder.post(neo4jReq).map { neo4jRes =>
-      val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]()
+      val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[User]
 
       user match {
         case s: JsSuccess[User] => Some(s.get)
