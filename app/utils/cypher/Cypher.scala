@@ -1,27 +1,59 @@
 package utils.cypher
 
+import play.api.Play.current
 import play.api.libs.ws.{WS, WSAuthScheme}
 import play.api.libs.json._
+import play.api.libs.json.Reads._
+import play.api.libs.functional.syntax._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /**
  * Example JSON result of Transactional Cypher HTTP endpoint
  * ie. /db/data/transaction/commit
  *
  * {
- *  results : [{
- *    columns: [ 'id(n)' ],
- *    data: [{
- *      row: [ 15 ]
- *    }]
- *  }],
- *  errors: [ ]
+ *  results : [
+ *      {
+ *        columns: [ 'id(n)' ],
+ *        data: [
+ *        {
+ *          row: [ 15 ]
+ *        }
+ *      ],
+ *      stats: {
+ *        contains_updates: false,
+ *        nodes_created: 0,
+ *        nodes_deleted: 0,
+ *        properties_set: 0,
+ *        relationships_created: 0,
+ *        relationships_deleted: 0,
+ *        labels_added: 0,
+ *        labels_removed: 0,
+ *        indexes_added: 0,
+ *        indexes_removed: 0,
+ *        constraints_added: 0,
+ *        constraints_removed: 0
+ *      }
+ *    }
+ *  ],
+ *  errors: [
+ *    {
+ *      "code": "Neo.ClientError.Statement.InvalidSyntax",
+ *      "message": "A more specific message about the type of error"
+ *    }
+ *  ]
  * }
  */
 
 /**
- * Cypher("match n return n").map { cypherResponse =>
- *  cypherResponse.validate[User] match {
- *    case CypherResult[User](user) => println(user)
+ *
+ * How the cypher API should look:
+ *
+ * Cypher("match n return n").map { cypherResult =>
+ *  cypherResult.validate[User] match {
+ *    case CypherSuccess[User](user) => println(user)
  *    case CypherError(err) => println(err)
  *  }
  * }
@@ -30,12 +62,13 @@ import play.api.libs.json._
  *    .on(Json.obj(
  *      "userData" -> Json.obj("id" -> "john.doe@email.com")
  *    ))
- *    .map { cypherResponse => {
- *      cypherResponse.validate[User] match {
- *        case CypherResult[User](user) => println(user)
+ *    .map { cypherResult => {
+ *      cypherResult.validate[User] match {
+ *        case CypherSuccess[User](user) => println(user)
  *        case CypherError(err) => println(err)
  *      }
  *    }
+ *
 */
 
 class Neo4jConnection(host: String, port: Int, username: String, password: String) {
@@ -46,40 +79,82 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
     "Accept" -> "application/json; charset=UTF-8"
   )
 
-  def sendQuery(cypherStatement: String, parameters: JsObject = new JsObject()) = {
+  def sendQuery(cypherStatement: String,
+                parameters: JsObject): Future[CypherResult] = {
+
     val reqHolder = WS
         .url(url)
         .withAuth(username, password, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders)
+        .withHeaders(neo4jHeaders:_*)
 
     val reqJson = Json.obj(
-      "statements" -> Json.obj(
-        Json.arr(
+      "statements" -> Json.arr(
+        Json.obj(
           "statement" -> cypherStatement,
           "parameters" -> parameters
         )
       )
     )
 
-    reqHolder.post(reqJson)
+    reqHolder.post(reqJson).map { resp =>
+      val errors = (resp.json \ "errors").as[Seq[JsObject]]
+
+      if (errors.nonEmpty) {
+        errors.head.as[CypherError]
+      }
+      else {
+        val results = (resp.json \ "results")(0)
+        val dataRows = (results \ "data").as[Seq[JsObject]].map { datum => (datum \ "row").as[JsObject]}
+        val stats = (results \ "stats").as[CypherSuccessStats]
+
+        CypherSuccess(dataRows, stats)
+      }
+    }
   }
 }
 
-trait CypherResult[+T]
-
-case class CypherSuccessStats(nodesDeleted:Int, relationshipsDeleted:Int)
-
-case class CypherSuccess[T](stats: CypherSuccessStats) extends CypherResult[T]
-
-case class CypherError(message:String, code:String) extends CypherResult[Nothing]
-
 object Neo4jConnection {
-  def apply(host: String, port: Int, username: String, password: String) =
+  def apply(host: String, port: Int, username: String, password: String) = {
     new Neo4jConnection(host, port, username, password)
+  }
+}
+
+trait CypherResult {
+
+}
+
+case class CypherSuccessStats(nodesDeleted:Int,
+                              relationshipsDeleted:Int)
+
+object CypherSuccessStats {
+  implicit val reads: Reads[CypherSuccessStats] = (
+    (JsPath \ "nodes_deleted").read[Int] and
+    (JsPath \ "relationships_deleted").read[Int]
+  )(CypherSuccessStats.apply _)
+}
+
+case class CypherSuccess(dataRows: Seq[JsObject],
+                         stats: CypherSuccessStats) extends CypherResult {
+
+}
+
+case class CypherError(code: String, message: String) extends CypherResult
+
+object CypherError {
+  implicit val reads: Reads[CypherError] = (
+    (JsPath \ "code").read[String] and
+    (JsPath \ "message").read[String]
+  )(CypherError.apply _)
+}
+
+case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
+  def apply(implicit neo4jConnection: Neo4jConnection) = {
+    neo4jConnection.sendQuery(cypher, parameters)
+  }
+
+  def on(args: JsObject) = this.copy(parameters = args ++ parameters)
 }
 
 object Cypher {
-  def apply(implicit connection: Neo4jConnection) = {
-
-  }
+  def apply(cypher: String) = new Cypher(cypher)
 }
