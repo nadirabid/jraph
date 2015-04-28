@@ -51,6 +51,8 @@ import scala.concurrent.Future
  *
  * How the cypher API should look:
  *
+ * val implicit neo4jConnection = Neo4jConnection(host, port, username, password)
+ *
  * Cypher("match n return n")().map { cypherResult =>
  *  cypherResult.validate[User] match {
  *    case CypherSuccess[User](user) => println(user)
