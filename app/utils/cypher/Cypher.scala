@@ -51,7 +51,7 @@ import scala.concurrent.Future
  *
  * How the cypher API should look:
  *
- * Cypher("match n return n").map { cypherResult =>
+ * Cypher("match n return n")().map { cypherResult =>
  *  cypherResult.validate[User] match {
  *    case CypherSuccess[User](user) => println(user)
  *    case CypherError(err) => println(err)
@@ -61,7 +61,7 @@ import scala.concurrent.Future
  * Cypher("match (u:User {userData}) return u")
  *    .on(Json.obj(
  *      "userData" -> Json.obj("id" -> "john.doe@email.com")
- *    ))
+ *    ))()
  *    .map { cypherResult => {
  *      cypherResult.validate[User] match {
  *        case CypherSuccess[User](user) => println(user)
