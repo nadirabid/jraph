@@ -18,22 +18,23 @@ class CypherSpec extends WordSpec
   implicit val defaultPatience =
       PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
-  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbHost = current.configuration.getString("neo4j.host").get
+  val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
-  implicit val neo4jConnect =
-      Neo4jConnection()
+  implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
   "The Cypher API" should {
+
     "be able to execute a simple create and delete cypher query" in {
       val testNodeID = UUID.randomUUID().toString
-      whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")()) { cypherResult =>
-        (cypherResult.data \ "id").as[String] shouldBe testNodeID
+      whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")(neo4jConnection)) { cypherResult =>
+        (cypherResult.data.head \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
 
-      whenReady(Cypher(s"match (n:TestNode { id: '$testNodeID' })")()) { cypherResult =>
+      whenReady(Cypher(s"match (n:TestNode { id: '$testNodeID' })")(neo4jConnection)) { cypherResult =>
         cypherResult.stats.nodesDeleted shouldBe 1
       }
     }
@@ -44,17 +45,17 @@ class CypherSpec extends WordSpec
       val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
           .on(Json.obj("testNodeID" -> testNodeID))
 
-      whenReady(createCypherQuery()) { cypherResult =>
-        (cypherResult.data \ "id").as[String] shouldBe testNodeID
+      whenReady(createCypherQuery(neo4jConnection)) { cypherResult =>
+        (cypherResult.data.head \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
 
       val deleteCypherQuery = Cypher(s"match (n:TestNode { id: {testNodeID} })")
           .on(Json.obj("testNodeID" -> testNodeID))
 
-      whenReady(deleteCypherQuery()) { cypherResult =>
+      whenReady(deleteCypherQuery(neo4jConnection)) { cypherResult =>
         cypherResult.stats.nodesDeleted shouldBe 1
-      } 
+      }
     }
   }
 }
