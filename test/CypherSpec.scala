@@ -18,10 +18,10 @@ class CypherSpec extends WordSpec
   implicit val defaultPatience =
       PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
-  val dbHost = current.configuration.getString("neo4j.host").get
-  val dbPort = current.configuration.getInt("neo4j.port").get
-  val dbUsername = current.configuration.getString("neo4j.username").get
-  val dbPassword = current.configuration.getString("neo4j.password").get
+  val dbHost = "localhost"
+  val dbPort = 7474
+  val dbUsername = "neo4j"
+  val dbPassword = "password"
 
   implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
