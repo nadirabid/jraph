@@ -29,7 +29,7 @@ class HyperlinkSpec extends WordSpec
   with BeforeAndAfter {
 
   implicit val defaultPatience =
-    PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
+      PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
   val userEmail = UUID.randomUUID().toString + "@test.com"
 
@@ -79,8 +79,8 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 200.millis)
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 2000.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 2000.millis)
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
