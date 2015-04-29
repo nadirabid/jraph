@@ -29,12 +29,12 @@ class CypherSpec extends WordSpec
 
     "be able to execute a simple create and delete cypher query" in {
       val testNodeID = UUID.randomUUID().toString
-      whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")(neo4jConnection)) { cypherResult =>
+      whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")()) { cypherResult =>
         (cypherResult.data.head \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
 
-      whenReady(Cypher(s"match (n:TestNode { id: '$testNodeID' })")(neo4jConnection)) { cypherResult =>
+      whenReady(Cypher(s"match (n:TestNode { id: '$testNodeID' })")()) { cypherResult =>
         cypherResult.stats.nodesDeleted shouldBe 1
       }
     }
@@ -45,7 +45,7 @@ class CypherSpec extends WordSpec
       val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
           .on(Json.obj("testNodeID" -> testNodeID))
 
-      whenReady(createCypherQuery(neo4jConnection)) { cypherResult =>
+      whenReady(createCypherQuery()) { cypherResult =>
         (cypherResult.data.head \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
@@ -53,7 +53,7 @@ class CypherSpec extends WordSpec
       val deleteCypherQuery = Cypher(s"match (n:TestNode { id: {testNodeID} })")
           .on(Json.obj("testNodeID" -> testNodeID))
 
-      whenReady(deleteCypherQuery(neo4jConnection)) { cypherResult =>
+      whenReady(deleteCypherQuery()) { cypherResult =>
         cypherResult.stats.nodesDeleted shouldBe 1
       }
     }

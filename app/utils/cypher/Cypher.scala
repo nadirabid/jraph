@@ -140,7 +140,7 @@ case class CypherResult(data: Seq[JsObject],
                         stats: CypherSuccessStats)
 
 case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
-  def apply(implicit neo4jConnection: Neo4jConnection) = {
+  def apply()(implicit neo4jConnection: Neo4jConnection) = {
     neo4jConnection.sendQuery(cypher, parameters)
   }
 
