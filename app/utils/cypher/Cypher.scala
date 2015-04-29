@@ -65,9 +65,9 @@ import scala.concurrent.Future
  *      "userData" -> Json.obj("id" -> "john.doe@email.com")
  *    ))()
  *    .map { cypherResult => {
- *      cypherResult.validate[User] match {
- *        case CypherSuccess[User](user) => println(user)
- *        case CypherError(err) => println(err)
+ *      cypherResult.data.validate[Seq[User]] match {
+ *        case s:JsSuccess[Seq[User]] => println(s.get)
+ *        case e:JsError => println(e)
  *      }
  *    }
  *
@@ -102,27 +102,24 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
       val errors = (resp.json \ "errors").as[Seq[JsObject]]
 
       if (errors.nonEmpty) {
-        errors.head.as[CypherError]
+        throw new CypherException(Json.prettyPrint(resp.json \ "errors"))
       }
-      else {
-        val results = (resp.json \ "results")(0)
-        val dataRows = (results \ "data").as[Seq[JsObject]].map { datum => (datum \ "row").as[JsObject]}
-        val stats = (results \ "stats").as[CypherSuccessStats]
 
-        CypherSuccess(dataRows, stats)
-      }
+      val results = (resp.json \ "results")(0)
+      val dataRows = (results \ "data").as[Seq[JsObject]].map { datum => (datum \ "row").as[JsObject]}
+      val stats = (results \ "stats").as[CypherSuccessStats]
+
+      CypherResult(dataRows, stats)
     }
   }
 }
+
+class CypherException(msg: String) extends RuntimeException("Cypher exception: " + msg)
 
 object Neo4jConnection {
   def apply(host: String, port: Int, username: String, password: String) = {
     new Neo4jConnection(host, port, username, password)
   }
-}
-
-trait CypherResult {
-
 }
 
 case class CypherSuccessStats(nodesDeleted:Int,
@@ -135,19 +132,8 @@ object CypherSuccessStats {
   )(CypherSuccessStats.apply _)
 }
 
-case class CypherSuccess(dataRows: Seq[JsObject],
-                         stats: CypherSuccessStats) extends CypherResult {
-
-}
-
-case class CypherError(code: String, message: String) extends CypherResult
-
-object CypherError {
-  implicit val reads: Reads[CypherError] = (
-    (JsPath \ "code").read[String] and
-    (JsPath \ "message").read[String]
-  )(CypherError.apply _)
-}
+case class CypherResult(data: Seq[JsObject],
+                        stats: CypherSuccessStats)
 
 case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
   def apply(implicit neo4jConnection: Neo4jConnection) = {
