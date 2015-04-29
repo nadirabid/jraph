@@ -99,14 +99,14 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
     )
 
     reqHolder.post(reqJson).map { resp =>
-      val errors = (resp.json \ "errors").as[Seq[JsObject]]
+      val errors = (resp.json \ "errors").as[Vector[JsObject]]
 
       if (errors.nonEmpty) {
         throw new CypherException(Json.prettyPrint(resp.json \ "errors"))
       }
 
       val results = (resp.json \ "results")(0)
-      val dataRows = (results \ "data").as[Seq[JsObject]].map { datum => (datum \ "row").as[JsObject]}
+      val dataRows = (results \ "data").as[Vector[JsObject]].map { datum => (datum \ "row").as[JsObject]}
       val stats = (results \ "stats").as[CypherSuccessStats]
 
       CypherResult(dataRows, stats)
@@ -122,12 +122,16 @@ object Neo4jConnection {
   }
 }
 
-case class CypherSuccessStats(nodesDeleted:Int,
+case class CypherSuccessStats(nodesCreated:Int,
+                              nodesDeleted:Int,
+                              relationshipsCreated:Int,
                               relationshipsDeleted:Int)
 
 object CypherSuccessStats {
   implicit val reads: Reads[CypherSuccessStats] = (
+    (JsPath \ "nodes_created").read[Int] and
     (JsPath \ "nodes_deleted").read[Int] and
+    (JsPath \ "relationships_created").read[Int] and
     (JsPath \ "relationships_deleted").read[Int]
   )(CypherSuccessStats.apply _)
 }
