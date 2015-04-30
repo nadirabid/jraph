@@ -30,7 +30,7 @@ class CypherSpec extends WordSpec
     "be able to execute a simple create and delete cypher query" in {
       val testNodeID = UUID.randomUUID().toString
       whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")()) { cypherResult =>
-        (cypherResult.data.head(0) \ "id").as[String] shouldBe testNodeID
+        (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
 
@@ -50,7 +50,7 @@ class CypherSpec extends WordSpec
         .on(Json.obj("testNodeID" -> testNodeID))
 
       whenReady(createCypherQuery()) { cypherResult =>
-        (cypherResult.data.head(0) \ "id").as[String] shouldBe testNodeID
+        (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
         cypherResult.stats.nodesCreated shouldBe 1
       }
 

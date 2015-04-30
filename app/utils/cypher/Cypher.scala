@@ -108,10 +108,10 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
       }
 
       val result = (resp.json \ "results")(0)
-      val dataRows = (result \ "data").as[Vector[JsObject]].map { datum => (datum \ "row").as[JsArray] }
+      val rows = (result \ "data").as[Vector[JsObject]].map { datum => (datum \ "row").as[JsArray] }
       val stats = (result \ "stats").as[CypherSuccessStats]
 
-      CypherResult(dataRows, stats)
+      CypherResult(rows, stats)
     }
   }
 }
@@ -138,7 +138,7 @@ object CypherSuccessStats {
   )(CypherSuccessStats.apply _)
 }
 
-case class CypherResult(data: Seq[JsArray],
+case class CypherResult(rows: Seq[JsArray],
                         stats: CypherSuccessStats)
 
 case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
