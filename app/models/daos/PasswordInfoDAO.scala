@@ -24,11 +24,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
   implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
-  val neo4jHeaders = Seq(
-    "Content-Type" -> "application/json",
-    "Accept" -> "application/json; charset=UTF-8"
-  )
-
   implicit val passwordInfoReads: Reads[PasswordInfo] = (
     (JsPath \ "hasher").read[String] and
     (JsPath \ "passwordDigest").read[String] and
