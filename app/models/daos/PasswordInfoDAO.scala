@@ -17,7 +17,6 @@ import utils.cypher._
 
 class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   val dbHost = "localhost"
-  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
   val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
@@ -42,14 +41,14 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
             "email" -> loginInfo.providerKey
         ))
         .apply()
-        .map(_.rows.head(0).validate[PasswordInfo])
+        .map { cypherResult =>
+          cypherResult.rows.headOption map(row => Some(row(0).validate[PasswordInfo])) getOrElse None
+        }
         .map {
-          case s: JsSuccess[PasswordInfo] => Some(s.get)
-          case e: JsError => None
+          case Some(s: JsSuccess[PasswordInfo]) => Some(s.get)
+          case None => None // should do error logging?
         }
   }
-
-
 
   def save(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
     val cypherCreate =

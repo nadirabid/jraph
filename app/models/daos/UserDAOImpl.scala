@@ -17,7 +17,6 @@ import utils.cypher._
 
 class UserDAOImpl extends UserDAO {
   val dbHost = "localhost"
-  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
   val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
@@ -49,10 +48,13 @@ class UserDAOImpl extends UserDAO {
           "email" -> loginInfo.providerKey
         ))
         .apply()
-        .map(_.rows.head(0).validate[User])
+        .map { cypherResult =>
+          cypherResult.rows.headOption.map(row => row(0).validate[User]).getOrElse(None)
+        }
         .map {
-          case s: JsSuccess[User] => Some(s.get)
-          case e: JsError => None
+          case Some(s: JsSuccess[User]) => Some(s.get)
+          case Some(e: JsError) => None //TODO: do some error logging/exception throwing
+          case None => None
         }
   }
 
@@ -68,10 +70,13 @@ class UserDAOImpl extends UserDAO {
           "email" -> email
         ))
         .apply()
-        .map(_.rows.head(0).validate[User])
+        .map { cypherResult =>
+          cypherResult.rows.headOption.map(row => row(0).validate[User]).getOrElse(None)
+        }
         .map {
-          case s: JsSuccess[User] => Some(s.get)
-          case e: JsError => None
+          case Some(s: JsSuccess[User]) => Some(s.get)
+          case Some(e: JsError) => None
+          case None => None
         }
   }
 
