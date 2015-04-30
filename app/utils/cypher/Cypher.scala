@@ -18,25 +18,25 @@ import scala.concurrent.Future
  *      {
  *        columns: [ 'id(n)' ],
  *        data: [
- *        {
- *          row: [ 15 ]
+ *          {
+ *            row: [ 15 ]
+ *          }
+ *        ],
+ *        stats: {
+ *          contains_updates: false,
+ *          nodes_created: 0,
+ *          nodes_deleted: 0,
+ *          properties_set: 0,
+ *          relationships_created: 0,
+ *          relationship_deleted: 0,
+ *          labels_added: 0,
+ *          labels_removed: 0,
+ *          indexes_added: 0,
+ *          indexes_removed: 0,
+ *          constraints_added: 0,
+ *          constraints_removed: 0
  *        }
- *      ],
- *      stats: {
- *        contains_updates: false,
- *        nodes_created: 0,
- *        nodes_deleted: 0,
- *        properties_set: 0,
- *        relationships_created: 0,
- *        relationships_deleted: 0,
- *        labels_added: 0,
- *        labels_removed: 0,
- *        indexes_added: 0,
- *        indexes_removed: 0,
- *        constraints_added: 0,
- *        constraints_removed: 0
  *      }
- *    }
  *  ],
  *  errors: [
  *    {
@@ -93,21 +93,23 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
       "statements" -> Json.arr(
         Json.obj(
           "statement" -> cypherStatement,
-          "parameters" -> parameters
+          "parameters" -> parameters,
+          "includeStats" -> true
         )
       )
     )
 
     reqHolder.post(reqJson).map { resp =>
+
       val errors = (resp.json \ "errors").as[Vector[JsObject]]
 
       if (errors.nonEmpty) {
         throw new CypherException(Json.prettyPrint(resp.json \ "errors"))
       }
 
-      val results = (resp.json \ "results")(0)
-      val dataRows = (results \ "data").as[Vector[JsObject]].map { datum => (datum \ "row").as[JsObject]}
-      val stats = (results \ "stats").as[CypherSuccessStats]
+      val result = (resp.json \ "results")(0)
+      val dataRows = (result \ "data").as[Vector[JsObject]].map { datum => (datum \ "row").as[JsArray] }
+      val stats = (result \ "stats").as[CypherSuccessStats]
 
       CypherResult(dataRows, stats)
     }
@@ -132,11 +134,11 @@ object CypherSuccessStats {
     (JsPath \ "nodes_created").read[Int] and
     (JsPath \ "nodes_deleted").read[Int] and
     (JsPath \ "relationships_created").read[Int] and
-    (JsPath \ "relationships_deleted").read[Int]
+    (JsPath \ "relationship_deleted").read[Int]
   )(CypherSuccessStats.apply _)
 }
 
-case class CypherResult(data: Seq[JsObject],
+case class CypherResult(data: Seq[JsArray],
                         stats: CypherSuccessStats)
 
 case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
