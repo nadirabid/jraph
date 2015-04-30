@@ -63,27 +63,24 @@ class CypherSpec extends WordSpec
     }
 
     "add to the parameters object when called in a chained manner" in {
-      "set the dynamic parameters to cypher queries" in {
-        val testNodeID = UUID.randomUUID().toString
+      val testNodeID = UUID.randomUUID().toString
 
-        val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
-          .on(Json.obj("testNodeID" -> testNodeID))
-          .on(Json.obj("chainedProp" -> "chainedVal"))
+      val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
+        .on(Json.obj("testNodeID" -> testNodeID))
+        .on(Json.obj("chainedProp" -> "chainedVal"))
 
-        whenReady(createCypherQuery()) { cypherResult =>
-          (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
-          (cypherResult.rows.head(0) \ "chainedProp").as[String] shouldBe "chainedVal"
-          cypherResult.stats.nodesCreated shouldBe 1
-        }
-
-        val deleteCypherQuery = Cypher(s"match (n:TestNode { id: {testNodeID} }) delete n")
-          .on(Json.obj("testNodeID" -> testNodeID))
-
-        whenReady(deleteCypherQuery()) { cypherResult =>
-          cypherResult.stats.nodesDeleted shouldBe 1
-        }
+      whenReady(createCypherQuery()) { cypherResult =>
+        (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
+        (cypherResult.rows.head(0) \ "chainedProp").as[String] shouldBe "chainedVal"
+        cypherResult.stats.nodesCreated shouldBe 1
       }
 
+      val deleteCypherQuery = Cypher(s"match (n:TestNode { id: {testNodeID} }) delete n")
+        .on(Json.obj("testNodeID" -> testNodeID))
+
+      whenReady(deleteCypherQuery()) { cypherResult =>
+        cypherResult.stats.nodesDeleted shouldBe 1
+      }
     }
 
   }
