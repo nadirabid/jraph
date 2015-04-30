@@ -10,30 +10,19 @@ import play.api.Play.current
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
-import play.api.libs.ws.{WS, WSRequestHolder}
-import play.api.libs.ws.WSAuthScheme
 
 import scala.concurrent.Future
 
-class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
-  /**
-   * Example JSON result of Transactional Cypher HTTP endpoint
-   * ie. /db/data/transaction/commit
-   *
-   * {
-   *  results : [{
-   *    columns: [ 'id(n)' ],
-   *    data: [{
-   *      row: [ 15 ]
-   *    }]
-   *  }],
-   *  errors: [ ]
-   * }
-   */
+import utils.cypher._
 
+class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
+  val dbHost = "localhost"
   val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
+
+  implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
   val neo4jHeaders = Seq(
     "Content-Type" -> "application/json",
@@ -46,113 +35,76 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     (JsPath \ "salt").readNullable[String]
   )(PasswordInfo.apply _)
 
-  val cypherRead =
-    """
-      | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
-      | RETURN passwordInfo;
-    """.stripMargin
-
   def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherRead,
-          "parameters" -> Json.obj(
+    val cypherRead =
+      """
+        | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+        | RETURN passwordInfo;
+      """.stripMargin
+
+    Cypher(cypherRead)
+        .on(Json.obj(
             "email" -> loginInfo.providerKey
-          )
-        )
-      )
-    )
-
-    val holder: WSRequestHolder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    holder.post(neo4jReq).map { neo4jRes =>
-      val user = (((neo4jRes.json \ "results")(0) \ "data")(0) \ "row")(0).validate[PasswordInfo]
-
-      user match {
-        case s: JsSuccess[PasswordInfo] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+        ))
+        .apply()
+        .map(_.rows.head(0).validate[PasswordInfo])
+        .map {
+          case s: JsSuccess[PasswordInfo] => Some(s.get)
+          case e: JsError => None
+        }
   }
 
-  val cypherCreate =
-  """
-    | MATCH (user:User { email: {email} })
-    | CREATE (user)-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo {passwordInfoData})
-    | RETURN passwordInfo;
-  """.stripMargin
+
 
   def save(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
-    val timestamp = System.currentTimeMillis
-
-    // ASK: Do we need a UUID to identify a User node
-    // given that we should have unique email addresses?
+    val cypherCreate =
+      """
+        | MATCH (user:User { email: {email} })
+        | CREATE (user)-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo {passwordInfoData})
+        | RETURN passwordInfo;
+      """.stripMargin
 
     // TODO: how to deal with possibly Null salt value. use Writer maybe?
     // Currently using BCryptPasswordHasher which does not set salt value
     // so we're ignoring it below all together
 
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherCreate,
-          "parameters" -> Json.obj(
-            "email" -> loginInfo.providerKey,
-            "passwordInfoData" -> Json.obj(
-              "hasher" -> passwordInfo.hasher,
-              "passwordDigest" -> passwordInfo.password,
-              //"salt" -> passwordInfo.salt,
-              "createdAt" -> timestamp,
-              "updatedAt" -> timestamp
-            )
+    val timestamp = System.currentTimeMillis
+
+    Cypher(cypherCreate)
+        .on(Json.obj(
+          "email" -> loginInfo.providerKey,
+          "passwordInfoData" -> Json.obj(
+            "hasher" -> passwordInfo.hasher,
+            "passwordDigest" -> passwordInfo.password,
+            //"salt" -> passwordInfo.salt,
+            "createdAt" -> timestamp,
+            "updatedAt" -> timestamp
           )
-        )
-      )
-    )
-
-    val holder: WSRequestHolder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    holder.post(neo4jReq).map{ res => passwordInfo }
+        ))
+        .apply()
+        .map(_.rows.head(0).as[PasswordInfo])
   }
-
-  val cypherUpdate =
-    """
-      | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
-      | SET passwordInfo += {passwordInfoData}
-      | RETURN passwordInfo;
-    """.stripMargin
 
   // TODO: should return Future[Option[PasswordInfo]]
   def update(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
-    val neo4jReq = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherUpdate,
-          "parameters" -> Json.obj(
-            "email" -> loginInfo.providerKey,
-            "passwordInfoData" -> Json.obj(
-              "hasher" -> passwordInfo.hasher,
-              "passwordDigest" -> passwordInfo.password,
-              //"salt" -> passwordInfo.salt,
-              "updatedAt" -> System.currentTimeMillis
-            )
+    val cypherUpdate =
+      """
+        | MATCH (:User { email: {email} })-[:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
+        | SET passwordInfo += {passwordInfoData}
+        | RETURN passwordInfo;
+      """.stripMargin
+
+    Cypher(cypherUpdate)
+        .on(Json.obj(
+          "email" -> loginInfo.providerKey,
+          "passwordInfoData" -> Json.obj(
+            "hasher" -> passwordInfo.hasher,
+            "passwordDigest" -> passwordInfo.password,
+            //"salt" -> passwordInfo.salt,
+            "updatedAt" -> System.currentTimeMillis
           )
-        )
-      )
-    )
-
-    val holder: WSRequestHolder = WS
-      .url(dbTxUrl)
-      .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-      .withHeaders(neo4jHeaders:_*)
-
-    holder.post(neo4jReq).map{ res => passwordInfo }
+        ))
+        .apply()
+        .map(_.rows.head(0).as[PasswordInfo])
   }
 }
