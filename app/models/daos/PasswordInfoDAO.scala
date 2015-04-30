@@ -42,11 +42,12 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
         ))
         .apply()
         .map { cypherResult =>
-          cypherResult.rows.headOption map(row => Some(row(0).validate[PasswordInfo])) getOrElse None
+          cypherResult.rows.headOption.map(row => row(0).validate[PasswordInfo])
         }
         .map {
           case Some(s: JsSuccess[PasswordInfo]) => Some(s.get)
-          case None => None // should do error logging?
+          case Some(e: JsError) => None // TODO: should do error logging
+          case None => None
         }
   }
 

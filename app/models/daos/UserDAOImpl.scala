@@ -49,11 +49,11 @@ class UserDAOImpl extends UserDAO {
         ))
         .apply()
         .map { cypherResult =>
-          cypherResult.rows.headOption.map(row => row(0).validate[User]).getOrElse(None)
+          cypherResult.rows.headOption.map(row => row(0).validate[User])
         }
         .map {
           case Some(s: JsSuccess[User]) => Some(s.get)
-          case Some(e: JsError) => None //TODO: do some error logging/exception throwing
+          case Some(e: JsError) => None // TODO: do some error logging/exception throwing
           case None => None
         }
   }
@@ -71,7 +71,7 @@ class UserDAOImpl extends UserDAO {
         ))
         .apply()
         .map { cypherResult =>
-          cypherResult.rows.headOption.map(row => row(0).validate[User]).getOrElse(None)
+          cypherResult.rows.headOption.map(row => row(0).validate[User])
         }
         .map {
           case Some(s: JsSuccess[User]) => Some(s.get)
