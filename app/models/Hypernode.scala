@@ -8,6 +8,7 @@ import play.api.libs.json._
 import play.api.libs.ws.WS
 import play.api.libs.ws.WSAuthScheme
 import play.api.libs.functional.syntax._
+import utils.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,226 +24,154 @@ case class Hypernode(
 
 object Hypernode {
 
-  val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
   val dbHost = "localhost"
   val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
-  val neo4jHeaders = Seq(
-    "Content-Type" -> "application/json",
-    "Accept" -> "application/json; charset=UTF-8"
-  )
+  implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
-  // TODO: refactor reads so we dont reindex down (__ \ "row")(0)
-
-  implicit val hypergraphReads: Reads[Hypernode] = (
-    ((JsPath \ "row")(0) \ "id").read[UUID] and
-    ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
-    ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
+  implicit val hypernodeReads: Reads[Hypernode] = (
+    (JsPath \ "id").read[UUID] and
+    (JsPath \ "createdAt").read[DateTime] and
+    (JsPath \ "updatedAt").read[DateTime] and
+    (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hypernode.apply _)
-
-  val cypherCreate =
-    """
-      | MATCH (user:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
-      | CREATE (hn:Hypernode {hn}), (hg)-[:OWNS_HYPERNODE]->(hn)
-      | RETURN hn;
-    """.stripMargin
 
   def create(userEmail: String,
              hypergraphID: UUID,
-             hypernode: Hypernode): Future[Option[Hypernode]] = {
+             hypernode: Hypernode): Future[Hypernode] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherCreate,
-          "parameters" -> Json.obj(
-            "userEmail" -> userEmail,
-            "hypergraphID" -> hypergraphID,
-            "hn" -> Json.obj(
-              "id" -> hypernode.id,
-              "createdAt" -> hypernode.createdAt.getMillis,
-              "updatedAt" -> hypernode.updatedAt.getMillis,
-              "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
-            )
+    val cypherCreate =
+      """
+        | MATCH (user:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
+        | CREATE (hn:Hypernode {hn}), (hg)-[:OWNS_HYPERNODE]->(hn)
+        | RETURN hn;
+      """.stripMargin
+
+    Cypher(cypherCreate)
+        .apply(Json.obj(
+          "userEmail" -> userEmail,
+          "hypergraphID" -> hypergraphID,
+          "hn" -> Json.obj(
+            "id" -> hypernode.id,
+            "createdAt" -> hypernode.createdAt.getMillis,
+            "updatedAt" -> hypernode.updatedAt.getMillis,
+            "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
           )
-        )
-      )
-    )
-
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypernode]
-
-      hypernode match {
-        case s: JsSuccess[Hypernode] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+        ))
+        .map(_.rows.head(0).as[Hypernode])
   }
-
-  val cypherRead =
-    """
-      | MATCH (hn:Hypernode { id: {hypernodeID} })
-      | RETURN hn;
-    """.stripMargin
 
   def read(userEmail: String,
            hypergraphID: UUID,
            hypernodeID: UUID): Future[Option[Hypernode]] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherRead,
-          "parameters" -> Json.obj(
-            "hypernodeID" -> hypernodeID
-          )
-        )
-      )
-    )
+    val cypherRead =
+      """
+        | MATCH (hn:Hypernode { id: {hypernodeID} })
+        | RETURN hn;
+      """.stripMargin
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    // TODO: need to sanitize the response before returning it to client
-    holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypernode]
-
-      hypernode match {
-        case s: JsSuccess[Hypernode] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+    Cypher(cypherRead)
+        .apply(Json.obj(
+          "hypernodeID" -> hypernodeID
+        ))
+        .map { cypherResult =>
+          cypherResult.rows.headOption.map(row => row(0).validate[Hypernode])
+        }
+        .map {
+          case Some(s: JsSuccess[Hypernode]) => Some(s.get)
+          case Some(e: JsError) => None
+          case None => None
+        }
   }
 
-  val cypherBatchRead =
-    """
-      | MATCH (h:Hypernode)
-      | WHERE h.id IN {hypernodeIDs}
-      | RETURN h;
-    """.stripMargin
-
+  /*
+  // TODO: secure this method, or get rid of it
   def batchRead(userEmail: String,
                 hypergraphID: UUID,
-                hypernodeIDs: Seq[UUID]): Future[Option[Seq[Hypernode]]] = {
+                hypernodeIDs: Seq[UUID]): Future[Seq[Hypernode]] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherBatchRead,
-          "parameters" -> Json.obj(
-            "hypernodeIDs" -> hypernodeIDs
-          )
-        )
-      )
-    )
+    // TODO: security reasons, make sure the hypernode belongs to the user
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
+    val cypherBatchRead =
+      """
+        | MATCH (h:Hypernode)
+        | WHERE h.id IN {hypernodeIDs}
+        | RETURN h;
+      """.stripMargin
 
-    // TODO: need to sanitize the response before returning it to client
-    holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernodes = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hypernode]]
-
-      hypernodes match {
-        case s: JsSuccess[Seq[Hypernode]] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+    Cypher(cypherBatchRead)
+        .apply(Json.obj(
+          "hypernodeIDs" -> hypernodeIDs
+        ))
+        .map(_.rows.map(row => row(0).as[Hypernode]))
   }
-
-  val cypherReadAll =
-    """
-      | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
-      | MATCH (hg)-[:OWNS_HYPERNODE]->(hn:Hypernode)
-      | RETURN hn;
-    """.stripMargin
+  */
 
   def readAll(userEmail: String,
-              hypergraphID: UUID): Future[Option[Seq[Hypernode]]] = {
+              hypergraphID: UUID): Future[Seq[Hypernode]] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherReadAll,
-          "parameters" -> Json.obj(
-            "hypergraphID" -> hypergraphID,
-            "userEmail" -> userEmail
-          )
-        )
-      )
-    )
+    val cypherReadAll =
+      """
+        | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
+        | MATCH (hg)-[:OWNS_HYPERNODE]->(hn:Hypernode)
+        | RETURN hn;
+      """.stripMargin
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    // TODO: need to sanitize the response before returning it to client
-    holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernodes = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hypernode]]
-
-      hypernodes match {
-        case s: JsSuccess[Seq[Hypernode]] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+    Cypher(cypherReadAll)
+        .apply(Json.obj(
+          "hypergraphID" -> hypergraphID,
+          "userEmail" -> userEmail
+        ))
+        .map(_.rows.map(row => row(0).as[Hypernode]))
   }
-
-  val cypherUpdate =
-    """
-      | MATCH (hn { id: {hypernodeID} })
-      | SET hn.data = {data}, hn.updatedAt = {updatedAt}
-      | RETURN hn;
-    """.stripMargin
 
   def update(userEmail: String,
              hypergraphID: UUID,
-             hypernode: Hypernode): Future[Option[Hypernode]] = {
+             hypernode: Hypernode): Future[Hypernode] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherUpdate,
-          "parameters" -> Json.obj(
-            "hypernodeID" -> hypernode.id,
-            "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
-            "updatedAt" -> hypernode.updatedAt.getMillis
-          )
-        )
-      )
-    )
+    val cypherUpdate =
+      """
+        | MATCH (hn { id: {hypernodeID} })
+        | SET hn.data = {data}, hn.updatedAt = {updatedAt}
+        | RETURN hn;
+      """.stripMargin
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    // TODO: need to sanitize the response before returning it to client
-    holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernode = ((neo4jRes.json \ "results")(0) \ "data")(0).validate[Hypernode]
-
-      hypernode match {
-        case s: JsSuccess[Hypernode] => Some(s.get)
-        case e: JsError => None
-      }
-    }
+    Cypher(cypherUpdate)
+        .apply(Json.obj(
+          "hypernodeID" -> hypernode.id,
+          "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
+          "updatedAt" -> hypernode.updatedAt.getMillis
+        ))
+        .map(_.rows.head(0).as[Hypernode])
   }
 
   def batchUpdate(userEmail: String,
                   hypergraphID: UUID,
-                  hypernodes: Seq[Hypernode]): Future[Option[Seq[Hypernode]]] = {
+                  hypernodes: Seq[Hypernode]): Future[Seq[Hypernode]] = {
+
+    val cypherUpdate =
+      """
+        | MATCH (hn { id: {hypernodeID} })
+        | SET hn.data = {data}, hn.updatedAt = {updatedAt}
+        | RETURN hn;
+      """.stripMargin
+
+    val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+
+    implicit val hypernodeReads: Reads[Hypernode] = (
+      ((JsPath \ "row")(0) \ "id").read[UUID] and
+      ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
+      ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
+      ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
+    )(Hypernode.apply _)
+
+    val neo4jHeaders = Seq(
+      "Content-Type" -> "application/json",
+      "Accept" -> "application/json; charset=UTF-8"
+    )
 
     val neo4jReqJson = Json.obj(
       "statements" -> hypernodes.map{ node =>
@@ -264,48 +193,30 @@ object Hypernode {
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      val hypernodes = ((neo4jRes.json \ "results")(0) \ "data").validate[Seq[Hypernode]]
-
-      hypernodes match {
-        case s: JsSuccess[Seq[Hypernode]] => Some(s.get)
-        case e: JsError => None
-      }
+      ((neo4jRes.json \ "results")(0) \ "data").as[Seq[Hypernode]]
     }
   }
-
-  val cypherDelete =
-    """
-      | MATCH (hn:Hypernode { id: {hypernodeID} }),
-      |       (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} }),
-      |       (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn)
-      | OPTIONAL MATCH (hn)-[HL:HYPERLINK]-(:Hypernode)
-      | DELETE OWNS_HN, HL, hn;
-    """.stripMargin
 
   def delete(userEmail: String,
              hypergraphID: UUID,
              hypernodeID: UUID): Future[Boolean] = {
 
-    val neo4jReqJson = Json.obj(
-      "statements" -> Json.arr(
-        Json.obj(
-          "statement" -> cypherDelete,
-          "parameters" -> Json.obj(
-            "hypernodeID" -> hypernodeID,
-            "hypergraphID" -> hypergraphID,
-            "userEmail" -> userEmail
-          ),
-          "includeStats" -> true
-        )
-      )
-    )
+    val cypherDelete =
+      """
+        | MATCH (hn:Hypernode { id: {hypernodeID} }),
+        |       (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} }),
+        |       (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn)
+        | OPTIONAL MATCH (hn)-[HL:HYPERLINK]-(:Hypernode)
+        | DELETE OWNS_HN, HL, hn;
+      """.stripMargin
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
-
-    holder.post(neo4jReqJson).map { _ => true }
+    Cypher(cypherDelete)
+        .apply(Json.obj(
+          "hypernodeID" -> hypernodeID,
+          "hypergraphID" -> hypergraphID,
+          "userEmail" -> userEmail
+        ))
+        .map(_.stats.nodesDeleted > 0) //TODO: throw exception if nodesDeleted == 0
   }
 
 }

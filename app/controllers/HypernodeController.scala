@@ -34,10 +34,8 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypernode.create(req.identity.email, hypergraphID, model) map {
-      case Some(hypernode) => Ok(Json.toJson(hypernode))
-      case None => ServiceUnavailable
-    }
+    Hypernode.create(req.identity.email, hypergraphID, model)
+        .map(hypernode => Ok(Json.toJson(hypernode)))
   }
 
   def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
@@ -47,18 +45,17 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
+  /*
+  // this method is insecure by its usage of the insecure method Hypernode.batchRead
   def batchRead(hypergraphID: UUID, hypernodeIDs: List[UUID]) = SecuredAction.async { req =>
-    Hypernode.batchRead(req.identity.email, hypergraphID, hypernodeIDs) map {
-      case Some(hypernodes) => Ok(Json.toJson(hypernodes))
-      case None => ServiceUnavailable
-    }
+    Hypernode.batchRead(req.identity.email, hypergraphID, hypernodeIDs)
+        .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
+  */
 
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypernode.readAll(req.identity.email, hypergraphID) map {
-      case Some(hypernodes) => Ok(Json.toJson(hypernodes))
-      case None => ServiceUnavailable
-    }
+    Hypernode.readAll(req.identity.email, hypergraphID)
+        .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
 
   def update(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async(parse.json) { req =>
@@ -69,27 +66,23 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypernode.update(req.identity.email, hypergraphID, model) map {
-      case Some(hypernode) => Ok(Json.toJson(hypernode))
-      case None => ServiceUnavailable
-    }
+    Hypernode.update(req.identity.email, hypergraphID, model)
+        .map(hypernode => Ok(Json.toJson(hypernode)))
   }
 
   def batchUpdate(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
-    val models = (req.body \ "data").as[Seq[JsObject]] map { json =>
+    val models = (req.body \ "data").as[Seq[JsObject]].map { json =>
       Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").asOpt[JsObject])
     }
 
-    Hypernode.batchUpdate(req.identity.email, hypergraphID, models) map {
-      case Some(hypernodes) => Ok(Json.toJson(hypernodes))
-      case None => ServiceUnavailable
-    }
+    Hypernode.batchUpdate(req.identity.email, hypergraphID, models)
+        .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
 
   def delete(hypergraphID: UUID,
              hypernodeID: UUID) = SecuredAction.async(parse.anyContent) { req =>
 
-    Hypernode.delete(req.identity.email, hypergraphID, hypernodeID) map {
+    Hypernode.delete(req.identity.email, hypergraphID, hypernodeID).map {
       case true => Ok(Json.toJson(true))
       case false => ServiceUnavailable
     }
