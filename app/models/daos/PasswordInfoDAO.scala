@@ -37,10 +37,9 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
       """.stripMargin
 
     Cypher(cypherRead)
-        .on(Json.obj(
+        .apply(Json.obj(
             "email" -> loginInfo.providerKey
         ))
-        .apply()
         .map { cypherResult =>
           cypherResult.rows.headOption.map(row => row(0).validate[PasswordInfo])
         }
@@ -66,7 +65,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
     val timestamp = System.currentTimeMillis
 
     Cypher(cypherCreate)
-        .on(Json.obj(
+        .apply(Json.obj(
           "email" -> loginInfo.providerKey,
           "passwordInfoData" -> Json.obj(
             "hasher" -> passwordInfo.hasher,
@@ -76,11 +75,9 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
             "updatedAt" -> timestamp
           )
         ))
-        .apply()
         .map(_.rows.head(0).as[PasswordInfo])
   }
 
-  // TODO: should return Future[Option[PasswordInfo]]
   def update(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
     val cypherUpdate =
       """
@@ -90,7 +87,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
       """.stripMargin
 
     Cypher(cypherUpdate)
-        .on(Json.obj(
+        .apply(Json.obj(
           "email" -> loginInfo.providerKey,
           "passwordInfoData" -> Json.obj(
             "hasher" -> passwordInfo.hasher,
@@ -99,7 +96,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
             "updatedAt" -> System.currentTimeMillis
           )
         ))
-        .apply()
         .map(_.rows.head(0).as[PasswordInfo])
   }
 }

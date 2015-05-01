@@ -44,10 +44,9 @@ class UserDAOImpl extends UserDAO {
       """.stripMargin
 
     Cypher(cypherReadByEmail)
-        .on(Json.obj(
+        .apply(Json.obj(
           "email" -> loginInfo.providerKey
         ))
-        .apply()
         .map { cypherResult =>
           cypherResult.rows.headOption.map(row => row(0).validate[User])
         }
@@ -66,10 +65,9 @@ class UserDAOImpl extends UserDAO {
       """.stripMargin
 
     Cypher(cypherReadByEmail)
-        .on(Json.obj(
+        .apply(Json.obj(
           "email" -> email
         ))
-        .apply()
         .map { cypherResult =>
           cypherResult.rows.headOption.map(row => row(0).validate[User])
         }
@@ -91,7 +89,7 @@ class UserDAOImpl extends UserDAO {
     val timestamp = System.currentTimeMillis
 
     Cypher(cypherCreate)
-        .on(Json.obj(
+        .apply(Json.obj(
           "hypergraphData" -> Json.obj(
             "id" -> UUID.randomUUID,
             "createdAt" -> timestamp,
@@ -110,7 +108,6 @@ class UserDAOImpl extends UserDAO {
             "updatedAt" -> timestamp
           )
         ))
-        .apply()
         .map(_.rows.head(0).as[User])
   }
 
@@ -123,7 +120,7 @@ class UserDAOImpl extends UserDAO {
       """.stripMargin
 
     Cypher(cypherUpdate)
-        .on(Json.obj(
+        .apply(Json.obj(
           "id" -> user.id,
           "userData" -> Json.obj(
             "firstName" -> user.firstName,
@@ -132,7 +129,6 @@ class UserDAOImpl extends UserDAO {
             "updatedAt" -> System.currentTimeMillis
           )
         ))
-        .apply()
         .map(_.rows.head(0).as[User])
   }
 
@@ -147,10 +143,9 @@ class UserDAOImpl extends UserDAO {
       """.stripMargin
 
     Cypher(cypherDelete)
-        .on(Json.obj(
+        .apply(Json.obj(
           "email" -> email
         ))
-        .apply()
         .map(_.stats.nodesDeleted > 0)
   }
 }
