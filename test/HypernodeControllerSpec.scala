@@ -104,21 +104,6 @@ class HypernodeControllerSpec extends WordSpec
       findUuidString shouldEqual createUuidString
 
       //
-      // batchRead
-      //
-
-      val batchReadRequest = FakeRequest(GET, s"$baseUrl?hypernodeIDs=$createUuidString")
-        .withAuthenticator(identity.loginInfo)
-
-      val batchReadResult = route(batchReadRequest).get
-      status(batchReadResult) shouldBe OK
-
-      val batchReadResultSeq = contentAsJson(batchReadResult).as[Seq[JsObject]]
-
-      batchReadResultSeq.size shouldBe 1
-      batchReadResultSeq.count(o => (o \ "id").as[UUID] == uuid) shouldBe 1
-
-      //
       // findAll hypernode
       //
 
