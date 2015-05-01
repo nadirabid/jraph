@@ -4,8 +4,6 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
 
-import models.User
-
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Play.current
@@ -13,6 +11,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 
+import models.User
 import utils.cypher._
 
 class UserDAOImpl extends UserDAO {

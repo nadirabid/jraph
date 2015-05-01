@@ -24,6 +24,8 @@ case class Hypernode(
 object Hypernode {
 
   val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
+  val dbHost = "localhost"
+  val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 

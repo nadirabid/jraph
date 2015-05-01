@@ -11,9 +11,9 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 
-import scala.concurrent.Future
-
 import utils.cypher._
+
+import scala.concurrent.Future
 
 class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
   val dbHost = "localhost"

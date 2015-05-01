@@ -4,11 +4,11 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play._
 
 import play.api.libs.json.Json
-import play.api.Play.current
 
 import java.util.UUID
 
-import utils.cypher.{Neo4jConnection, Cypher}
+import utils.cypher._
+import testutils.Neo4jConnectionFixture
 
 class CypherSpec extends WordSpec
   with ShouldMatchers
@@ -18,16 +18,8 @@ class CypherSpec extends WordSpec
   implicit val defaultPatience =
       PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
-  val dbHost = "localhost"
-  val dbPort = 7474
-  val dbUsername = "neo4j"
-  val dbPassword = "password"
-
-  implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
-
   "The `Cypher.apply` method" should {
-
-    "be able to execute a simple create and delete cypher query" in {
+    "be able to execute a simple create and delete cypher query" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
       whenReady(Cypher(s"create (n:TestNode { id: '$testNodeID' }) return n")()) { cypherResult =>
         (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
@@ -39,7 +31,7 @@ class CypherSpec extends WordSpec
       }
     }
 
-    "should apply optionally provided query parameters" in {
+    "should apply optionally provided query parameters" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
 
       val createCypherFutureResult = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
@@ -62,7 +54,7 @@ class CypherSpec extends WordSpec
 
   "The `Cypher.on` method" should {
 
-    "should apply optionally provided query parameters" in {
+    "should apply optionally provided query parameters" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
 
       val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
@@ -81,7 +73,7 @@ class CypherSpec extends WordSpec
       }
     }
 
-    "add to the parameters object when called in a chained manner" in {
+    "add to the parameters object when called in a chained manner" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
 
       val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
