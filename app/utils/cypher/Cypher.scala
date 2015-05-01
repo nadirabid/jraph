@@ -142,11 +142,11 @@ case class CypherResult(rows: Seq[JsArray],
                         stats: CypherSuccessStats)
 
 case class Cypher(cypher: String, parameters: JsObject = Json.obj()) {
-  def apply()(implicit neo4jConnection: Neo4jConnection) = {
-    neo4jConnection.sendQuery(cypher, parameters)
+  def apply(args: JsObject = Json.obj())(implicit neo4jConnection: Neo4jConnection) = {
+    neo4jConnection.sendQuery(cypher, parameters ++ args)
   }
 
-  def on(args: JsObject) = this.copy(parameters = args ++ parameters)
+  def on(args: JsObject) = this.copy(parameters = parameters ++ args)
 }
 
 object Cypher {

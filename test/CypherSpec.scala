@@ -39,11 +39,30 @@ class CypherSpec extends WordSpec
       }
     }
 
+    "should apply optionally provided query parameters" in {
+      val testNodeID = UUID.randomUUID().toString
+
+      val createCypherFutureResult = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
+        .apply(Json.obj("testNodeID" -> testNodeID))
+
+      whenReady(createCypherFutureResult) { cypherResult =>
+        (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
+        cypherResult.stats.nodesCreated shouldBe 1
+      }
+
+      val deleteCypherFutureResult = Cypher(s"match (n:TestNode { id: {testNodeID} }) delete n")
+        .apply(Json.obj("testNodeID" -> testNodeID))
+
+      whenReady(deleteCypherFutureResult) { cypherResult =>
+        cypherResult.stats.nodesDeleted shouldBe 1
+      }
+    }
+
   }
 
   "The `Cypher.on` method" should {
 
-    "set the dynamic parameters to cypher queries" in {
+    "should apply optionally provided query parameters" in {
       val testNodeID = UUID.randomUUID().toString
 
       val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
