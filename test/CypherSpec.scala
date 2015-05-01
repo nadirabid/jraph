@@ -76,13 +76,18 @@ class CypherSpec extends WordSpec
     "add to the parameters object when called in a chained manner" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
 
-      val createCypherQuery = Cypher(s"create (n:TestNode { id: {testNodeID} }) return n")
+      val createCypherQuery = Cypher(
+          """
+            | create (n:TestNode { id: {testNodeID}, chainedProperty: {chainedProperty} })
+            | return n
+          """.stripMargin
+        )
         .on(Json.obj("testNodeID" -> testNodeID))
-        .on(Json.obj("chainedProp" -> "chainedVal"))
+        .on(Json.obj("chainedProperty" -> "chainedValue"))
 
       whenReady(createCypherQuery()) { cypherResult =>
         (cypherResult.rows.head(0) \ "id").as[String] shouldBe testNodeID
-        (cypherResult.rows.head(0) \ "chainedProp").as[String] shouldBe "chainedVal"
+        (cypherResult.rows.head(0) \ "chainedProperty").as[String] shouldBe "chainedValue"
         cypherResult.stats.nodesCreated shouldBe 1
       }
 
