@@ -45,14 +45,6 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
     }
   }
 
-  /*
-  // this method is insecure by its usage of the insecure method Hypernode.batchRead
-  def batchRead(hypergraphID: UUID, hypernodeIDs: List[UUID]) = SecuredAction.async { req =>
-    Hypernode.batchRead(req.identity.email, hypergraphID, hypernodeIDs)
-        .map(hypernodes => Ok(Json.toJson(hypernodes)))
-  }
-  */
-
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypernode.readAll(req.identity.email, hypergraphID)
         .map(hypernodes => Ok(Json.toJson(hypernodes)))

@@ -87,29 +87,6 @@ object Hypernode {
         }
   }
 
-  /*
-  // TODO: secure this method, or get rid of it
-  def batchRead(userEmail: String,
-                hypergraphID: UUID,
-                hypernodeIDs: Seq[UUID]): Future[Seq[Hypernode]] = {
-
-    // TODO: security reasons, make sure the hypernode belongs to the user
-
-    val cypherBatchRead =
-      """
-        | MATCH (h:Hypernode)
-        | WHERE h.id IN {hypernodeIDs}
-        | RETURN h;
-      """.stripMargin
-
-    Cypher(cypherBatchRead)
-        .apply(Json.obj(
-          "hypernodeIDs" -> hypernodeIDs
-        ))
-        .map(_.rows.map(row => row(0).as[Hypernode]))
-  }
-  */
-
   def readAll(userEmail: String,
               hypergraphID: UUID): Future[Seq[Hypernode]] = {
 

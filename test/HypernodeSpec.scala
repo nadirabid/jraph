@@ -94,19 +94,6 @@ class HypernodeSpec extends WordSpec
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      /*
-      val batchFindResult = Hypernode.batchRead(
-        userEmail,
-        defaultHypergraph.id,
-        Seq(hypernodeModel.id)
-      )
-
-      whenReady(batchFindResult) { opt =>
-        opt.value.size shouldBe 1
-        opt.value.count(_.id == hypernodeModel.id) shouldBe 1
-      }
-      */
-
       val findAllResult = Hypernode.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { hnSeq =>
