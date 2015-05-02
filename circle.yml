@@ -15,7 +15,7 @@ dependencies:
     - ./activator clean update
 database:
   override:
-    - docker run -i -t -d -p 7474:7474 -e NEO4J_AUTH=neo4j:password --name neo4j --cap-add=SYS_RESOURCE "ahmetkizilay/docker-neo4j"; sleep 10
+    - docker run -i -t -d -p 7474:7474 -e NEO4J_AUTH=neo4j:password --name neo4j --cap-add=SYS_RESOURCE "ahmetkizilay/docker-neo4j"; sleep 20
 test:
   override:
     - ./activator coverage test
