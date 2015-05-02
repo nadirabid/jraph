@@ -34,13 +34,6 @@ object Hyperlink {
 
   implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
-  val neo4jHeaders = Seq(
-    "Content-Type" -> "application/json",
-    "Accept" -> "application/json; charset=UTF-8"
-  )
-
-  // TODO: reads can be made more efficient by not re-indexing down "(__ \ row)(0)"
-
   implicit val hyperlinkReads: Reads[Hyperlink] = (
     (JsPath \ "id").read[UUID] and
     (JsPath \ "sourceId").read[UUID] and
