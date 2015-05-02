@@ -93,10 +93,9 @@ class HyperlinkSpec extends WordSpec
 
       val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
 
-      whenReady(createResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.id shouldBe hyperlink.id
-        (opt.value.data.get \ "p1").as[String] shouldBe "v1"
+      whenReady(createResult) { hyperlinkResult =>
+        hyperlinkResult.id shouldBe hyperlink.id
+        (hyperlinkResult.data.get \ "p1").as[String] shouldBe "v1"
       }
 
       val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.id)
@@ -109,9 +108,8 @@ class HyperlinkSpec extends WordSpec
 
       val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
 
-      whenReady(findAllResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.count(_.id == hyperlink.id) shouldBe 1
+      whenReady(findAllResult) { hyperlinksResult =>
+        hyperlinksResult.count(_.id == hyperlink.id) shouldBe 1
       }
 
       val hyperlinkUpdate = Hyperlink(
@@ -129,13 +127,12 @@ class HyperlinkSpec extends WordSpec
         hyperlinkUpdate
       )
 
-      whenReady(updateResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.id shouldBe hyperlink.id
-        (opt.value.data.get \ "p2").as[String] shouldBe "v2"
+      whenReady(updateResult) { hyperlinkResult =>
+        hyperlinkResult.id shouldBe hyperlink.id
+        (hyperlinkResult.data.get \ "p2").as[String] shouldBe "v2"
 
         an [JsResultException] should be thrownBy {
-          (opt.value.data.get \ "p1").as[String]
+          (hyperlinkResult.data.get \ "p1").as[String]
         }
       }
 
@@ -145,8 +142,8 @@ class HyperlinkSpec extends WordSpec
         hyperlink.id
       )
 
-      whenReady(deleteResult) { opt =>
-        opt shouldBe true
+      whenReady(deleteResult) { hyperlinkDeleteResult =>
+        hyperlinkDeleteResult shouldBe true
       }
 
       val deleteFindResult = Hyperlink.read(
@@ -196,10 +193,9 @@ class HyperlinkSpec extends WordSpec
 
       val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
 
-      whenReady(createResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.id shouldBe hyperlink.id
-        opt.value.data shouldBe None
+      whenReady(createResult) { hyperlinkResult =>
+        hyperlinkResult.id shouldBe hyperlink.id
+        hyperlinkResult.data shouldBe None
       }
 
       val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.id)
@@ -212,9 +208,8 @@ class HyperlinkSpec extends WordSpec
 
       val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
 
-      whenReady(findAllResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.count(_.id == hyperlink.id) shouldBe 1
+      whenReady(findAllResult) { hyperlinksResult =>
+        hyperlinksResult.count(_.id == hyperlink.id) shouldBe 1
       }
 
       val hyperlinkUpdate = Hyperlink(
@@ -232,10 +227,9 @@ class HyperlinkSpec extends WordSpec
         hyperlinkUpdate
       )
 
-      whenReady(updateResult) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.id shouldBe hyperlink.id
-        (opt.value.data.get \ "p2").as[String] shouldBe "v2"
+      whenReady(updateResult) { hyperlinkResult =>
+        hyperlinkResult.id shouldBe hyperlink.id
+        (hyperlinkResult.data.get \ "p2").as[String] shouldBe "v2"
       }
 
       val hyperlinkUpdate2 = Hyperlink(
@@ -253,10 +247,9 @@ class HyperlinkSpec extends WordSpec
         hyperlinkUpdate2
       )
 
-      whenReady(update2Result) { opt =>
-        opt.isEmpty shouldBe false
-        opt.value.id shouldBe hyperlink.id
-        opt.value.data shouldBe None
+      whenReady(update2Result) { hyperlinkResult =>
+        hyperlinkResult.id shouldBe hyperlink.id
+        hyperlinkResult.data shouldBe None
       }
 
       val deleteResult = Hyperlink.delete(
@@ -265,8 +258,8 @@ class HyperlinkSpec extends WordSpec
         hyperlink.id
       )
 
-      whenReady(deleteResult) { opt =>
-        opt shouldBe true
+      whenReady(deleteResult) { hyperlinkDeleteResult =>
+        hyperlinkDeleteResult shouldBe true
       }
 
       val deleteFindResult = Hyperlink.read(

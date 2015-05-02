@@ -23,7 +23,6 @@ case class Hypernode(
 )
 
 object Hypernode {
-
   val dbHost = "localhost"
   val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get

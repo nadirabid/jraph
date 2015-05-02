@@ -86,7 +86,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
         Future.sequence(graphsDataRequests).map { graphsData =>
           val readiedGraphsData = graphsData.map {
-            case (hypergraph, nodes, Some(links)) =>
+            case (hypergraph, nodes, links) =>
               HypergraphData(hypergraph, nodes, links)
           }
 
