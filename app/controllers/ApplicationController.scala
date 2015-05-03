@@ -70,29 +70,27 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def index = SecuredAction.async { req =>
-    Hypergraph.readAll(req.identity.email).flatMap {
-      case Some(hypergraphs) =>
-        val graphsDataRequests = hypergraphs.map { hg =>
-          val nodes = Hypernode.readAll(req.identity.email, hg.id)
-          val links = Hyperlink.readAll(req.identity.email, hg.id)
+    Hypergraph.readAll(req.identity.email).flatMap { hypergraphs =>
+      val graphsDataRequests = hypergraphs.map { hg =>
+        val nodes = Hypernode.readAll(req.identity.email, hg.id)
+        val links = Hyperlink.readAll(req.identity.email, hg.id)
 
-          for {
-            n <- nodes
-            l <- links
-          } yield (hg, n, l)
+        for {
+          n <- nodes
+          l <- links
+        } yield (hg, n, l)
+      }
+
+      val userEmail = req.identity.email.trim.toLowerCase
+
+      Future.sequence(graphsDataRequests).map { graphsData =>
+        val readiedGraphsData = graphsData.map {
+          case (hypergraph, nodes, links) =>
+            HypergraphData(hypergraph, nodes, links)
         }
 
-        val userEmail = req.identity.email.trim.toLowerCase
-
-        Future.sequence(graphsDataRequests).map { graphsData =>
-          val readiedGraphsData = graphsData.map {
-            case (hypergraph, nodes, links) =>
-              HypergraphData(hypergraph, nodes, links)
-          }
-
-          Ok(views.html.account.index(Json.toJson(readiedGraphsData), Codecs.md5(userEmail.getBytes)))
-        }
-      case None => Future.successful(ServiceUnavailable)
+        Ok(views.html.account.index(Json.toJson(readiedGraphsData), Codecs.md5(userEmail.getBytes)))
+      }
     }
   }
 

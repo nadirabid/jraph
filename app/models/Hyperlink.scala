@@ -5,8 +5,6 @@ import java.util.UUID
 import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.ws.WS
-import play.api.libs.ws.WSAuthScheme
 import play.api.libs.functional.syntax._
 import utils.cypher.{Cypher, Neo4jConnection}
 

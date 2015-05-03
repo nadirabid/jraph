@@ -66,9 +66,9 @@ class HypergraphSpec extends WordSpec
 
       val createResult = Hypergraph.create(userEmail, hypergraphModel)
 
-      whenReady(createResult) { opt =>
-        opt.value.id shouldBe hypergraphID
-        (opt.value.data.get \ "name").as[String] shouldBe hypergraphName
+      whenReady(createResult) { hypergraphResult =>
+        hypergraphResult.id shouldBe hypergraphID
+        (hypergraphResult.data.get \ "name").as[String] shouldBe hypergraphName
       }
 
       val findResult = Hypergraph.read(userEmail, hypergraphID)
@@ -80,9 +80,9 @@ class HypergraphSpec extends WordSpec
 
       val findAllResult = Hypergraph.readAll(userEmail)
 
-      whenReady(findAllResult) { opt =>
-        opt.value.size shouldBe 2 //including the default graph
-        opt.value.count(_.id == hypergraphID) shouldBe 1
+      whenReady(findAllResult) { hypergraphsResult =>
+        hypergraphsResult.size shouldBe 2 //including the default graph
+        hypergraphsResult.count(_.id == hypergraphID) shouldBe 1
       }
 
       val modelUpdate = Hypergraph(
@@ -94,10 +94,10 @@ class HypergraphSpec extends WordSpec
 
       val updateResult = Hypergraph.update(userEmail, modelUpdate)
 
-      whenReady(updateResult) { opt =>
-        opt.value.id shouldBe hypergraphID
-        (opt.value.data.get \ "p1").as[String] shouldBe "v1"
-        (opt.value.data.get \ "name").as[String] shouldBe "newName"
+      whenReady(updateResult) { hypergraphResult =>
+        hypergraphResult.id shouldBe hypergraphID
+        (hypergraphResult.data.get \ "p1").as[String] shouldBe "v1"
+        (hypergraphResult.data.get \ "name").as[String] shouldBe "newName"
       }
 
       val deleteResult = Hypergraph.delete(userEmail, hypergraphID)

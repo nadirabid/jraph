@@ -41,7 +41,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
     Hypernode.read(req.identity.email, hypergraphID, hypernodeID) map {
       case Some(hypernode) => Ok(Json.toJson(hypernode))
-      case None => ServiceUnavailable
+      case None => NotFound
     }
   }
 
@@ -74,10 +74,8 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   def delete(hypergraphID: UUID,
              hypernodeID: UUID) = SecuredAction.async(parse.anyContent) { req =>
 
-    Hypernode.delete(req.identity.email, hypergraphID, hypernodeID).map {
-      case true => Ok(Json.toJson(true))
-      case false => ServiceUnavailable
-    }
+    Hypernode.delete(req.identity.email, hypergraphID, hypernodeID)
+        .map(res => Ok(Json.toJson(res)))
   }
 
 }

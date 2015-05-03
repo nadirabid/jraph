@@ -49,7 +49,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
   def read(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction.async { req =>
     Hyperlink.read(req.identity.email, hypergraphID, hyperlinkID) map {
       case Some(hyperlink) => Ok(Json.toJson(hyperlink))
-      case None => ServiceUnavailable
+      case None => NotFound
     }
   }
 
@@ -74,10 +74,8 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
   }
 
   def delete(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction.async { req =>
-    Hyperlink.delete(req.identity.email, hypergraphID, hyperlinkID).map {
-      case true => Ok(Json.toJson(true))
-      case false => ServiceUnavailable
-    }
+    Hyperlink.delete(req.identity.email, hypergraphID, hyperlinkID)
+        .map(res => Ok(Json.toJson(res)))
   }
 
 }

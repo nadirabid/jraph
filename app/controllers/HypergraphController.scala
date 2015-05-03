@@ -35,24 +35,20 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypergraph.create(req.identity.email, model).map {
-      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
-      case None => ServiceUnavailable
-    }
+    Hypergraph.create(req.identity.email, model)
+        .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
   def read(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(Json.toJson(hypergraph))
-      case None => ServiceUnavailable
+      case None => NotFound
     }
   }
 
   def readAll = SecuredAction.async { req =>
-    Hypergraph.readAll(req.identity.email).map {
-      case Some(hypergraphs) => Ok(Json.toJson(hypergraphs))
-      case None => ServiceUnavailable
-    }
+    Hypergraph.readAll(req.identity.email)
+        .map(hypergraphs => Ok(Json.toJson(hypergraphs)))
   }
 
   def update(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
@@ -63,17 +59,13 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypergraph.update(req.identity.email, model) map {
-      case Some(hypergraph) => Ok(Json.toJson(hypergraph))
-      case None => ServiceUnavailable
-    }
+    Hypergraph.update(req.identity.email, model)
+        .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
   def delete(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypergraph.delete(req.identity.email, hypergraphID).map {
-      case true => Ok(Json.toJson(true))
-      case false => ServiceUnavailable
-    }
+    Hypergraph.delete(req.identity.email, hypergraphID)
+        .map(res => Ok(Json.toJson(res)))
   }
 
 }
