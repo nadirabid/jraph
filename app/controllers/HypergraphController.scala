@@ -18,15 +18,6 @@ import java.util.UUID
 class HypergraphController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  implicit val hypergraphWrites = new Writes[Hypergraph] {
-    def writes(hypergraph: Hypergraph) = Json.obj(
-      "id" -> hypergraph.id,
-      "updatedAt" -> hypergraph.updatedAt,
-      "createdAt" -> hypergraph.createdAt,
-      "data" -> hypergraph.data
-    )
-  }
-
   def create = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(
       UUID.randomUUID(),

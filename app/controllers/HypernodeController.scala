@@ -17,15 +17,6 @@ import scala.concurrent.Future
 class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  implicit val hypernodeWrites = new Writes[Hypernode] {
-    def writes(hypernode: Hypernode) = Json.obj(
-      "id" -> hypernode.id,
-      "createdAt" -> hypernode.createdAt.getMillis,
-      "updatedAt" -> hypernode.updatedAt.getMillis,
-      "data" -> hypernode.data
-    )
-  }
-
   def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Hypernode(
       UUID.randomUUID(),

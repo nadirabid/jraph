@@ -34,6 +34,15 @@ object Hypergraph {
     (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hypergraph.apply _)
 
+  implicit val hypergraphWrites = new Writes[Hypergraph] {
+    def writes(hypergraph: Hypergraph) = Json.obj(
+      "id" -> hypergraph.id,
+      "updatedAt" -> hypergraph.updatedAt,
+      "createdAt" -> hypergraph.createdAt,
+      "data" -> hypergraph.data
+    )
+  }
+
   def create(userEmail: String, hypergraph: Hypergraph): Future[Hypergraph] = {
     val cypherCreate =
       """

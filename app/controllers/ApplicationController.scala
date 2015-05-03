@@ -28,44 +28,12 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
                                        val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
-  case class HypergraphData(hypergraph: Hypergraph,
-                            nodes: Seq[Hypernode],
-                            links: Seq[Hyperlink])
-
-  implicit val hypergraphWrites = new Writes[Hypergraph] {
-    def writes(hypergraph: Hypergraph) = Json.obj(
-      "id" -> hypergraph.id,
-      "updatedAt" -> hypergraph.updatedAt,
-      "createdAt" -> hypergraph.createdAt,
-      "data" -> hypergraph.data
-    )
-  }
-
-  implicit val hypernodeWrites = new Writes[Hypernode] {
-    def writes(hypernode: Hypernode) = Json.obj(
-      "id" -> hypernode.id,
-      "createdAt" -> hypernode.createdAt.getMillis,
-      "updatedAt" -> hypernode.updatedAt.getMillis,
-      "data" -> hypernode.data
-    )
-  }
-
-  implicit val hyperlinkWrites = new Writes[Hyperlink] {
-    def writes(hyperlink: Hyperlink) = Json.obj(
-      "id" -> hyperlink.id,
-      "sourceId" -> hyperlink.sourceID,
-      "targetId" -> hyperlink.targetID,
-      "updatedAt" -> hyperlink.updatedAt.getMillis,
-      "createdAt" -> hyperlink.createdAt.getMillis,
-      "data" -> hyperlink.data
-    )
-  }
-
-  implicit val hypergraphDataWrite = new Writes[HypergraphData] {
-    def writes(hypergraphData: HypergraphData) = Json.obj(
-      "graph" -> hypergraphData.hypergraph,
-      "nodes" -> hypergraphData.nodes,
-      "links" -> hypergraphData.links
+  implicit val graphsDataWrite =
+      new Writes[(Hypergraph, Seq[Hypernode], Seq[Hyperlink])] {
+    def writes(graphsData: (Hypergraph, Seq[Hypernode], Seq[Hyperlink])) = Json.obj(
+      "graph" -> graphsData._1,
+      "nodes" -> graphsData._2,
+      "links" -> graphsData._3
     )
   }
 
@@ -84,12 +52,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
       val userEmail = req.identity.email.trim.toLowerCase
 
       Future.sequence(graphsDataRequests).map { graphsData =>
-        val readiedGraphsData = graphsData.map {
-          case (hypergraph, nodes, links) =>
-            HypergraphData(hypergraph, nodes, links)
-        }
-
-        Ok(views.html.account.index(Json.toJson(readiedGraphsData), Codecs.md5(userEmail.getBytes)))
+        Ok(views.html.account.index(Json.toJson(graphsData),
+                                    Codecs.md5(userEmail.getBytes)))
       }
     }
   }

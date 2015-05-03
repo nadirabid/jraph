@@ -37,6 +37,15 @@ object Hypernode {
     (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hypernode.apply _)
 
+  implicit val hypernodeWrites = new Writes[Hypernode] {
+    def writes(hypernode: Hypernode) = Json.obj(
+      "id" -> hypernode.id,
+      "createdAt" -> hypernode.createdAt.getMillis,
+      "updatedAt" -> hypernode.updatedAt.getMillis,
+      "data" -> hypernode.data
+    )
+  }
+
   def create(userEmail: String,
              hypergraphID: UUID,
              hypernode: Hypernode): Future[Hypernode] = {

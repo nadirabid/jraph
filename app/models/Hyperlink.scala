@@ -41,6 +41,16 @@ object Hyperlink {
     (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
   )(Hyperlink.apply _)
 
+  implicit val hyperlinkWrites = new Writes[Hyperlink] {
+    def writes(hyperlink: Hyperlink) = Json.obj(
+      "id" -> hyperlink.id,
+      "sourceId" -> hyperlink.sourceID,
+      "targetId" -> hyperlink.targetID,
+      "updatedAt" -> hyperlink.updatedAt.getMillis,
+      "createdAt" -> hyperlink.createdAt.getMillis,
+      "data" -> hyperlink.data
+    )
+  }
 
   // NOTE: if we want to add the constraint of single one directional links between nodes,
   // we'll have to manually query against the db to make sure it doesn't exist

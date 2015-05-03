@@ -18,18 +18,6 @@ import scala.concurrent.Future
 class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  //TODO: change api from using "xId" to "xID"
-  implicit val hyperlinkWrites = new Writes[Hyperlink] {
-    def writes(hyperlink: Hyperlink) = Json.obj(
-      "id" -> hyperlink.id,
-      "sourceId" -> hyperlink.sourceID,
-      "targetId" -> hyperlink.targetID,
-      "updatedAt" -> hyperlink.updatedAt.getMillis,
-      "createdAt" -> hyperlink.createdAt.getMillis,
-      "data" -> hyperlink.data
-    )
-  }
-
   def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     Future.successful(Ok)
 
