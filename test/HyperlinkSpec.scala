@@ -179,8 +179,8 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 200.millis)
-      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 200.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 2000.millis)
+      Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 2000.millis)
 
       val hyperlink = Hyperlink(
         UUID.randomUUID(),
