@@ -6,9 +6,35 @@
   <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/font-awesome.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
   <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
-  <link rel="stylesheet" href="@routes.Assets.at("style/account/account.css")">
+  <style>
+    html, body {
+      height:100%;
+    }
+
+    main {
+      height:100%;
+      flex: auto;
+      display: flex;
+    }
+
+    .nodeInfoPanel {
+      order:1;
+      width: 350px;
+      background-color:#607D8B;
+    }
+
+    .graphContainer {
+      order:2;
+      flex:auto;
+      display:flex;
+      background-color:#FAFAFA;
+    }
+  </style>
 </head>
 <body>
- DESIGN
+  <main>
+    <div class="nodeInfoPanel"></div>
+    <div class="graphContainer"></div>
+  </main>
 </body>
 </html>
