@@ -14,7 +14,9 @@
     Uncategorized
 ***/
 
-[v-cloak] { display: none !important; } /* hide element with v-cloak attribute */
+[v-cloak] {
+    display: none !important; /* hide element with v-cloak attribute */
+}
 
 .disable-pointer-events {
     pointer-events: none;
@@ -93,24 +95,35 @@ html, body {
     -webkit-order: 1;
     display: -webkit-flex;
 
-    background-color: #34495E;
+    background-color: #fafafa;
 }
 
 /***
     HTML Info view styles
 ***/
 
+.shadow-floating-panel-bar {
+}
+
 .floating-panel-bar {
     overflow:scroll;
     position:absolute;
     width: 26em;
-
-    pointer-events: auto;
-    background-color: rgba(255, 255, 255, .93);
-    white-space: nowrap;
-    padding: 2em;
     box-shadow: 0 .05em .2em 0em rgba(1, 1, 1, .2);
     border: 1px solid #eee;
+
+    filter: blur(0);
+    -webkit-filter: blur(0);
+}
+
+.floating-panel-bar > .content {
+    width:100%;
+    height:100%;
+    background-color: rgba(255, 255, 255, 0);
+    pointer-events: auto;
+    background-color: rgba(255, 255, 255, .96);
+    white-space: nowrap;
+    padding: 2em;
 }
 
 .info-panel {
@@ -164,14 +177,14 @@ html, body {
 }
 
 .marker-arrow {
-    fill: rgba(255, 255, 255, 1);
+    fill: #616161;
     stroke-opacity: 0;
     stroke-width: .25em;
 }
 
 .link {
-    opacity: .3;
-    stroke: #eee;
+    opacity: 1;
+    stroke: #BDBDBD;
     stroke-width: .25em;
 }
 
@@ -187,7 +200,7 @@ html, body {
 
 .node-rect {
     stroke-width: 0;
-    fill: #fff;
+    fill: #37474F;
 }
 
 .node-linking-target.hover {
@@ -199,7 +212,7 @@ html, body {
 }
 
 .node-name {
-    fill: #000;
+    fill: rgba(255,255,255,.87);
 }
 
 .node-menu {

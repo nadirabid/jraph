@@ -1356,7 +1356,7 @@ define([
 
         this.$.currentPanel = panel;
         panel.$mount();
-        panel.$appendTo(this.$el);
+        panel.$appendTo(this.$$.content);
       }
     },
 
