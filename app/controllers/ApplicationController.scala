@@ -200,6 +200,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Ok(views.html.test.index())
   }
 
+  def design = Action {
+    Ok(views.html.test.design())
+  }
+
   def trimTrailingForwardSlash(path: String) = Action {
     MovedPermanently("/" + path)
   }
