@@ -294,8 +294,6 @@ define([
 
   var NodeComponent = Vue.extend({
 
-    inherit: true,
-
     replace: true,
 
     template: document.getElementById('graph.node.rect').innerHTML,
@@ -309,11 +307,6 @@ define([
         width: 0,
         height: 0,
         menu: false,
-        nameDistance: 15,
-        radius: 1.5,
-        nameX: 0,
-        nameY: 0,
-        nameTranslate: 'translate(0, 0)',
         nodeTranslate: 'translate(0, 0)',
         rectTranslate: 'translate(0, 0)',
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
@@ -327,10 +320,6 @@ define([
 
       nodeTranslate: function() {
         return 'translate(' + this.x + ',' + this.y + ')';
-      },
-
-      nameTranslate: function() {
-        return 'translate(' + this.nameX + ',' + this.nameY + ')';
       },
 
       rectTranslate: function() {
@@ -374,37 +363,6 @@ define([
 
         this.width = bBox.width + 24;
         this.height = bBox.height + 12;
-      },
-
-      updateDimensionsOfNodeCircle: function() {
-        var bBox = this.$$.nodeName.getBBox();
-
-        this.radius = (bBox.width / 2) + 12;
-      },
-
-      updateNameTranslation: function () {
-        var nameDistance = (this.radius * 12) + this.nameDistance;
-        var bBox = this.$$.nodeName.getBBox();
-
-        var dx = this.x - (this.$parent.width / 2),
-            dy = this.y - (this.$parent.height / 2);
-
-        var theta = Math.atan(dy / dx);
-        var ratio = E_MINUS_1 * (1 - Math.abs(( theta % HALF_PI ) / HALF_PI));
-
-        var shiftX = bBox.width * Math.log(ratio + 1) * (( dx > 0 ) ? 0.5 : -0.5),
-            shiftY = bBox.y * -0.5;
-
-        var tX = nameDistance * Math.cos(theta),
-            tY = nameDistance * Math.sin(theta);
-
-        if (dx < 0) {
-          tX *= -1;
-          tY *= -1;
-        }
-
-        this.nameX = tX + shiftX;
-        this.nameY = tY + shiftY;
       },
 
       nodeContextMenu: function(e) {
@@ -506,29 +464,9 @@ define([
         this.$watch('y', this.calculateRectBoundingEdges.bind(this));
         this.$watch('width', this.calculateRectBoundingEdges.bind(this));
         this.$watch('height', this.calculateRectBoundingEdges.bind(this));
-
-        /*
-        this.$watch('x', this.updateNameTranslation.bind(this));
-        this.$watch('y', this.updateNameTranslation.bind(this));
-        this.$watch('nameDistance', this.updateNameTranslation.bind(this));
-        this.$watch('radius', this.updateNameTranslation.bind(this));
-        */
       },
 
       'hook:ready': function () {
-        /*
-        var $nodeCircle = util(this.$$.nodeCircle);
-
-        $nodeCircle.on('click', this.click.bind(this));
-        $nodeCircle.on('mouseover', this.mouseover.bind(this));
-        $nodeCircle.on('mouseout', this.mouseout.bind(this));
-        $nodeCircle.on('dragstart', this.dragstart.bind(this));
-        $nodeCircle.on('drag', this.drag.bind(this));
-        $nodeCircle.on('dragend', this.dragend.bind(this));
-
-        this.updateNameTranslation();
-        */
-
         var $nodeRect = util(this.$$.nodeRect);
 
         $nodeRect.on('click', this.click.bind(this));
@@ -1356,7 +1294,7 @@ define([
 
         this.$.currentPanel = panel;
         panel.$mount();
-        panel.$appendTo(this.$$.content);
+        panel.$appendTo(this.$el);
       }
     },
 
