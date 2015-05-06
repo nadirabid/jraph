@@ -323,7 +323,7 @@ define([
       },
 
       rectTranslate: function() {
-        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 12)/2) + ')';
+        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 10)/2) + ')';
       }
 
     },
@@ -732,21 +732,14 @@ define([
 
       zoomUpdate: function(e, zoomDelta) {
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
-        var totalZoomFactor = this.totalZoomFactor * zoomFactor;
-        totalZoomFactor = Math.min(this.maxZoomFactor, Math.max(this.minZoomFactor, totalZoomFactor));
-
-        if (totalZoomFactor === this.totalZoomFactor) {
-          return;
-        }
-
-        this.totalZoomFactor = totalZoomFactor;
+        this.totalZoomFactor = this.totalZoomFactor * zoomFactor;
 
         switch(this.state.zoomType) {
           case 'scale':
-            this.scaleZoom(e, zoomFactor, totalZoomFactor);
+            this.scaleZoom(e, zoomFactor, this.totalZoomFactor);
             break;
           case 'semantic':
-            this.semanticZoom(e, zoomFactor, totalZoomFactor);
+            this.semanticZoom(e, zoomFactor, this.totalZoomFactor);
             break;
           default:
             console.error('Unknown zoomType:', this.state.zoomType);

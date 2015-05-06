@@ -164,16 +164,16 @@ html, body {
     -webkit-flex: 1 1 auto;
 }
 
-.marker-arrow {
-    fill:#9E9E9E;
+.link-arrow {
+    fill:#BDBDBD;
     stroke-opacity: 0;
     stroke-width: .40em;
 }
 
 .link {
-    opacity: .7;
-    stroke: #9E9E9E;
-    stroke-width: .25em;
+    opacity: 1;
+    stroke: #BDBDBD;
+    stroke-width: .20em;
 }
 
 .link.hover {
