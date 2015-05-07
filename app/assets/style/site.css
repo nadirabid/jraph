@@ -52,9 +52,11 @@
 /*
   Main layout
 */
-html, body {
+html,
+body {
     height: 100%;
-    overflow:hidden; /* prevent browser effect of "no more page to scroll" effect */
+    width: 100%;
+    overflow: none;
 }
 
 #all {
