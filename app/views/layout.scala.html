@@ -3,20 +3,23 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <title>@title</title>
 
-            <!-- Viewport mobile tag for sensible mobile support -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</html>
+<html lang="en">
+  <head>
+    <title>@title</title>
 
-        <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("style/site.css")">
-    </head>
+    <!-- Viewport mobile tag for sensible mobile support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <body>
-        @content
+    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/site.css")">
+  </head>
+  <body>
+    @content
 
-        <script data-main="@routes.Assets.at("js/main")"
-                src="@routes.Assets.at("js/dependencies/require.js")"></script>
-    </body>
+    <script data-main="@routes.Assets.at("js/main")"
+            src="@routes.Assets.at("js/dependencies/require.js")"></script>
+  </body>
 </html>
