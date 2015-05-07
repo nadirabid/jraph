@@ -106,12 +106,10 @@ html, body {
     overflow:scroll;
     position:absolute;
     width: 26em;
-    box-shadow: 0 .05em .2em 0 rgba(1, 1, 1, .2);
-    border: 1px solid #eee;
     pointer-events: auto;
     white-space: nowrap;
     padding: 2em;
-    background-color:rgba(255,255,255,.985)
+    background-color:rgba(255,255,255,.985);
 }
 
 .info-panel {
