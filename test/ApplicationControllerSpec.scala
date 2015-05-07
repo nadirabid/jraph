@@ -15,7 +15,7 @@ import org.scalatest.{WordSpec, BeforeAndAfter, ShouldMatchers}
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
-import utils.silhouette.SilhouetteModule
+import core.silhouette.SilhouetteModule
 
 // By default the tests of a given ScalaTest Suite (WordSpec, FlatSpec, etc)
 // are run sequentially inferred from the order in which the tests are defined.

@@ -7,7 +7,7 @@ import play.api.libs.json.Json
 
 import java.util.UUID
 
-import utils.cypher._
+import core.cypher._
 import testutils.Neo4jConnectionFixture
 
 class CypherSpec extends WordSpec

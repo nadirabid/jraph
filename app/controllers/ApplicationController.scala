@@ -37,7 +37,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def index = SecuredAction.async { req =>
+  def userGraphs = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email).flatMap { hypergraphs =>
       val graphsDataRequests = hypergraphs.map { hg =>
         val nodes = Hypernode.readAll(req.identity.email, hg.id)
@@ -152,16 +152,20 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def signIn = UserAwareAction.async { req =>
+  def appAccess = Action {
+    Ok(views.html.account.appAccess())
+  }
+
+  def signIn = UserAwareAction { req =>
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None => Future.successful(Ok(views.html.account.signIn(SignInForm.form)))
     }
   }
 
-  def signUp = UserAwareAction.async { req =>
+  def signUp = UserAwareAction { req =>
     req.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None => Future.successful(Ok(views.html.account.signUp(SignUpForm.form)))
     }
   }
@@ -170,7 +174,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
   }
 
-  def reauthenticate(email: Option[String], continueTo: Option[String]) = UserAwareAction.async { req =>
+  def reauthenticate(email: Option[String],
+                     continueTo: Option[String]) = UserAwareAction.async { req =>
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
       case None =>

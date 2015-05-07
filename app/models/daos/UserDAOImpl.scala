@@ -12,7 +12,7 @@ import play.api.libs.json._
 import play.api.libs.json.Reads._
 
 import models.User
-import utils.cypher._
+import core.cypher._
 
 class UserDAOImpl extends UserDAO {
   val dbHost = "localhost"

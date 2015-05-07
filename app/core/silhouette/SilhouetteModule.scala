@@ -1,4 +1,4 @@
-package utils.silhouette
+package core.silhouette
 
 import com.google.inject.{AbstractModule, Provides}
 

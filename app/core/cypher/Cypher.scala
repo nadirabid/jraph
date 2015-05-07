@@ -1,4 +1,4 @@
-package utils.cypher
+package core.cypher
 
 import play.api.Play.current
 import play.api.libs.ws.{WS, WSAuthScheme}

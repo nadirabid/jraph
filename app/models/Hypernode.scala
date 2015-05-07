@@ -8,7 +8,7 @@ import play.api.libs.json._
 import play.api.libs.ws.WS
 import play.api.libs.ws.WSAuthScheme
 import play.api.libs.functional.syntax._
-import utils.cypher.{Cypher, Neo4jConnection}
+import core.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

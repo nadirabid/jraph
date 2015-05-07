@@ -1,7 +1,7 @@
 package testutils
 
 import play.api.Play._
-import utils.cypher.Neo4jConnection
+import core.cypher.Neo4jConnection
 
 trait Neo4jConnectionFixture {
   val dbHost = "localhost"

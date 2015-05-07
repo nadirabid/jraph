@@ -7,7 +7,7 @@ import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import utils.cypher.{Neo4jConnection, Cypher}
+import core.cypher.{Neo4jConnection, Cypher}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
