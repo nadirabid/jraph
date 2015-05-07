@@ -1247,12 +1247,12 @@ define([
       updateDimensionsAndPosition: function() {
         var $nav = $('#nav');
 
-        var padding = 24;
+        var padding = 12;
         var navHeight = $nav.outerHeight();
 
         $(this.$el).css({
           top: navHeight + padding + 'px',
-          right: padding + 'px'
+          left: padding + 'px'
         });
 
         $(this.$el).outerHeight($(window).outerHeight() - navHeight - 2*padding);
@@ -1349,12 +1349,10 @@ define([
     methods: {
 
       updatePosition: function() {
-        var $nav = $('#nav');
-
         var padding = 12;
 
         this.$el.style.setProperty('bottom', padding + 'px');
-        this.$el.style.setProperty('left', padding + 'px');
+        this.$el.style.setProperty('right', padding + 'px');
       },
 
       incrementZoomLevel: function() {
