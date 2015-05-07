@@ -52,8 +52,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
       val userEmail = req.identity.email.trim.toLowerCase
 
       Future.sequence(graphsDataRequests).map { graphsData =>
-        Ok(views.html.account.index(Json.toJson(graphsData),
-                                    Codecs.md5(userEmail.getBytes)))
+        Ok(views.html.account.userGraphs(Json.toJson(graphsData),
+                                         Codecs.md5(userEmail.getBytes)))
       }
     }
   }
@@ -153,37 +153,37 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def appAccess = Action {
-    Ok(views.html.account.appAccess())
+    Ok(views.html.account.devAccess())
   }
 
   def signIn = UserAwareAction { req =>
     req.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.account.signIn(SignInForm.form)))
+      case Some(user) => Redirect(routes.ApplicationController.userGraphs())
+      case None => Ok(views.html.account.signIn(SignInForm.form))
     }
   }
 
   def signUp = UserAwareAction { req =>
     req.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
-      case None => Future.successful(Ok(views.html.account.signUp(SignUpForm.form)))
+      case Some(user) => Redirect(routes.ApplicationController.userGraphs())
+      case None => Ok(views.html.account.signUp(SignUpForm.form))
     }
   }
 
-  def signOut = SecuredAction.async { implicit req =>
-    Future.successful(req.authenticator.discard(Redirect(routes.ApplicationController.index())))
+  def signOut = SecuredAction { implicit req =>
+    req.authenticator.discard(Redirect(routes.ApplicationController.signIn()))
   }
 
   def reauthenticate(email: Option[String],
                      continueTo: Option[String]) = UserAwareAction.async { req =>
     req.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None =>
         email match {
           case Some(userEmail) =>
             val cleanUserEmail = userEmail.trim.toLowerCase
             val signInForm = SignInForm.form.fill(Credentials(cleanUserEmail, ""))
-            val continueToURL = continueTo getOrElse routes.ApplicationController.index().toString()
+            val continueToURL = continueTo.getOrElse(routes.ApplicationController.userGraphs().toString())
 
             val result = Ok(views.html.account.reauthenticate(
               signInForm,

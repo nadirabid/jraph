@@ -5,7 +5,7 @@
 
 
 # API
-GET           /                                                @controllers.ApplicationController.index
+
 GET           /*path/                                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
 GET           /signIn                                          @controllers.ApplicationController.signIn
 GET           /signUp                                          @controllers.ApplicationController.signUp
@@ -14,6 +14,7 @@ GET           /graph/:hypergraphID                             @controllers.Appl
 GET           /test                                            @controllers.ApplicationController.test
 GET           /design                                          @controllers.ApplicationController.design
 
+GET           /account/graphs                                  @controllers.ApplicationController.userGraphs
 GET           /account/reauthenticate                          @controllers.ApplicationController.reauthenticate(email:Option[String], continueTo:Option[String])
 GET           /account/profile                                 @controllers.ApplicationController.profile
 POST          /account/profile/update                          @controllers.ApplicationController.handleUserInfoUpdate

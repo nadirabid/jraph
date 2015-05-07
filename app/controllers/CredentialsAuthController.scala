@@ -38,7 +38,7 @@ class CredentialsAuthController @Inject()(implicit val env: Environment[User, Se
           case Some(p: CredentialsProvider) => p.authenticate(credentials)
           case _ => Future.failed(new ConfigurationException(s"Cannot find credentials provider"))
         }).flatMap { loginInfo =>
-          val continueToURL = continueTo.getOrElse(routes.ApplicationController.index().toString())
+          val continueToURL = continueTo.getOrElse(routes.ApplicationController.userGraphs().toString())
 
           userService.retrieve(loginInfo).flatMap {
             case Some(user) => env.authenticatorService.create(user.loginInfo).flatMap { authenticator =>
