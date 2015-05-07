@@ -727,7 +727,6 @@ define([
       },
 
       mousewheelZoom: function(e) {
-        console.log(e);
         this.zoomUpdate(e, e.wheelDeltaY / 360);
       },
 
