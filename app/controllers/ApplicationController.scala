@@ -145,7 +145,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           case None =>
             // shit just got bad
             Future.successful(
-              Redirect(routes.ApplicationController.profile()).flashing("error" -> Messages("invalid.id"))
+              Redirect(routes.ApplicationController.profile())
+                .flashing("error" -> Messages("invalid.id"))
             )
         }
       }

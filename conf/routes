@@ -5,7 +5,7 @@
 
 
 # API
-
+GET           /                                                @controllers.ApplicationController.appAccess
 GET           /*path/                                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
 GET           /signIn                                          @controllers.ApplicationController.signIn
 GET           /signUp                                          @controllers.ApplicationController.signUp
