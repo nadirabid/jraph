@@ -8,5 +8,6 @@ case class User(
     email: String,
     firstName: Option[String],
     lastName: Option[String],
-    loginInfo: LoginInfo
+    loginInfo: LoginInfo,
+    role: Option[String] = None
 ) extends Identity

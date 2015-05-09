@@ -4,10 +4,11 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.{ConfigurationException, ProviderException}
+import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
-import forms.SignInForm
+import forms.{DevAccessForm, SignInForm}
 import models.User
 import models.services.UserService
 import play.api.i18n.Messages
@@ -52,6 +53,13 @@ class CredentialsAuthController @Inject()(implicit val env: Environment[User, Se
           case e: ProviderException =>
             Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("invalid.credentials"))
         }
+    )
+  }
+
+  def authenticateDevAccess = Action.async { implicit req =>
+    DevAccessForm.form.bindFromRequest.fold(
+      form => Future.successful(BadRequest(views.html.account.devAccess())),
+      passwordData => Future.successful(Ok)
     )
   }
 }

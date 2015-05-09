@@ -8,6 +8,7 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, PasswordInfo}
+import core.authorization.WithAccess
 import models.daos.PasswordInfoDAO
 
 import play.api.i18n.Messages
@@ -153,8 +154,16 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def appAccess = Action {
-    Ok(views.html.account.devAccess())
+  def devAccess = UserAwareAction { implicit req =>
+    req.identity match {
+      case Some(user) =>
+        if (WithAccess("dev").isAuthorized(user))
+          Redirect(routes.ApplicationController.signIn())
+        else
+          Redirect(routes.ApplicationController.userGraphs())
+      case None =>
+        Ok(views.html.account.devAccess())
+    }
   }
 
   def signIn = UserAwareAction { req =>
@@ -200,14 +209,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
             Future.successful(Redirect(routes.ApplicationController.signIn()))
         }
     }
-  }
-
-  def test = UserAwareAction {
-    Ok(views.html.test.index())
-  }
-
-  def design = Action {
-    Ok(views.html.test.design())
   }
 
   def trimTrailingForwardSlash(path: String) = Action {

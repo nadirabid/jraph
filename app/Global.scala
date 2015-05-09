@@ -103,7 +103,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
   override def onNotAuthenticated(request: RequestHeader,
                                   lang: Lang): Option[Future[Result]] = {
 
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn())))
+    Some(Future.successful(Redirect(routes.ApplicationController.devAccess())))
   }
 
   /**

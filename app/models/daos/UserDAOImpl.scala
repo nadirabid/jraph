@@ -32,7 +32,8 @@ class UserDAOImpl extends UserDAO {
       (JsPath \ "email").read[String](email) and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "lastName").readNullable[String] and
-      JsPath.read[LoginInfo]
+      JsPath.read[LoginInfo] and
+      (JsPath \ "role").readNullable[String]
   )(User.apply _)
 
   def find(loginInfo: LoginInfo) = {
