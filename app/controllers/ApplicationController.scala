@@ -102,7 +102,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         userService.update(user).flatMap { _ =>
           val continueToURLAfterRedirect = routes.ApplicationController.profile().toString()
           val result = routes.ApplicationController.reauthenticate(Some(user.email), Some(continueToURLAfterRedirect))
-          authenticator.discard(Future.successful(Redirect(result)))
+          env.authenticatorService.discard(authenticator, Redirect(result))
         }
       }
     )
@@ -180,8 +180,8 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
-  def signOut = SecuredAction { implicit req =>
-    req.authenticator.discard(Redirect(routes.ApplicationController.signIn()))
+  def signOut = SecuredAction.async { implicit req =>
+    env.authenticatorService.discard(req.authenticator, Redirect(routes.ApplicationController.signIn()))
   }
 
   def reauthenticate(email: Option[String],

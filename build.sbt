@@ -11,10 +11,10 @@ resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositor
 libraryDependencies ++= Seq(
   cache,
   ws,
-  "com.mohiva" %% "play-silhouette" % "2.0-RC2",
   "net.codingwell" %% "scala-guice" % "4.0.0-beta5",
   "org.scalatestplus" %% "play" % "1.2.0" % "test",
-  "com.mohiva" %% "play-silhouette-testkit" % "2.0-RC2" % "test"
+  "com.mohiva" %% "play-silhouette" % "2.1-SNAPSHOT",
+  "com.mohiva" %% "play-silhouette-testkit" % "2.1-SNAPSHOT" % "test"
 )
 
 TaskKey[Unit]("stop") := {

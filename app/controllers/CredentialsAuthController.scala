@@ -22,8 +22,10 @@ import scala.concurrent.Future
  *
  * @param env The Silhouette environment.
  */
-class CredentialsAuthController @Inject()(implicit val env: Environment[User, SessionAuthenticator],
-                                          val userService: UserService)
+class CredentialsAuthController @Inject()(
+    implicit val env: Environment[User, SessionAuthenticator],
+    val credentialsProvider: CredentialsProvider,
+    val userService: UserService)
   extends Silhouette[User, SessionAuthenticator] {
 
   /**
@@ -35,16 +37,13 @@ class CredentialsAuthController @Inject()(implicit val env: Environment[User, Se
     SignInForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.account.signIn(form))),
       credentials =>
-        (env.providers.get(CredentialsProvider.ID) match {
-          case Some(p: CredentialsProvider) => p.authenticate(credentials)
-          case _ => Future.failed(new ConfigurationException(s"Cannot find credentials provider"))
-        }).flatMap { loginInfo =>
+        credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
           val continueToURL = continueTo.getOrElse(routes.ApplicationController.userGraphs().toString())
 
           userService.retrieve(loginInfo).flatMap {
             case Some(user) => env.authenticatorService.create(user.loginInfo).flatMap { authenticator =>
               env.authenticatorService.init(authenticator).flatMap { v =>
-                env.authenticatorService.embed(v, Future.successful(Redirect(continueToURL)))
+                env.authenticatorService.embed(v, Redirect(continueToURL))
               }
             }
             case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))

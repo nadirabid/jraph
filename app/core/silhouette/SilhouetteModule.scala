@@ -57,7 +57,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     Environment[User, SessionAuthenticator](
       userService,
       authenticatorService,
-      Map(credentialsProvider.id -> credentialsProvider),
+      Seq(),
       eventBus
     )
   }

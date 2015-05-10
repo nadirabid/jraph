@@ -45,9 +45,9 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
               savedPasswordInfo <- authInfoService.save(loginInfo, passwordInfo)
               authenticator <- env.authenticatorService.create(user.loginInfo)
               value <- env.authenticatorService.init(authenticator)
-              result <- env.authenticatorService.embed(value, Future.successful(
+              result <- env.authenticatorService.embed(value,
                 Redirect(routes.ApplicationController.userGraphs())
-              ))
+              )
             } yield {
               result
             }
