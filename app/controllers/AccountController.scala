@@ -14,17 +14,21 @@ import forms.SignUpForm
 import models.User
 import models.services.UserService
 
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, I18nSupport, Messages}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
 import scala.concurrent.Future
 
-class AccountController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                   val authInfoService: AuthInfoService,
-                                   val userService: UserService,
-                                   val passwordHasher: PasswordHasher)
-  extends Silhouette[User, SessionAuthenticator] {
+class AccountController @Inject() (
+    val messagesApi: MessagesApi,
+    implicit val env: Environment[User, SessionAuthenticator],
+    credentialsProvider: CredentialsProvider,
+    val authInfoService: AuthInfoService,
+    val userService: UserService,
+    val passwordHasher: PasswordHasher)
+  extends Silhouette[User, SessionAuthenticator]
+  with I18nSupport {
 
   // TODO: make sure we don't create an account with a user email/id that already exists
 
@@ -34,8 +38,10 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
       data => {
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
-          case Some(user) => Future.successful(Redirect(routes.ApplicationController.signUp())
-            .flashing("error" -> Messages("user.exists")))
+          case Some(user) => Future.successful(
+            Redirect(routes.ApplicationController.signUp())
+              .flashing("error" -> Messages("user.exists"))
+          )
           case None =>
             val passwordInfo = passwordHasher.hash(data.password)
             val user = User(UUID.randomUUID(), data.email, None, None, loginInfo)

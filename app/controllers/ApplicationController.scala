@@ -11,7 +11,7 @@ import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, Passwor
 import core.authorization.WithAccess
 import models.daos.PasswordInfoDAO
 
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, I18nSupport, Messages}
 import play.api.libs.Codecs
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
@@ -23,11 +23,14 @@ import forms._
 import models.{Hypergraph, Hypernode, Hyperlink, User}
 import models.services.UserService
 
-class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                       val authInfoService: AuthInfoService,
-                                       val userService: UserService,
-                                       val passwordHasher: PasswordHasher)
-  extends Silhouette[User, SessionAuthenticator] {
+class ApplicationController @Inject() (
+    val messagesApi: MessagesApi,
+    implicit val env: Environment[User, SessionAuthenticator],
+    val authInfoService: AuthInfoService,
+    val userService: UserService,
+    val passwordHasher: PasswordHasher)
+  extends Silhouette[User, SessionAuthenticator]
+  with I18nSupport {
 
   implicit val graphsDataWrite =
       new Writes[(Hypergraph, Seq[Hypernode], Seq[Hyperlink])] {
@@ -97,12 +100,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           loginInfo = LoginInfo(CredentialsProvider.ID, userProfile.email)
         )
 
-        val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
-
         userService.update(user).flatMap { _ =>
           val continueToURLAfterRedirect = routes.ApplicationController.profile().toString()
           val result = routes.ApplicationController.reauthenticate(Some(user.email), Some(continueToURLAfterRedirect))
-          env.authenticatorService.discard(authenticator, Redirect(result))
+
+          env.authenticatorService.discard(req.authenticator, Redirect(result))
         }
       }
     )

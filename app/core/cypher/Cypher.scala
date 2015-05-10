@@ -104,7 +104,7 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
       val errors = (resp.json \ "errors").as[Vector[JsObject]]
 
       if (errors.nonEmpty) {
-        throw new CypherException(Json.prettyPrint(resp.json \ "errors"))
+        throw new CypherException(Json.prettyPrint((resp.json \ "errors").as[JsValue]))
       }
 
       val result = (resp.json \ "results")(0)

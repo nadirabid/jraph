@@ -4,6 +4,7 @@ machine:
   environment:
     JAVA_TOOL_OPTIONS: '-Dfile.encoding=UTF8 -Duser.timezone=UTC'
     _JAVA_OPTIONS: '-Xms512m -Xmx1024m -Xss2m'
+    PLAY_APP_MODE: 'test'
   java:
     version: oraclejdk8
 dependencies:

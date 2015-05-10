@@ -1,13 +1,8 @@
-import java.io.File
-
-import com.google.inject.Guice
 
 import com.mohiva.play.silhouette.api.{Logger, SecuredSettings}
 
-import com.typesafe.config.ConfigFactory
-
 import play.api.libs.ws.{WSRequestHolder, WSAuthScheme, WS}
-import play.api.{Mode, Configuration, GlobalSettings}
+import play.api.GlobalSettings
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
@@ -17,16 +12,7 @@ import play.api.Application
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import core.silhouette.SilhouetteModule
-import controllers.routes
-
 object Global extends GlobalSettings with SecuredSettings with Logger {
-
-  /**
-   * The Guice dependencies injector.
-   */
-  val injector = Guice.createInjector(new SilhouetteModule)
-
 
   override def onStart(app: Application) = {
     val dbDataUrl = current.configuration.getString("neo4j.host") match {
@@ -38,6 +24,7 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
       case Some(username) => username
       case None => throw new AppConfigurationException("neo4j.username is undefined")
     }
+
     val dbPassword = current.configuration.getString("neo4j.password") match {
       case Some(password) => password
       case None => throw new AppConfigurationException("neo4j.password is undefined")
@@ -76,34 +63,15 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
   }
 
   /**
-   * Loads the controller classes with the Guice injector,
-   * in order to be able to inject dependencies directly into the controller.
-   */
-  override def getControllerInstance[A](controllerClass: Class[A]) =
-    injector.getInstance(controllerClass)
-
-  /**
-   * Override to allow loading configuration file specific to the environment/mode.
-   * Allows us to have configuration settings based on the environment we're running in.
-   */
-  override def onLoadConfig(config: Configuration,
-                            path: File, classLoader: ClassLoader,
-                            mode: Mode.Mode): Configuration = {
-
-    val modeSpecificConfig = config ++ Configuration(
-      ConfigFactory.load(s"application.${mode.toString.toLowerCase}.conf")
-    )
-
-    super.onLoadConfig(modeSpecificConfig, path, classLoader, mode)
-  }
-
-  /**
    * Called when a user is not authenticated.
    */
   override def onNotAuthenticated(request: RequestHeader,
                                   lang: Lang): Option[Future[Result]] = {
 
-    Some(Future.successful(Redirect(routes.ApplicationController.devAccess())))
+    import play.api.i18n.Messages.Implicits._
+    Some(Future.successful(
+      Redirect(controllers.routes.ApplicationController.devAccess())
+    ))
   }
 
   /**
@@ -115,8 +83,9 @@ object Global extends GlobalSettings with SecuredSettings with Logger {
   override def onNotAuthorized(request: RequestHeader,
                                lang: Lang): Option[Future[Result]] = {
 
+    import play.api.i18n.Messages.Implicits._
     Some(Future.successful(
-      Redirect(routes.ApplicationController.signIn())
+      Redirect(controllers.routes.ApplicationController.signIn())
         .flashing("error" -> Messages("access.denied"))
     ))
   }
