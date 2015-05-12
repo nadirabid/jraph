@@ -101,7 +101,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
         userService.update(user).flatMap { _ =>
           env.authenticatorService.renew(
-            authenticator, Redirect(routes.ApplicationController.userGraphs())
+            authenticator, Redirect(routes.ApplicationController.profile())
           )
         }
       }
@@ -132,7 +132,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
             }
           case Some(currentPasswordInfo) => // password didn't match
             val userEmail = req.identity.email.trim.toLowerCase
-            val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
+            val userProfileData = UserProfileForm.Data(
+              req.identity.firstName,
+              req.identity.lastName,
+              userEmail
+            )
 
             val changeUserPasswordForm = ChangeUserPasswordForm.form
               .fill(changeUserPasswordFormData)
@@ -143,12 +147,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
               UserProfileForm.form.fill(userProfileData),
               changeUserPasswordForm
             )))
-          case None =>
-            // shit just got bad
-            Future.successful(
-              Redirect(routes.ApplicationController.profile())
-                .flashing("error" -> Messages("invalid.id"))
-            )
+          case None => Future.successful { // // shit just got bad
+            Redirect(routes.ApplicationController.profile())
+              .flashing("error" -> Messages("invalid.id"))
+          }
         }
       }
     )
@@ -181,7 +183,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def signOut = SecuredAction.async { implicit req =>
-    env.authenticatorService.discard(req.authenticator, Redirect(routes.ApplicationController.signIn()))
+    env.authenticatorService.discard(
+      req.authenticator,
+      Redirect(routes.ApplicationController.signIn())
+    )
   }
 
   def trimTrailingForwardSlash(path: String) = Action {
