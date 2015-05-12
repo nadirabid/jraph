@@ -100,9 +100,9 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
 
         userService.update(user).flatMap { _ =>
-          val continueToURLAfterRedirect = routes.ApplicationController.profile().toString()
-          val result = routes.ApplicationController.reauthenticate(Some(user.email), Some(continueToURLAfterRedirect))
-          env.authenticatorService.discard(authenticator, Redirect(result))
+          env.authenticatorService.renew(
+            authenticator, Redirect(routes.ApplicationController.userGraphs())
+          )
         }
       }
     )
@@ -182,33 +182,6 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def signOut = SecuredAction.async { implicit req =>
     env.authenticatorService.discard(req.authenticator, Redirect(routes.ApplicationController.signIn()))
-  }
-
-  def reauthenticate(email: Option[String],
-                     continueTo: Option[String]) = UserAwareAction.async { req =>
-    req.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
-      case None =>
-        email match {
-          case Some(userEmail) =>
-            val cleanUserEmail = userEmail.trim.toLowerCase
-            val signInForm = SignInForm.form.fill(Credentials(cleanUserEmail, ""))
-            val continueToURL = continueTo.getOrElse(routes.ApplicationController.userGraphs().toString())
-
-            val result = Ok(views.html.account.reauthenticate(
-              signInForm,
-              Codecs.md5(cleanUserEmail.getBytes),
-              continueToURL
-            ))
-
-            userService.find(userEmail) flatMap {
-              case Some(user) => Future.successful(result)
-              case None => Future.successful(Redirect(routes.ApplicationController.signIn()))
-            }
-          case None =>
-            Future.successful(Redirect(routes.ApplicationController.signIn()))
-        }
-    }
   }
 
   def trimTrailingForwardSlash(path: String) = Action {
