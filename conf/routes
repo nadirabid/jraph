@@ -17,7 +17,7 @@ GET           /account/profile                                 @controllers.Appl
 POST          /account/profile/update                          @controllers.ApplicationController.handleUserInfoUpdate
 POST          /account/password/update                         @controllers.ApplicationController.handleUserPasswordUpdate
 
-POST          /credentials                                     @controllers.CredentialsAuthController.authenticate(continueTo:Option[String] ?= None)
+POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
 
 POST          /account/create                                  @controllers.AccountController.create
 DELETE        /account/delete                                  @controllers.AccountController.delete

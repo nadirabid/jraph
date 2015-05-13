@@ -28,37 +28,42 @@ class CredentialsAuthController @Inject()(
     val userService: UserService)
   extends Silhouette[User, SessionAuthenticator] {
 
-  /**
-   * Authenticates a user against the credentials provider.
-   *
-   * @return The result to display.
-   */
-  def authenticate(continueTo: Option[String]) = Action.async { implicit req =>
+  def authenticate = Action.async { implicit req =>
     SignInForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.account.signIn(form))),
-      credentials =>
-        credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
-          val continueToURL = continueTo.getOrElse(routes.ApplicationController.userGraphs().toString())
+      formWithErrors => Future.successful {
+        BadRequest(views.html.account.signIn(formWithErrors))
+      },
+      credentials => credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+        userService.retrieve(loginInfo).flatMap {
+          case Some(user) =>
+            val continueToResult = routes.ApplicationController.userGraphs()
 
-          userService.retrieve(loginInfo).flatMap {
-            case Some(user) => env.authenticatorService.create(user.loginInfo).flatMap { authenticator =>
-              env.authenticatorService.init(authenticator).flatMap { v =>
-                env.authenticatorService.embed(v, Redirect(continueToURL))
-              }
-            }
-            case None => Future.failed(new IdentityNotFoundException("Couldn't find user"))
-          }
-        }.recover {
-          case e: ProviderException =>
-            Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("invalid.credentials"))
+            for {
+              authenticator <- env.authenticatorService.create(user.loginInfo)
+              value <- env.authenticatorService.init(authenticator)
+              result <- env.authenticatorService.embed(value, Redirect(continueToResult))
+            } yield result
+          case None =>
+            Future.failed(new IdentityNotFoundException("Couldn't find user"))
         }
+      }.recover {
+        case e: ProviderException =>
+          Redirect(routes.ApplicationController.signIn())
+            .flashing("error" -> Messages("invalid.credentials"))
+      }
     )
   }
 
-  def authenticateDevAccess = Action.async { implicit req =>
+  def authenticateDevAccess = Action.async { implicit  req =>
     DevAccessForm.form.bindFromRequest.fold(
-      form => Future.successful(BadRequest(views.html.account.devAccess())),
-      passwordData => Future.successful(Ok)
+      formWithErrors => Future.successful {
+        BadRequest(views.html.account.devAccess(formWithErrors))
+      },
+      devAccessFormData => {
+        Future {
+          Ok
+        }
+      }
     )
   }
 }
