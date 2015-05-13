@@ -19,7 +19,7 @@ import scala.concurrent.Future
 class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
+  def create(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
     Future.successful(Ok)
 
     val model = Hyperlink(
@@ -35,20 +35,20 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
         .map(hyperlink => Ok(Json.toJson(hyperlink)))
   }
 
-  def read(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
+  def read(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
     Hyperlink.read(req.identity.email, hypergraphID, hyperlinkID) map {
       case Some(hyperlink) => Ok(Json.toJson(hyperlink))
       case None => NotFound
     }
   }
 
-  def readAll(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
+  def readAll(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
     Hyperlink.readAll(req.identity.email, hypergraphID)
         .map(hyperlinks => Ok(Json.toJson(hyperlinks)))
   }
 
   def update(hypergraphID: UUID,
-             hyperlinkID: UUID) = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
+             hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
     val model = Hyperlink(
       hyperlinkID,
       (req.body \ "sourceId").as[UUID],
@@ -62,7 +62,7 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
         .map(hyperlink => Ok(Json.toJson(hyperlink)))
   }
 
-  def delete(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
+  def delete(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
     Hyperlink.delete(req.identity.email, hypergraphID, hyperlinkID)
         .map(res => Ok(Json.toJson(res)))
   }

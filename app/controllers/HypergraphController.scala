@@ -18,7 +18,7 @@ class HypergraphController @Inject() (
     implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
+  def create = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
     val model = Hypergraph(
       UUID.randomUUID(),
       DateTime.now,
@@ -30,7 +30,7 @@ class HypergraphController @Inject() (
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def read(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
+  def read(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => NotFound
@@ -42,7 +42,7 @@ class HypergraphController @Inject() (
         .map(hypergraphs => Ok(Json.toJson(hypergraphs)))
   }
 
-  def update(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
+  def update(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
     val model = Hypergraph(
       hypergraphID,
       DateTime.now,
@@ -54,7 +54,7 @@ class HypergraphController @Inject() (
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def delete(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
+  def delete(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
     Hypergraph.delete(req.identity.email, hypergraphID)
         .map(res => Ok(Json.toJson(res)))
   }
