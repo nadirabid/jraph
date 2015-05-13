@@ -1,3 +1,5 @@
+@(devAccessForm: Form[forms.DevAccessForm.Data])
+
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -58,9 +60,19 @@
     <h3>
       under development &nbsp;<i class="fa fa-code"></i>
     </h3>
-    <form>
+    <form
+        action="@routes.CredentialsAuthController.authenticateDevAccess()"
+        method="POST"
+    >
       <div class="form-group">
-        <input class="form-control" type="password" autocomplete="off">
+        <input
+            class="form-control"
+            type="password"
+            autocomplete="off"
+            id="@devAccessForm("password").id"
+            name="@devAccessForm("password").name"
+            value="@devAccessForm("password").value"
+        >
       </div>
     </form>
   </div>

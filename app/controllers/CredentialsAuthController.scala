@@ -8,6 +8,7 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
+import core.authorization.WithAccess
 import forms.{DevAccessForm, SignInForm}
 import models.User
 import models.services.UserService
@@ -28,7 +29,7 @@ class CredentialsAuthController @Inject()(
     val userService: UserService)
   extends Silhouette[User, SessionAuthenticator] {
 
-  def authenticate = Action.async { implicit req =>
+  def authenticate = SecuredAction(WithAccess("dev")).async { implicit req =>
     SignInForm.form.bindFromRequest.fold(
       formWithErrors => Future.successful {
         BadRequest(views.html.account.signIn(formWithErrors))
@@ -36,13 +37,15 @@ class CredentialsAuthController @Inject()(
       credentials => credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
-            val continueToResult = routes.ApplicationController.userGraphs()
+            val continueToResult = Redirect(routes.ApplicationController.userGraphs())
 
             for {
               authenticator <- env.authenticatorService.create(user.loginInfo)
               value <- env.authenticatorService.init(authenticator)
-              result <- env.authenticatorService.embed(value, Redirect(continueToResult))
-            } yield result
+              result <- env.authenticatorService.embed(value, continueToResult)
+            } yield {
+              result
+            }
           case None =>
             Future.failed(new IdentityNotFoundException("Couldn't find user"))
         }
@@ -60,8 +63,27 @@ class CredentialsAuthController @Inject()(
         BadRequest(views.html.account.devAccess(formWithErrors))
       },
       devAccessFormData => {
-        Future {
-          Ok
+        val credentials = Credentials("devAccess@email.com", devAccessFormData.password)
+
+        credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
+          userService.retrieve(loginInfo).flatMap {
+            case Some(user) =>
+              val continueToResult = Redirect(routes.ApplicationController.signIn())
+
+              for {
+                authenticator <- env.authenticatorService.create(user.loginInfo)
+                value <- env.authenticatorService.init(authenticator)
+                result <- env.authenticatorService.embed(value, continueToResult)
+              } yield {
+                result
+              }
+            case None =>
+              Future.failed(new IdentityNotFoundException("Couldn't find user"))
+          }
+        }.recover {
+          case e: ProviderException =>
+            Redirect(routes.ApplicationController.signIn())
+              .flashing("error" -> Messages("invalid.credentials"))
         }
       }
     )

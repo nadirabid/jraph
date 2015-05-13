@@ -4,6 +4,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import core.authorization.WithAccess
 import models.{Hypergraph, User}
 import org.joda.time.DateTime
 
@@ -13,12 +14,11 @@ import play.api.libs.json._
 
 import java.util.UUID
 
-// TODO: make sure we sanitize the Cypher queries for there user specified parameters
-
-class HypergraphController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
+class HypergraphController @Inject() (
+    implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create = SecuredAction.async(parse.json) { req =>
+  def create = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
     val model = Hypergraph(
       UUID.randomUUID(),
       DateTime.now,
@@ -30,19 +30,19 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def read(hypergraphID: UUID) = SecuredAction.async { req =>
+  def read(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => NotFound
     }
   }
 
-  def readAll = SecuredAction.async { req =>
+  def readAll = SecuredAction(WithAccess("dev")).async { req =>
     Hypergraph.readAll(req.identity.email)
         .map(hypergraphs => Ok(Json.toJson(hypergraphs)))
   }
 
-  def update(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
+  def update(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async(parse.json) { req =>
     val model = Hypergraph(
       hypergraphID,
       DateTime.now,
@@ -54,7 +54,7 @@ class HypergraphController @Inject() (implicit val env: Environment[User, Sessio
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def delete(hypergraphID: UUID) = SecuredAction.async { req =>
+  def delete(hypergraphID: UUID) = SecuredAction(WithAccess("dev")).async { req =>
     Hypergraph.delete(req.identity.email, hypergraphID)
         .map(res => Ok(Json.toJson(res)))
   }

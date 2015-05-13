@@ -18,6 +18,7 @@ POST          /account/profile/update                          @controllers.Appl
 POST          /account/password/update                         @controllers.ApplicationController.handleUserPasswordUpdate
 
 POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
+POST          /devAccessCredentials                            @controllers.CredentialsAuthController.authenticateDevAccess
 
 POST          /account/create                                  @controllers.AccountController.create
 DELETE        /account/delete                                  @controllers.AccountController.delete

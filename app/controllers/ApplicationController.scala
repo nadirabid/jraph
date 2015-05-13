@@ -38,7 +38,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def userGraphs = SecuredAction.async { req =>
+  def userGraphs = SecuredAction(WithAccess("normal")).async { req =>
     val userEmail = req.identity.email
 
     Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
@@ -60,11 +60,11 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     }
   }
 
-  def hypergraph(hypergraphID: UUID) = SecuredAction { req =>
+  def hypergraph(hypergraphID: UUID) = SecuredAction(WithAccess("normal")) { req =>
     Ok(views.html.graph.index())
   }
 
-  def profile = SecuredAction { req =>
+  def profile = SecuredAction(WithAccess("normal")) { req =>
     val userEmail = req.identity.email.trim.toLowerCase
 
     val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
@@ -77,7 +77,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     ))
   }
 
-  def handleUserInfoUpdate = SecuredAction.async { implicit req =>
+  def handleUserInfoUpdate = SecuredAction(WithAccess("normal")).async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => Future.successful {
         val userEmail = req.identity.email.trim.toLowerCase
@@ -106,11 +106,15 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
     )
   }
 
-  def handleUserPasswordUpdate = SecuredAction.async { implicit req =>
+  def handleUserPasswordUpdate = SecuredAction(WithAccess("normal")).async { implicit req =>
     ChangeUserPasswordForm.form.bindFromRequest.fold(
       formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
-        val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
+        val userProfileData = UserProfileForm.Data(
+          req.identity.firstName,
+          req.identity.lastName,
+          userEmail
+        )
 
         Future.successful(BadRequest(views.html.account.profile(
           Codecs.md5(userEmail.getBytes),
@@ -156,27 +160,34 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def devAccess = UserAwareAction { implicit req =>
     req.identity match {
-      case Some(user) =>
-        if (WithAccess("dev").isAuthorized(user))
+      case Some(user) if WithAccess("dev").isAuthorized(user) =>
           Redirect(routes.ApplicationController.signIn())
-        else
+      case Some(user) =>
           Redirect(routes.ApplicationController.userGraphs())
       case None =>
         Ok(views.html.account.devAccess(DevAccessForm.form))
     }
   }
 
-  def signIn = UserAwareAction { req =>
+  def signIn = UserAwareAction { implicit req =>
     req.identity match {
-      case Some(user) => Redirect(routes.ApplicationController.userGraphs())
-      case None => Ok(views.html.account.signIn(SignInForm.form))
+      case Some(user) if WithAccess("dev").isAuthorized(user) =>
+        Ok(views.html.account.signIn(SignInForm.form))
+      case Some(user) =>
+        Redirect(routes.ApplicationController.userGraphs())
+      case None =>
+        Redirect(routes.ApplicationController.devAccess())
     }
   }
 
-  def signUp = UserAwareAction { req =>
+  def signUp = UserAwareAction { implicit req =>
     req.identity match {
-      case Some(user) => Redirect(routes.ApplicationController.userGraphs())
-      case None => Ok(views.html.account.signUp(SignUpForm.form))
+      case Some(user) if WithAccess("dev").isAuthorized(user) =>
+        Ok(views.html.account.signUp(SignUpForm.form))
+      case Some(user) =>
+        Redirect(routes.ApplicationController.userGraphs())
+      case None =>
+        Redirect(routes.ApplicationController.devAccess())
     }
   }
 

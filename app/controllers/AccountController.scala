@@ -8,6 +8,7 @@ import com.mohiva.play.silhouette.api.services.AuthInfoService
 import com.mohiva.play.silhouette.api.util.PasswordHasher
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
+import core.authorization.WithAccess
 
 import forms.SignUpForm
 
@@ -28,7 +29,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
 
   // TODO: make sure we don't create an account with a user email/id that already exists
 
-  def create = Action.async { implicit request =>
+  def create = SecuredAction(WithAccess("dev")).async { implicit request =>
     SignUpForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.account.signUp(form))),
       data => {
@@ -56,7 +57,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
     )
   }
 
-  def delete = SecuredAction.async { implicit request =>
+  def delete = SecuredAction(WithAccess("normal")).async { implicit request =>
     userService.delete(request.identity.email).map {
       case true => Ok
       case false => ServiceUnavailable
