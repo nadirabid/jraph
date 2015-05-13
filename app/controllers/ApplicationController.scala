@@ -39,22 +39,23 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def userGraphs = SecuredAction.async { req =>
-    Hypergraph.readAll(req.identity.email).flatMap { hypergraphs =>
-      val graphsDataRequests = hypergraphs.map { hg =>
-        val nodes = Hypernode.readAll(req.identity.email, hg.id)
-        val links = Hyperlink.readAll(req.identity.email, hg.id)
+    val userEmail = req.identity.email
 
-        for {
-          n <- nodes
-          l <- links
-        } yield (hg, n, l)
+    Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
+      val graphsDataRequests = hypergraphs.map { hypergraph =>
+        for { //this can be sped up by doing Hypernode/Hyperlink.read in parallel
+          nodes <- Hypernode.readAll(userEmail, hypergraph.id)
+          links <- Hyperlink.readAll(userEmail, hypergraph.id)
+        } yield {
+          (hypergraph, nodes, links)
+        }
       }
 
-      val userEmail = req.identity.email.trim.toLowerCase
-
       Future.sequence(graphsDataRequests).map { graphsData =>
-        Ok(views.html.account.userGraphs(Json.toJson(graphsData),
-                                         Codecs.md5(userEmail.getBytes)))
+        Ok(views.html.account.userGraphs(
+          Json.toJson(graphsData),
+          Codecs.md5(userEmail.trim.toLowerCase.getBytes)
+        ))
       }
     }
   }
@@ -78,16 +79,14 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
 
   def handleUserInfoUpdate = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
-      formWithErrors => {
+      formWithErrors => Future.successful {
         val userEmail = req.identity.email.trim.toLowerCase
 
-        val result = BadRequest(views.html.account.profile(
+        BadRequest(views.html.account.profile(
           Codecs.md5(userEmail.getBytes),
           formWithErrors,
           ChangeUserPasswordForm.form
         ))
-
-        Future.successful(result)
       },
       userProfile => {
         val user = req.identity.copy(
@@ -97,11 +96,10 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
           loginInfo = LoginInfo(CredentialsProvider.ID, userProfile.email)
         )
 
-        val authenticator = req.authenticator.copy(loginInfo = user.loginInfo)
-
         userService.update(user).flatMap { _ =>
           env.authenticatorService.renew(
-            authenticator, Redirect(routes.ApplicationController.profile())
+            req.authenticator.copy(loginInfo = user.loginInfo),
+            Redirect(routes.ApplicationController.profile())
           )
         }
       }
@@ -164,7 +162,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
         else
           Redirect(routes.ApplicationController.userGraphs())
       case None =>
-        Ok(views.html.account.devAccess())
+        Ok(views.html.account.devAccess(DevAccessForm.form))
     }
   }
 
