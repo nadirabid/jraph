@@ -27,9 +27,8 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
                                    val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
-  // TODO: make sure we don't create an account with a user email/id that already exists
-
   def create = SecuredAction(WithAccess("dev")).async { implicit request =>
+    // TODO: make sure we don't create an account with a user email/id that already exists
     SignUpForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(views.html.account.signUp(form))),
       data => {
