@@ -7,8 +7,6 @@ import play.api.mvc.RequestHeader
 
 
 case class WithAccess(userRole: String) extends Authorization[User] {
-  // check mode to selectively disable dev access
-
   def isAuthorized(user: User)(implicit request: RequestHeader, lang: Lang) =
     user.role match {
       case Some(role) if role == userRole => true
