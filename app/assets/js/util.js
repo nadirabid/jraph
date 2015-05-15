@@ -1,6 +1,6 @@
 // Utils
 define([
-  'jquery'
+    'jquery'
 ], function (jquery) {
   'use strict';
 

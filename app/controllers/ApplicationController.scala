@@ -23,10 +23,11 @@ import forms._
 import models.{Hypergraph, Hypernode, Hyperlink, User}
 import models.services.UserService
 
-class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                       val authInfoService: AuthInfoService,
-                                       val userService: UserService,
-                                       val passwordHasher: PasswordHasher)
+class ApplicationController @Inject() (
+    implicit val env: Environment[User, SessionAuthenticator],
+    val authInfoService: AuthInfoService,
+    val userService: UserService,
+    val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
   implicit val graphsDataWrite =
@@ -61,7 +62,7 @@ class ApplicationController @Inject() (implicit val env: Environment[User, Sessi
   }
 
   def hypergraph(hypergraphID: UUID) = SecuredAction(WithAccess("normal")) { req =>
-    Ok(views.html.graph.index())
+    Ok(views.html.graph.graph())
   }
 
   def profile = SecuredAction(WithAccess("normal")) { req =>

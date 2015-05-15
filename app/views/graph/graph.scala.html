@@ -1,69 +1,67 @@
-<div class="graph-container">
-  <svg id="graph" v-on="contextmenu:contextMenu, wheel:mousewheelZoom">
-    <!-- Definitions -->
-    <defs>
-      <marker
-          id="linkArrow"
-          markerWidth="5"
-          markerHeight="3"
-          refx="3.2"
-          refy="1.5"
-          orient="auto"
-      >
-        <path d="M0,0 L0,3 L4,1.5 L0,0" class="link-arrow"></path>
-      </marker>
-    </defs>
+@layout("Data Visualization") {
+  <div id="all">
+    <nav  id="nav" class="navbar navbar-default">
+    @views.html.graph.navbar()
+    </nav>
+    <main id="main">
+      <div class="graph-container">
+        <svg id="graph" v-on="contextmenu:contextMenu, wheel:mousewheelZoom">
+            <!-- Definitions -->
+          <defs>
+            <marker
+            id="linkArrow"
+            markerWidth="5"
+            markerHeight="3"
+            refx="3.2"
+            refy="1.5"
+            orient="auto"
+            >
+              <path d="M0,0 L0,3 L4,1.5 L0,0" class="link-arrow"></path>
+            </marker>
+          </defs>
 
-    <g v-el="nodesAndLinksGroup">
-      <!-- Dynamic Content -->
-      <g class="dynamic-content" v-el="dynamicContent"></g>
+          <g v-el="nodesAndLinksGroup">
+              <!-- Dynamic Content -->
+            <g class="dynamic-content" v-el="dynamicContent"></g>
 
-      <!-- Links -->
-      <x-link v-repeat="links" track-by="id"></x-link>
+              <!-- Links -->
+            <x-link v-repeat="links" track-by="id"></x-link>
 
-      <!-- Nodes -->
-      <x-node v-repeat="nodes" track-by="id"></x-node>
-    </g>
-  </svg>
+              <!-- Nodes -->
+            <x-node v-repeat="nodes" track-by="id"></x-node>
+          </g>
+        </svg>
 
-  <ul id="nodeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-    <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Node</a></li>
-    <li role="presentation" v-on="click:link"><a role="menuitem" tabindex="-1">Link Node</a></li>
-  </ul>
+        <ul id="nodeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+          <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Node</a></li>
+          <li role="presentation" v-on="click:link"><a role="menuitem" tabindex="-1">Link Node</a></li>
+        </ul>
 
-  <ul id="linkContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-    <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Link</a></li>
-  </ul>
+        <ul id="linkContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+          <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Link</a></li>
+        </ul>
 
-  <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-    <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
-    <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
-  </ul>
-</div>
+        <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
+          <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
+          <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
+        </ul>
+      </div>
 
-<template id="graph.node.circle">
-  <g
-      class="node enable-pointer-events"
-      v-attr="id: id, transform: nodeTranslate"
-  >
-      <circle
-          class="node-circle"
-          v-attr="r:radius + 'em'"
-          v-el="nodeCircle"
-          v-on="
-              contextmenu:nodeContextMenu,
-              dblclick:dblclick
-          "
-      ></circle>
-    <text
-        class="node-name disable-pointer-events"
-        text-anchor="middle"
-        v-el="nodeName"
-    >
-        {{data.name}}
-    </text>
-  </g>
-</template>
+      <div class="x-paper floating-panel-bar hide" id="floatingPanelBar" v-cloak></div>
+
+      <div id="zoomBar" style="position:absolute;" v-cloak>
+        <div class="btn-group-vertical zoom-bar" role="group">
+          <button type=button class="btn btn-default" v-on="click:incrementZoomLevel">
+            <span class="glyphicon glyphicon-plus"></span>
+          </button>
+          <button type=button class="btn btn-default" v-on="click:decrementZoomLevel">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+}
 
 <template id="graph.node.rect">
   <g
@@ -107,19 +105,6 @@
   >
   </line>
 </template>
-
-<div class="x-paper floating-panel-bar hide" id="floatingPanelBar" v-cloak></div>
-
-<div id="zoomBar" style="position:absolute;" v-cloak>
-  <div class="btn-group-vertical zoom-bar" role="group">
-    <button type=button class="btn btn-default" v-on="click:incrementZoomLevel">
-      <span class="glyphicon glyphicon-plus"></span>
-    </button>
-    <button type=button class="btn btn-default" v-on="click:decrementZoomLevel">
-      <span class="glyphicon glyphicon-minus"></span>
-    </button>
-  </div>
-</div>
 
 <template id="node.panel">
   <div class="node-panel">

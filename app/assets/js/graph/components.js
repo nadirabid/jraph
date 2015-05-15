@@ -4,7 +4,7 @@ define([
     'd3',
     'globals',
     'util',
-    'models'
+    'graph/models'
 ], function (_, Vue, d3, glob, util, models) {
   'use strict';
 

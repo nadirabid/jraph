@@ -6,8 +6,8 @@ define([
     'util',
     'globals',
     'models',
-    'state',
-    'navbar'
+    'graph/state',
+    'graph/navbar'
 ], function (
     _,
     $,
@@ -168,7 +168,7 @@ define([
 
       dragFlag = true;
 
-      ctx.state.$layout.resume();
+      state.$layout.resume();
     };
 
     this.dragend = function () {
@@ -225,7 +225,7 @@ define([
             });
       }
       else {
-        ctx.state.$layout.resume();
+        state.$layout.resume();
       }
 
       sourceCtx.$.ghostLink.$destroy(true);
