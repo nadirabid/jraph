@@ -8,8 +8,8 @@ define([
 ], function (_, Vue, d3, glob, util, models) {
   'use strict';
 
-  var HALF_PI = glob.HALF_PI;
-  var TWO_PI = glob.TWO_PI;
+  var HALF_PI = Math.PI / 2;
+  var TWO_PI = Math.PI * 2;
 
   var Node = models.Node;
 

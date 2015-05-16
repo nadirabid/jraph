@@ -4,7 +4,6 @@ define([
     'mousetrap',
     'vue',
     'util',
-    'globals',
     'models',
     'graph/state',
     'graph/navbar'
@@ -14,7 +13,6 @@ define([
     Mousetrap,
     Vue,
     util,
-    glob,
     models,
     State,
     NavbarComponent
@@ -25,8 +23,8 @@ define([
   /// DEFINITIONS
   ///
 
-  var HALF_PI = glob.HALF_PI;
-  var E_MINUS_1 = glob.E_MINUS_1;
+  var HALF_PI = Math.PI / 2;
+  var E_MINUS_1 = Math.E - 1;
 
   var Node = models.Node;
   var Link = models.Link;
@@ -504,24 +502,9 @@ define([
       };
     },
 
-    computed: {
-      sourceX: function() {
-        return this.source.x;
-      },
-      sourceY: function() {
-        return this.source.y;
-      },
-      targetX: function() {
-        return this.target.x;
-      },
-      targetY: function() {
-        return this.target.y;
-      }
-    },
-
     methods: {
 
-      liangBarskyTest: function() {
+      calculateLinkNodeIntersection: function() {
         //TODO: bug with translate transforms
 
         var source = this.source;
@@ -672,14 +655,14 @@ define([
       'hook:ready': function () {
         this.state = this.$parent.state;
 
-        this.$watch('target.leftEdge', this.liangBarskyTest.bind(this));
-        this.$watch('target.topEdge', this.liangBarskyTest.bind(this));
-        this.$watch('target.x', this.liangBarskyTest.bind(this));
-        this.$watch('target.y', this.liangBarskyTest.bind(this));
-        this.$watch('source.x', this.liangBarskyTest.bind(this));
-        this.$watch('source.y', this.liangBarskyTest.bind(this));
+        this.$watch('target.leftEdge', this.calculateLinkNodeIntersection.bind(this));
+        this.$watch('target.topEdge', this.calculateLinkNodeIntersection.bind(this));
+        this.$watch('target.x', this.calculateLinkNodeIntersection.bind(this));
+        this.$watch('target.y', this.calculateLinkNodeIntersection.bind(this));
+        this.$watch('source.x', this.calculateLinkNodeIntersection.bind(this));
+        this.$watch('source.y', this.calculateLinkNodeIntersection.bind(this));
 
-        this.liangBarskyTest();
+        this.calculateLinkNodeIntersection();
 
         var $g = util(this.$el);
         $g.on('mouseover', this.freezePosition.bind(this));
