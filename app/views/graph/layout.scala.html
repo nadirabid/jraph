@@ -36,10 +36,8 @@
         }
       });
 
-      require(['graph/hypergraph', 'jquery'], function(app) {
-        require(['bootstrap'], function() {
-          document.app = app;
-        });
+      require(['graph/app', 'jquery'], function(app) {
+        document.app = app;
       });
     </script>
   </body>
