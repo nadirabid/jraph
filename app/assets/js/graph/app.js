@@ -338,15 +338,27 @@ define([
         var point = this.$parent.$el.createSVGPoint();
         var dimensions = this.$parent.$el.createSVGPoint();
 
-        point.x = bBox.x;
-        point.y = bBox.y;
+
+        var width = this.width;
+        var height = this.height;
+
+        // adding margin allows us to add some space around the node
+        // border. this allows us to shift the arrow marker on the link
+        // forwards without being completely hidden behind the node OR
+        // to far back that the line from the link isn't being completely
+        // covered by the arrowhead marker
+        var marginX = 8, marginY = 4;
+        var shiftX = 4, shiftY = 2;
+
+        point.x = bBox.x - shiftX;
+        point.y = bBox.y - shiftY;
 
         point = point.matrixTransform(ttm);
 
         ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
 
-        dimensions.x = this.width;
-        dimensions.y = this.height;
+        dimensions.x = this.width + marginX;
+        dimensions.y = this.height + marginY;
 
         dimensions = dimensions.matrixTransform(ttm);
 
