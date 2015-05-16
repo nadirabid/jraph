@@ -338,10 +338,6 @@ define([
         var point = this.$parent.$el.createSVGPoint();
         var dimensions = this.$parent.$el.createSVGPoint();
 
-
-        var width = this.width;
-        var height = this.height;
-
         // adding margin allows us to add some space around the node
         // border. this allows us to shift the arrow marker on the link
         // forwards without being completely hidden behind the node OR
