@@ -12,11 +12,11 @@
             id="linkArrow"
             markerWidth="5"
             markerHeight="3"
-            refx="1.6"
+            refx="1.2"
             refy="1.5"
             orient="auto"
             >
-              <path d="M0,0 L0,3 L4,1.5 L0,0" class="link-arrow"></path>
+              <path d="M0,0 L0,3 L3,1.5 L0,0" class="link-arrow"></path>
             </marker>
           </defs>
 
@@ -92,7 +92,7 @@
         class="link"
         marker-end="url(#linkArrow)"
         v-el="arrowMarkerLine"
-        v-attr="x1:source.x, y1:source.y, x2:targetClipX, y2:targetClipY"
+        v-attr="x1:sourceClipX, y1:sourceClipY, x2:targetClipX, y2:targetClipY"
     ></line>
   </g>
 </template>
