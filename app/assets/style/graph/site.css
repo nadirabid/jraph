@@ -200,7 +200,8 @@ body {
 }
 
 .node-name {
-    font-weight:bold;
+    font-family: 'Oxygen', sans-serif;
+    font-weight:600;
     fill: rgba(255,255,255,.87);
 }
 
