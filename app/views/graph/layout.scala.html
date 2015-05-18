@@ -12,14 +12,14 @@
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <link rel="stylesheet" href="@routes.Assets.at("style/dependencies/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/libs/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("style/xlayout.css")">
-    <link rel="stylesheet" href="@routes.Assets.at("style/site.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("style/graph/site.css")">
   </head>
   <body>
     @content
 
-    <script src="@routes.Assets.at("js/dependencies/require.js")"></script>
+    <script src="@routes.Assets.at("js/libs/require.js")"></script>
 
     <script>
       'use strict';
@@ -27,12 +27,12 @@
       requirejs.config({
         baseUrl: '/assets/js',
         paths: {
-          d3: 'dependencies/d3',
-          jquery: 'dependencies/jquery-2.1.1',
-          lodash: 'dependencies/lodash',
-          mousetrap: 'dependencies/mousetrap',
-          vue: 'dependencies/vue',
-          bootstrap: 'dependencies/bootstrap'
+          d3: 'libs/d3',
+          jquery: 'libs/jquery-2.1.1',
+          lodash: 'libs/lodash',
+          mousetrap: 'libs/mousetrap',
+          vue: 'libs/vue',
+          bootstrap: 'libs/bootstrap'
         }
       });
 
