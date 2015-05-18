@@ -29,6 +29,8 @@ define([
   var Node = models.Node;
   var Link = models.Link;
 
+  var linksMap = Object.create(null);
+
   var state = new State();
   var mouse = util.mouse;
 
@@ -505,6 +507,8 @@ define([
 
     data: function() {
       return {
+        sourceClipX: 0,
+        sourceClipY: 0,
         targetClipX: 0,
         targetClipY: 0
       };
@@ -518,7 +522,7 @@ define([
         var source = this.source;
         var target = this.target;
 
-        var clippings = liangBarsky(
+        var targetClippings = liangBarsky(
             target.leftEdge,
             target.rightEdge,
             target.topEdge,
@@ -529,8 +533,25 @@ define([
             target.y
         );
 
-        this.targetClipX = clippings.x0Clip;
-        this.targetClipY = clippings.y0Clip;
+        var self = this;
+        var sourceId = this.sourceId;
+        var targetId = this.targetId;
+
+        Vue.nextTick(function() {
+          if (linksMap[targetId] && linksMap[targetId][sourceId]) {
+            var oppositeLink = linksMap[targetId][sourceId];
+
+            self.sourceClipX = oppositeLink.targetClipX;
+            self.sourceClipY = oppositeLink.targetClipY;
+          }
+          else {
+            self.sourceClipX = source.x;
+            self.sourceClipY = source.y;
+          }
+        });
+
+        this.targetClipX = targetClippings.x0Clip;
+        this.targetClipY = targetClippings.y0Clip;
       },
 
       delete: function() {
@@ -1448,6 +1469,9 @@ define([
           links.forEach(function (l) {
             if (l.sourceId == n.id) l.source = n;
             if (l.targetId == n.id) l.target = n;
+
+            var targets = linksMap[l.sourceId] || (linksMap[l.sourceId] = {});
+            targets[l.targetId] = l;
           });
         });
 
