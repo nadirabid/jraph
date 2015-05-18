@@ -537,7 +537,14 @@ define([
         var sourceId = this.sourceId;
         var targetId = this.targetId;
 
+        // set the sourceClipX/Y values in the next animation frame
+        // to make sure that all the target clippings have been calculated
+        // in the previous animation frame. then we can use the
+        // target clippings to adjust the source clippings for bidirectional links
         Vue.nextTick(function() {
+          // if its a bidirectional links (ie <-->), then we have to calculate
+          // the source clippings as well so we dont overlap the arrow marker of
+          // the incoming link.
           if (linksMap[targetId] && linksMap[targetId][sourceId]) {
             var oppositeLink = linksMap[targetId][sourceId];
 
