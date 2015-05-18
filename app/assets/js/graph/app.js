@@ -1406,7 +1406,7 @@ define([
     methods: {
 
       /*
-        Called with the arguements passed to show
+        Called with the arguments passed to show
         before the menu is actually shown.
        */
       beforeShow: function(x, y, node) {
