@@ -69,43 +69,7 @@ define([
       floatingPanelBar.setPanel(nodePanel);
     };
 
-    this.dblclick = function() {
-      var graphCmp = ctx.$parent;
-
-      var minX = graphCmp.minX;
-      var minY = graphCmp.minY;
-
-      var width = graphCmp.width;
-      var height = graphCmp.height;
-
-      var p = util.transformPointFromViewportToEl(
-          (width / 2),
-          (height / 2),
-          ctx.$el);
-
-      var dx = p.x - ctx.x,
-          dy = p.y - ctx.y;
-
-      var iX = d3.interpolateRound(minX, minX - dx),
-          iY = d3.interpolateRound(minY, minY - dy);
-
-      var coff = Math.sqrt(dx*dx + dy*dy) / Math.sqrt(width*width + height*height);
-      var animDuration = 1000 * Math.max(0.15, coff);
-
-      var ease = d3.ease('sin');
-
-      d3.timer(function (elapsed) {
-        var t = elapsed / animDuration;
-        var easedT = ease(t);
-
-        graphCmp.minX = iX(easedT);
-        graphCmp.minY = iY(easedT);
-
-        return t > 1;
-      });
-    };
-
-    //show menu
+    // focus on node
     this.mouseover = function () {
       if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
         return;
@@ -115,10 +79,10 @@ define([
       ctx.py = ctx.y;
       ctx.fixed = true;
 
-      //move node to front to make sure menu is not
-      //hidden by overlapping elements
-      var nodes = ctx.$parent.nodes;
 
+      // move node to front so that it isn't
+      // hidden behind another node
+      var nodes = ctx.$parent.nodes;
       if (ctx.$index < ( nodes.length - 1 )) {
         nodes.push(nodes.$remove(ctx.$index));
       }
