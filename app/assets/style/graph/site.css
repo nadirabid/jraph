@@ -189,12 +189,12 @@ body {
     opacity:0;
     stroke-width:0;
     fill: #E91E63;
-    transition:all 100ms ease-in-out;
+    transition: all 100ms ease-in-out;
 }
 
 .node-rect-background.active {
-    opacity:1;
-    stroke-width:6px;
+    opacity: 1;
+    stroke-width: 4px;
     stroke: #C51162;
 }
 
