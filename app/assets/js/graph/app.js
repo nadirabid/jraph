@@ -79,7 +79,6 @@ define([
       ctx.py = ctx.y;
       ctx.fixed = true;
 
-
       // move node to front so that it isn't
       // hidden behind another node
       var nodes = ctx.$parent.nodes;
@@ -264,6 +263,7 @@ define([
 
     data: function () {
       return {
+        mouseover: false,
         leftEdge: 0,
         rightEdge: 0,
         bottomEdge: 0,

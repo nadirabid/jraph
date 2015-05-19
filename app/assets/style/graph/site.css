@@ -180,15 +180,22 @@ body {
     opacity: .6;
 }
 
-.node-circle {
-    stroke-width: 0;
-    fill: #eee;
-    stroke: #fff;
-}
-
 .node-rect {
     stroke-width: 0;
-    fill: #7B1FA2;
+    fill: #E91E63;
+}
+
+.node-rect-background {
+    opacity:0;
+    stroke-width:0;
+    fill: #E91E63;
+    transition:all 100ms ease-in-out;
+}
+
+.node-rect-background.active {
+    opacity:1;
+    stroke-width:6px;
+    stroke: #C51162;
 }
 
 .node-linking-target.hover {
@@ -200,7 +207,7 @@ body {
 }
 
 .node-name {
-    font-family: 'Oxygen', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
     font-weight:600;
     fill: rgba(255,255,255,.87);
 }
