@@ -8,7 +8,8 @@ define([
     'graph/state',
     'graph/components/navbar',
     'graph/components/floatingpanelbar',
-    'graph/components/zoombar'
+    'graph/components/zoombar',
+    'graph/components/contextmenu'
 ], function (
     _,
     $,
@@ -19,16 +20,14 @@ define([
     State,
     NavbarComponent,
     FloatingPanelBar,
-    ZoomBarComponent
+    ZoomBarComponent,
+    ContextMenu
 ) {
   'use strict';
 
   ///
   /// DEFINITIONS
   ///
-
-  var HALF_PI = Math.PI / 2;
-  var E_MINUS_1 = Math.E - 1;
 
   var Node = models.Node;
   var Link = models.Link;
@@ -859,11 +858,10 @@ define([
         e.stopPropagation();
         e.preventDefault();
 
-        var contextMenu = this.$.contextMenu;
-        contextMenu.show(e.clientX, e.clientY);
+        graphContextMenu.show(e.clientX, e.clientY);
 
         var closeContextMenu = function () {
-          contextMenu.hide();
+          graphContextMenu.hide();
           window.removeEventListener('click', closeContextMenu);
         };
 
@@ -915,46 +913,6 @@ define([
         $svg.on('dragend', this.panEnd.bind(this));
 
         this.resize();
-
-        this.$.contextMenu = new ContextMenu({
-          methods: {
-            addNode: function(e) {
-              var p = util.transformPointFromClientToEl(e.clientX, e.clientY, self.$el);
-
-              var nodeData = {
-                x: p.x,
-                y: p.y,
-                fixed: false,
-                data: {
-                  name: 'Name',
-                  properties: []
-                }
-              };
-
-              var nodeComponent = self
-                  .$addChild({ data: nodeData}, NodeComponent)
-                  .$mount(self.$$.dynamicContent);
-
-              var nodePanel = new NodePanel({
-                data: {
-                  isNew: true,
-                  node: nodeData
-                }
-              });
-
-              nodePanel.$once('removeGhostNode', function() {
-                nodeComponent.$destroy(true);
-              });
-
-              floatingPanelBar.setPanel(nodePanel);
-            },
-            saveGraph: function() {
-              Node.update(hypergraphID, self.nodes);
-            }
-          }
-        });
-
-        this.$.contextMenu.$mount('#graphContextMenu');
       }
 
     }
@@ -1227,50 +1185,56 @@ define([
 
   });
 
-  var ContextMenu = Vue.extend({
+  ///
+  /// MAIN APP CODE
+  ///
 
-    data: function() {
-      return { x: 0, y: 0 };
-    },
+  var graphContextMenu = new ContextMenu({
 
     methods: {
 
-      show: function(x, y) {
-        if (this.beforeShow) {
-          this.beforeShow.apply(this, arguments);
-        }
+      addNode: function(e) {
+        var p = util.transformPointFromClientToEl(
+            e.clientX,
+            e.clientY,
+            graphComponent.$el
+        );
 
-        this.x = x;
-        this.y = y;
+        var nodeData = {
+          x: p.x,
+          y: p.y,
+          fixed: false,
+          data: {
+            name: 'Name',
+            properties: []
+          }
+        };
 
-        var $el = this.$el;
+        var nodeComponent = graphComponent
+            .$addChild({ data: nodeData}, NodeComponent)
+            .$mount(graphComponent.$$.dynamicContent);
 
-        $el.classList.add('show');
-        $el.classList.remove('hidden');
+        var nodePanel = new NodePanel({
+          data: {
+            isNew: true,
+            node: nodeData
+          }
+        });
 
-        $el.style.left = x + 'px';
-        $el.style.top = y + 'px';
-        $el.style.position = 'absolute';
+        nodePanel.$once('removeGhostNode', function() {
+          nodeComponent.$destroy(true);
+        });
+
+        floatingPanelBar.setPanel(nodePanel);
       },
 
-      hide: function() {
-        var $el = this.$el;
-
-        $el.classList.add('hidden');
-        $el.classList.remove('show');
-
-        if (this.afterHide) {
-          this.afterHide.apply(this, arguments);
-        }
+      saveGraph: function() {
+        Node.update(hypergraphID, self.nodes);
       }
 
     }
 
   });
-
-  ///
-  /// MAIN APP CODE
-  ///
 
   var nodeContextMenu = new ContextMenu({
 
@@ -1345,6 +1309,7 @@ define([
 
   var floatingPanelBar = new FloatingPanelBar();
 
+  graphContextMenu.$mount('#graphContextMenu');
   nodeContextMenu.$mount('#nodeContextMenu');
   linkContextMenu.$mount('#linkContextMenu');
   graphComponent.$mount('#graph');
