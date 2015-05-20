@@ -6,7 +6,9 @@ define([
     'util',
     'models',
     'graph/state',
-    'graph/navbar'
+    'graph/components/navbar',
+    'graph/components/floatingpanelbar',
+    'graph/components/zoombar'
 ], function (
     _,
     $,
@@ -15,7 +17,9 @@ define([
     util,
     models,
     State,
-    NavbarComponent
+    NavbarComponent,
+    FloatingPanelBar,
+    ZoomBarComponent
 ) {
   'use strict';
 
@@ -1223,69 +1227,6 @@ define([
 
   });
 
-  var FloatingPanelBar = Vue.extend({
-
-    methods: {
-
-      updateDimensionsAndPosition: function() {
-        var $nav = $('#nav');
-
-        var padding = 12;
-        var navHeight = $nav.outerHeight();
-
-        $(this.$el).css({
-          top: navHeight + padding + 'px',
-          left: padding + 'px'
-        });
-
-        $(this.$el).outerHeight($(window).outerHeight() - navHeight - 2*padding);
-      },
-
-      show: function() {
-        this.$el.classList.remove('hide');
-        this.$el.classList.add('show');
-        this.updateDimensionsAndPosition();
-      },
-
-      hide: function() {
-        this.$el.classList.remove('show');
-        this.$el.classList.add('hide');
-        this.updateDimensionsAndPosition();
-      },
-
-      removePanel: function() {
-        if (this.$.currentPanel) {
-          this.$.currentPanel.$destroy(true);
-          delete this.$.currentPanel;
-          this.hide();
-        }
-      },
-
-      setPanel: function(panel) {
-        if (this.$.currentPanel) {
-          this.$.currentPanel.$destroy(true);
-          delete this.$.currentPanel;
-        }
-
-        this.show();
-
-        this.$.currentPanel = panel;
-        panel.$mount();
-        panel.$appendTo(this.$el);
-      }
-    },
-
-    events: {
-
-      'hook:ready': function() {
-        this.updateDimensionsAndPosition();
-        window.addEventListener('resize', this.updateDimensionsAndPosition.bind(this));
-      }
-
-    }
-
-  });
-
   var ContextMenu = Vue.extend({
 
     data: function() {
@@ -1327,43 +1268,9 @@ define([
 
   });
 
-  var ZoomBarComponent = Vue.extend({
-
-    methods: {
-
-      updatePosition: function() {
-        var padding = 12;
-
-        this.$el.style.setProperty('bottom', padding + 'px');
-        this.$el.style.setProperty('right', padding + 'px');
-      },
-
-      incrementZoomLevel: function() {
-        graphComponent.incrementZoomLevel();
-      },
-
-      decrementZoomLevel: function() {
-        graphComponent.decrementZoomLevel();
-      }
-
-    },
-
-    events: {
-
-      'hook:ready': function() {
-        this.updatePosition();
-        window.addEventListener('resize', this.updatePosition.bind(this));
-      }
-
-    }
-
-  });
-
   ///
   /// MAIN APP CODE
   ///
-
-  var zoomBar = new ZoomBarComponent().$mount('#zoomBar');
 
   var nodeContextMenu = new ContextMenu({
 
@@ -1391,7 +1298,7 @@ define([
 
     }
 
-  }).$mount('#nodeContextMenu');
+  });
 
   var linkContextMenu = new ContextMenu({
 
@@ -1411,7 +1318,7 @@ define([
 
     }
 
-  }).$mount('#linkContextMenu');
+  });
 
   var graphComponent = new GraphComponent({
 
@@ -1419,7 +1326,13 @@ define([
       state: state
     }
 
-  }).$mount('#graph');
+  });
+
+  var zoomBar = new ZoomBarComponent({
+
+    graphComponent: graphComponent
+
+  });
 
   var navbarComponent = new NavbarComponent({
 
@@ -1428,9 +1341,16 @@ define([
       state: state
     }
 
-  }).$mount('#navbar');
+  });
 
-  var floatingPanelBar = new FloatingPanelBar().$mount('#floatingPanelBar');
+  var floatingPanelBar = new FloatingPanelBar();
+
+  nodeContextMenu.$mount('#nodeContextMenu');
+  linkContextMenu.$mount('#linkContextMenu');
+  graphComponent.$mount('#graph');
+  zoomBar.$mount('#zoomBar');
+  navbarComponent.$mount('#navbar');
+  floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data
 
