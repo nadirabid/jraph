@@ -7,7 +7,7 @@ define([
   'use strict';
 
   var Node = models.Node;
-  
+
   var NodePanel = Vue.extend({
 
     replace: true,
