@@ -7,9 +7,9 @@ define([
     'models',
     'graph/state',
     'graph/components/NavigationBarComponent',
-    'graph/components/FloatingPanelBar',
+    'graph/components/FloatingPanelBarComponent',
     'graph/components/ZoomBarComponent',
-    'graph/components/ContextMenu',
+    'graph/components/ContextMenuComponent',
     'graph/components/NodePanel',
     'graph/components/NodeComponent'
 ], function (
@@ -21,9 +21,9 @@ define([
     models,
     State,
     NavigationBarComponent,
-    FloatingPanelBar,
+    FloatingPanelBarComponent,
     ZoomBarComponent,
-    ContextMenu,
+    ContextMenuComponent,
     NodePanel,
     NodeComponent
 ) {
@@ -551,7 +551,7 @@ define([
 
   Vue.component('x-node', NodeComponent);
 
-  var graphContextMenu = new ContextMenu({
+  var graphContextMenu = new ContextMenuComponent({
 
     methods: {
 
@@ -613,7 +613,7 @@ define([
 
   });
 
-  var nodeContextMenu = new ContextMenu({
+  var nodeContextMenu = new ContextMenuComponent({
 
     methods: {
 
@@ -641,7 +641,7 @@ define([
 
   });
 
-  var linkContextMenu = new ContextMenu({
+  var linkContextMenu = new ContextMenuComponent({
 
     methods: {
 
@@ -661,7 +661,7 @@ define([
 
   });
 
-  var floatingPanelBar = new FloatingPanelBar();
+  var floatingPanelBar = new FloatingPanelBarComponent();
 
   var graphComponent = new GraphComponent({
 

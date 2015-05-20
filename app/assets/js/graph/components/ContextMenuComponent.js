@@ -3,7 +3,7 @@ define([
 ], function(Vue) {
   'use strict';
 
-  var ContextMenu = Vue.extend({
+  var ContextMenuComponent = Vue.extend({
 
     data: function() {
       return { x: 0, y: 0 };
@@ -44,5 +44,5 @@ define([
 
   });
 
-  return ContextMenu;
+  return ContextMenuComponent;
 });

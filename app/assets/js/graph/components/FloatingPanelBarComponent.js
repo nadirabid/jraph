@@ -4,7 +4,7 @@ define([
 ], function(Vue, $) {
   'use strict';
 
-  var FloatingPanelBar = Vue.extend({
+  var FloatingPanelBarComponent = Vue.extend({
 
     methods: {
 
@@ -71,6 +71,6 @@ define([
 
   });
 
-  return FloatingPanelBar;
+  return FloatingPanelBarComponent;
 
 });
