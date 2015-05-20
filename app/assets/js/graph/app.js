@@ -1229,7 +1229,7 @@ define([
       },
 
       saveGraph: function() {
-        Node.update(hypergraphID, self.nodes);
+        Node.update(hypergraphID, graphComponent.nodes);
       }
 
     }
