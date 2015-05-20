@@ -1,7 +1,7 @@
 define([
     'vue',
     'jquery'
-], function(Vue) {
+], function(Vue, $) {
   'use strict';
 
   var FloatingPanelBar = Vue.extend({
