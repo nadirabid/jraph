@@ -7,7 +7,7 @@ define([
 
   var Hypergraph = models.Hypergraph;
 
-  var NavbarComponent = Vue.extend({
+  var NavigationBarComponent = Vue.extend({
 
     data: function() {
 
@@ -119,5 +119,5 @@ define([
 
   });
 
-  return NavbarComponent;
+  return NavigationBarComponent;
 });

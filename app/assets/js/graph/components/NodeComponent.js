@@ -2,7 +2,7 @@ define([
     'vue',
     'models',
     'util',
-    'graph/components/nodepanel',
+    'graph/components/NodePanel',
     'graph/components/GhostLinkComponent'
 ], function(
     Vue,
@@ -301,6 +301,8 @@ define([
 
         e.stopPropagation();
         e.preventDefault();
+
+        var nodeContextMenu = this.$parent.$options.nodeContextMenu;
 
         nodeContextMenu.show(e.clientX, e.clientY, this);
 

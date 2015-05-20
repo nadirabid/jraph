@@ -6,11 +6,11 @@ define([
     'util',
     'models',
     'graph/state',
-    'graph/components/navbar',
-    'graph/components/floatingpanelbar',
-    'graph/components/zoombar',
-    'graph/components/contextmenu',
-    'graph/components/nodepanel',
+    'graph/components/NavigationBarComponent',
+    'graph/components/FloatingPanelBar',
+    'graph/components/ZoomBarComponent',
+    'graph/components/ContextMenu',
+    'graph/components/NodePanel',
     'graph/components/NodeComponent'
 ], function (
     _,
@@ -20,7 +20,7 @@ define([
     util,
     models,
     State,
-    NavbarComponent,
+    NavigationBarComponent,
     FloatingPanelBar,
     ZoomBarComponent,
     ContextMenu,
@@ -685,7 +685,7 @@ define([
 
   });
 
-  var navbarComponent = new NavbarComponent({
+  var navigationBarComponent = new NavigationBarComponent({
 
     data: {
       hypergraphID: hypergraphID,
@@ -699,7 +699,7 @@ define([
   linkContextMenu.$mount('#linkContextMenu');
   graphComponent.$mount('#graph');
   zoomBar.$mount('#zoomBar');
-  navbarComponent.$mount('#navbar');
+  navigationBarComponent.$mount('#navbar');
   floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data

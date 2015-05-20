@@ -26,13 +26,13 @@ define([
 
     },
 
-    events: {
+    created: function() {
+      if (!this.$options.graphComponent) throw 'graphComponent must be specified';
+    },
 
-      'hook:ready': function() {
-        this.updatePosition();
-        window.addEventListener('resize', this.updatePosition.bind(this));
-      }
-
+    ready: function() {
+      this.updatePosition();
+      window.addEventListener('resize', this.updatePosition.bind(this));
     }
 
   });
