@@ -10,7 +10,8 @@ define([
     'graph/components/floatingpanelbar',
     'graph/components/zoombar',
     'graph/components/contextmenu',
-    'graph/components/nodepanel'
+    'graph/components/nodepanel',
+    'graph/components/NodeComponent'
 ], function (
     _,
     $,
@@ -23,7 +24,8 @@ define([
     FloatingPanelBar,
     ZoomBarComponent,
     ContextMenu,
-    NodePanel
+    NodePanel,
+    NodeComponent
 ) {
   'use strict';
 
@@ -40,191 +42,6 @@ define([
   var mouse = util.mouse;
 
   var hypergraphID = window.location.pathname.split('/')[2];
-
-  function StateEventHandlers() {
-    this.click = util.noop;
-    this.dblclick = util.noop;
-    this.mouseover = util.noop;
-    this.mouseout = util.noop;
-    this.drag = util.noop;
-    this.dragstart = util.noop;
-    this.dragend = util.noop;
-  }
-
-  /// GRAPH VIEW COMPONENTS
-
-  var DisabledNodeState = util.extendClass(StateEventHandlers);
-
-  var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
-    var dragFlag = false;
-
-    this.click = function() {
-      if (dragFlag) {
-        dragFlag = false;
-        return;
-      }
-
-      var nodePanel = new NodePanel({
-
-        hypergraphID: hypergraphID,
-
-        graphComponent: graphComponent,
-
-        data: {
-          isNew: false,
-          node: ctx.$data
-        },
-
-        methods: {
-
-          // TODO: should abstract this method out into FloatingPanelBar
-          closeNodePanel: function() {
-            floatingPanelBar.removePanel();
-          }
-
-        }
-
-      });
-
-      floatingPanelBar.setPanel(nodePanel);
-    };
-
-    // focus on node
-    this.mouseover = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
-        return;
-      }
-
-      ctx.px = ctx.x;
-      ctx.py = ctx.y;
-      ctx.fixed = true;
-
-      // move node to front so that it isn't
-      // hidden behind another node
-      var nodes = ctx.$parent.nodes;
-      if (ctx.$index < ( nodes.length - 1 )) {
-        nodes.push(nodes.$remove(ctx.$index));
-      }
-    };
-
-    //hide menu
-    this.mouseout = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
-        return;
-      }
-
-      ctx.fixed = false;
-    };
-
-    //drag node
-    this.dragstart = function (e) {
-      // to stop drag event from propagating to panning handler on svg
-      e.stopPropagation();
-
-      if (e.target !== ctx.$$.nodeRect) {
-        return;
-      }
-
-      // to stop cursor from default
-      e.preventDefault();
-
-      ctx.px = ctx.x;
-      ctx.py = ctx.y;
-
-      ctx.menu = false;
-
-      util.animationFrame(function() {
-        ctx.$parent.$el.style.setProperty('cursor', 'move');
-      });
-    };
-
-    this.drag = function (e) {
-      var ctm = ctx.$parent.$$.nodesAndLinksGroup.getScreenCTM();
-      var p = ctx.$parent.$el.createSVGPoint();
-
-      p.x = e.clientX;
-      p.y = e.clientY;
-      p = p.matrixTransform(ctm.inverse());
-
-      ctx.px = ctx.x = p.x;
-      ctx.py = ctx.y = p.y;
-
-      dragFlag = true;
-
-      state.$layout.resume();
-    };
-
-    this.dragend = function () {
-      ctx.menu = true;
-
-      util.animationFrame(function() {
-        ctx.$parent.$el.style.setProperty('cursor', 'auto');
-      });
-    };
-  });
-
-  var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
-    //select node target
-    this.mouseover = function () {
-      if (ctx.id == mouse.data.source.id) {
-        return;
-      }
-
-      util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.add('node-linking-target', 'hover');
-      });
-
-      ctx.px = ctx.x;
-      ctx.py = ctx.y;
-      ctx.fixed = true;
-    };
-
-    //unselect node target
-    this.mouseout = function () {
-      if (ctx.id == mouse.data.source.id) {
-        return;
-      }
-
-      util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
-      });
-
-      ctx.fixed = false;
-    };
-
-    //set link target
-    this.click = function () {
-      var sourceCtx = mouse.data.source;
-
-      if (sourceCtx.id != ctx.id) {
-        Link.create(hypergraphID, { sourceId: sourceCtx.id, targetId: ctx.id, data: {} })
-            .done(function(link) {
-              graphComponent.nodes.forEach(function(n) {
-                if (link.sourceId == n.id) link.source = n;
-                if (link.targetId == n.id) link.target = n;
-              });
-
-              graphComponent.links.push(link);
-            });
-      }
-      else {
-        state.$layout.resume();
-      }
-
-      sourceCtx.$.ghostLink.$destroy(true);
-      sourceCtx.$.ghostLink = null;
-
-      util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
-        ctx.$$.nodeRect.classList.remove('node-linking-source');
-      });
-
-      sourceCtx.fixed = false;
-
-      state.nodeState = 'initial';
-      mouse.data.source = null;
-    };
-  });
 
   function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
                        x0src, y0src, x1src, y1src) {
@@ -274,214 +91,6 @@ define([
       y1Clip: y0src + (t1 * ydelta)  // y1clip
     };
   }
-
-  var NodeComponent = Vue.extend({
-
-    replace: true,
-
-    template: document.getElementById('graph.node.rect').innerHTML,
-
-    data: function () {
-      return {
-        mouseover: false,
-        leftEdge: 0,
-        rightEdge: 0,
-        bottomEdge: 0,
-        topEdge: 0,
-        width: 0,
-        height: 0,
-        menu: false,
-        nodeTranslate: 'translate(0, 0)',
-        rectTranslate: 'translate(0, 0)',
-        fixed: false, //d3.force doesn't pick it up if not explicitly linked
-        data: {
-          name: ''
-        }
-      };
-    },
-
-    computed: {
-
-      nodeTranslate: function() {
-        return 'translate(' + this.x + ',' + this.y + ')';
-      },
-
-      rectTranslate: function() {
-        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 10)/2) + ')';
-      }
-
-    },
-
-    methods: {
-
-      calculateRectBoundingEdges: function() {
-        // we get the transform to nodesAndLinksGroup element
-        // because, in calculating the bounding edges, we only
-        // want the transforms applied to the node element itself
-        // while disregarding the transforms to nodesAndLinksGroup
-        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
-        var bBox = this.$$.nodeRect.getBBox();
-        var point = this.$parent.$el.createSVGPoint();
-        var dimensions = this.$parent.$el.createSVGPoint();
-
-        // adding margin allows us to add some space around the node
-        // border. this allows us to shift the arrow marker on the link
-        // forwards without being completely hidden behind the node OR
-        // to far back that the line from the link isn't being completely
-        // covered by the arrowhead marker
-        var marginX = 8, marginY = 4;
-        var shiftX = 4, shiftY = 2;
-
-        point.x = bBox.x - shiftX;
-        point.y = bBox.y - shiftY;
-
-        point = point.matrixTransform(ttm);
-
-        ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
-
-        dimensions.x = this.width + marginX;
-        dimensions.y = this.height + marginY;
-
-        dimensions = dimensions.matrixTransform(ttm);
-
-        this.leftEdge = point.x;
-        this.rightEdge = point.x + dimensions.x;
-        this.topEdge = point.y;
-        this.bottomEdge = point.y + dimensions.y;
-      },
-
-      updateDimensionsOfNodeRect: function() {
-        var bBox = this.$$.nodeName.getBBox();
-
-        this.width = bBox.width + 24;
-        this.height = bBox.height + 12;
-      },
-
-      nodeContextMenu: function(e) {
-        if (e.target != this.$$.nodeRect) {
-          return;
-        }
-
-        e.stopPropagation();
-        e.preventDefault();
-
-        nodeContextMenu.show(e.clientX, e.clientY, this);
-
-        var closeContextMenu = function () {
-          nodeContextMenu.hide();
-          window.removeEventListener('click', closeContextMenu);
-        };
-
-        window.addEventListener('click', closeContextMenu);
-      },
-
-      setLinkSource: function () {
-        var self = this;
-
-        util.animationFrame(function() {
-          self.$$.nodeRect.classList.add('node-linking-source');
-        });
-
-        this.menu = false;
-        this.fixed = true;
-
-        state.nodeState = 'linking';
-        mouse.data.source = this;
-
-        this.$.ghostLink = this.$parent
-            .$addChild({ data: { linkSource: this } }, GhostLinkComponent)
-            .$mount()
-            .$appendTo(this.$parent.$$.dynamicContent);
-      },
-
-      delete: function() {
-        var self = this;
-
-        Node.delete(hypergraphID, this)
-            .done(function() {
-              graphComponent.links = graphComponent.links.filter(function(l) {
-                return l.sourceId != self.id && l.targetId != self.id;
-              });
-
-              graphComponent.nodes.$remove(self.$index);
-            });
-      },
-
-      getState: function () {
-        return this.$states[ state.nodeState ];
-      },
-
-      mouseover: function () {
-        return this.getState().mouseover.apply(state, arguments);
-      },
-
-      mouseout: function () {
-        return this.getState().mouseout.apply(state, arguments);
-      },
-
-      click: function () {
-        return this.getState().click.apply(state, arguments);
-      },
-
-      dblclick: function() {
-        return this.getState().dblclick.apply(state, arguments);
-      },
-
-      drag: function () {
-        return this.getState().drag.apply(state, arguments);
-      },
-
-      dragstart: function () {
-        return this.getState().dragstart.apply(state, arguments);
-      },
-
-      dragend: function () {
-        return this.getState().dragend.apply(state, arguments);
-      }
-
-    },
-
-    events: {
-
-      'hook:created': function () {
-        this.$states = {
-          initial: new InitialNodeState(this),
-          linking: new LinkingNodeState(this),
-          disabled: new DisabledNodeState(this)
-        };
-
-        this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
-
-        this.$watch('x', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('y', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('width', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('height', this.calculateRectBoundingEdges.bind(this));
-      },
-
-      'hook:ready': function () {
-        var $nodeRect = util(this.$$.nodeRect);
-
-        $nodeRect.on('click', this.click.bind(this));
-        $nodeRect.on('mouseover', this.mouseover.bind(this));
-        $nodeRect.on('mouseout', this.mouseout.bind(this));
-        $nodeRect.on('dragstart', this.dragstart.bind(this));
-        $nodeRect.on('drag', this.drag.bind(this));
-        $nodeRect.on('dragend', this.dragend.bind(this));
-
-        this.updateDimensionsOfNodeRect();
-        this.calculateRectBoundingEdges();
-      },
-
-      'hook:beforeDestroyed': function () {
-        this.menu = false;
-        this.fixed = false;
-      }
-
-    }
-
-  });
-
-  Vue.component('x-node', NodeComponent);
 
   var LinkComponent = Vue.extend({
 
@@ -936,75 +545,11 @@ define([
 
   });
 
-  var GhostLinkComponent = Vue.extend({
-
-    replace: true,
-
-    template: document.getElementById('graph.ghostLink').innerHTML,
-
-    data: function () {
-      return {
-        distanceFromMouse: 13,
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 }
-      };
-    },
-
-    methods: {
-
-      mousemove: function(e) {
-        var ctm = this.$parent.$$.nodesAndLinksGroup.getScreenCTM();
-        var p = this.$parent.$el.createSVGPoint();
-
-        p.x = e.clientX;
-        p.y = e.clientY;
-
-        p = p.matrixTransform(ctm.inverse());
-
-        var dx = p.x  - this.source.x,
-            dy = p.y - this.source.y;
-
-        var theta = Math.atan(dy / dx);
-
-        var sX = this.distanceFromMouse * Math.cos(theta);
-        var sY = this.distanceFromMouse * Math.sin(theta);
-
-        if (dx >= 0) { // from π/2 to -π/2 inclusively
-          p.x -= sX;
-          p.y -= sY;
-        }
-        else { // from π/2 to 3π/2
-          p.x = p.x + sX;
-          p.y = p.y + sY;
-        }
-
-        this.target = p;
-      }
-
-    },
-
-    events: {
-
-      'hook:created': function () {
-        this.source = this.linkSource;
-
-        this.mousemove({ clientX: mouse.x, clientY: mouse.y });
-
-        this._mousemove = this.mousemove.bind(this);
-        util.on('mousemove', this._mousemove);
-      },
-
-      'hook:beforeDestroy': function () {
-        util.off('mousemove', this._mousemove);
-      }
-
-    }
-
-  });
-
   ///
   /// MAIN APP CODE
   ///
+
+  Vue.component('x-node', NodeComponent);
 
   var graphContextMenu = new ContextMenu({
 
@@ -1116,7 +661,17 @@ define([
 
   });
 
+  var floatingPanelBar = new FloatingPanelBar();
+
   var graphComponent = new GraphComponent({
+
+    hypergraphID: hypergraphID,
+
+    floatingPanelBar: floatingPanelBar,
+
+    nodeContextMenu: nodeContextMenu,
+
+    state: state,
 
     data: {
       state: state
@@ -1138,8 +693,6 @@ define([
     }
 
   });
-
-  var floatingPanelBar = new FloatingPanelBar();
 
   graphContextMenu.$mount('#graphContextMenu');
   nodeContextMenu.$mount('#nodeContextMenu');
