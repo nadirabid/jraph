@@ -3,6 +3,7 @@ require([
   'util'
 ],
 function(Vue, util) {
+  'use strict';
 
   var navBar = new Vue({
 

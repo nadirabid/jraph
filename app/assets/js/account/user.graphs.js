@@ -6,6 +6,7 @@ require([
     'account/user'
 ],
 function(_, $, Vue, models){
+  'use strict';
 
   var Hypergraph = models.Hypergraph;
   var Node = models.Node;

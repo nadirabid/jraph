@@ -3,6 +3,7 @@ define([
     'd3',
     'util'
 ], function(_, d3, util) {
+  'use strict';
 
   var FORCE_THROTTLE_TIME = 500;
 

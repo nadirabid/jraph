@@ -1,6 +1,7 @@
 define([
     'vue'
 ], function(Vue) {
+  'use strict';
 
   var ZoomBarComponent = Vue.extend({
 

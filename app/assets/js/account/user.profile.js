@@ -6,6 +6,7 @@ require([
     'account/user'
 ],
 function(_, $, Vue, util){
+  'use strict';
 
   var updateUserProfile = new Vue({
 

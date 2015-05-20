@@ -1,6 +1,8 @@
 define([
     'util'
 ], function(util) {
+  'use strict';
+
   //
   // Link Model
   //
