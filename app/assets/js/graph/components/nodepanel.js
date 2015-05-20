@@ -1,10 +1,13 @@
 define([
     'vue',
     'util',
-    'mousetrap'
-], function(Vue, util, Mousetrap) {
+    'mousetrap',
+    'models'
+], function(Vue, util, Mousetrap, models) {
   'use strict';
 
+  var Node = models.Node;
+  
   var NodePanel = Vue.extend({
 
     replace: true,

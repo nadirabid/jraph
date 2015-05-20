@@ -38,8 +38,10 @@
         }
       });
 
-      require(['graph/app', 'jquery'], function(app) {
-        document.app = app;
+      require(['jquery'], function(app) {
+        require(['graph/app', 'bootstrap'], function(app) {
+          document.app = app;
+        });
       });
     </script>
   </body>
