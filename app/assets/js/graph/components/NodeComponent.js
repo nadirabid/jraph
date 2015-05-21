@@ -2,13 +2,14 @@ define([
     'vue',
     'models',
     'util',
-    'graph/components/NodePanel',
+    'graph/components/NodePanelComponent',
     'graph/components/GhostLinkComponent'
 ], function(
     Vue,
     models,
     util,
-    NodePanel
+    NodePanelComponent,
+    GhostLinkComponent
 ) {
   'use strict';
 
@@ -42,7 +43,7 @@ define([
         return;
       }
 
-      var nodePanel = new NodePanel({
+      var nodePanel = new NodePanelComponent({
 
         hypergraphID: ctx.$parent.$options.hypergraphID,
 

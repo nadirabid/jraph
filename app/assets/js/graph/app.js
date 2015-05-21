@@ -10,8 +10,8 @@ define([
     'graph/components/FloatingPanelBarComponent',
     'graph/components/ZoomBarComponent',
     'graph/components/ContextMenuComponent',
-    'graph/components/NodePanel',
-    'graph/components/NodeComponent'
+    'graph/components/NodeComponent',
+    'graph/components/NodePanelComponent'
 ], function (
     _,
     $,
@@ -24,8 +24,8 @@ define([
     FloatingPanelBarComponent,
     ZoomBarComponent,
     ContextMenuComponent,
-    NodePanel,
-    NodeComponent
+    NodeComponent,
+    NodePanelComponent
 ) {
   'use strict';
 
@@ -576,7 +576,7 @@ define([
             .$addChild({ data: nodeData}, NodeComponent)
             .$mount(graphComponent.$$.dynamicContent);
 
-        var nodePanel = new NodePanel({
+        var nodePanel = new NodePanelComponent({
 
           graphComponent: graphComponent,
 
