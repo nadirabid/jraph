@@ -7,6 +7,8 @@ define([
 ) {
   'use strict';
 
+  var mouse = util.mouse;
+
   var GhostLinkComponent = Vue.extend({
 
     replace: true,

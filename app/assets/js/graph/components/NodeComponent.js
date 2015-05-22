@@ -35,8 +35,6 @@ define([
   var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
     var dragFlag = false;
 
-    var state = ctx.$parent.$options.state;
-
     this.click = function() {
       if (dragFlag) {
         dragFlag = false;
@@ -130,7 +128,7 @@ define([
 
       dragFlag = true;
 
-      state.$layout.resume();
+      ctx.$parent.$options.state.$layout.resume();
     };
 
     this.dragend = function () {
@@ -178,7 +176,7 @@ define([
       var sourceCtx = mouse.data.source;
 
       if (sourceCtx.id != ctx.id) {
-        var graphComponent = ctx.$parent.$options.graphComponent;
+        var graphComponent = ctx.$parent;
 
         Link.create(ctx.$parent.$options.hypergraphID, {
               sourceId: sourceCtx.id,
@@ -195,7 +193,7 @@ define([
             });
       }
       else {
-        state.$layout.resume();
+        ctx.$parent.$options.state.$layout.resume();
       }
 
       sourceCtx.$.ghostLink.$destroy(true);
@@ -208,7 +206,7 @@ define([
 
       sourceCtx.fixed = false;
 
-      state.nodeState = 'initial';
+      ctx.$parent.$options.state.nodeState = 'initial';
       mouse.data.source = null;
     };
   });
@@ -325,7 +323,7 @@ define([
         this.menu = false;
         this.fixed = true;
 
-        state.nodeState = 'linking';
+        this.$parent.$options.state.nodeState = 'linking';
         mouse.data.source = this;
 
         this.$.ghostLink = this.$parent
@@ -338,7 +336,7 @@ define([
         var self = this;
 
         var hypergraphID = this.$parent.$options.hypergraphID;
-        var graphComponent = this.$parent.$options.graphComponent;
+        var graphComponent = this.$parent;
 
         Node.delete(hypergraphID, this)
             .done(function() {
@@ -391,42 +389,38 @@ define([
 
     },
 
-    events: {
+    created: function () {
+      this.$states = {
+        initial: new InitialNodeState(this),
+        linking: new LinkingNodeState(this),
+        disabled: new DisabledNodeState(this)
+      };
 
-      'hook:created': function () {
-        this.$states = {
-          initial: new InitialNodeState(this),
-          linking: new LinkingNodeState(this),
-          disabled: new DisabledNodeState(this)
-        };
+      this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
 
-        this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
+      this.$watch('x', this.calculateRectBoundingEdges.bind(this));
+      this.$watch('y', this.calculateRectBoundingEdges.bind(this));
+      this.$watch('width', this.calculateRectBoundingEdges.bind(this));
+      this.$watch('height', this.calculateRectBoundingEdges.bind(this));
+    },
 
-        this.$watch('x', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('y', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('width', this.calculateRectBoundingEdges.bind(this));
-        this.$watch('height', this.calculateRectBoundingEdges.bind(this));
-      },
+    ready: function () {
+      var $nodeRect = util(this.$$.nodeRect);
 
-      'hook:ready': function () {
-        var $nodeRect = util(this.$$.nodeRect);
+      $nodeRect.on('click', this.click.bind(this));
+      $nodeRect.on('mouseover', this.mouseover.bind(this));
+      $nodeRect.on('mouseout', this.mouseout.bind(this));
+      $nodeRect.on('dragstart', this.dragstart.bind(this));
+      $nodeRect.on('drag', this.drag.bind(this));
+      $nodeRect.on('dragend', this.dragend.bind(this));
 
-        $nodeRect.on('click', this.click.bind(this));
-        $nodeRect.on('mouseover', this.mouseover.bind(this));
-        $nodeRect.on('mouseout', this.mouseout.bind(this));
-        $nodeRect.on('dragstart', this.dragstart.bind(this));
-        $nodeRect.on('drag', this.drag.bind(this));
-        $nodeRect.on('dragend', this.dragend.bind(this));
+      this.updateDimensionsOfNodeRect();
+      this.calculateRectBoundingEdges();
+    },
 
-        this.updateDimensionsOfNodeRect();
-        this.calculateRectBoundingEdges();
-      },
-
-      'hook:beforeDestroyed': function () {
-        this.menu = false;
-        this.fixed = false;
-      }
-
+    beforeDestroyed: function () {
+      this.menu = false;
+      this.fixed = false;
     }
 
   });
