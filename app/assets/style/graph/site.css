@@ -186,10 +186,9 @@ body {
 }
 
 .node-rect-background {
-    opacity:0;
     stroke-width:0;
     fill: #E91E63;
-    transition: all 100ms ease-in-out;
+    transition: all 140ms ease-in-out;
 }
 
 .node-rect-background.active {

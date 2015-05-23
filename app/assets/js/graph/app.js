@@ -3,8 +3,9 @@ define([
     'jquery',
     'mousetrap',
     'vue',
-    'util',
-    'models',
+    'shared/util',
+    'shared/daos/NodeDAO',
+    'shared/daos/LinkDAO',
     'graph/state',
     'graph/components/NodeComponent',
     'graph/components/LinkComponent',
@@ -19,7 +20,8 @@ define([
     Mousetrap,
     Vue,
     util,
-    models,
+    NodeDAO,
+    LinkDAO,
     State,
     NodeComponent,
     LinkComponent,
@@ -34,9 +36,6 @@ define([
   ///
   /// DEFINITIONS
   ///
-
-  var Node = models.Node;
-  var Link = models.Link;
 
   var linksMap = Object.create(null);
 
@@ -341,7 +340,7 @@ define([
       },
 
       saveGraph: function() {
-        Node.update(hypergraphID, graphComponent.nodes);
+        NodeDAO.update(hypergraphID, graphComponent.nodes);
       }
 
     }
@@ -446,7 +445,7 @@ define([
 
   // fetch data
 
-  util.when(Node.fetchAll(hypergraphID), Link.fetchAll(hypergraphID))
+  util.when(NodeDAO.fetchAll(hypergraphID), LinkDAO.fetchAll(hypergraphID))
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {

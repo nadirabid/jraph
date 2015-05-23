@@ -1,12 +1,14 @@
 define([
     'vue',
-    'models',
-    'util',
+    'shared/daos/LinkDAO',
+    'shared/daos/NodeDAO',
+    'shared/util',
     'graph/components/NodePanelComponent',
     'graph/components/GhostLinkComponent'
 ], function(
     Vue,
-    models,
+    LinkDAO,
+    NodeDAO,
     util,
     NodePanelComponent,
     GhostLinkComponent
@@ -14,9 +16,6 @@ define([
   'use strict';
 
   var mouse = util.mouse;
-
-  var Link = models.Link;
-  var Node = models.Node;
 
   function StateEventHandlers() {
     this.click = util.noop;
@@ -178,7 +177,7 @@ define([
       if (sourceCtx.id != ctx.id) {
         var graphComponent = ctx.$parent;
 
-        Link.create(ctx.$parent.$options.hypergraphID, {
+        LinkDAO.create(ctx.$parent.$options.hypergraphID, {
               sourceId: sourceCtx.id,
               targetId: ctx.id,
               data: {}
@@ -338,7 +337,7 @@ define([
         var hypergraphID = this.$parent.$options.hypergraphID;
         var graphComponent = this.$parent;
 
-        Node.delete(hypergraphID, this)
+        NodeDAO.delete(hypergraphID, this)
             .done(function() {
               graphComponent.links = graphComponent.links.filter(function(l) {
                 return l.sourceId != self.id && l.targetId != self.id;

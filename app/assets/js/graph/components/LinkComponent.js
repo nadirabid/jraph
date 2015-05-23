@@ -1,16 +1,11 @@
 define([
     'vue',
-    'util',
-    'models'
-], function(
-    Vue,
-    util,
-    models
-) {
+    'shared/util',
+    'shared/daos/LinkDAO'
+], function(Vue, util, LinkDAO) {
   'use strict';
 
   var mouse = util.mouse;
-  var Link = models.Link;
 
   function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
                        x0src, y0src, x1src, y1src) {
@@ -130,7 +125,7 @@ define([
 
         var graphComponent = this.$parent;
 
-        Link.delete(this.$parent.$options.hypergraphID, this)
+        LinkDAO.delete(this.$parent.$options.hypergraphID, this)
             .done(function() {
               graphComponent.links.$remove(self.$index);
             });

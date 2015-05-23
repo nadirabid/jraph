@@ -1,11 +1,9 @@
 define([
     'vue',
-    'util',
-    'models'
-], function(Vue, util, models) {
+    'shared/util',
+    'shared/daos/HypergraphDAO'
+], function(Vue, util, HypergraphDAO) {
   'use strict';
-
-  var Hypergraph = models.Hypergraph;
 
   var NavigationBarComponent = Vue.extend({
 
@@ -74,7 +72,7 @@ define([
           this.graph.data.name = this.graphNameCache;
         }
         else {
-          Hypergraph
+          HypergraphDAO
               .update({
                 id: this.graph.id,
                 data: {
@@ -108,7 +106,7 @@ define([
           this.$add('layout', 'Static');
         }
 
-        Hypergraph
+        HypergraphDAO
             .fetch(this.hypergraphID)
             .done(function(hypergraph) {
               self.graph = hypergraph;

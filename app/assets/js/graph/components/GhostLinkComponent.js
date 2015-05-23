@@ -1,10 +1,7 @@
 define([
     'vue',
-    'util'
-], function(
-    Vue,
-    util
-) {
+    'shared/util'
+], function(Vue, util) {
   'use strict';
 
   var mouse = util.mouse;

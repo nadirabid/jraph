@@ -2,23 +2,20 @@ require([
     'lodash',
     'jquery',
     'vue',
-    'models',
+    'shared/daos/HypergraphDAO',
+    'shared/daos/NodeDAO',
+    'shared/daos/LinkDAO',
     'account/user'
-],
-function(_, $, Vue, models){
+], function(_, $, Vue, HypergraphDAO, NodeDAO, LinkDAO){
   'use strict';
-
-  var Hypergraph = models.Hypergraph;
-  var Node = models.Node;
-  var Link = models.Link;
 
   var graphsData = _.map(_graphsData, function(graphData) {
     graphData.nodes = graphData.nodes.map(function(n) {
-      return Node.parseJSON(n);
+      return NodeDAO.parseJSON(n);
     });
 
     graphData.links = graphData.links.map(function(l) {
-      return Link.parseJSON(l);
+      return LinkDAO.parseJSON(l);
     });
 
     graphData.nodes.forEach(function(n) {
@@ -378,7 +375,7 @@ function(_, $, Vue, models){
     methods: {
 
       createNewGraph: function() {
-        Hypergraph
+        HypergraphDAO
             .create({
               data: { name: 'Graph Name' }
             })

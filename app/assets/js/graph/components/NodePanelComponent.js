@@ -1,17 +1,10 @@
 define([
     'vue',
-    'util',
+    'shared/util',
     'mousetrap',
-    'models'
-], function(
-    Vue,
-    util,
-    Mousetrap,
-    models
-) {
+    'shared/daos/NodeDAO'
+], function(Vue, util, Mousetrap, NodeDAO) {
   'use strict';
-
-  var Node = models.Node;
 
   var NodePanelComponent = Vue.extend({
 
@@ -123,7 +116,7 @@ define([
       createNode: function() {
         var self = this;
 
-        Node.create(this.$options.hypergraphID, this.node)
+        NodeDAO.create(this.$options.hypergraphID, this.node)
             .done(function(node) {
               self.hasChanges = false;
               self.isNew = false;
@@ -135,7 +128,7 @@ define([
       saveNode: function() {
         var self = this;
 
-        Node.update(this.$options.hypergraphID, [ this.node ])
+        NodeDAO.update(this.$options.hypergraphID, [ this.node ])
             .done(function(node) {
               self.hasChanges = false;
               //TODO: replace node in nodesAry??

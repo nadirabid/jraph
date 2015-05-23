@@ -1,7 +1,7 @@
 define([
     'lodash',
     'd3',
-    'util'
+    'shared/util'
 ], function(_, d3, util) {
   'use strict';
 

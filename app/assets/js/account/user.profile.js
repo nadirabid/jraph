@@ -2,10 +2,9 @@ require([
     'lodash',
     'jquery',
     'vue',
-    'util',
+    'shard/util',
     'account/user'
-],
-function(_, $, Vue, util){
+], function(_, $, Vue, util){
   'use strict';
 
   var updateUserProfile = new Vue({
