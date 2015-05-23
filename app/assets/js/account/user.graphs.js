@@ -4,9 +4,9 @@ require([
     'vue',
     'shared/daos/HypergraphDAO',
     'shared/daos/NodeDAO',
-    'shared/daos/LinkDAO',
+    'shared/daos/EdgeDAO',
     'account/user'
-], function(_, $, Vue, HypergraphDAO, NodeDAO, LinkDAO){
+], function(_, $, Vue, HypergraphDAO, NodeDAO, EdgeDAO){
   'use strict';
 
   var graphsData = _.map(_graphsData, function(graphData) {
@@ -15,7 +15,7 @@ require([
     });
 
     graphData.links = graphData.links.map(function(l) {
-      return LinkDAO.parseJSON(l);
+      return EdgeDAO.parseJSON(l);
     });
 
     graphData.nodes.forEach(function(n) {

@@ -1,9 +1,12 @@
 define([
     'vue',
     'shared/util',
-    'shared/daos/LinkDAO'
-], function(Vue, util, LinkDAO) {
+    'shared/daos/EdgeDAO'
+], function(Vue, util, EdgeDAO) {
   'use strict';
+
+  /** @namespace this.$$ */
+  /** @namespace this.$$.arrowMarkerLine */
 
   var mouse = util.mouse;
 
@@ -56,11 +59,11 @@ define([
     };
   }
 
-  var LinkComponent = Vue.extend({
+  var EdgeComponent = Vue.extend({
 
     replace: true,
 
-    template: document.getElementById('graph.link').innerHTML,
+    template: document.getElementById('graph.edge').innerHTML,
 
     data: function() {
       return {
@@ -73,7 +76,7 @@ define([
 
     methods: {
 
-      calculateLinkNodeIntersection: function() {
+      calculateEdgeNodeIntersection: function() {
         //TODO: bug with translate transforms
 
         var source = this.source;
@@ -97,18 +100,18 @@ define([
         // set the sourceClipX/Y values in the next animation frame
         // to make sure that all the target clippings have been calculated
         // in the previous animation frame. then we can use the
-        // target clippings to adjust the source clippings for bidirectional links
+        // target clippings to adjust the source clippings for bidirectional edges
         Vue.nextTick(function() {
-          // if its a bidirectional links (ie <-->), then we have to calculate
+          // if its a bidirectional edges (ie <-->), then we have to calculate
           // the source clippings as well so we dont overlap the arrow marker of
-          // the incoming link.
-          var linksMap = self.$parent.$options.linksMap;
+          // the incoming edge.
+          var edgesMap = self.$parent.$options.edgesMap;
 
-          if (linksMap[targetId] && linksMap[targetId][sourceId]) {
-            var oppositeLink = linksMap[targetId][sourceId];
+          if (edgesMap[targetId] && edgesMap[targetId][sourceId]) {
+            var oppositeEdge = edgesMap[targetId][sourceId];
 
-            self.sourceClipX = oppositeLink.targetClipX;
-            self.sourceClipY = oppositeLink.targetClipY;
+            self.sourceClipX = oppositeEdge.targetClipX;
+            self.sourceClipY = oppositeEdge.targetClipY;
           }
           else {
             self.sourceClipX = source.x;
@@ -125,24 +128,24 @@ define([
 
         var graphComponent = this.$parent;
 
-        LinkDAO.delete(this.$parent.$options.hypergraphID, this)
+        EdgeDAO.delete(this.$parent.$options.hypergraphID, this)
             .done(function() {
-              graphComponent.links.$remove(self.$index);
+              graphComponent.edges.$remove(self.$index);
             });
       },
 
-      linkContextMenu: function(e) {
+      edgeContextMenu: function(e) {
         if (e.target != this.$$.arrowMarkerLine) return;
 
         e.stopPropagation();
         e.preventDefault();
 
-        var linkContextMenu = this.$parent.$options.linkContextMenu;
+        var edgeContextMenu = this.$parent.$options.edgeContextMenu;
 
-        linkContextMenu.show(e.clientX, e.clientY, this);
+        edgeContextMenu.show(e.clientX, e.clientY, this);
 
         var closeContextMenu = function () {
-          linkContextMenu.hide();
+          edgeContextMenu.hide();
           window.removeEventListener('click', closeContextMenu);
         };
 
@@ -250,14 +253,14 @@ define([
     },
 
     ready: function () {
-      this.$watch('target.leftEdge', this.calculateLinkNodeIntersection.bind(this));
-      this.$watch('target.topEdge', this.calculateLinkNodeIntersection.bind(this));
-      this.$watch('target.x', this.calculateLinkNodeIntersection.bind(this));
-      this.$watch('target.y', this.calculateLinkNodeIntersection.bind(this));
-      this.$watch('source.x', this.calculateLinkNodeIntersection.bind(this));
-      this.$watch('source.y', this.calculateLinkNodeIntersection.bind(this));
+      this.$watch('target.leftEdge', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.topEdge', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.x', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.y', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('source.x', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('source.y', this.calculateEdgeNodeIntersection.bind(this));
 
-      this.calculateLinkNodeIntersection();
+      this.calculateEdgeNodeIntersection();
 
       var $g = util(this.$el);
       $g.on('mouseover', this.freezePosition.bind(this));
@@ -269,5 +272,5 @@ define([
 
   });
 
-  return LinkComponent;
+  return EdgeComponent;
 });

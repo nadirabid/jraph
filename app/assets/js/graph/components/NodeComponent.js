@@ -1,19 +1,22 @@
 define([
     'vue',
-    'shared/daos/LinkDAO',
+    'shared/daos/EdgeDAO',
     'shared/daos/NodeDAO',
     'shared/util',
     'graph/components/NodePanelComponent',
     'graph/components/GhostLinkComponent'
 ], function(
     Vue,
-    LinkDAO,
+    EdgeDAO,
     NodeDAO,
     util,
     NodePanelComponent,
     GhostLinkComponent
 ) {
   'use strict';
+
+  /** @namespace ctx.$$.nodeRect */
+  /** @namespace ctx.$parent.$$.nodesAndLinksGroup */
 
   var mouse = util.mouse;
 
@@ -177,7 +180,7 @@ define([
       if (sourceCtx.id != ctx.id) {
         var graphComponent = ctx.$parent;
 
-        LinkDAO.create(ctx.$parent.$options.hypergraphID, {
+        EdgeDAO.create(ctx.$parent.$options.hypergraphID, {
               sourceId: sourceCtx.id,
               targetId: ctx.id,
               data: {}
@@ -188,7 +191,7 @@ define([
                 if (link.targetId == n.id) link.target = n;
               });
 
-              graphComponent.links.push(link);
+              graphComponent.edges.push(link);
             });
       }
       else {
@@ -339,7 +342,7 @@ define([
 
         NodeDAO.delete(hypergraphID, this)
             .done(function() {
-              graphComponent.links = graphComponent.links.filter(function(l) {
+              graphComponent.edges = graphComponent.edges.filter(function(l) {
                 return l.sourceId != self.id && l.targetId != self.id;
               });
 

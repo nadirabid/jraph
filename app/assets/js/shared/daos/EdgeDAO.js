@@ -12,30 +12,30 @@ define([
    }
    */
 
-  var LinkDAO = {};
+  var EdgeDao = {};
 
-  LinkDAO.parseJSON = function (datum) {
+  EdgeDao.parseJSON = function (datum) {
     return datum;
   };
 
-  LinkDAO.toJSON = function(link) {
+  EdgeDao.toJSON = function(link) {
     return link;
   };
 
-  LinkDAO.create = function(hypergraphID, link) {
+  EdgeDao.create = function(hypergraphID, link) {
     return util
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hyperlink',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
-          data: JSON.stringify(LinkDAO.toJSON(link))
+          data: JSON.stringify(EdgeDao.toJSON(link))
         })
         .then(function(response) {
-          return LinkDAO.parseJSON(response);
+          return EdgeDao.parseJSON(response);
         });
   };
 
-  LinkDAO.delete = function(hypergraphID, link) {
+  EdgeDao.delete = function(hypergraphID, link) {
     return util
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hyperlink/' + link.id,
@@ -43,16 +43,16 @@ define([
         });
   };
 
-  LinkDAO.fetchAll = function (hypergraphID) {
+  EdgeDao.fetchAll = function (hypergraphID) {
     return util
         .getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
         .then(function (response) {
           return _(response)
               .uniq(function(datum) { return datum.id; })
-              .map(LinkDAO.parseJSON)
+              .map(EdgeDao.parseJSON)
               .value();
         });
   };
 
-  return LinkDAO;
+  return EdgeDao;
 });

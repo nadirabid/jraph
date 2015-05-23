@@ -5,10 +5,10 @@ define([
     'vue',
     'shared/util',
     'shared/daos/NodeDAO',
-    'shared/daos/LinkDAO',
+    'shared/daos/EdgeDAO',
     'graph/state',
     'graph/components/NodeComponent',
-    'graph/components/LinkComponent',
+    'graph/components/EdgeComponent',
     'graph/components/NavigationBarComponent',
     'graph/components/FloatingPanelBarComponent',
     'graph/components/ZoomBarComponent',
@@ -21,10 +21,10 @@ define([
     Vue,
     util,
     NodeDAO,
-    LinkDAO,
+    EdgeDAO,
     State,
     NodeComponent,
-    LinkComponent,
+    EdgeComponent,
     NavigationBarComponent,
     FloatingPanelBarComponent,
     ZoomBarComponent,
@@ -37,7 +37,7 @@ define([
   /// DEFINITIONS
   ///
 
-  var linksMap = Object.create(null);
+  var edgesMap = Object.create(null);
 
   var state = new State();
 
@@ -50,7 +50,7 @@ define([
         x: null,
         y: null,
         nodes: [ ],
-        links: [ ],
+        edges: [ ],
         width: 0,
         height: 0,
         minX: 0,
@@ -234,13 +234,13 @@ define([
 
     events: {
 
-      'data': function(nodes, links) {
+      'data': function(nodes, edges) {
         this.nodes = nodes;
-        this.links = links;
+        this.edges = edges;
 
         this.state.$layout
             .nodes(nodes)
-            .links(links)
+            .links(edges)
             .start();
       },
 
@@ -256,10 +256,10 @@ define([
           layout.start();
         }, false, true);
 
-        this.$watch('state.links', function (value, mutation) {
+        this.$watch('state.edges', function (value, mutation) {
           if (!mutation) return;
 
-          layout.force.links(value);
+          layout.force.edges(value);
           layout.start();
         }, false, true);
 
@@ -375,7 +375,7 @@ define([
 
   });
 
-  var linkContextMenu = new ContextMenuComponent({
+  var edgeContextMenu = new ContextMenuComponent({
 
     methods: {
 
@@ -401,7 +401,7 @@ define([
 
     state: state,
 
-    linksMap: linksMap,
+    edgesMap: edgesMap,
 
     hypergraphID: hypergraphID,
 
@@ -409,7 +409,7 @@ define([
 
     nodeContextMenu: nodeContextMenu,
 
-    linkContextMenu: linkContextMenu,
+    edgeContextMenu: edgeContextMenu,
 
     data: {
       state: state
@@ -432,12 +432,12 @@ define([
 
   });
 
-  Vue.component('x-link', LinkComponent);
+  Vue.component('x-edge', EdgeComponent);
   Vue.component('x-node', NodeComponent);
 
   graphContextMenu.$mount('#graphContextMenu');
   nodeContextMenu.$mount('#nodeContextMenu');
-  linkContextMenu.$mount('#linkContextMenu');
+  edgeContextMenu.$mount('#edgeContextMenu');
   graphComponent.$mount('#graph');
   zoomBar.$mount('#zoomBar');
   navigationBarComponent.$mount('#navbar');
@@ -445,20 +445,20 @@ define([
 
   // fetch data
 
-  util.when(NodeDAO.fetchAll(hypergraphID), LinkDAO.fetchAll(hypergraphID))
+  util.when(NodeDAO.fetchAll(hypergraphID), EdgeDAO.fetchAll(hypergraphID))
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {
             if (l.sourceId == n.id) l.source = n;
             if (l.targetId == n.id) l.target = n;
 
-            var targets = linksMap[l.sourceId] || (linksMap[l.sourceId] = {});
+            var targets = edgesMap[l.sourceId] || (edgesMap[l.sourceId] = {});
             targets[l.targetId] = l;
           });
         });
 
         graphComponent.$add('nodes', nodes);
-        graphComponent.$add('links', links);
+        graphComponent.$add('edges', links);
         graphComponent.$emit('data', nodes, links);
       });
 });
