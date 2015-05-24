@@ -16,7 +16,7 @@
             refy="1.5"
             orient="auto"
             >
-              <path d="M0,0 L0,3 L3,1.5 L0,0" class="link-arrow"></path>
+              <path d="M0,0 L0,3 L3,1.5 L0,0" class="edge-arrow"></path>
             </marker>
           </defs>
 
@@ -97,7 +97,7 @@
 <template id="graph.edge">
   <g class="enable-pointer-events" v-on="contextmenu:edgeContextMenu">
     <line
-        class="link"
+        class="edge"
         marker-end="url(#linkArrow)"
         v-el="arrowMarkerLine"
         v-attr="x1:sourceClipX, y1:sourceClipY, x2:targetClipX, y2:targetClipY"
@@ -107,7 +107,7 @@
 
 <template id="graph.ghostLink">
   <line
-      class="ghost-link link"
+      class="ghost-link edge"
       marker-end="url(#linkArrow)"
       v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
   >

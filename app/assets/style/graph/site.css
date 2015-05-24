@@ -164,19 +164,19 @@ body {
     -webkit-flex: 1 1 auto;
 }
 
-.link-arrow {
+.edge-arrow {
     fill:#BDBDBD;
     stroke-opacity: 0;
     stroke-width: .40em;
 }
 
-.link {
+.edge {
     opacity: 1;
     stroke: #BDBDBD;
     stroke-width: .20em;
 }
 
-.link.hover {
+.edge.hover {
     opacity: .6;
 }
 

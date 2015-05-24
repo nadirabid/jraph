@@ -35,7 +35,7 @@ class ApplicationController @Inject() (
     def writes(graphsData: (Hypergraph, Seq[Hypernode], Seq[Hyperlink])) = Json.obj(
       "graph" -> graphsData._1,
       "nodes" -> graphsData._2,
-      "links" -> graphsData._3
+      "edges" -> graphsData._3
     )
   }
 

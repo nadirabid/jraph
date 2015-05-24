@@ -5,9 +5,6 @@ define([
 ], function(Vue, util, EdgeDAO) {
   'use strict';
 
-  /** @namespace this.$$ */
-  /** @namespace this.$$.arrowMarkerLine */
-
   var mouse = util.mouse;
 
   function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
@@ -172,7 +169,7 @@ define([
         target.fixed = true;
 
         Vue.nextTick(function() {
-          self.$el.querySelector('.link')
+          self.$el.querySelector('.edge')
               .classList
               .add('hover');
         });
@@ -190,7 +187,7 @@ define([
         this.target.fixed = false;
 
         Vue.nextTick(function() {
-          self.$el.querySelector('.link')
+          self.$el.querySelector('.edge')
               .classList
               .remove('hover');
         });
@@ -245,7 +242,7 @@ define([
         var self = this;
 
         Vue.nextTick(function() {
-          self.$el.querySelector('.link').classList.remove('hover');
+          self.$el.querySelector('.edge').classList.remove('hover');
           self.$parent.$el.style.removeProperty('cursor', 'auto');
         });
       }

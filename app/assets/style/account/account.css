@@ -12,7 +12,7 @@ html, body {
     stroke-width: .25em;
 }
 
-.link {
+.edge {
     opacity: .3;
     stroke: #eee;
     stroke-width: .25em;

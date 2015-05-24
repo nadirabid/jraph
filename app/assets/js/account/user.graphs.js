@@ -10,21 +10,21 @@ require([
   'use strict';
 
   var graphsData = _.map(_graphsData, function(graphData) {
-    graphData.nodes = graphData.nodes.map(function(n) {
-      return NodeDAO.parseJSON(n);
+    graphData.nodes = graphData.nodes.map(function(node) {
+      return NodeDAO.parseJSON(node);
     });
 
-    graphData.links = graphData.links.map(function(l) {
-      return EdgeDAO.parseJSON(l);
+    graphData.edges = graphData.edges.map(function(edge) {
+      return EdgeDAO.parseJSON(edge);
     });
 
-    graphData.nodes.forEach(function(n) {
-      graphData.links.forEach(function(l) {
-        if (l.sourceId == n.id) l.source = n;
-        if (l.targetId == n.id) l.target = n;
+    graphData.nodes.forEach(function(node) {
+      graphData.edges.forEach(function(edge) {
+        if (edge.sourceId == node.id) edge.source = node;
+        if (edge.targetId == node.id) edge.target = node;
       });
 
-      return n;
+      return node;
     });
 
     return graphData;
@@ -33,25 +33,25 @@ require([
   function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
                        x0src, y0src, x1src, y1src) {
     var t0 = 0.0, t1 = 1.0;
-    var xdelta = x1src-x0src;
-    var ydelta = y1src-y0src;
+    var xDelta = x1src-x0src;
+    var yDelta = y1src-y0src;
     var p,q,r;
 
     for(var edge=0; edge<4; edge++) {   // Traverse through left, right, bottom, top edges.
       if (edge === 0) {
-        p = -xdelta;
+        p = -xDelta;
         q = -(edgeLeft - x0src);
       }
       else if (edge === 1) {
-        p = xdelta;
+        p = xDelta;
         q =  (edgeRight - x0src);
       }
       else if (edge === 2) {
-        p = -ydelta;
+        p = -yDelta;
         q = -(edgeBottom - y0src);
       }
       else if (edge === 3) {
-        p = ydelta;
+        p = yDelta;
         q = (edgeTop - y0src);
       }
 
@@ -72,10 +72,10 @@ require([
     }
 
     return {
-      x0Clip: x0src + (t0 * xdelta), // x0clip
-      y0Clip: y0src + (t0 * ydelta), // y0clip
-      x1Clip: x0src + (t1 * xdelta), // x1clip
-      y1Clip: y0src + (t1 * ydelta)  // y1clip
+      x0Clip: x0src + (t0 * xDelta), // x0clip
+      y0Clip: y0src + (t0 * yDelta), // y0clip
+      x1Clip: x0src + (t1 * xDelta), // x1clip
+      y1Clip: y0src + (t1 * yDelta)  // y1clip
     };
   }
 
@@ -99,9 +99,9 @@ require([
     return bounds;
   }
 
-  var LinkThumbnailComponent = Vue.extend({
+  var EdgeThumbnailComponent = Vue.extend({
 
-    template: document.getElementById('link.thumbnail').innerHTML,
+    template: document.getElementById('edge.thumbnail').innerHTML,
 
     replace: true,
 
@@ -127,17 +127,6 @@ require([
       }
     },
 
-    events: {
-
-      'hook:ready': function() {
-        var self = this;
-        Vue.nextTick(function() {
-          self.liangBarsky();
-        });
-      }
-
-    },
-
     methods: {
 
       liangBarsky: function () {
@@ -159,11 +148,18 @@ require([
         this.targetClipY = clippings.y0Clip;
       }
 
+    },
+
+    ready: function() {
+      var self = this;
+      Vue.nextTick(function() { // i've forgotten why we need this
+        self.liangBarsky();
+      });
     }
 
   });
 
-  Vue.component('x-link-thumbnail', LinkThumbnailComponent);
+  Vue.component('x-edge-thumbnail', EdgeThumbnailComponent);
 
   var NodeThumbnailComponent = Vue.extend({
 
@@ -217,11 +213,12 @@ require([
     methods: {
 
       calculateRectBoundingEdges: function() {
-        // we get the transform to nodesAndLinksGroup element
+        // we get the transform to nodesAndEdgesGroup element
         // because, in calculating the bounding edges, we only
         // want the transforms applied to the node element itself
-        // while disregarding the transforms to nodesAndLinksGroup
-        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
+        // while disregarding the transforms to nodesAndEdgesGroup
+
+        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndEdgesGroup);
         var bBox = this.$$.nodeRect.getBBox();
         var point = this.$parent.$$.svg.createSVGPoint();
         var dimensions = this.$parent.$$.svg.createSVGPoint();
@@ -257,6 +254,7 @@ require([
 
   Vue.component('x-node-thumbnail', NodeThumbnailComponent);
 
+  var count = 0;
   var GraphThumbnailComponent = Vue.extend({
 
     template: '#graph.thumbnail',
@@ -265,7 +263,7 @@ require([
 
     data: function() {
       return {
-        links: [],
+        edges: [],
         nodes: [],
         width: 400,
         height: 220,
@@ -297,19 +295,16 @@ require([
 
     },
 
-    events: {
-
-      'hook:ready': function() {
-        this.bounds = viewBoundsToFitAllNodes(this.nodes);
-      }
-
+    ready: function() {
+      this.bounds = viewBoundsToFitAllNodes(this.nodes);
+      console.log(count, JSON.parse(JSON.stringify(this.bounds)));
+      count++;
     }
 
   });
 
   Vue.component('x-graph-thumbnail', GraphThumbnailComponent);
 
-  var letters = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N' ];
   var colors = [ '2e6d8c', '8c261b', 'e74c3c', '4694c6', 'dd6580', '626264' ];
   var counter = 0;
 

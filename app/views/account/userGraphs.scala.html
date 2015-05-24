@@ -91,10 +91,10 @@
     </div>
   </body>
 
-  <template id="link.thumbnail">
+  <template id="edge.thumbnail">
     <g>
       <line
-          class="link"
+          class="edge"
           v-attr="x1:sourceX, y1:sourceY, x2:targetClipX, y2:targetClipY"
       ></line>
       <line
@@ -158,9 +158,9 @@
             </marker>
           </defs>
 
-          <g class="x-disable-pointer-events" v-el="nodesAndLinksGroup">
-            <!-- Links -->
-            <x-link-thumbnail v-repeat="edges"></x-link-thumbnail>
+          <g class="x-disable-pointer-events" v-el="nodesAndEdgesGroup">
+            <!-- Edges -->
+            <x-edge-thumbnail v-repeat="edges"></x-edge-thumbnail>
 
             <!-- Nodes -->
             <x-node-thumbnail v-repeat="nodes"></x-node-thumbnail>
