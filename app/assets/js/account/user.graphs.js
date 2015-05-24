@@ -79,7 +79,11 @@ require([
     };
   }
 
-  function viewBoundsToFitAllNodes(nodes) {
+  function calculateViewBoundsToFitAllNodes(nodes) {
+    if (nodes.length === 0) {
+      return { xMin: 0, xMax: 1280, yMin: 0, yMax: 675 };
+    }
+
     var bounds = {
       xMin: Number.POSITIVE_INFINITY,
       xMax: Number.NEGATIVE_INFINITY,
@@ -296,9 +300,7 @@ require([
     },
 
     ready: function() {
-      this.bounds = viewBoundsToFitAllNodes(this.nodes);
-      console.log(count, JSON.parse(JSON.stringify(this.bounds)));
-      count++;
+      this.bounds = calculateViewBoundsToFitAllNodes(this.nodes);
     }
 
   });
