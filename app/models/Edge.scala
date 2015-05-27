@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import org.joda.time._
 
-case class Hyperlink(
+case class Edge(
   id: UUID,
   sourceID: UUID,
   targetID: UUID,
@@ -22,8 +22,8 @@ case class Hyperlink(
   data: Option[JsObject]
 )
 
-object Hyperlink {
-  // TODO: security issue - hyperlink queries do not use hypergraphID or userEmail currently, use them!
+object Edge {
+  // TODO: security issue - "edge" queries do not use hypergraphID or userEmail currently, use them!
 
   val dbHost = "localhost"
   val dbPort = current.configuration.getInt("neo4j.port").get
@@ -32,23 +32,23 @@ object Hyperlink {
 
   implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
 
-  implicit val hyperlinkReads: Reads[Hyperlink] = (
+  implicit val edgeReads: Reads[Edge] = (
     (JsPath \ "id").read[UUID] and
     (JsPath \ "sourceId").read[UUID] and
     (JsPath \ "targetId").read[UUID] and
     (JsPath \ "updatedAt").read[DateTime] and
     (JsPath \ "createdAt").read[DateTime] and
     (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
-  )(Hyperlink.apply _)
+  )(Edge.apply _)
 
-  implicit val hyperlinkWrites = new Writes[Hyperlink] {
-    def writes(hyperlink: Hyperlink) = Json.obj(
-      "id" -> hyperlink.id,
-      "sourceId" -> hyperlink.sourceID,
-      "targetId" -> hyperlink.targetID,
-      "updatedAt" -> hyperlink.updatedAt.getMillis,
-      "createdAt" -> hyperlink.createdAt.getMillis,
-      "data" -> hyperlink.data
+  implicit val edgeWrites = new Writes[Edge] {
+    def writes(edge: Edge) = Json.obj(
+      "id" -> edge.id,
+      "sourceId" -> edge.sourceID,
+      "targetId" -> edge.targetID,
+      "updatedAt" -> edge.updatedAt.getMillis,
+      "createdAt" -> edge.createdAt.getMillis,
+      "data" -> edge.data
     )
   }
 
@@ -57,56 +57,56 @@ object Hyperlink {
 
   def create(userEmail: String,
              hypergraphID: UUID,
-             hyperlink: Hyperlink): Future[Hyperlink] = {
+             edge: Edge): Future[Edge] = {
 
     val cypherCreate =
       """
         | MATCH (source:Hypernode { id: {sourceId} }), (target:Hypernode { id: {targetId} })
-        | CREATE (source)-[HL:HYPERLINK {hyperlinkData}]->(target)
-        | RETURN HL;
+        | CREATE (source)-[E:EDGE {edgeData}]->(target)
+        | RETURN E;
       """.stripMargin
 
     Cypher(cypherCreate)
         .apply(Json.obj(
-          "sourceId" -> hyperlink.sourceID,
-          "targetId" -> hyperlink.targetID,
-          "hyperlinkData" -> Json.obj(
-            "id" -> hyperlink.id,
-            "createdAt" -> hyperlink.createdAt.getMillis,
-            "updatedAt" -> hyperlink.updatedAt.getMillis,
-            "sourceId" -> hyperlink.sourceID,
-            "targetId" -> hyperlink.targetID,
-            "data" -> Json.stringify(hyperlink.data.getOrElse(JsNull))
+          "sourceId" -> edge.sourceID,
+          "targetId" -> edge.targetID,
+          "edgeData" -> Json.obj(
+            "id" -> edge.id,
+            "createdAt" -> edge.createdAt.getMillis,
+            "updatedAt" -> edge.updatedAt.getMillis,
+            "sourceId" -> edge.sourceID,
+            "targetId" -> edge.targetID,
+            "data" -> Json.stringify(edge.data.getOrElse(JsNull))
           )
         ))
-        .map(_.rows.head(0).as[Hyperlink])
+        .map(_.rows.head(0).as[Edge])
   }
 
   def read(userEmail: String,
            hypergraphID: UUID,
-           hyperlinkID: UUID): Future[Option[Hyperlink]] = {
+           edgeID: UUID): Future[Option[Edge]] = {
 
     val cypherRead =
       """
-        | MATCH (:Hypernode)-[HL:HYPERLINK { id: {hyperlinkID} }]->(:Hypernode)
-        | RETURN HL;
+        | MATCH (:Hypernode)-[E:EDGE { id: {edgeID} }]->(:Hypernode)
+        | RETURN E;
       """.stripMargin
 
     Cypher(cypherRead)
         .apply(Json.obj(
-          "hyperlinkID" -> hyperlinkID
+          "edgeID" -> edgeID
         ))
-        .map(_.rows.headOption.map(row => row(0).as[Hyperlink]))
+        .map(_.rows.headOption.map(row => row(0).as[Edge]))
   }
 
   def readAll(userEmail: String,
-              hypergraphID: UUID): Future[Seq[Hyperlink]] = {
+              hypergraphID: UUID): Future[Seq[Edge]] = {
 
     val cypherReadAll =
       """
         | MATCH (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
-        | MATCH (hg)-[:OWNS_HYPERNODE]->(:Hypernode)-[HL:HYPERLINK]->(:Hypernode)
-        | RETURN HL;
+        | MATCH (hg)-[:OWNS_HYPERNODE]->(:Hypernode)-[E:EDGE]->(:Hypernode)
+        | RETURN E;
       """.stripMargin
 
     Cypher(cypherReadAll)
@@ -114,42 +114,42 @@ object Hyperlink {
           "hypergraphID" -> hypergraphID,
           "userEmail" -> userEmail
         ))
-        .map(_.rows.map(row => row(0).as[Hyperlink]))
+        .map(_.rows.map(row => row(0).as[Edge]))
   }
 
   def update(userEmail: String,
              hypergraphID: UUID,
-             hyperlink: Hyperlink): Future[Hyperlink] = {
+             edge: Edge): Future[Edge] = {
 
     val cypherUpdate =
       """
-        | MATCH (:Hypernode)-[HL:HYPERLINK { id: {hyperlinkID} }]->(:Hypernode)
-        | SET HL.data = {data}, HL.updatedAt = {updatedAt}
-        | RETURN HL;
+        | MATCH (:Hypernode)-[E:EDGE { id: {edgeID} }]->(:Hypernode)
+        | SET E.data = {data}, E.updatedAt = {updatedAt}
+        | RETURN E;
       """.stripMargin
 
     Cypher(cypherUpdate)
         .apply(Json.obj(
-          "hyperlinkID" -> hyperlink.id,
-          "data" -> Json.stringify(hyperlink.data.getOrElse(JsNull)),
-          "updatedAt" -> hyperlink.updatedAt.getMillis
+          "edgeID" -> edge.id,
+          "data" -> Json.stringify(edge.data.getOrElse(JsNull)),
+          "updatedAt" -> edge.updatedAt.getMillis
         ))
-        .map(_.rows.head(0).as[Hyperlink])
+        .map(_.rows.head(0).as[Edge])
   }
 
   def delete(userEmail: String,
              hypergraphID: UUID,
-             hyperlinkID: UUID): Future[Boolean] = {
+             edgeID: UUID): Future[Boolean] = {
 
     val cypherDelete =
       """
-        | MATCH (:Hypernode)-[HL:HYPERLINK { id: {hyperlinkID} }]-(:Hypernode)
-        | DELETE HL;
+        | MATCH (:Hypernode)-[E:EDGE { id: {edgeID} }]-(:Hypernode)
+        | DELETE E;
       """.stripMargin
 
     Cypher(cypherDelete)
         .apply(Json.obj(
-          "hyperlinkID" -> hyperlinkID
+          "edgeID" -> edgeID
         ))
         .map(_.stats.relationshipsDeleted > 0)
   }

@@ -138,8 +138,8 @@ class UserDAOImpl extends UserDAO {
         | MATCH (user:User { email: {email} })-[HAS_PW:HAS_PASSWORD]->(passwordInfo:PasswordInfo)
         | OPTIONAL MATCH (user)-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph)
         | OPTIONAL MATCH (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
-        | OPTIONAL MATCH (hn)-[HL:HYPERLINK]->(:Hypernode)
-        | DELETE OWNS_HG, OWNS_HN, HAS_PW, HL, user, passwordInfo, hg, hn;
+        | OPTIONAL MATCH (hn)-[E:EDGE]->(:Hypernode)
+        | DELETE OWNS_HG, OWNS_HN, HAS_PW, E, user, passwordInfo, hg, hn;
       """.stripMargin
 
     Cypher(cypherDelete)

@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import core.authorization.WithAccess
 
-import models.{ User, Hyperlink }
+import models.{ User, Edge }
 import org.joda.time.DateTime
 
 import play.api.libs.json._
@@ -16,13 +16,13 @@ import play.api.libs.json._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HyperlinkController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
+class EdgeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   def create(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
     Future.successful(Ok)
 
-    val model = Hyperlink(
+    val model = Edge(
       UUID.randomUUID(),
       (req.body \ "sourceId").as[UUID],
       (req.body \ "targetId").as[UUID],
@@ -31,26 +31,26 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hyperlink.create(req.identity.email, hypergraphID, model)
-        .map(hyperlink => Ok(Json.toJson(hyperlink)))
+    Edge.create(req.identity.email, hypergraphID, model)
+        .map(edge => Ok(Json.toJson(edge)))
   }
 
-  def read(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
-    Hyperlink.read(req.identity.email, hypergraphID, hyperlinkID) map {
-      case Some(hyperlink) => Ok(Json.toJson(hyperlink))
+  def read(hypergraphID: UUID, edgeID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+    Edge.read(req.identity.email, hypergraphID, edgeID) map {
+      case Some(edge) => Ok(Json.toJson(edge))
       case None => NotFound
     }
   }
 
   def readAll(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
-    Hyperlink.readAll(req.identity.email, hypergraphID)
-        .map(hyperlinks => Ok(Json.toJson(hyperlinks)))
+    Edge.readAll(req.identity.email, hypergraphID)
+        .map(edges => Ok(Json.toJson(edges)))
   }
 
   def update(hypergraphID: UUID,
-             hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
-    val model = Hyperlink(
-      hyperlinkID,
+             edgeID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+    val model = Edge(
+      edgeID,
       (req.body \ "sourceId").as[UUID],
       (req.body \ "targetId").as[UUID],
       DateTime.now,
@@ -58,12 +58,12 @@ class HyperlinkController @Inject() (implicit val env: Environment[User, Session
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hyperlink.update(req.identity.email, hypergraphID, model)
-        .map(hyperlink => Ok(Json.toJson(hyperlink)))
+    Edge.update(req.identity.email, hypergraphID, model)
+        .map(edge => Ok(Json.toJson(edge)))
   }
 
-  def delete(hypergraphID: UUID, hyperlinkID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
-    Hyperlink.delete(req.identity.email, hypergraphID, hyperlinkID)
+  def delete(hypergraphID: UUID, edgeID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+    Edge.delete(req.identity.email, hypergraphID, edgeID)
         .map(res => Ok(Json.toJson(res)))
   }
 

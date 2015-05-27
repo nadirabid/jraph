@@ -20,7 +20,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import forms._
-import models.{Hypergraph, Hypernode, Hyperlink, User}
+import models.{Hypergraph, Hypernode, Edge, User}
 import models.services.UserService
 
 class ApplicationController @Inject() (
@@ -31,8 +31,8 @@ class ApplicationController @Inject() (
   extends Silhouette[User, SessionAuthenticator] {
 
   implicit val graphsDataWrite =
-      new Writes[(Hypergraph, Seq[Hypernode], Seq[Hyperlink])] {
-    def writes(graphsData: (Hypergraph, Seq[Hypernode], Seq[Hyperlink])) = Json.obj(
+      new Writes[(Hypergraph, Seq[Hypernode], Seq[Edge])] {
+    def writes(graphsData: (Hypergraph, Seq[Hypernode], Seq[Edge])) = Json.obj(
       "graph" -> graphsData._1,
       "nodes" -> graphsData._2,
       "edges" -> graphsData._3
@@ -44,11 +44,11 @@ class ApplicationController @Inject() (
 
     Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
       val graphsDataRequests = hypergraphs.map { hypergraph =>
-        for { //this can be sped up by doing Hypernode/Hyperlink.read in parallel
+        for { //this can be sped up by doing Hypernode/Edge.read in parallel
           nodes <- Hypernode.readAll(userEmail, hypergraph.id)
-          links <- Hyperlink.readAll(userEmail, hypergraph.id)
+          edges <- Edge.readAll(userEmail, hypergraph.id)
         } yield {
-          (hypergraph, nodes, links)
+          (hypergraph, nodes, edges)
         }
       }
 

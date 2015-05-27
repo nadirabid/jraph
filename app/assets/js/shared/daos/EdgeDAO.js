@@ -25,7 +25,7 @@ define([
   EdgeDao.create = function(hypergraphID, link) {
     return util
         .ajax({
-          url: '/hypergraph/' + hypergraphID + '/hyperlink',
+          url: '/hypergraph/' + hypergraphID + '/edge',
           type: 'POST',
           contentType: 'application/json; charset=utf-8',
           data: JSON.stringify(EdgeDao.toJSON(link))
@@ -38,14 +38,14 @@ define([
   EdgeDao.delete = function(hypergraphID, link) {
     return util
         .ajax({
-          url: '/hypergraph/' + hypergraphID + '/hyperlink/' + link.id,
+          url: '/hypergraph/' + hypergraphID + '/edge/' + link.id,
           type: 'DELETE'
         });
   };
 
   EdgeDao.fetchAll = function (hypergraphID) {
     return util
-        .getJSON('/hypergraph/' + hypergraphID + '/hyperlink')
+        .getJSON('/hypergraph/' + hypergraphID + '/edge')
         .then(function (response) {
           return _(response)
               .uniq(function(datum) { return datum.id; })

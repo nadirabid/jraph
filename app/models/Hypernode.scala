@@ -191,8 +191,8 @@ object Hypernode {
         | MATCH (hn:Hypernode { id: {hypernodeID} }),
         |       (:User { email: {userEmail} })-[:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} }),
         |       (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn)
-        | OPTIONAL MATCH (hn)-[HL:HYPERLINK]-(:Hypernode)
-        | DELETE OWNS_HN, HL, hn;
+        | OPTIONAL MATCH (hn)-[E:EDGE]-(:Hypernode)
+        | DELETE OWNS_HN, E, hn;
       """.stripMargin
 
     Cypher(cypherDelete)

@@ -5,7 +5,7 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
 
-import models.{User, Hypergraph, Hypernode, Hyperlink}
+import models.{User, Hypergraph, Hypernode, Edge$}
 
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
@@ -82,7 +82,7 @@ class HyperlinkSpec extends WordSpec
       Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 2000.millis)
       Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 2000.millis)
 
-      val hyperlink = Hyperlink(
+      val hyperlink = Edge(
         UUID.randomUUID(),
         sourceNode.id,
         targetNode.id,
@@ -91,14 +91,14 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p1" -> "v1"))
       )
 
-      val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
+      val createResult = Edge.create(userEmail, defaultHypergraph.id, hyperlink)
 
       whenReady(createResult) { hyperlinkResult =>
         hyperlinkResult.id shouldBe hyperlink.id
         (hyperlinkResult.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.id)
+      val findResult = Edge.read(userEmail, defaultHypergraph.id, hyperlink.id)
 
       whenReady(findResult) { opt =>
         opt.isEmpty shouldBe false
@@ -106,13 +106,13 @@ class HyperlinkSpec extends WordSpec
         (opt.value.data.get \ "p1").as[String] shouldBe "v1"
       }
 
-      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
+      val findAllResult = Edge.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { hyperlinksResult =>
         hyperlinksResult.count(_.id == hyperlink.id) shouldBe 1
       }
 
-      val hyperlinkUpdate = Hyperlink(
+      val hyperlinkUpdate = Edge(
         hyperlink.id,
         sourceNode.id,
         targetNode.id,
@@ -121,7 +121,7 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p2" -> "v2"))
       )
 
-      val updateResult = Hyperlink.update(
+      val updateResult = Edge.update(
         userEmail,
         defaultHypergraph.id,
         hyperlinkUpdate
@@ -136,7 +136,7 @@ class HyperlinkSpec extends WordSpec
         }
       }
 
-      val deleteResult = Hyperlink.delete(
+      val deleteResult = Edge.delete(
         userEmail,
         defaultHypergraph.id,
         hyperlink.id
@@ -146,7 +146,7 @@ class HyperlinkSpec extends WordSpec
         hyperlinkDeleteResult shouldBe true
       }
 
-      val deleteFindResult = Hyperlink.read(
+      val deleteFindResult = Edge.read(
         userEmail,
         defaultHypergraph.id,
         hyperlink.id
@@ -182,7 +182,7 @@ class HyperlinkSpec extends WordSpec
       Await.result(Hypernode.create(userEmail, defaultHypergraph.id, sourceNode), 2000.millis)
       Await.result(Hypernode.create(userEmail, defaultHypergraph.id, targetNode), 2000.millis)
 
-      val hyperlink = Hyperlink(
+      val hyperlink = Edge(
         UUID.randomUUID(),
         sourceNode.id,
         targetNode.id,
@@ -191,14 +191,14 @@ class HyperlinkSpec extends WordSpec
         None
       )
 
-      val createResult = Hyperlink.create(userEmail, defaultHypergraph.id, hyperlink)
+      val createResult = Edge.create(userEmail, defaultHypergraph.id, hyperlink)
 
       whenReady(createResult) { hyperlinkResult =>
         hyperlinkResult.id shouldBe hyperlink.id
         hyperlinkResult.data shouldBe None
       }
 
-      val findResult = Hyperlink.read(userEmail, defaultHypergraph.id, hyperlink.id)
+      val findResult = Edge.read(userEmail, defaultHypergraph.id, hyperlink.id)
 
       whenReady(findResult) { opt =>
         opt.isEmpty shouldBe false
@@ -206,13 +206,13 @@ class HyperlinkSpec extends WordSpec
         opt.value.data shouldBe None
       }
 
-      val findAllResult = Hyperlink.readAll(userEmail, defaultHypergraph.id)
+      val findAllResult = Edge.readAll(userEmail, defaultHypergraph.id)
 
       whenReady(findAllResult) { hyperlinksResult =>
         hyperlinksResult.count(_.id == hyperlink.id) shouldBe 1
       }
 
-      val hyperlinkUpdate = Hyperlink(
+      val hyperlinkUpdate = Edge(
         hyperlink.id,
         sourceNode.id,
         targetNode.id,
@@ -221,7 +221,7 @@ class HyperlinkSpec extends WordSpec
         Some(Json.obj("p2" -> "v2"))
       )
 
-      val updateResult = Hyperlink.update(
+      val updateResult = Edge.update(
         userEmail,
         defaultHypergraph.id,
         hyperlinkUpdate
@@ -232,7 +232,7 @@ class HyperlinkSpec extends WordSpec
         (hyperlinkResult.data.get \ "p2").as[String] shouldBe "v2"
       }
 
-      val hyperlinkUpdate2 = Hyperlink(
+      val hyperlinkUpdate2 = Edge(
         hyperlink.id,
         sourceNode.id,
         targetNode.id,
@@ -241,7 +241,7 @@ class HyperlinkSpec extends WordSpec
         None
       )
 
-      val update2Result = Hyperlink.update(
+      val update2Result = Edge.update(
         userEmail,
         defaultHypergraph.id,
         hyperlinkUpdate2
@@ -252,7 +252,7 @@ class HyperlinkSpec extends WordSpec
         hyperlinkResult.data shouldBe None
       }
 
-      val deleteResult = Hyperlink.delete(
+      val deleteResult = Edge.delete(
         userEmail,
         defaultHypergraph.id,
         hyperlink.id
@@ -262,7 +262,7 @@ class HyperlinkSpec extends WordSpec
         hyperlinkDeleteResult shouldBe true
       }
 
-      val deleteFindResult = Hyperlink.read(
+      val deleteFindResult = Edge.read(
         userEmail,
         defaultHypergraph.id,
         hyperlink.id
