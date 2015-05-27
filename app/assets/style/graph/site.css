@@ -186,8 +186,16 @@ body {
 }
 
 .node-rect-background {
+    opacity:0;
     stroke-width:0;
     fill: #E91E63;
+    transition: all 140ms ease-in-out;
+}
+
+.node-rect-background-highlight {
+    opacity:0;
+    stroke-width:0;
+    fill: transparent;
     transition: all 140ms ease-in-out;
 }
 
@@ -197,12 +205,28 @@ body {
     stroke: #C51162;
 }
 
-.node-linking-target.hover {
-    fill: #00bcd4;
+.new-edge-source > .node-rect-background {
+    opacity: 1;
+    stroke-width:4px;
+    stroke:#FAFAFA;
 }
 
-.node-linking-source {
-    fill: #03a9f4;
+.new-edge-source > .node-rect-background-highlight {
+    opacity: 1;
+    stroke-width:8px;
+    stroke:#F50057;
+}
+
+.new-edge-target > .node-rect-background {
+    opacity: 1;
+    stroke-width:4px;
+    stroke:#FAFAFA;
+}
+
+.new-edge-target > .node-rect-background-highlight {
+    opacity: 1;
+    stroke-width:8px;
+    stroke:#F50057;
 }
 
 .node-name {

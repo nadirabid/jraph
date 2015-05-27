@@ -69,6 +69,12 @@
     v-attr="id: id, transform: nodeTranslate"
   >
     <rect
+        class="node-rect-background-highlight"
+        rx="2"
+        ry="2"
+        v-attr="width:width, height:height, transform:rectTranslate"
+    ></rect>
+    <rect
         class="node-rect-background"
         rx="2"
         ry="2"

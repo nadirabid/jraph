@@ -15,9 +15,6 @@ define([
 ) {
   'use strict';
 
-  /** @namespace ctx.$$.nodeRect */
-  /** @namespace ctx.$parent.$$.nodesAndLinksGroup */
-
   var mouse = util.mouse;
 
   function StateEventHandlers() {
@@ -152,7 +149,7 @@ define([
       }
 
       util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.add('node-linking-target', 'hover');
+        ctx.$el.classList.add('new-edge-target');
       });
 
       ctx.px = ctx.x;
@@ -167,7 +164,7 @@ define([
       }
 
       util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
+        ctx.$el.classList.remove('new-edge-target');
       });
 
       ctx.fixed = false;
@@ -202,8 +199,8 @@ define([
       sourceCtx.$.ghostLink = null;
 
       util.animationFrame(function() {
-        ctx.$$.nodeRect.classList.remove('node-linking-target', 'hover');
-        ctx.$$.nodeRect.classList.remove('node-linking-source');
+        ctx.$el.classList.remove('new-edge-target');
+        sourceCtx.$el.classList.remove('new-edge-source');
       });
 
       sourceCtx.fixed = false;
@@ -319,7 +316,7 @@ define([
         var self = this;
 
         util.animationFrame(function() {
-          self.$$.nodeRect.classList.add('node-linking-source');
+          self.$el.classList.add('new-edge-source');
         });
 
         this.menu = false;
