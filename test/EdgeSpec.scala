@@ -5,7 +5,7 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.test._
 
-import models.{User, Hypergraph, Hypernode, Edge$}
+import models.{User, Hypergraph, Hypernode, Edge}
 
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class HyperlinkSpec extends WordSpec
+class EdgeSpec extends WordSpec
   with ScalaFutures
   with ShouldMatchers
   with OneAppPerTest
