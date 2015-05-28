@@ -80,7 +80,7 @@
         ry="2"
         v-el="nodeRectBackground"
         v-attr="width:width, height:height, transform:rectTranslate"
-        v-class="active:fixed"
+        v-class="active:fixed || isNodeContextMenuOpen"
     ></rect>
     <rect
         class="node-rect"

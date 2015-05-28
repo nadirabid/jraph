@@ -83,7 +83,6 @@ define([
       }
     };
 
-    //hide menu
     this.mouseout = function () {
       if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
         return;
@@ -107,8 +106,6 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
 
-      ctx.menu = false;
-
       util.animationFrame(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'move');
       });
@@ -131,8 +128,6 @@ define([
     };
 
     this.dragend = function () {
-      ctx.menu = true;
-
       util.animationFrame(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'auto');
       });
@@ -222,16 +217,13 @@ define([
 
     data: function () {
       return {
-        mouseover: false,
         leftEdge: 0,
         rightEdge: 0,
         bottomEdge: 0,
         topEdge: 0,
         width: 0,
         height: 0,
-        menu: false,
-        nodeTranslate: 'translate(0, 0)',
-        rectTranslate: 'translate(0, 0)',
+        isNodeContextMenuOpen: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         data: {
           name: ''
@@ -269,7 +261,12 @@ define([
         // to far back that the line from the link isn't being completely
         // covered by the arrowhead marker
         var marginX = 8, marginY = 4;
-        var shiftX = 4, shiftY = 2;
+
+        if (this.$parent.$options.state.nodeState == 'linking') {
+
+        }
+
+        var shiftX = marginX/2, shiftY = marginY/2;
 
         point.x = bBox.x - shiftX;
         point.y = bBox.y - shiftY;
@@ -305,10 +302,14 @@ define([
         e.preventDefault();
 
         var nodeContextMenu = this.$parent.$options.nodeContextMenu;
-
         nodeContextMenu.show(e.clientX, e.clientY, this);
 
+        this.isNodeContextMenuOpen = true;
+
+        var self = this;
+
         var closeContextMenu = function () {
+          self.isNodeContextMenuOpen = false;
           nodeContextMenu.hide();
           window.removeEventListener('click', closeContextMenu);
         };
@@ -319,11 +320,10 @@ define([
       setLinkSource: function () {
         var self = this;
 
-        util.animationFrame(function() {
+        Vue.nextTick(function() {
           self.$el.classList.add('new-edge-source');
         });
 
-        this.menu = false;
         this.fixed = true;
 
         this.$parent.$options.state.nodeState = 'linking';
@@ -422,7 +422,6 @@ define([
     },
 
     beforeDestroyed: function () {
-      this.menu = false;
       this.fixed = false;
     }
 
