@@ -153,6 +153,10 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
+
+      Vue.nextTick(function() {
+        ctx.$el.classList.add('new-edge-target');
+      });
     };
 
     //unselect node target
@@ -164,6 +168,10 @@ define([
       mouse.data.source.$.newEdge.removeTargetNode();
 
       ctx.fixed = false;
+
+      Vue.nextTick(function() {
+        ctx.$el.classList.remove('new-edge-target');
+      });
     };
 
     //set link target
