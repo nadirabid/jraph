@@ -192,6 +192,18 @@ body {
     transition: all 140ms ease-in-out;
 }
 
+.node-rect-background.active {
+    opacity: 1;
+    stroke-width: 4px;
+    stroke: #AD1457;
+}
+
+.new-edge-node > .node-rect-background {
+    opacity: 1;
+    stroke-width:4px;
+    stroke:#FAFAFA;
+}
+
 .node-rect-background-highlight {
     opacity:0;
     stroke-width:0;
@@ -199,34 +211,10 @@ body {
     transition: all 140ms ease-in-out;
 }
 
-.node-rect-background.active {
-    opacity: 1;
-    stroke-width: 4px;
-    stroke: #C51162;
-}
-
-.new-edge-source > .node-rect-background {
-    opacity: 1;
-    stroke-width:4px;
-    stroke:#FAFAFA;
-}
-
-.new-edge-source > .node-rect-background-highlight {
+.new-edge-node > .node-rect-background-highlight {
     opacity: 1;
     stroke-width:8px;
-    stroke:#F50057;
-}
-
-.new-edge-target > .node-rect-background {
-    opacity: 1;
-    stroke-width:4px;
-    stroke:#FAFAFA;
-}
-
-.new-edge-target > .node-rect-background-highlight {
-    opacity: 1;
-    stroke-width:8px;
-    stroke:#F50057;
+    stroke:#E91E63;
 }
 
 .node-name {

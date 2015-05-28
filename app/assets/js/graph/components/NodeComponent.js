@@ -150,7 +150,7 @@ define([
       ctx.fixed = true;
 
       Vue.nextTick(function() {
-        ctx.$el.classList.add('new-edge-target');
+        ctx.$el.classList.add('new-edge-node');
       });
     };
 
@@ -165,7 +165,7 @@ define([
       ctx.fixed = false;
 
       Vue.nextTick(function() {
-        ctx.$el.classList.remove('new-edge-target');
+        ctx.$el.classList.remove('new-edge-node');
       });
     };
 
@@ -198,8 +198,8 @@ define([
       sourceCtx.$.newEdge = null;
 
       util.animationFrame(function() {
-        ctx.$el.classList.remove('new-edge-target');
-        sourceCtx.$el.classList.remove('new-edge-source');
+        ctx.$el.classList.remove('new-edge-node');
+        sourceCtx.$el.classList.remove('new-edge-node');
       });
 
       sourceCtx.fixed = false;
@@ -261,11 +261,6 @@ define([
         // to far back that the line from the link isn't being completely
         // covered by the arrowhead marker
         var marginX = 8, marginY = 4;
-
-        if (this.$parent.$options.state.nodeState == 'linking') {
-
-        }
-
         var shiftX = marginX/2, shiftY = marginY/2;
 
         point.x = bBox.x - shiftX;
@@ -321,7 +316,7 @@ define([
         var self = this;
 
         Vue.nextTick(function() {
-          self.$el.classList.add('new-edge-source');
+          self.$el.classList.add('new-edge-node');
         });
 
         this.fixed = true;
