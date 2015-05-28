@@ -1,14 +1,18 @@
-// disable intellisense warnings for
-// various javascript references
+/**
+ * disable intellisense warnings for
+ * various javascript references
+ */
 
-/** @namespace this.$parent */
 /** @namespace this.$$ */
+/** @namespace this.$parent */
+/** @namespace this.$parent.$$ */
 
 /** @namespace this.$$.nodeRect */
-/** @namespace this.$parent.$$.nodeRectBackground */
-/** @namespace this.$parent.$$.nodesAndLinksGroup */
-/** @namespace this.$parent.$$.nodesAndEdgesGroup */
 /** @namespace this.$$.arrowMarkerLine */
+/** @namespace this.$$.dynamicContent */
+/** @namespace this.$$.nodeRectBackground */
+/** @namespace this.$$.nodesAndLinksGroup */
+/** @namespace this.$$.nodesAndEdgesGroup */
 
 /** @namespace graph.updatedAt */
 /** @namespace graph.createdAt */

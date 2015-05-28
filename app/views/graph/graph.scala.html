@@ -67,6 +67,7 @@
   <g
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
+    v-class="new-edge-target:fixed"
   >
     <rect
         class="node-rect-background-highlight"
@@ -111,11 +112,11 @@
   </g>
 </template>
 
-<template id="graph.ghostLink">
+<template id="graph.newEdge">
   <line
-      class="ghost-link edge"
+      class="edge"
       marker-end="url(#linkArrow)"
-      v-attr="x1:source.x, y1:source.y, x2:target.x, y2:target.y"
+      v-attr="x1:sourceClipX, y1:sourceClipY, x2:targetClipX, y2:targetClipY"
   >
   </line>
 </template>
@@ -212,5 +213,3 @@
     </button>
   </div>
 </template>
-
-@views.html.graph.ghostlink()

@@ -4,14 +4,14 @@ define([
     'shared/daos/NodeDAO',
     'shared/util',
     'graph/components/NodePanelComponent',
-    'graph/components/GhostLinkComponent'
+    'graph/components/NewEdgeComponent'
 ], function(
     Vue,
     EdgeDAO,
     NodeDAO,
     util,
     NodePanelComponent,
-    GhostLinkComponent
+    NewEdgeComponent
 ) {
   'use strict';
 
@@ -148,9 +148,7 @@ define([
         return;
       }
 
-      util.animationFrame(function() {
-        ctx.$el.classList.add('new-edge-target');
-      });
+      mouse.data.source.$.newEdge.setTargetNode(ctx);
 
       ctx.px = ctx.x;
       ctx.py = ctx.y;
@@ -163,9 +161,7 @@ define([
         return;
       }
 
-      util.animationFrame(function() {
-        ctx.$el.classList.remove('new-edge-target');
-      });
+      mouse.data.source.$.newEdge.removeTargetNode();
 
       ctx.fixed = false;
     };
@@ -195,8 +191,8 @@ define([
         ctx.$parent.$options.state.$layout.resume();
       }
 
-      sourceCtx.$.ghostLink.$destroy(true);
-      sourceCtx.$.ghostLink = null;
+      sourceCtx.$.newEdge.$destroy(true);
+      sourceCtx.$.newEdge = null;
 
       util.animationFrame(function() {
         ctx.$el.classList.remove('new-edge-target');
@@ -325,8 +321,8 @@ define([
         this.$parent.$options.state.nodeState = 'linking';
         mouse.data.source = this;
 
-        this.$.ghostLink = this.$parent
-            .$addChild({ data: { linkSource: this } }, GhostLinkComponent)
+        this.$.newEdge = this.$parent
+            .$addChild({ linkSource: this }, NewEdgeComponent)
             .$mount()
             .$appendTo(this.$parent.$$.dynamicContent);
       },
