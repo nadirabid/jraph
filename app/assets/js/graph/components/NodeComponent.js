@@ -1,5 +1,6 @@
 define([
     'vue',
+    'd3',
     'shared/daos/EdgeDAO',
     'shared/daos/NodeDAO',
     'shared/util',
@@ -7,6 +8,7 @@ define([
     'graph/components/NewEdgeComponent'
 ], function(
     Vue,
+    d3,
     EdgeDAO,
     NodeDAO,
     util,
@@ -246,14 +248,17 @@ define([
     methods: {
 
       calculateRectBoundingEdges: function() {
+        var bBox = this.$$.nodeRect.getBBox();
+        var point = this.$parent.$el.createSVGPoint();
+        var dimensions = this.$parent.$el.createSVGPoint();
+
         // we get the transform to nodesAndLinksGroup element
         // because, in calculating the bounding edges, we only
         // want the transforms applied to the node element itself
         // while disregarding the transforms to nodesAndLinksGroup
-        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
-        var bBox = this.$$.nodeRect.getBBox();
-        var point = this.$parent.$el.createSVGPoint();
-        var dimensions = this.$parent.$el.createSVGPoint();
+        var transformPointToElementMat = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
+        var transformVectorToElementMat = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndLinksGroup);
+        transformVectorToElementMat.e = transformVectorToElementMat.f = 0;
 
         // adding margin allows us to add some space around the node
         // border. this allows us to shift the arrow marker on the link
@@ -261,24 +266,54 @@ define([
         // to far back that the line from the link isn't being completely
         // covered by the arrowhead marker
         var marginX = 8, marginY = 4;
-        var shiftX = marginX/2, shiftY = marginY/2;
 
-        point.x = bBox.x - shiftX;
-        point.y = bBox.y - shiftY;
+        var self = this;
 
-        point = point.matrixTransform(ttm);
+        var updateEdgesT = function(elapsed, animationDuration, easeT, marginBufferT) {
+          var t = elapsed / animationDuration;
+          var marginBuffer = marginBufferT(easeT(t));
 
-        ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
+          var marginTX = marginX + marginBuffer;
+          var marginTY = marginY + marginBuffer;
 
-        dimensions.x = this.width + marginX;
-        dimensions.y = this.height + marginY;
+          var shiftX = marginTX/2, shiftY = marginTY/2;
 
-        dimensions = dimensions.matrixTransform(ttm);
+          point.x = bBox.x - shiftX;
+          point.y = bBox.y - shiftY;
 
-        this.leftEdge = point.x;
-        this.rightEdge = point.x + dimensions.x;
-        this.topEdge = point.y;
-        this.bottomEdge = point.y + dimensions.y;
+          point = point.matrixTransform(transformPointToElementMat);
+
+          dimensions.x = bBox.width + marginTX; // self.width == bBox.width
+          dimensions.y = bBox.height + marginTY; // self.height == bBox.height
+
+          dimensions = dimensions.matrixTransform(transformVectorToElementMat);
+
+          self.leftEdge = point.x;
+          self.rightEdge = point.x + dimensions.x;
+          self.topEdge = point.y;
+          self.bottomEdge = point.y + dimensions.y;
+
+          return t >= 1; // cancel timer - only way of doing so
+        };
+
+        var marginBufferT, easeT;
+        if (this.$parent.$options.state.nodeState == 'linking' && this.fixed) {
+          marginBufferT = d3.interpolateRound(0, 8);
+          easeT = d3.ease('quad');
+
+          d3.timer(function(elapsed) {
+            return updateEdgesT(elapsed, 140, easeT, marginBufferT);
+          });
+
+          // immediately calculate edges first time around
+          updateEdgesT(0, 140, easeT, marginBufferT);
+        }
+        else {
+          marginBufferT = d3.interpolateRound(0, 0);
+          easeT = d3.ease('quad');
+
+          updateEdgesT(1, 1, easeT, marginBufferT);
+        }
       },
 
       updateDimensionsOfNodeRect: function() {
@@ -400,6 +435,10 @@ define([
       this.$watch('y', this.calculateRectBoundingEdges.bind(this));
       this.$watch('width', this.calculateRectBoundingEdges.bind(this));
       this.$watch('height', this.calculateRectBoundingEdges.bind(this));
+      // hovering over node causes a "highlight border" to appear,
+      // effectively increasing the size of the node, so we have to
+      // recalculate the bounding edges
+      this.$watch('fixed', this.calculateRectBoundingEdges.bind(this));
     },
 
     ready: function () {

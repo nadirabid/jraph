@@ -207,8 +207,8 @@ body {
 .node-rect-background-highlight {
     opacity:0;
     stroke-width:0;
-    fill: transparent;
-    transition: all 140ms ease-in-out;
+    stroke:#E91E63;
+    transition: stroke-width 140ms ease-in-out;
 }
 
 .new-edge-node > .node-rect-background-highlight {

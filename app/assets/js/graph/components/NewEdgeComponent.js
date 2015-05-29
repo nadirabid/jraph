@@ -105,12 +105,9 @@ define([
         this.targetClipY = p.y;
       },
 
-      setTargetNode: function(targetNode) {
-        this.$.target = targetNode;
-        util.off('mousemove', this._mousemove);
-
+      calculateEdgeNodeIntersection: function() {
         var source = this.$options.linkSource;
-        var target = targetNode;
+        var target = this.$.target;
 
         var targetClippings = liangBarsky(
             target.leftEdge,
@@ -124,8 +121,8 @@ define([
         );
 
         var self = this;
-        var sourceId = this.$options.linkSource.id;
-        var targetId = targetNode.id;
+        var sourceId = source.id;
+        var targetId = target.id;
 
         // set the sourceClipX/Y values in the next animation frame
         // to make sure that all the target clippings have been calculated
@@ -153,9 +150,19 @@ define([
         this.targetClipY = targetClippings.y0Clip;
       },
 
+      setTargetNode: function(targetNode) {
+        this.$.target = targetNode;
+        util.off('mousemove', this._mousemove);
+
+        this.$unWatchCalculateEdgeNodeIntersection = targetNode.$watch('leftEdge', this.calculateEdgeNodeIntersection.bind(this));
+        this.calculateEdgeNodeIntersection();
+      },
+
       removeTargetNode: function() {
-        this.$.targetNode = null;
         util.on('mousemove', this._mousemove);
+        this.$unWatchCalculateEdgeNodeIntersection();
+        this.$unWatchCalculateEdgeNodeIntersection = null;
+        this.$.target = null;
 
         this.mousemove({ clientX: mouse.x, clientY: mouse.y });
 
@@ -183,6 +190,9 @@ define([
       },
 
       'hook:beforeDestroy': function () {
+        if (this.$unWatchCalculateEdgeNodeIntersection) {
+          this.$unWatchCalculateEdgeNodeIntersection();
+        }
         util.off('mousemove', this._mousemove);
       }
 
