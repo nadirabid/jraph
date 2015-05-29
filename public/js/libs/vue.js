@@ -1,5 +1,5 @@
 /**
- * Vue.js v0.11.9
+ * Vue.js v0.11.10
  * (c) 2015 Evan You
  * Released under the MIT License.
  */
@@ -4811,9 +4811,9 @@
 
       exports.toNumber = function (value) {
         return (
-        isNaN(value) ||
-        value === null ||
-        typeof value === 'boolean'
+            isNaN(value) ||
+            value === null ||
+            typeof value === 'boolean'
         ) ? value
             : Number(value)
       }
@@ -6268,6 +6268,10 @@
               merged._asComponent = true
               merged._parent = this.vm
               this.template = transclude(this.template, merged)
+              // Important: mark the template as a root node so that
+              // custom element components don't get compiled twice.
+              // fixes #822
+              this.template.__vue__ = true
               this._linkFn = compile(this.template, merged)
             } else {
               // to be resolved later
