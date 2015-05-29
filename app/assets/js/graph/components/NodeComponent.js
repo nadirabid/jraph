@@ -163,6 +163,10 @@ define([
       }
 
       mouse.data.source.$.newEdge.removeTargetNode();
+      // fixes issue #2. re-calculateRectBoundingEdges after
+      // mouseout incase mouseout occurred while we were still
+      // animating the effect from the preceding mouseover event
+      ctx.calculateRectBoundingEdges();
 
       ctx.fixed = false;
 
@@ -269,6 +273,13 @@ define([
 
         var self = this;
 
+        var animationEnd = false;
+
+        this.$$.nodeRectBackgroundHighlight.addEventListener('transitionend', function() {
+          animationEnd = true;
+          console.log('animationend');
+        });
+
         var updateEdgesT = function(elapsed, animationDuration, easeT, marginBufferT) {
           var t = elapsed / animationDuration;
           var marginBuffer = marginBufferT(easeT(t));
@@ -293,7 +304,9 @@ define([
           self.topEdge = point.y;
           self.bottomEdge = point.y + dimensions.y;
 
-          return t >= 1; // cancel timer - only way of doing so
+          console.log('updatedEdgesT: ', t >= 1 || animationEnd);
+
+          return t >= 1 || !self.fixed; // cancel timer - only way of doing so
         };
 
         var marginBufferT, easeT;
