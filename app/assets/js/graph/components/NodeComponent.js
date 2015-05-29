@@ -273,13 +273,6 @@ define([
 
         var self = this;
 
-        var animationEnd = false;
-
-        this.$$.nodeRectBackgroundHighlight.addEventListener('transitionend', function() {
-          animationEnd = true;
-          console.log('animationend');
-        });
-
         var updateEdgesT = function(elapsed, animationDuration, easeT, marginBufferT) {
           var t = elapsed / animationDuration;
           var marginBuffer = marginBufferT(easeT(t));
@@ -303,8 +296,6 @@ define([
           self.rightEdge = point.x + dimensions.x;
           self.topEdge = point.y;
           self.bottomEdge = point.y + dimensions.y;
-
-          console.log('updatedEdgesT: ', t >= 1 || animationEnd);
 
           return t >= 1 || !self.fixed; // cancel timer - only way of doing so
         };
