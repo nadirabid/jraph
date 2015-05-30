@@ -366,7 +366,7 @@ define([
         this.$.newEdge = this.$parent
             .$addChild({ linkSource: this }, NewEdgeComponent)
             .$mount()
-            .$appendTo(this.$parent.$$.dynamicContent);
+            .$appendTo(this.$parent.$$.newEdgeContainer);
       },
 
       delete: function() {

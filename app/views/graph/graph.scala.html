@@ -21,13 +21,15 @@
           </defs>
 
           <g v-el="nodesAndLinksGroup">
-              <!-- Dynamic Content -->
+            <!-- Dynamic Content -->
             <g class="dynamic-content" v-el="dynamicContent"></g>
 
-              <!-- Edges -->
+            <!-- Edges -->
             <x-edge v-repeat="edges" track-by="id"></x-edge>
 
-              <!-- Nodes -->
+            <g v-el="newEdgeContainer"></g>
+
+            <!-- Nodes -->
             <x-node v-repeat="nodes" track-by="id"></x-node>
           </g>
         </svg>
