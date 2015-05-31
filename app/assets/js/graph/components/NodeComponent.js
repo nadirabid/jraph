@@ -79,10 +79,7 @@ define([
 
       // move node to front so that it isn't
       // hidden behind another node
-      var nodes = ctx.$parent.nodes;
-      if (ctx.$index < ( nodes.length - 1 )) {
-        nodes.push(nodes.$remove(ctx.$index));
-      }
+      ctx.bringToFront();
     };
 
     this.mouseout = function () {
@@ -250,6 +247,13 @@ define([
     },
 
     methods: {
+
+      bringToFront: function() {
+        var nodes = this.$parent.nodes;
+        if (this.$index < ( nodes.length - 1 )) {
+          nodes.push(nodes.$remove(this.$index));
+        }
+      },
 
       calculateRectBoundingEdges: function() {
         var bBox = this.$$.nodeRect.getBBox();
