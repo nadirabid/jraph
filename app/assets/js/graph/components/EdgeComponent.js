@@ -168,6 +168,9 @@ define([
         target.py = target.y;
         target.fixed = true;
 
+        this.$parent.$options.nodeComponentsMap[source.id].bringToFront();
+        this.$parent.$options.nodeComponentsMap[target.id].bringToFront();
+
         Vue.nextTick(function() {
           self.$el.querySelector('.edge')
               .classList
@@ -250,12 +253,12 @@ define([
     },
 
     ready: function () {
-      this.$watch('target.leftEdge', this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.topEdge', this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.x', this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.y', this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('source.x', this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('source.y', this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.x',         this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.y',         this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('source.x',         this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('source.y',         this.calculateEdgeNodeIntersection.bind(this));
 
       this.calculateEdgeNodeIntersection();
 

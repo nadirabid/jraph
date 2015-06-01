@@ -40,6 +40,7 @@ define([
   ///
 
   var edgesMap = Object.create(null);
+  var nodeComponentsMap = Object.create(null);
 
   var state = new State();
 
@@ -404,6 +405,8 @@ define([
     state: state,
 
     edgesMap: edgesMap,
+
+    nodeComponentsMap: nodeComponentsMap,
 
     hypergraphID: hypergraphID,
 

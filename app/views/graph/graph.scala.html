@@ -101,7 +101,11 @@
         ry="2"
         v-el="nodeRect"
         v-attr="width:width, height:height, transform:rectTranslate"
-        v-on="contextmenu:nodeContextMenu"
+        v-on="
+            contextmenu:nodeContextMenu,
+            mouseenter:mouseover,
+            mouseleave:mouseout
+        "
     ></rect>
     <text
         class="node-name disable-pointer-events"

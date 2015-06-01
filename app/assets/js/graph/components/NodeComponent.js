@@ -76,10 +76,6 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
-
-      // move node to front so that it isn't
-      // hidden behind another node
-      ctx.bringToFront();
     };
 
     this.mouseout = function () {
@@ -134,7 +130,6 @@ define([
   });
 
   var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
-    var state = ctx.$parent.$options.state;
 
     //select node target
     this.mouseover = function () {
@@ -220,6 +215,7 @@ define([
 
     data: function () {
       return {
+        toFront: false,
         leftEdge: 0,
         rightEdge: 0,
         bottomEdge: 0,
@@ -431,6 +427,8 @@ define([
     },
 
     created: function () {
+      this.$parent.$options.nodeComponentsMap[this.id] = this;
+
       this.$states = {
         initial: new InitialNodeState(this),
         linking: new LinkingNodeState(this),
@@ -453,8 +451,6 @@ define([
       var $nodeRect = util(this.$$.nodeRect);
 
       $nodeRect.on('click', this.click.bind(this));
-      $nodeRect.on('mouseover', this.mouseover.bind(this));
-      $nodeRect.on('mouseout', this.mouseout.bind(this));
       $nodeRect.on('dragstart', this.dragstart.bind(this));
       $nodeRect.on('drag', this.drag.bind(this));
       $nodeRect.on('dragend', this.dragend.bind(this));
@@ -464,6 +460,7 @@ define([
     },
 
     beforeDestroyed: function () {
+      this.$parent.nodeComponentsMap[this.id] = null;
       this.fixed = false;
     }
 
