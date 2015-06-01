@@ -170,6 +170,12 @@ body {
     stroke-width: .40em;
 }
 
+.connected-edge-arrow {
+    fill:#E91E63;
+    stroke-opacity: 0;
+    stroke-width: .40em;
+}
+
 .edge {
     opacity: 1;
     stroke: #BDBDBD;
@@ -178,6 +184,10 @@ body {
 
 .edge.hover {
     opacity: .6;
+}
+
+.edge.connected {
+    stroke: #E91E63;
 }
 
 .node-rect {

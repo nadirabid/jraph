@@ -63,6 +63,7 @@ define([
 
     data: function () {
       return {
+        connected: false,
         distanceFromMouse: 13,
         sourceClipX: 0,
         sourceClipY: 0,
@@ -71,6 +72,14 @@ define([
         source: { x: 0, y: 0 },
         target: { x: 0, y: 0 }
       };
+    },
+
+    computed: {
+
+      edgeArrow: function() {
+        return this.connected ? 'url(#connectedEdgeArrow)' : 'url(#edgeArrow)';
+      }
+
     },
 
     methods: {
@@ -154,6 +163,8 @@ define([
         this.$.target = targetNode;
         util.off('mousemove', this._mousemove);
 
+        this.connected = true;
+
         this.$unWatchCalculateEdgeNodeIntersection = targetNode.$watch('leftEdge', this.calculateEdgeNodeIntersection.bind(this));
         this.calculateEdgeNodeIntersection();
       },
@@ -163,6 +174,8 @@ define([
         this.$unWatchCalculateEdgeNodeIntersection();
         this.$unWatchCalculateEdgeNodeIntersection = null;
         this.$.target = null;
+
+        this.connected = false;
 
         this.mousemove({ clientX: mouse.x, clientY: mouse.y });
 
