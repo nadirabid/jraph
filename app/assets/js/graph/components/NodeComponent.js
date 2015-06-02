@@ -76,6 +76,8 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
+
+      ctx.bringToFront();
     };
 
     this.mouseout = function () {
@@ -351,7 +353,7 @@ define([
         window.addEventListener('click', closeContextMenu);
       },
 
-      setLinkSource: function () {
+      setEdgeSource: function () {
         var self = this;
 
         Vue.nextTick(function() {
@@ -364,7 +366,7 @@ define([
         mouse.data.source = this;
 
         this.$.newEdge = this.$parent
-            .$addChild({ linkSource: this }, NewEdgeComponent)
+            .$addChild({ source: this }, NewEdgeComponent)
             .$mount()
             .$appendTo(this.$parent.$$.newEdgeContainer);
       },

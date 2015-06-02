@@ -67,6 +67,17 @@ define([
       };
     },
 
+    events: {
+
+      'startForceLayout': function(nodes, edges) {
+        this.state.$layout
+            .nodes(nodes)
+            .links(edges)
+            .start();
+      }
+
+    },
+
     methods: {
 
       incrementZoomLevel: function() {
@@ -235,51 +246,37 @@ define([
 
     },
 
-    events: {
+    created: function () {
+      var layout = this.state.$layout;
 
-      'data': function(nodes, edges) {
-        this.nodes = nodes;
-        this.edges = edges;
+      // TODO: unwatch when component is destroyed
 
-        this.state.$layout
-            .nodes(nodes)
-            .links(edges)
-            .start();
-      },
+      this.$watch('state.nodes', function (value, mutation) {
+        if (!mutation) return;
 
-      'hook:created': function () {
-        var layout = this.state.$layout;
+        layout.force.nodes(value);
+        layout.start();
+      }, false, true);
 
-        // TODO: unwatch when component is destroyed
+      this.$watch('state.edges', function (value, mutation) {
+        if (!mutation) return;
 
-        this.$watch('state.nodes', function (value, mutation) {
-          if (!mutation) return;
+        layout.force.edges(value);
+        layout.start();
+      }, false, true);
 
-          layout.force.nodes(value);
-          layout.start();
-        }, false, true);
+      window.addEventListener('resize', this.resize.bind(this));
+    },
 
-        this.$watch('state.edges', function (value, mutation) {
-          if (!mutation) return;
+    ready: function() {
+      var self = this;
 
-          layout.force.edges(value);
-          layout.start();
-        }, false, true);
+      var $svg = util(this.$el);
+      $svg.on('dragstart', this.panStart.bind(this));
+      $svg.on('drag', this.pan.bind(this));
+      $svg.on('dragend', this.panEnd.bind(this));
 
-        window.addEventListener('resize', this.resize.bind(this));
-      },
-
-      'hook:ready': function() {
-        var self = this;
-
-        var $svg = util(this.$el);
-        $svg.on('dragstart', this.panStart.bind(this));
-        $svg.on('drag', this.pan.bind(this));
-        $svg.on('dragend', this.panEnd.bind(this));
-
-        this.resize();
-      }
-
+      this.resize();
     }
 
   });
@@ -371,7 +368,7 @@ define([
       },
 
       link: function() {
-        this.$.node.setLinkSource();
+        this.$.node.setEdgeSource();
       }
 
     }
@@ -462,8 +459,8 @@ define([
           });
         });
 
-        graphComponent.$add('nodes', nodes);
-        graphComponent.$add('edges', links);
-        graphComponent.$emit('data', nodes, links);
+        graphComponent.edges = links;
+        graphComponent.nodes = nodes;
+        graphComponent.$emit('startForceLayout', nodes, links);
       });
 });

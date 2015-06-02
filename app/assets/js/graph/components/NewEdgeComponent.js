@@ -68,9 +68,7 @@ define([
         sourceClipX: 0,
         sourceClipY: 0,
         targetClipX: 0,
-        targetClipY: 0,
-        source: { x: 0, y: 0 },
-        target: { x: 0, y: 0 }
+        targetClipY: 0
       };
     },
 
@@ -93,7 +91,7 @@ define([
 
         p = p.matrixTransform(ctm.inverse());
 
-        var dx = p.x  - this.source.x,
+        var dx = p.x - this.source.x,
             dy = p.y - this.source.y;
 
         var theta = Math.atan(dy / dx);
@@ -115,7 +113,7 @@ define([
       },
 
       calculateEdgeNodeIntersection: function() {
-        var source = this.$options.linkSource;
+        var source = this.$options.source;
         var target = this.$.target;
 
         var targetClippings = liangBarsky(
@@ -129,63 +127,45 @@ define([
             target.y
         );
 
-        var self = this;
-        var sourceId = source.id;
-        var targetId = target.id;
-
-        // set the sourceClipX/Y values in the next animation frame
-        // to make sure that all the target clippings have been calculated
-        // in the previous animation frame. then we can use the
-        // target clippings to adjust the source clippings for bidirectional edges
-        Vue.nextTick(function() {
-          // if its a bidirectional edges (ie <-->), then we have to calculate
-          // the source clippings as well so we dont overlap the arrow marker of
-          // the incoming edge.
-          var edgesMap = self.$parent.$options.edgesMap;
-
-          if (edgesMap[targetId] && edgesMap[targetId][sourceId]) {
-            var oppositeEdge = edgesMap[targetId][sourceId];
-
-            self.sourceClipX = oppositeEdge.targetClipX;
-            self.sourceClipY = oppositeEdge.targetClipY;
-          }
-          else {
-            self.sourceClipX = source.x;
-            self.sourceClipY = source.y;
-          }
-        });
-
+        this.sourceClipX = source.x;
+        this.sourceClipY = source.y;
         this.targetClipX = targetClippings.x0Clip;
         this.targetClipY = targetClippings.y0Clip;
       },
 
-      setTargetNode: function(targetNode) {
-        this.$.target = targetNode;
+      setTargetNode: function(target) {
+        this.$.target = target;
         util.off('mousemove', this._mousemove);
 
         this.connected = true;
 
-        this.$unWatchCalculateEdgeNodeIntersection = targetNode.$watch('leftEdge', this.calculateEdgeNodeIntersection.bind(this));
         this.calculateEdgeNodeIntersection();
+
+        var unwatchLeftEdge = target.$watch('leftEdge', this.calculateEdgeNodeIntersection.bind(this));
+        var unwatchTopEdge = target.$watch('topEdge', this.calculateEdgeNodeIntersection.bind(this));
+
+        this.$unwatchEdges = function() {
+          unwatchLeftEdge();
+          unwatchTopEdge();
+        };
       },
 
       removeTargetNode: function() {
         util.on('mousemove', this._mousemove);
-        this.$unWatchCalculateEdgeNodeIntersection();
-        this.$unWatchCalculateEdgeNodeIntersection = null;
+        this.$unwatchEdges();
         this.$.target = null;
 
         this.connected = false;
 
         this.mousemove({ clientX: mouse.x, clientY: mouse.y });
 
-        // update sourceClip[X/Y] back to linkSource
+        // update sourceClip[X/Y] back to source
         // position because it might have been altered
         // if, temporarily, a candidate targetNode would
         // have resulted in bidirectional edges between
         // the two nodes
-        this.sourceClipX = this.$options.linkSource.x;
-        this.sourceClipY = this.$options.linkSource.y;
+        this.sourceClipX = this.$options.source.x;
+        this.sourceClipY = this.$options.source.y;
       }
 
     },
@@ -193,8 +173,10 @@ define([
     events: {
 
       'hook:created': function () {
-        this.sourceClipX = this.$options.linkSource.x;
-        this.sourceClipY = this.$options.linkSource.y;
+        this.sourceClipX = this.$options.source.x;
+        this.sourceClipY = this.$options.source.y;
+
+        this.source = this.$options.source;
 
         this.mousemove({ clientX: mouse.x, clientY: mouse.y });
 
