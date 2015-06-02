@@ -56,7 +56,7 @@ html,
 body {
     height: 100%;
     width: 100%;
-    overflow: none;
+    overflow: hidden;
 }
 
 #all {
@@ -186,7 +186,14 @@ body {
     opacity: .6;
 }
 
-.edge.connected {
+.new-edge {
+    stroke-width: .25em;
+    stroke-dasharray: 3, 1;
+    stroke: #E91E63;
+}
+
+.new-edge.connected {
+    stroke-dasharray: 0;
     stroke: #E91E63;
 }
 

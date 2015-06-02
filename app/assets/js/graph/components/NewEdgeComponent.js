@@ -64,7 +64,7 @@ define([
     data: function () {
       return {
         connected: false,
-        distanceFromMouse: 13,
+        distanceFromMouse: 0,
         sourceClipX: 0,
         sourceClipY: 0,
         targetClipX: 0,
@@ -75,7 +75,7 @@ define([
     computed: {
 
       edgeArrow: function() {
-        return this.connected ? 'url(#connectedEdgeArrow)' : 'url(#edgeArrow)';
+        return this.connected ? 'url(#connectedEdgeArrow)' : 'url()';
       }
 
     },
