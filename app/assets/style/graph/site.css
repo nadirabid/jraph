@@ -230,7 +230,7 @@ body {
 
 .new-edge-node > .node-rect-background-highlight {
     opacity: 1;
-    stroke-width:8px;
+    stroke-width:10px;
     stroke:#E91E63;
 }
 

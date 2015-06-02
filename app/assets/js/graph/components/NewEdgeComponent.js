@@ -141,6 +141,8 @@ define([
 
         this.calculateEdgeNodeIntersection();
 
+        this._calculateEdgeNodeIntersection = this.calculateEdgeNodeIntersection.bind(this);
+        util.on('mousemove', this._calculateEdgeNodeIntersection);
         var unwatchLeftEdge = target.$watch('leftEdge', this.calculateEdgeNodeIntersection.bind(this));
         var unwatchTopEdge = target.$watch('topEdge', this.calculateEdgeNodeIntersection.bind(this));
 
@@ -151,8 +153,10 @@ define([
       },
 
       removeTargetNode: function() {
+        util.off('mousemove', this._calculateEdgeNodeIntersection);
         util.on('mousemove', this._mousemove);
         this.$unwatchEdges();
+        this.$unwatchEdges = null;
         this.$.target = null;
 
         this.connected = false;
@@ -185,9 +189,8 @@ define([
       },
 
       'hook:beforeDestroy': function () {
-        if (this.$unWatchCalculateEdgeNodeIntersection) {
-          this.$unWatchCalculateEdgeNodeIntersection();
-        }
+        if (this.$unwatchEdges) this.$unwatchEdges();
+        util.off('mousemove', this._calculateEdgeNodeIntersection);
         util.off('mousemove', this._mousemove);
       }
 
