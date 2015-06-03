@@ -231,7 +231,7 @@ body {
 
 .new-edge-node > g > .node-rect-background-highlight {
     opacity:1;
-    stroke-width:10px;
+    stroke-width:8px;
 }
 
 .node-name {
