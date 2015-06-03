@@ -188,7 +188,7 @@ body {
 
 .new-edge {
     stroke-width: .25em;
-    stroke-dasharray: 3, 1;
+    stroke-dasharray: 2, 1;
     stroke: #E91E63;
 }
 
@@ -204,34 +204,34 @@ body {
 
 .node-rect-background {
     opacity:0;
-    stroke-width:0;
-    fill: #E91E63;
+    fill: #FAFAFA;
+    stroke-width:0px;
+    stroke:#E91E63;
     transition: all 140ms ease-in-out;
 }
 
-.node-rect-background.active {
-    opacity: 1;
+.node-rect-background.hover {
+    opacity:1;
     stroke-width: 4px;
     stroke: #AD1457;
 }
 
-.new-edge-node > .node-rect-background {
+.new-edge-node > g > .node-rect-background {
     opacity: 1;
     stroke-width:4px;
     stroke:#FAFAFA;
 }
 
 .node-rect-background-highlight {
-    opacity:0;
+    opacity: 1;
     stroke-width:0;
     stroke:#E91E63;
-    transition: stroke-width 140ms ease-in-out;
+    transition: all 140ms ease;
 }
 
-.new-edge-node > .node-rect-background-highlight {
-    opacity: 1;
+.new-edge-node > g > .node-rect-background-highlight {
+    opacity:1;
     stroke-width:10px;
-    stroke:#E91E63;
 }
 
 .node-name {

@@ -80,33 +80,35 @@
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
   >
-    <rect
-        class="node-rect-background-highlight"
-        rx="2"
-        ry="2"
-        v-el="nodeRectBackgroundHighlight"
-        v-attr="width:width, height:height, transform:rectTranslate"
-    ></rect>
-    <rect
-        class="node-rect-background"
-        rx="2"
-        ry="2"
-        v-el="nodeRectBackground"
-        v-attr="width:width, height:height, transform:rectTranslate"
-        v-class="active:fixed || isNodeContextMenuOpen"
-    ></rect>
-    <rect
-        class="node-rect"
-        rx="2"
-        ry="2"
-        v-el="nodeRect"
-        v-attr="width:width, height:height, transform:rectTranslate"
-        v-on="
-            contextmenu:nodeContextMenu,
-            mouseenter:mouseover,
-            mouseleave:mouseout
-        "
-    ></rect>
+    <g v-attr="transform:rectTranslate">
+      <rect
+          class="node-rect-background-highlight"
+          rx="2"
+          ry="2"
+          v-el="nodeRectBackgroundHighlight"
+          v-attr="width:width, height:height"
+      ></rect>
+      <rect
+          class="node-rect-background"
+          rx="2"
+          ry="2"
+          v-el="nodeRectBackground"
+          v-attr="width:width, height:height"
+          v-class="hover:fixed || isNodeContextMenuOpen, inactive:!fixed"
+      ></rect>
+      <rect
+          class="node-rect"
+          rx="2"
+          ry="2"
+          v-el="nodeRect"
+          v-attr="width:width, height:height"
+          v-on="
+              contextmenu:nodeContextMenu,
+              mouseenter:mouseover,
+              mouseleave:mouseout
+          "
+      ></rect>
+    </g>
     <text
         class="node-name disable-pointer-events"
         text-anchor="middle"

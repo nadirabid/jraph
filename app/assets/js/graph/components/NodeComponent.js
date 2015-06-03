@@ -11,29 +11,29 @@ define([
     d3,
     EdgeDAO,
     NodeDAO,
-    util,
+    Util,
     NodePanelComponent,
     NewEdgeComponent
 ) {
   'use strict';
 
-  var mouse = util.mouse;
+  var mouse = Util.mouse;
 
   function StateEventHandlers() {
-    this.click = util.noop;
-    this.dblclick = util.noop;
-    this.mouseover = util.noop;
-    this.mouseout = util.noop;
-    this.drag = util.noop;
-    this.dragstart = util.noop;
-    this.dragend = util.noop;
+    this.click = Util.noop;
+    this.dblclick = Util.noop;
+    this.mouseover = Util.noop;
+    this.mouseout = Util.noop;
+    this.drag = Util.noop;
+    this.dragstart = Util.noop;
+    this.dragend = Util.noop;
   }
 
   /// GRAPH VIEW COMPONENTS
 
-  var DisabledNodeState = util.extendClass(StateEventHandlers);
+  var DisabledNodeState = Util.extendClass(StateEventHandlers);
 
-  var InitialNodeState = util.extendClass(StateEventHandlers, function (ctx) {
+  var InitialNodeState = Util.extendClass(StateEventHandlers, function (ctx) {
     var dragFlag = false;
 
     this.click = function() {
@@ -69,7 +69,7 @@ define([
 
     // focus on node
     this.mouseover = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
+      if (mouse.dragState.state !== Util.DRAG_STATES.NONE) {
         return;
       }
 
@@ -81,7 +81,7 @@ define([
     };
 
     this.mouseout = function () {
-      if (mouse.dragState.state !== util.DRAG_STATES.NONE) {
+      if (mouse.dragState.state !== Util.DRAG_STATES.NONE) {
         return;
       }
 
@@ -103,7 +103,7 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
 
-      util.animationFrame(function() {
+      Vue.nextTick(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'move');
       });
     };
@@ -125,13 +125,13 @@ define([
     };
 
     this.dragend = function () {
-      util.animationFrame(function() {
+      Vue.nextTick(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'auto');
       });
     };
   });
 
-  var LinkingNodeState = util.extendClass(InitialNodeState, function (ctx) {
+  var LinkingNodeState = Util.extendClass(InitialNodeState, function (ctx) {
 
     //select node target
     this.mouseover = function () {
@@ -197,7 +197,7 @@ define([
       sourceCtx.$.newEdge.$destroy(true);
       sourceCtx.$.newEdge = null;
 
-      util.animationFrame(function() {
+      Vue.nextTick(function() {
         ctx.$el.classList.remove('new-edge-node');
         sourceCtx.$el.classList.remove('new-edge-node');
       });
@@ -450,7 +450,7 @@ define([
     },
 
     ready: function () {
-      var $nodeRect = util(this.$$.nodeRect);
+      var $nodeRect = new Util(this.$$.nodeRect);
 
       $nodeRect.on('click', this.click.bind(this));
       $nodeRect.on('dragstart', this.dragstart.bind(this));
