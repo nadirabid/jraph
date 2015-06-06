@@ -76,6 +76,7 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
+      ctx.isMouseentered = true;
 
       ctx.bringToFront();
     };
@@ -86,6 +87,7 @@ define([
       }
 
       ctx.fixed = false;
+      ctx.isMouseentered = false;
     };
 
     //drag node
@@ -217,15 +219,18 @@ define([
 
     data: function () {
       return {
-        toFront: false,
+        x:0,
+        y:0,
         leftEdge: 0,
         rightEdge: 0,
         bottomEdge: 0,
         topEdge: 0,
         width: 0,
         height: 0,
+        isNodeReady: false,
         isNodeContextMenuOpen: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
+        isMouseentered: false,
         data: {
           name: ''
         }
@@ -233,6 +238,40 @@ define([
     },
 
     computed: {
+
+      linkNodePillButtonTranslate: function() {
+        var x = (this.width/2) - 21;
+
+        if (this.isMouseentered) {
+          x += 42 + 1 + 4;
+        }
+
+        var y = (-(this.height + 10)/2);
+        return 'translate(' + x + 'px,' + y + 'px)';
+      },
+
+      linkNodePillButtonTextTranslate: function() {
+        var x = 10.5;
+        var y = ((this.height + 10)/2);
+        return 'translate(' + x + ',' + y + ')';
+      },
+
+      deleteNodePillButtonTranslate: function() {
+        var x = (this.width/2) - 21;
+
+        if (this.isMouseentered) {
+          x += 21 + 4;
+        }
+
+        var y = (-(this.height + 10)/2);
+        return 'translate(' + x + 'px,' + y + 'px)';
+      },
+
+      deleteNodePillButtonTextTranslate: function() {
+        var x = 10.5;
+        var y = ((this.height + 10)/2);
+        return 'translate(' + x + ',' + y + ')';
+      },
 
       nodeTranslate: function() {
         return 'translate(' + this.x + ',' + this.y + ')';
@@ -325,8 +364,11 @@ define([
       updateDimensionsOfNodeRect: function() {
         var bBox = this.$$.nodeName.getBBox();
 
-        this.width = bBox.width + 24;
-        this.height = bBox.height + 12;
+        var minWidth = Math.max(bBox.width, 50);
+        var minHeight = Math.max(bBox.height, 15);
+
+        this.width = minWidth + 24;
+        this.height = minHeight + 12;
       },
 
       nodeContextMenu: function(e) {
@@ -459,6 +501,8 @@ define([
 
       this.updateDimensionsOfNodeRect();
       this.calculateRectBoundingEdges();
+
+      this.isNodeReady = true;
     },
 
     beforeDestroyed: function () {

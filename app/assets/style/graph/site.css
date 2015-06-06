@@ -164,6 +164,10 @@ body {
     -webkit-flex: 1 1 auto;
 }
 
+text {
+    fill: rgba(255,255,255,.87);
+}
+
 .edge-arrow {
     fill:#BDBDBD;
     stroke-opacity: 0;
@@ -237,7 +241,6 @@ body {
 .node-name {
     font-family: 'Noto Sans', sans-serif;
     font-weight:600;
-    fill: rgba(255,255,255,.87);
 }
 
 .node-menu {
@@ -272,6 +275,34 @@ body {
     stroke-width: 0;
     fill: #ecf0f1;
 }
+
+.pill-button-list.transition-enabled > .pill-button {
+    transition:-webkit-transform 140ms ease-in-out;
+}
+
+.pill-button {
+    cursor:pointer;
+}
+
+.pill-button > rect {
+    transition:fill 140ms ease-in-out;
+    fill:#FF80AB;
+}
+
+.pill-button:hover > rect {
+    fill:#F50057;
+}
+
+.pill-button:active > rect {
+    fill:#C2185B;
+}
+
+.pill-button > text {
+    font-weight:600;
+    font-size:12px;
+    font-family: FontAwesome;
+}
+
 
 /***
     Node Properties List

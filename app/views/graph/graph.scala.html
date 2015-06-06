@@ -10,20 +10,16 @@
           <defs>
             <marker
                 id="edgeArrow"
-                markerWidth="5"
-                markerHeight="3"
-                refx="1.2"
-                refy="1.5"
+                markerWidth="5" markerHeight="3"
+                refx="1.2" refy="1.5"
                 orient="auto"
             >
               <path d="M0,0 L0,3 L3,1.5 L0,0" class="edge-arrow"></path>
             </marker>
             <marker
                 id="connectedEdgeArrow"
-                markerWidth="5"
-                markerHeight="3"
-                refx="1.2"
-                refy="1.5"
+                markerWidth="5" markerHeight="3"
+                refx="1.2" refy="1.5"
                 orient="auto"
             >
               <path d="M0,0 L0,3 L3,1.5 L0,0" class="connected-edge-arrow"></path>
@@ -80,30 +76,52 @@
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
   >
+    <g class="pill-button-list" v-class="transition-enabled:isNodeReady">
+      <g class="pill-button" v-style="transform:deleteNodePillButtonTranslate">
+        <rect
+            rx="2" ry="2"
+            v-attr="width:21, height:height"
+        ></rect>
+        <text
+            text-anchor="middle"
+            v-attr="transform:deleteNodePillButtonTextTranslate"
+            v-el="deleteNodeText"
+        >
+          &#xf014
+        </text>
+      </g>
+      <g class="pill-button" v-style="transform:linkNodePillButtonTranslate">
+        <rect
+            rx="2" ry="2"
+            v-attr="width:21, height:height"
+        ></rect>
+        <text
+            text-anchor="middle"
+            v-attr="transform:linkNodePillButtonTextTranslate"
+        >
+          &#xf0c1
+        </text>
+      </g>
+    </g>
     <g v-attr="transform:rectTranslate">
       <rect
           class="node-rect-background-highlight"
-          rx="2"
-          ry="2"
+          rx="2" ry="2"
           v-el="nodeRectBackgroundHighlight"
           v-attr="width:width, height:height"
       ></rect>
       <rect
           class="node-rect-background"
-          rx="2"
-          ry="2"
+          rx="2" ry="2"
           v-el="nodeRectBackground"
           v-attr="width:width, height:height"
-          v-class="hover:fixed || isNodeContextMenuOpen, inactive:!fixed"
       ></rect>
       <rect
           class="node-rect"
-          rx="2"
-          ry="2"
+          rx="2" ry="2"
           v-el="nodeRect"
           v-attr="width:width, height:height"
           v-on="
-              contextmenu:nodeContextMenu,
               mouseenter:mouseover,
               mouseleave:mouseout
           "
