@@ -210,14 +210,8 @@ text {
     opacity:0;
     fill: #FAFAFA;
     stroke-width:0px;
-    stroke:#E91E63;
+    stroke:#FAFAFA;
     transition: all 140ms ease-in-out;
-}
-
-.node-rect-background.hover {
-    opacity:1;
-    stroke-width: 4px;
-    stroke: #AD1457;
 }
 
 .new-edge-node > g > .node-rect-background {

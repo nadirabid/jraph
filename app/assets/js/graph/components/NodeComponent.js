@@ -227,6 +227,7 @@ define([
         topEdge: 0,
         width: 0,
         height: 0,
+        pillButtonWidth: 21,
         isNodeReady: false,
         isNodeContextMenuOpen: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
@@ -243,7 +244,7 @@ define([
         var x = (this.width/2) - 21;
 
         if (this.isMouseentered) {
-          x += 42 + 1 + 4;
+          x += this.pillButtonWidth + 4;
         }
 
         var y = (-(this.height + 10)/2);
@@ -260,7 +261,7 @@ define([
         var x = (this.width/2) - 21;
 
         if (this.isMouseentered) {
-          x += 21 + 4;
+          x += this.pillButtonWidth*2 + 1 + 4;
         }
 
         var y = (-(this.height + 10)/2);
