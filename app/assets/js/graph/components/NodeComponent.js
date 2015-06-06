@@ -366,7 +366,7 @@ define([
         var bBox = this.$$.nodeName.getBBox();
 
         var minWidth = Math.max(bBox.width, 50);
-        var minHeight = Math.max(bBox.height, 15);
+        var minHeight = Math.max(bBox.height, 18);
 
         this.width = minWidth + 24;
         this.height = minHeight + 12;
