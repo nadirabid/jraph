@@ -81,17 +81,17 @@
         contextmenu:suppressContextMenu
     "
   >
+    <rect
+        rx="2" ry="2"
+        class="background"
+        v-class="hidden:!isMouseentered || dragFlag"
+        v-attr="
+            height:height,
+            width:backgroundWidth,
+            transform:backgroundTranslate
+        "
+    ></rect>
     <g class="pill-button-list" v-class="transition-enabled:isNodeReady">
-      <rect
-          rx="2" ry="2"
-          class="pill-button-list-background"
-          v-class="hidden:!isMouseentered || dragFlag"
-          v-attr="
-              height:height,
-              width:backgroundWidth,
-              transform:pillButtonListBackgroundTranslate
-          "
-      ></rect>
       <g
           class="pill-button"
           v-style="transform:deleteNodePillButtonTranslate"

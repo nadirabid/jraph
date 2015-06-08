@@ -244,7 +244,7 @@ define([
         return this.width + this.pillButtonWidth*2 + 1 + 4;
       },
 
-      pillButtonListBackgroundTranslate: function() {
+      backgroundTranslate: function() {
         var x = -(this.width/2);
         var y = (-(this.height + 10)/2);
         return 'translate(' + x + ',' + y + ')';

@@ -206,6 +206,12 @@ text {
     fill: #E91E63;
 }
 
+.node > .background {
+    stroke-width:8px;
+    fill:transparent;
+    stroke:transparent;
+}
+
 .node-rect-background {
     opacity:0;
     fill: #FAFAFA;
@@ -295,12 +301,6 @@ text {
     font-weight:600;
     font-size:12px;
     font-family: FontAwesome;
-}
-
-.pill-button-list-background {
-    stroke-width:4px;
-    fill:transparent;
-    stroke:transparent;
 }
 
 /***
