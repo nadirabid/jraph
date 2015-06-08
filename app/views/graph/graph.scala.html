@@ -75,8 +75,22 @@
   <g
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
+    v-on="
+        mouseenter:mouseover,
+        mouseleave:mouseout
+    "
   >
     <g class="pill-button-list" v-class="transition-enabled:isNodeReady">
+      <rect
+          rx="2" ry="2"
+          class="pill-button-list-background"
+          v-class="hidden:!isMouseentered || dragFlag"
+          v-attr="
+              height:height,
+              width:backgroundWidth,
+              transform:pillButtonListBackgroundTranslate
+          "
+      ></rect>
       <g class="pill-button" v-style="transform:deleteNodePillButtonTranslate">
         <rect rx="2" ry="2" v-attr="width:pillButtonWidth, height:height"></rect>
         <text
@@ -115,10 +129,6 @@
           rx="2" ry="2"
           v-el="nodeRect"
           v-attr="width:width, height:height"
-          v-on="
-              mouseenter:mouseover,
-              mouseleave:mouseout
-          "
       ></rect>
     </g>
     <text

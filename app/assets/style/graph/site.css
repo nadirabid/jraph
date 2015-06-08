@@ -297,6 +297,11 @@ text {
     font-family: FontAwesome;
 }
 
+.pill-button-list-background {
+    stroke-width:4px;
+    fill:transparent;
+    stroke:transparent;
+}
 
 /***
     Node Properties List

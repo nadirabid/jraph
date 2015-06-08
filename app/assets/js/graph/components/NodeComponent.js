@@ -34,11 +34,9 @@ define([
   var DisabledNodeState = Util.extendClass(StateEventHandlers);
 
   var InitialNodeState = Util.extendClass(StateEventHandlers, function (ctx) {
-    var dragFlag = false;
-
     this.click = function() {
-      if (dragFlag) {
-        dragFlag = false;
+      if (ctx.dragFlag) {
+        ctx.dragFlag = false;
         return;
       }
 
@@ -121,7 +119,7 @@ define([
       ctx.px = ctx.x = p.x;
       ctx.py = ctx.y = p.y;
 
-      dragFlag = true;
+      ctx.dragFlag = true;
 
       ctx.$parent.$options.state.$layout.resume();
     };
@@ -231,6 +229,7 @@ define([
         isNodeReady: false,
         isNodeContextMenuOpen: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
+        dragFlag: false,
         isMouseentered: false,
         data: {
           name: ''
@@ -240,10 +239,20 @@ define([
 
     computed: {
 
+      backgroundWidth: function() {
+        return this.width + this.pillButtonWidth*2 + 1 + 4;
+      },
+
+      pillButtonListBackgroundTranslate: function() {
+        var x = -(this.width/2);
+        var y = (-(this.height + 10)/2);
+        return 'translate(' + x + ',' + y + ')';
+      },
+
       linkNodePillButtonTranslate: function() {
         var x = (this.width/2) - 21;
 
-        if (this.isMouseentered) {
+        if (this.isMouseentered && !this.dragFlag) {
           x += this.pillButtonWidth + 4;
         }
 
@@ -260,7 +269,7 @@ define([
       deleteNodePillButtonTranslate: function() {
         var x = (this.width/2) - 21;
 
-        if (this.isMouseentered) {
+        if (this.isMouseentered && !this.dragFlag) {
           x += this.pillButtonWidth*2 + 1 + 4;
         }
 
