@@ -77,7 +77,8 @@
     v-attr="id: id, transform: nodeTranslate"
     v-on="
         mouseenter:mouseover,
-        mouseleave:mouseout
+        mouseleave:mouseout,
+        contextmenu:suppressContextMenu
     "
   >
     <g class="pill-button-list" v-class="transition-enabled:isNodeReady">
@@ -91,7 +92,11 @@
               transform:pillButtonListBackgroundTranslate
           "
       ></rect>
-      <g class="pill-button" v-style="transform:deleteNodePillButtonTranslate">
+      <g
+          class="pill-button"
+          v-style="transform:deleteNodePillButtonTranslate"
+          v-on="click:delete"
+      >
         <rect rx="2" ry="2" v-attr="width:pillButtonWidth, height:height"></rect>
         <text
             text-anchor="middle"
@@ -101,7 +106,11 @@
           &#xf014
         </text>
       </g>
-      <g class="pill-button" v-style="transform:linkNodePillButtonTranslate">
+      <g
+          class="pill-button"
+          v-style="transform:linkNodePillButtonTranslate"
+          v-on="click:setNewEdgeSource"
+      >
         <rect rx="2" ry="2" v-attr="width:pillButtonWidth, height:height"></rect>
         <text
             text-anchor="middle"

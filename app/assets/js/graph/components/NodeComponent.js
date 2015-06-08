@@ -152,6 +152,7 @@ define([
 
     //unselect node target
     this.mouseout = function () {
+      ctx.isMouseentered = false;
       if (ctx.id == mouse.data.source.id) {
         return;
       }
@@ -381,31 +382,12 @@ define([
         this.height = minHeight + 12;
       },
 
-      nodeContextMenu: function(e) {
-        if (e.target != this.$$.nodeRect) {
-          return;
-        }
-
+      suppressContextMenu: function(e) {
         e.stopPropagation();
         e.preventDefault();
-
-        var nodeContextMenu = this.$parent.$options.nodeContextMenu;
-        nodeContextMenu.show(e.clientX, e.clientY, this);
-
-        this.isNodeContextMenuOpen = true;
-
-        var self = this;
-
-        var closeContextMenu = function () {
-          self.isNodeContextMenuOpen = false;
-          nodeContextMenu.hide();
-          window.removeEventListener('click', closeContextMenu);
-        };
-
-        window.addEventListener('click', closeContextMenu);
       },
 
-      setEdgeSource: function () {
+      setNewEdgeSource: function () {
         var self = this;
 
         Vue.nextTick(function() {
