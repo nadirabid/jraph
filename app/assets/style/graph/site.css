@@ -207,7 +207,7 @@ text {
 }
 
 .node > .background {
-    stroke-width:8px;
+    stroke-width:10px;
     fill:transparent;
     stroke:transparent;
 }

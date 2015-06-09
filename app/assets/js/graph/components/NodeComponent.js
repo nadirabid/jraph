@@ -148,11 +148,12 @@ define([
       Vue.nextTick(function() {
         ctx.$el.classList.add('new-edge-node');
       });
+
+      ctx.bringToFront();
     };
 
     //unselect node target
     this.mouseout = function () {
-      ctx.isMouseentered = false;
       if (ctx.id == mouse.data.source.id) {
         return;
       }
@@ -203,6 +204,7 @@ define([
         sourceCtx.$el.classList.remove('new-edge-node');
       });
 
+      ctx.isMouseentered = true;
       sourceCtx.fixed = false;
 
       ctx.$parent.$options.state.nodeState = 'initial';
@@ -398,6 +400,7 @@ define([
 
         this.$parent.$options.state.nodeState = 'linking';
         mouse.data.source = this;
+        this.isMouseentered = false;
 
         this.$.newEdge = this.$parent
             .$addChild({ source: this }, NewEdgeComponent)
