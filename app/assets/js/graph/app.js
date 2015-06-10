@@ -442,7 +442,6 @@ define([
   edgeContextMenu.$mount('#edgeContextMenu');
   graphComponent.$mount('#graph');
   zoomBar.$mount('#zoomBar');
-  navigationBarComponent.$mount('#navbar');
   floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data

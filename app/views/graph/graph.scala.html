@@ -1,8 +1,5 @@
 @layout("Data Visualization") {
   <div id="all">
-    <nav  id="nav" class="navbar navbar-default">
-    @views.html.graph.navbar()
-    </nav>
     <main id="main">
       <div class="graph-container">
         <svg id="graph" v-on="contextmenu:contextMenu, wheel:mousewheelZoom">
