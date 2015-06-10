@@ -7638,7 +7638,7 @@
     /***/ function(module, exports, __webpack_require__) {
 
       var _ = __webpack_require__(11)
-      var MAX_UPDATE_COUNT = 10
+      var MAX_UPDATE_COUNT = 12;
 
       // we have two separate queues: one for directive updates
       // and one for user watcher registered via $watch().
