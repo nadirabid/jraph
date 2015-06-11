@@ -351,3 +351,34 @@ text {
     right:1em;
     bottom:1em;
 }
+
+ul.tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, .7);
+}
+
+ul.tag-list > li {
+    cursor:defaut;
+    user-select:none;
+    -webkit-user-select:none;
+    white-space: nowrap;
+    margin-top: 5px;
+    text-transform: lowercase;
+    position: relative;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 2px;
+    background-color: #fafafa;
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+
+ul.tag-list .fa {
+    cursor: pointer;
+    font-size: .7em;
+    position: relative;
+    left: -4px;
+    top: -1px;
+    color: rgba(0, 0, 0, .30);
+}
