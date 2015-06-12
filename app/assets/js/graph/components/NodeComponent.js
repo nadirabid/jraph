@@ -230,7 +230,6 @@ define([
         height: 0,
         pillButtonWidth: 21,
         isNodeReady: false,
-        isNodeContextMenuOpen: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         dragFlag: false,
         isMouseentered: false,
@@ -385,8 +384,8 @@ define([
       },
 
       suppressContextMenu: function(e) {
-        e.stopPropagation();
-        e.preventDefault();
+        //e.stopPropagation();
+        //e.preventDefault();
       },
 
       setNewEdgeSource: function () {
