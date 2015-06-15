@@ -123,6 +123,8 @@ define([
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
 
+        k = ctm.multiply(k);
+
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
         });
