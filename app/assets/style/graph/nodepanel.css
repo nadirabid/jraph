@@ -1,0 +1,134 @@
+.node-property-list > dt {
+    line-height:2.5em;
+    font-size:1.2em;
+}
+
+.node-property-list > dd {
+    line-height:1.8em;
+    font-size:1.1em;
+}
+
+.node-property-list > dd > div {
+    position:relative;
+}
+
+.node-property-list > dd > div > button {
+    position:absolute;
+    right:1em;
+    top:0;
+}
+
+.node-property-list > dd > div > button > span {
+    text-shadow:0 0 0 #000;
+    font-size:1em;
+}
+
+.node-property-list > dd > div > .close {
+    display:none;
+}
+
+.node-property-list > dd:hover .close,
+.node-property-list dd:active .close  {
+    display:inherit;
+}
+
+.node-panel {
+    position: relative;
+    left:20px;
+    top:20px;
+    background-color: #fafafa;
+    width: 290px;
+    height: 94%;
+    box-shadow: 0 1px 5px rgba(100, 100, 100, 0.4);
+}
+
+.node-panel > .title {
+    color: rgba(0, 0, 0, .7);
+    font-size: 34px;
+    padding: 10px 16px;
+    border-top:5px solid #FF80AB;
+}
+
+.info-title .fa {
+    position:relative;
+    left:220px;
+    background:#fafafa;
+    display:inline;
+    color:#aaa;
+    padding: 10px;
+    width:40px
+}
+
+.info-title .fa {
+    width: 100%;
+    transition: color 140ms ease-in-out;
+}
+
+.info-title .fa:hover {
+    color: #F50057;
+}
+
+.info-title > .line-around {
+    width:290px;
+    height:11px;
+    border-bottom:1px solid rgba(0,0,0,.20);
+    position:absolute;
+}
+
+.info-body {
+    padding-top:26px;
+    font-size: 14px;
+    margin: 0 15px;
+}
+
+.node-panel > .close > span {
+    text-shadow: 0 0 0 #000;
+    font-size:1.3em;
+}
+
+.node-panel > .submit {
+    position:absolute;
+    right:1em;
+    bottom:1em;
+}
+
+ul.tag-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, .7);
+}
+
+ul.tag-list > li {
+    cursor:default;
+    user-select:none;
+    -webkit-user-select:none;
+    white-space: nowrap;
+    margin-top: 5px;
+    text-transform: lowercase;
+    position: relative;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 2px;
+    background-color: #fafafa;
+    border: 1px solid rgba(0, 0, 0, .1);
+}
+
+ul.tag-list .fa {
+    cursor: pointer;
+    font-size: .7em;
+    position: relative;
+    left: -4px;
+    top: -1px;
+    color: rgba(0, 0, 0, .30);
+    transition:color 140ms ease-in-out;
+}
+
+ul.tag-list .fa:hover {
+    color: rgba(0,0,0,.60);
+}
+
+ul.tag-list .fa:active {
+    color: rgba(0,0,0,.45);
+}
+
