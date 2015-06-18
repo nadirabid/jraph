@@ -52,15 +52,16 @@
         </ul>
       </div>
 
-      <div class="x-paper floating-panel-bar hide" id="floatingPanelBar" v-cloak></div>
+      <div
+          class="x-paper floating-panel-bar hidden" id="floatingPanelBar" v-cloak></div>
 
       <div id="zoomBar" style="position:absolute;" v-cloak>
         <div class="btn-group-vertical zoom-bar" role="group">
           <button type=button class="btn btn-default" v-on="click:incrementZoomLevel">
-            <span class="glyphicon glyphicon-plus"></span>
+            <i class="fa fa-plus"></i>
           </button>
           <button type=button class="btn btn-default" v-on="click:decrementZoomLevel">
-            <span class="glyphicon glyphicon-minus"></span>
+            <i class="fa fa-minus"></i>
           </button>
         </div>
       </div>
@@ -262,5 +263,78 @@
     >
       Save
     </button>
+  </div>
+</template>
+
+<template id="node.panel2">
+  <div class="node-panel">
+    <div>
+      
+    </div>
+    <div>
+      <div class="title">{{node.data.name}}</div>
+
+      <section class="info tags">
+        <div class="info-title">
+          <span class="line-around"><i class="fa fa-tags"></i></span>
+        </div>
+        <div class="info-body">
+          <input class="x-input" type="text" placeholder="Add tag">
+          <ul class="tag-list">
+            <li><i class="fa fa-times"></i> Country</li>
+            <li><i class="fa fa-times"></i> Europe</li>
+            <li><i class="fa fa-times"></i> Berlin</li>
+            <li><i class="fa fa-times"></i> Democracy</li>
+            <li><i class="fa fa-times"></i> Munich</li>
+            <li><i class="fa fa-times"></i> Autobahn</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="info">
+        <div class="info-title">
+          <span class="line-around"><i class="fa fa-link"></i></span>
+        </div>
+        <div class="info-body">
+          <input class="x-input" type="text" placeholder="Add link">
+          <ul class="email-list">
+            <li>https://en.wikipedia.org/?title=Germany</li>
+            <li>http://www.germany.travel/en/index.html/li>
+            <li>https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="info">
+        <div class="info-title">
+          <span class="line-around"><i class="fa fa-envelope-o"></i></span>
+        </div>
+        <div class="info-body">
+          <input class="x-input" type="text" placeholder="Add email">
+          <ul class="email-list">
+            <li>john.doe@@email.com</li>
+            <li>jane.doe@@email.com</li>
+            <li>mr.smith@@email.com</li>
+            <li>mrs.smith@@email.com</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="info">
+        <div class="info-title">
+          <span class="line-around"><i class="fa fa-phone"></i></span>
+        </div>
+        <div class="info-body">
+          <input class="x-input" type="text" placeholder="Add phone number">
+          <ul class="email-list">
+            <li>(510) 234-2342</li>
+            <li>(520) 235-2499</li>
+            <li>(453) 934-5292</li>
+            <li>(342) 882-7632</li>
+            <li>(654) 982-2832</li>
+          </ul>
+        </div>
+      </section>
+    </div>
   </div>
 </template>

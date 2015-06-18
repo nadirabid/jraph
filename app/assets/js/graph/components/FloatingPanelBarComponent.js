@@ -24,14 +24,12 @@ define([
       },
 
       show: function() {
-        this.$el.classList.remove('hide');
-        this.$el.classList.add('show');
+        this.$el.classList.remove('hidden');
         this.updateDimensionsAndPosition();
       },
 
       hide: function() {
-        this.$el.classList.remove('show');
-        this.$el.classList.add('hide');
+        this.$el.classList.add('hidden');
         this.updateDimensionsAndPosition();
       },
 

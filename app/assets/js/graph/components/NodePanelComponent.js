@@ -10,7 +10,7 @@ define([
 
     replace: true,
 
-    template: '#node.panel',
+    template: '#node.panel2',
 
     hypergraphID: null,
 

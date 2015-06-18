@@ -96,7 +96,6 @@ body {
     -webkit-flex: auto;
     -webkit-order: 1;
     display: -webkit-flex;
-
     background-color: #fafafa;
 }
 
@@ -107,10 +106,8 @@ body {
 .floating-panel-bar {
     overflow:scroll;
     position:absolute;
-    width: 26em;
+    width: 280px;
     pointer-events: auto;
-    white-space: nowrap;
-    padding: 2em;
     background-color:rgba(255,255,255,.985);
 }
 
