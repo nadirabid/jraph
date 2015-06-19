@@ -1,7 +1,8 @@
 define([
     'vue',
-    'jquery'
-], function(Vue, $) {
+    'jquery',
+    'mousetrap'
+], function(Vue, $, Mousetrap) {
   'use strict';
 
   var FloatingPanelBarComponent = Vue.extend({
@@ -37,11 +38,13 @@ define([
         this.updateDimensionsAndPosition();
       },
 
-      removePanel: function() {
+      closePanel: function() {
         if (this.$.currentPanel) {
           this.$.currentPanel.$destroy(true);
           delete this.$.currentPanel;
           this.hide();
+
+          Mousetrap.unbind('esc');
         }
       },
 
@@ -50,6 +53,12 @@ define([
           this.$.currentPanel.$destroy(true);
           delete this.$.currentPanel;
         }
+
+        var self = this;
+
+        Mousetrap.bind('esc', function() {
+          self.closePanel();
+        });
 
         this.show();
 

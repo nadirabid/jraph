@@ -51,7 +51,7 @@
             background-color:inherit;
           }
         </style>
-        <div class="panel-menu">
+        <div class="panel-menu" v-on="click:closePanel">
           <button><i class="fa fa-times"></i></button>
         </div>
         <div class="panel-content" v-el="panelContent"></div>

@@ -1,9 +1,8 @@
 define([
     'vue',
     'shared/util',
-    'mousetrap',
     'shared/daos/NodeDAO'
-], function(Vue, util, Mousetrap, NodeDAO) {
+], function(Vue, util, NodeDAO) {
   'use strict';
 
   var NodePanelComponent = Vue.extend({
@@ -39,10 +38,6 @@ define([
     },
 
     methods: {
-
-      closeNodePanel: function() {
-        throw 'closeNodePanel method has node been implemented for close functionality';
-      },
 
       validateInputChange: function() {
         var self = this;
@@ -197,10 +192,6 @@ define([
         if (!this.$options.graphComponent) {
           throw 'Option graphComponent must be set';
         }
-
-        Mousetrap.bind('esc', function() {
-          self.closeNodePanel();
-        });
       },
 
       'hook:beforeDestroy': function() {
@@ -212,8 +203,6 @@ define([
         if (this.isNew) {
           this.$emit('removeGhostNode');
         }
-
-        Mousetrap.unbind('esc');
       }
 
     }

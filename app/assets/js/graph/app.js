@@ -321,15 +321,6 @@ define([
           data: {
             isNew: true,
             node: nodeData
-          },
-
-          methods: {
-
-            // TODO: should abstract this method out into FloatingPanelBar
-            closeNodePanel: function() {
-              floatingPanelBar.removePanel();
-            }
-
           }
 
         });
