@@ -100,18 +100,6 @@ body {
 }
 
 /***
-    HTML Info view styles
-***/
-
-.floating-panel-bar {
-    overflow:scroll;
-    position:absolute;
-    width: 280px;
-    pointer-events: auto;
-    background-color:rgba(255,255,255,.985);
-}
-
-/***
     Sidebar
 ***/
 

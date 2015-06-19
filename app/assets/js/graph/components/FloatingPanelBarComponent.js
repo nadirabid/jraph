@@ -21,6 +21,10 @@ define([
         $(this.$el).outerHeight(
             windowHeight - navHeight - (2*padding)
         );
+
+        $(this.$$.panelContent).outerHeight(
+            windowHeight - navHeight - (2*padding)
+        );
       },
 
       show: function() {
@@ -51,7 +55,7 @@ define([
 
         this.$.currentPanel = panel;
         panel.$mount();
-        panel.$appendTo(this.$el);
+        panel.$appendTo(this.$$.panelContent);
       }
     },
 
