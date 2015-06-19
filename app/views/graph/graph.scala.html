@@ -9,33 +9,43 @@
             width: 280px;
             pointer-events: auto;
             z-index:1;
-            background-color:#fff;
+            background-color:rgba(255,255,255,1);
           }
 
           .panel-menu {
             overflow:hidden;
             background-color:transparent;
             position:absolute;
-            right:-20px;
+            right:-22px;
             top:30px;
-            transition:opacity 140ms ease-in-out;
             border-radius:0 4px 4px 0;
-            border:1px solid rgba(0,0,0,.1);
-            z-index:-2;
+            z-index:-1;
+            opacity:0;
+            transition:opacity 140ms ease-in-out,box-shadow 40ms ease-in-out;
+            box-shadow: 0 1px 5px rgba(100, 100, 100, 0.4);
+          }
+
+          .panel-menu:active {
+            box-shadow: 0 0 2px rgba(100, 100, 100, 0.4);
+          }
+
+          .floating-panel-bar:hover .panel-menu {
+            opacity:1;
           }
 
           .panel-menu button {
+            cursor:pointer;
             margin:0;
             border:0;
             background-color:#fff;
             color:#555;
             display:inline;
-            padding:14px 7px;
+            padding:20px 7px;
             outline-width:0;
-            z-index:-2;
           }
 
           .panel-content {
+            opacity:inherit;
             position:relative;
             overflow:scroll;
             background-color:inherit;
