@@ -127,6 +127,9 @@ ul.email-list {
     padding:0;
 }
 
-ul.email-list li {
+ul.email-list > li {
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
     margin:5px;
 }
