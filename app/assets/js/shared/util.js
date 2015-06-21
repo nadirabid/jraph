@@ -166,11 +166,12 @@ define([
       }
     }
 
-    function setCTM(element, matrix) {
-      var m = matrix;
-      var s = "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")";
-
-      element.setAttributeNS(null, "transform", s);
+    function setCTM(element, m) {
+      element.setAttributeNS(
+          null,
+          "transform",
+          "matrix(" + m.a + "," + m.b + "," + m.c + "," + m.d + "," + m.e + "," + m.f + ")"
+      );
     }
 
     function transformPointFromViewportToEl(x, y, el) {
