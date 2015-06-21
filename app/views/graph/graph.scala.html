@@ -273,7 +273,21 @@
 <template id="node.panel2">
   <div>
     <div class="node-panel">
-      <div class="title">{{node.data.name}}</div>
+      <div class="title">
+        <h3 v-on="click:editName" v-class="hidden:editingName">{{node.data.name}}</h3>
+        <input
+            class="x-input"
+            type="text"
+            v-class="hidden:!editingName"
+            v-model="node.data.name"
+            v-el="nameInput"
+            v-on="
+                blur   : updateName,
+                keyup  : updateName       | key enter,
+                keyup  : cancelNameUpdate | key esc
+            "
+        >
+      </div>
 
       <section class="info tags">
         <div class="info-title">

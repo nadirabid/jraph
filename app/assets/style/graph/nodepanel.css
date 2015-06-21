@@ -33,9 +33,17 @@
 }
 
 .node-panel > .title {
+    z-index:2;
+    margin: 10px 16px 10px 16px;
+}
+
+.node-panel > .title > h3, .node-panel > .title > input {
     color: rgba(0, 0, 0, .7);
     font-size: 34px;
-    padding: 10px 16px;
+    font-weight:400;
+    line-height:2;
+    margin:0;
+    padding:0;
 }
 
 .info-title .fa {
