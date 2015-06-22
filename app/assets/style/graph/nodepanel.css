@@ -35,6 +35,11 @@
 .node-panel > .title {
     z-index:2;
     margin: 10px 16px 10px 16px;
+    cursor:pointer;
+}
+
+.node-panel > .title:hover {
+    background-color:rgba(0,0,0,.05);
 }
 
 .node-panel > .title > h3, .node-panel > .title > input {
