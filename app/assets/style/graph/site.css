@@ -268,7 +268,7 @@ text {
     border-top:5px solid #FF80AB;
 }
 
-.panel-menu {
+.panel-bar-menu {
     overflow:hidden;
     background-color:transparent;
     position:absolute;
@@ -281,15 +281,15 @@ text {
     box-shadow: 0 1px 5px rgba(100, 100, 100, 0.4);
 }
 
-.panel-menu:active {
+.panel-bar-menu:active {
     box-shadow: 0 0 2px rgba(100, 100, 100, 0.4);
 }
 
-.floating-panel-bar:hover .panel-menu {
+.floating-panel-bar:hover > .panel-bar-menu {
     opacity:1;
 }
 
-.panel-menu button {
+.panel-bar-menu button {
     cursor:pointer;
     margin:0;
     border:0;
@@ -300,7 +300,7 @@ text {
     outline-width:0;
 }
 
-.panel-content {
+.panel-bar-content {
     opacity:inherit;
     position:relative;
     overflow-x:hidden;

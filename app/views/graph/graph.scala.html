@@ -2,10 +2,10 @@
   <div id="all">
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
-        <div class="panel-menu" v-on="click:closePanel">
+        <div class="panel-bar-menu" v-on="click:closePanel">
           <button><i class="fa fa-times"></i></button>
         </div>
-        <div class="panel-content" v-el="panelContent"></div>
+        <div class="panel-bar-content" v-el="panelContent"></div>
       </div>
 
       <div id="zoomBar" style="position:absolute;" v-cloak>
@@ -350,6 +350,17 @@
           </ul>
         </div>
       </section>
+    </div>
+    <style>
+    .node-panel-menu {
+      display:none;
+      position:absolute;
+      bottom:0;
+    }
+    </style>
+    <div class="node-panel-menu">
+      <div>Delete</div>
+      <div>Save</div>
     </div>
   </div>
 </template>
