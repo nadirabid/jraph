@@ -11,21 +11,24 @@ define([
 
       updateDimensionsAndPosition: function() {
         var padding = 12;
-        var navHeight = $('#nav').outerHeight();
         var windowHeight = $(window).outerHeight();
 
-        $(this.$el).css({
-          top: navHeight + padding + 'px',
-          left: padding + 'px'
+        var self = this;
+
+        Vue.nextTick(function() {
+          $(self.$el).css({
+            top: padding + 'px',
+            left: padding + 'px'
+          });
+
+          $(self.$el).outerHeight(
+              windowHeight - (2*padding)
+          );
+
+          $(self.$$.panelContent).outerHeight(
+              $(self.$el).innerHeight() - (2*padding)
+          );
         });
-
-        $(this.$el).outerHeight(
-            windowHeight - navHeight - (2*padding)
-        );
-
-        $(this.$$.panelContent).outerHeight(
-            windowHeight - navHeight - (2*padding)
-        );
       },
 
       show: function() {
