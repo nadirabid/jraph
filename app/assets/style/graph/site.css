@@ -277,7 +277,7 @@ text {
     border-radius:0 4px 4px 0;
     z-index:-1;
     opacity:0;
-    transition:opacity 140ms ease-in-out,box-shadow 40ms ease-in-out;
+    transition:opacity 100ms ease-in-out,box-shadow 40ms ease-in-out;
     box-shadow: 0 1px 5px rgba(100, 100, 100, 0.4);
 }
 
@@ -301,8 +301,6 @@ text {
 }
 
 .panel-bar-content {
-    opacity:inherit;
-    position:relative;
     overflow-x:hidden;
     overflow-y:scroll;
     background-color:inherit;
