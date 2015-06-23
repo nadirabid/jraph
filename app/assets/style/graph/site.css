@@ -237,7 +237,7 @@ text {
 }
 
 .pill-button > rect {
-    transition:fill 140ms ease-in-out;
+    transition:fill 100ms ease-in-out;
     fill:#FF80AB;
 }
 
