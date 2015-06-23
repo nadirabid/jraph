@@ -10,7 +10,7 @@ define([
     methods: {
 
       updateDimensionsAndPosition: function() {
-        var padding = 12;
+        var padding = 0;
         var windowHeight = $(window).outerHeight();
 
         var self = this;
