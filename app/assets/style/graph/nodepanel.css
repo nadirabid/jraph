@@ -122,6 +122,10 @@ ul.tag-list > li {
     border: 1px solid rgba(0, 0, 0, .1);
 }
 
+ul.tag-list > li:not(:last-child) {
+    margin-right:4px;
+}
+
 ul.tag-list .fa {
     cursor: pointer;
     font-size: .7em;
