@@ -295,12 +295,9 @@
       <div class="info-body">
         <input class="x-input" type="text" placeholder="Add tag">
         <ul class="tag-list">
-          <li><i class="fa fa-times"></i> Country</li>
-          <li><i class="fa fa-times"></i> Europe</li>
-          <li><i class="fa fa-times"></i> Berlin</li>
-          <li><i class="fa fa-times"></i> Democracy</li>
-          <li><i class="fa fa-times"></i> Munich</li>
-          <li><i class="fa fa-times"></i> Autobahn</li>
+          <li v-repeat="tag: node.data.properties.tags">
+            <i class="fa fa-times"></i> {{tag.value}}
+          </li>
         </ul>
       </div>
     </section>
@@ -312,9 +309,7 @@
       <div class="info-body">
         <input class="x-input" type="text" placeholder="Add link">
         <ul class="email-list">
-          <li>https://en.wikipedia.org/?title=Germany</li>
-          <li>http://www.germany.travel/en/index.html/li>
-          <li>https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html</li>
+          <li v-repeat="link: node.data.properties.links">{{link.value}}</li>
         </ul>
       </div>
     </section>
@@ -326,10 +321,7 @@
       <div class="info-body">
         <input class="x-input" type="text" placeholder="Add email">
         <ul class="email-list">
-          <li>john.doe@@email.com</li>
-          <li>jane.doe@@email.com</li>
-          <li>mr.smith@@email.com</li>
-          <li>mrs.smith@@email.com</li>
+          <li v-repeat="email: node.data.properties.emails">{{email.value}}</li>
         </ul>
       </div>
     </section>
@@ -341,11 +333,7 @@
       <div class="info-body">
         <input class="x-input" type="text" placeholder="Add phone number">
         <ul class="email-list">
-          <li>(510) 234-2342</li>
-          <li>(520) 235-2499</li>
-          <li>(453) 934-5292</li>
-          <li>(342) 882-7632</li>
-          <li>(654) 982-2832</li>
+          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">{{phoneNumber.value}}</li>
         </ul>
       </div>
     </section>
@@ -353,14 +341,14 @@
   <div class="node-panel-menu">
     <div
         class="button"
-        v-class="hidden:isNew || !hasChanges"
+        v-class="hidden:isNew || !hasChanges, disabled:saving"
         v-on="click:saveNode"
     >
       Save
     </div>
     <div
         class="button"
-        v-class="hidden:isNew"
+        v-class="hidden:!isNew, disabled:saving"
         v-on="click:createNode"
     >
       Create

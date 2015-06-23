@@ -5,6 +5,42 @@ define([
 ], function(Vue, util, NodeDAO) {
   'use strict';
 
+  function PropValue(value) {
+    this.value = value;
+  }
+
+  function Properties() {
+    this.tags = [
+      new PropValue('country'),
+      new PropValue('europe'),
+      new PropValue('berlin'),
+      new PropValue('democracy'),
+      new PropValue('autobahn'),
+      new PropValue('engineers')
+    ];
+
+    this.emails = [
+        new PropValue('https://en.wikipedia.org/?title=Germany'),
+        new PropValue('http://www.germany.travel/en/index.html'),
+        new PropValue('https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html')
+    ];
+
+    this.phoneNumbers = [
+        new PropValue('john.doe@@email.com'),
+        new PropValue('jane.doe@@email.com'),
+        new PropValue('mr.smith@@email.com'),
+        new PropValue('mrs.smith@@email.com')
+    ];
+
+    this.links = [
+        new PropValue('(510) 234-2342'),
+        new PropValue('(520) 235-2499'),
+        new PropValue('(453) 934-5292'),
+        new PropValue('(342) 882-7632'),
+        new PropValue('(654) 982-2832')
+    ];
+  }
+
   var NodePanelComponent = Vue.extend({
 
     replace: true,
@@ -19,6 +55,7 @@ define([
 
     data: function() {
       return {
+        saving:false,
         isNew: false,
         hasChanges: false,
         editingName: false,
@@ -27,12 +64,10 @@ define([
       };
     },
 
-    computed: {
+    compute: {
 
-      propertyGroups: function() {
-        return _.groupBy(this.node.data.properties, function(prop) {
-          return prop.type;
-        });
+      properties: function() {
+        return this.node.data.properties;
       }
 
     },
@@ -42,7 +77,7 @@ define([
       validateInputChange: function() {
         var self = this;
 
-        util.animationFrame(function() {
+        Vue.nextTick(function() {
           var $addDropdownBtnEl = self.$$.addDropdownBtn;
           var propertyValue = self.$$.propertyValue.value;
 
@@ -84,13 +119,13 @@ define([
           this.validateInputChange();
           this.hasChanges = true;
 
-          util.animationFrame(function() {
+          Vue.nextTick(function() {
             $propertyValueEl.value = '';
             $propertyInputGroupEl.classList.remove('has-error');
           });
         }
         else {
-          util.animationFrame(function() {
+          Vue.nextTick(function() {
             $propertyInputGroupEl.classList.add('has-error');
           });
         }
@@ -113,11 +148,14 @@ define([
 
         NodeDAO.create(this.$options.hypergraphID, this.node)
             .done(function(node) {
+              self.$options.graphComponent.nodes.push(node);
+              self.saving = false;
               self.hasChanges = false;
               self.isNew = false;
-              self.$options.graphComponent.nodes.push(node);
               self.$emit('removeGhostNode');
             });
+
+        this.saving = true;
       },
 
       saveNode: function() {
@@ -126,8 +164,11 @@ define([
         NodeDAO.update(this.$options.hypergraphID, [ this.node ])
             .done(function(node) {
               self.hasChanges = false;
+              self.saving = false;
               //TODO: replace node in nodesAry??
             });
+
+        this.saving = true;
       },
 
       editName: function() {
@@ -136,7 +177,7 @@ define([
 
         var $nameInput = this.$$.nameInput;
 
-        util.animationFrame(function() {
+        Vue.nextTick(function() {
           $nameInput.focus();
           $nameInput.setSelectionRange(0, $nameInput.value.length);
         });
@@ -167,19 +208,23 @@ define([
     events: {
 
       'hook:ready': function() {
-        var self = this;
         var node = this.node;
 
         this.nameCache = this.node.data.name;
         this.propertiesCache = this.node.data.properties.slice(0);
 
         if (!node.data) {
-          this.$add('node.data', { properties: [] });
+          this.$add('node.data', { properties: new Properties() });
         }
 
         if (!node.data.properties) {
-          this.$add('node.data.properties', []);
+          this.$add('node.data.properties', new Properties());
         }
+        else if (node.data.properties.constructor === Array) {
+          node.data.properties = new Properties();
+        }
+
+        console.log(node.data.properties);
 
         if (this.isNew) {
           this.editName();
