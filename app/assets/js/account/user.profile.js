@@ -2,7 +2,7 @@ require([
     'lodash',
     'jquery',
     'vue',
-    'shard/util',
+    'shared/util',
     'account/user'
 ], function(_, $, Vue, util){
   'use strict';
