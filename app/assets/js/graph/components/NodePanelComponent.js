@@ -19,20 +19,20 @@ define([
       new PropValue('engineers')
     ];
 
-    this.emails = [
+    this.links = [
         new PropValue('https://en.wikipedia.org/?title=Germany'),
         new PropValue('http://www.germany.travel/en/index.html'),
         new PropValue('https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html')
     ];
 
-    this.phoneNumbers = [
-        new PropValue('john.doe@@email.com'),
-        new PropValue('jane.doe@@email.com'),
-        new PropValue('mr.smith@@email.com'),
-        new PropValue('mrs.smith@@email.com')
+    this.emails = [
+        new PropValue('john.doe@email.com'),
+        new PropValue('jane.doe@email.com'),
+        new PropValue('mr.smith@email.com'),
+        new PropValue('mrs.smith@email.com')
     ];
 
-    this.links = [
+    this.phoneNumbers = [
         new PropValue('(510) 234-2342'),
         new PropValue('(520) 235-2499'),
         new PropValue('(453) 934-5292'),
@@ -60,19 +60,35 @@ define([
         hasChanges: false,
         editingName: false,
         nameCache: '',
-        propertiesCache: []
+        propertiesCache: [],
+        tagInputValue: '',
+        linkInputValue: '',
+        emailInputValue: '',
+        phoneNumberInputValue: ''
       };
     },
 
-    compute: {
-
-      properties: function() {
-        return this.node.data.properties;
-      }
-
-    },
-
     methods: {
+
+      addTag: function() {
+        this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
+        this.tagInputValue = '';
+      },
+
+      addLink: function() {
+        this.node.data.properties.links.push(new PropValue(this.linkInputValue));
+        this.linkInputValue = '';
+      },
+
+      addEmail: function() {
+        this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
+        this.emailInputValue = '';
+      },
+
+      addPhoneNumber: function() {
+        this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
+        this.phoneNumberInputValue = '';
+      },
 
       validateInputChange: function() {
         var self = this;
@@ -223,8 +239,6 @@ define([
         else if (node.data.properties.constructor === Array) {
           node.data.properties = new Properties();
         }
-
-        console.log(node.data.properties);
 
         if (this.isNew) {
           this.editName();

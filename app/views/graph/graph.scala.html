@@ -293,7 +293,13 @@
         <span class="line-around"><i class="fa fa-tags"></i></span>
       </div>
       <div class="info-body">
-        <input class="x-input" type="text" placeholder="Add tag">
+        <input
+            class="x-input"
+            type="text"
+            placeholder="Add tag"
+            v-model="tagInputValue"
+            v-on="keyup:addTag | key enter"
+        >
         <ul class="tag-list">
           <li v-repeat="tag: node.data.properties.tags">
             <i class="fa fa-times"></i> {{tag.value}}
@@ -307,7 +313,13 @@
         <span class="line-around"><i class="fa fa-link"></i></span>
       </div>
       <div class="info-body">
-        <input class="x-input" type="text" placeholder="Add link">
+        <input
+            class="x-input"
+            type="text"
+            placeholder="Add link"
+            v-model="linkInputValue"
+            v-on="keyup:addLink | key enter"
+        >
         <ul class="email-list">
           <li v-repeat="link: node.data.properties.links">{{link.value}}</li>
         </ul>
@@ -319,7 +331,13 @@
         <span class="line-around"><i class="fa fa-envelope-o"></i></span>
       </div>
       <div class="info-body">
-        <input class="x-input" type="text" placeholder="Add email">
+        <input
+            class="x-input"
+            type="text"
+            placeholder="Add email"
+            v-model="emailInputValue"
+            v-on="keyup:addEmail | key enter"
+        >
         <ul class="email-list">
           <li v-repeat="email: node.data.properties.emails">{{email.value}}</li>
         </ul>
@@ -331,7 +349,13 @@
         <span class="line-around"><i class="fa fa-phone"></i></span>
       </div>
       <div class="info-body">
-        <input class="x-input" type="text" placeholder="Add phone number">
+        <input
+            class="x-input"
+            type="text"
+            placeholder="Add phone number"
+            v-model="phoneNumberInputValue"
+            v-on="keyup:addPhoneNumber | key enter"
+        >
         <ul class="email-list">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">{{phoneNumber.value}}</li>
         </ul>
