@@ -297,6 +297,7 @@
             class="x-input"
             type="text"
             placeholder="Add tag"
+            v-el="tagInput"
             v-model="tagInputValue"
             v-on="keyup:addTag | key enter"
         >
@@ -317,6 +318,7 @@
             class="x-input"
             type="text"
             placeholder="Add link"
+            v-el="linkInput"
             v-model="linkInputValue"
             v-on="keyup:addLink | key enter"
         >
@@ -335,6 +337,7 @@
             class="x-input"
             type="text"
             placeholder="Add email"
+            v-el="emailInput"
             v-model="emailInputValue"
             v-on="keyup:addEmail | key enter"
         >
@@ -353,6 +356,7 @@
             class="x-input"
             type="text"
             placeholder="Add phone number"
+            v-el="phoneNumberInput"
             v-model="phoneNumberInputValue"
             v-on="keyup:addPhoneNumber | key enter"
         >

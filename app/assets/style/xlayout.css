@@ -209,3 +209,7 @@ ul.x-navbar-nav {
 .x-input:focus {
     border-bottom:solid 2px #FF4081;
 }
+
+.x-input.has-error {
+    border-bottom:solid 2px #D50000;
+}

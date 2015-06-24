@@ -71,23 +71,53 @@ define([
     methods: {
 
       addTag: function() {
-        this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
-        this.tagInputValue = '';
+        if (this.tagInputValue.length > 255) {
+          this.$$.tagInput.classList.add('has-error');
+        }
+        else {
+          this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
+          this.$$.tagInput.classList.remove('has-error');
+          this.tagInputValue = '';
+        }
       },
 
       addLink: function() {
-        this.node.data.properties.links.push(new PropValue(this.linkInputValue));
-        this.linkInputValue = '';
+        if (this.linkInputValue.length > 255) {
+          this.$$.linkInput.classList.add('has-error');
+        }
+        else if (!util.validateLink(this.linkInputValue)) {
+          this.$$.linkInput.classList.add('has-error');
+        }
+        else {
+          this.node.data.properties.links.push(new PropValue(this.linkInputValue));
+          this.linkInputValue = '';
+        }
       },
 
       addEmail: function() {
-        this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
-        this.emailInputValue = '';
+        if (this.emailInputValue.length > 255) {
+          this.$$.emailInput.classList.add('has-error');
+        }
+        else if (!util.validateEmail(this.emailInputValue)) {
+          this.$$.emailInput.classList.add('has-error');
+        }
+        else {
+          this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
+          this.emailInputValue = '';
+        }
       },
 
       addPhoneNumber: function() {
-        this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
-        this.phoneNumberInputValue = '';
+        if (this.phoneNumberInputValue.length > 255) {
+          this.$$.phoneNumberInput.classList.add('has-error');
+        }
+        else if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
+          this.$$.phoneNumberInput.classList.add('has-error');
+        }
+        else {
+          this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
+          this.phoneNumberInputValue = '';
+        }
       },
 
       validateInputChange: function() {

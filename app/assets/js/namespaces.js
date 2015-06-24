@@ -15,5 +15,10 @@
 /** @namespace this.$$.nodesAndEdgesGroup */
 /** @namespace this.$$.nodeRectBackgroundHighlight */
 
+/** @namespace this.$$.tagInput */
+/** @namespace this.$$.emailInput */
+/** @namespace this.$$.linkInput */
+/** @namespace this.$$.phoneNumberInput */
+
 /** @namespace graph.updatedAt */
 /** @namespace graph.createdAt */
