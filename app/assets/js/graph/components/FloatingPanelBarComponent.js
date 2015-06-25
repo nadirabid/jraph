@@ -7,10 +7,14 @@ define([
 
   var FloatingPanelBarComponent = Vue.extend({
 
+    data: {
+      padding: 0 // 0 means no space (so not floating)
+    },
+
     methods: {
 
       updateDimensionsAndPosition: function() {
-        var padding = 0;
+        var padding = this.padding;
         var windowHeight = $(window).outerHeight();
 
         var self = this;
