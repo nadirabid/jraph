@@ -7,8 +7,10 @@ define([
 
   var FloatingPanelBarComponent = Vue.extend({
 
-    data: {
-      padding: 0 // 0 means no space (so not floating)
+    data: function() {
+      return {
+        padding: 0 // 0 means no space (so not floating)
+      };
     },
 
     methods: {
