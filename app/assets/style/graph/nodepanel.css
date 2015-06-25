@@ -102,7 +102,7 @@
 
 ul.tag-list {
     list-style: none;
-    margin: 0;
+    margin: 14px 0;
     padding: 0;
     color: rgba(0, 0, 0, .7);
 }
@@ -147,6 +147,7 @@ ul.tag-list .fa:active {
 ul.email-list {
     list-style:none;
     padding:0;
+    margin:14px 0;
 }
 
 ul.email-list > li {
