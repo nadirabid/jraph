@@ -193,7 +193,6 @@ define([
         var node = this.node;
 
         this.nameCache = this.node.data.name;
-        this.propertiesCache = this.node.data.properties.slice(0);
 
         if (!node.data) {
           this.$add('node.data', { properties: new Properties() });
