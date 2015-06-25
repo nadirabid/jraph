@@ -45,7 +45,7 @@ define([
 
     replace: true,
 
-    template: '#node.panel2',
+    template: '#node.panel',
 
     hypergraphID: null,
 
@@ -125,103 +125,6 @@ define([
         }
       },
 
-      validateInputChange: function() {
-        var self = this;
-
-        Vue.nextTick(function() {
-          var $addDropdownBtnEl = self.$$.addDropdownBtn;
-          var propertyValue = self.$$.propertyValue.value;
-
-          if (!propertyValue) {
-            $addDropdownBtnEl.classList.add('disabled');
-          }
-          else {
-            $addDropdownBtnEl.classList.remove('disabled');
-          }
-        });
-      },
-
-      addProp: function(propertyType) {
-        var $propertyInputGroupEl = this.$$.propertyInputGroup;
-        var $propertyValueEl = this.$$.propertyValue;
-
-        var validPropertyType = false;
-
-        switch(propertyType) {
-          case 'email':
-            validPropertyType = util.validateEmail($propertyValueEl.value);
-            break;
-          case 'phone':
-            validPropertyType = util.validatePhoneNumber($propertyValueEl.value);
-            break;
-          case 'link':
-            validPropertyType = util.validateLink($propertyValueEl.value);
-            break;
-          default:
-            validPropertyType = true; //case text
-        }
-
-        if (validPropertyType) {
-          this.node.data.properties.push({
-            value: $propertyValueEl.value,
-            type: propertyType
-          });
-
-          this.validateInputChange();
-          this.hasChanges = true;
-
-          Vue.nextTick(function() {
-            $propertyValueEl.value = '';
-            $propertyInputGroupEl.classList.remove('has-error');
-          });
-        }
-        else {
-          Vue.nextTick(function() {
-            $propertyInputGroupEl.classList.add('has-error');
-          });
-        }
-
-      },
-
-      removeProp: function(propVm) {
-        var propIndex = _.indexOf(this.node.data.properties, propVm.prop);
-
-        if (propIndex < 0) {
-          throw "Trying to remove property that apparently doesn't exist.";
-        }
-
-        this.node.data.properties.$remove(0);
-        this.hasChanges = true;
-      },
-
-      createNode: function() {
-        var self = this;
-
-        NodeDAO.create(this.$options.hypergraphID, this.node)
-            .done(function(node) {
-              self.$options.graphComponent.nodes.push(node);
-              self.saving = false;
-              self.hasChanges = false;
-              self.isNew = false;
-              self.$emit('removeGhostNode');
-            });
-
-        this.saving = true;
-      },
-
-      saveNode: function() {
-        var self = this;
-
-        NodeDAO.update(this.$options.hypergraphID, [ this.node ])
-            .done(function(node) {
-              self.hasChanges = false;
-              self.saving = false;
-              //TODO: replace node in nodesAry??
-            });
-
-        this.saving = true;
-      },
-
       editName: function() {
         this.editingName = true;
         this.nameCache = this.node.data.name;
@@ -252,6 +155,34 @@ define([
       cancelNameUpdate: function() {
         this.editingName = false;
         this.node.data.name = this.nameCache;
+      },
+
+      createNode: function() {
+        var self = this;
+
+        NodeDAO.create(this.$options.hypergraphID, this.node)
+            .done(function(node) {
+              self.$options.graphComponent.nodes.push(node);
+              self.saving = false;
+              self.hasChanges = false;
+              self.isNew = false;
+              self.$emit('removeGhostNode');
+            });
+
+        this.saving = true;
+      },
+
+      saveNode: function() {
+        var self = this;
+
+        NodeDAO.update(this.$options.hypergraphID, [ this.node ])
+            .done(function(node) {
+              self.hasChanges = false;
+              self.saving = false;
+              //TODO: replace node in nodesAry??
+            });
+
+        this.saving = true;
       }
 
     },
