@@ -66,10 +66,22 @@ define([
         emailInputValue: '',
         phoneNumberInputValue: '',
         validationError: {
-          tags: false,
-          links: false,
-          emails: false,
-          phoneNumbers: false
+          tags: {
+            hasErrors: false,
+            message: ''
+          },
+          links: {
+            hasErrors: false,
+            message: ''
+          },
+          emails: {
+            hasErrors: false,
+            message: ''
+          },
+          phoneNumbers: {
+            hasErrors: false,
+            message: ''
+          }
         }
       };
     },
@@ -78,12 +90,13 @@ define([
 
       addTag: function() {
         if (this.tagInputValue.length > 255) {
-          this.validationError.tags = true;
+          this.validationError.tags.hasErrors = true;
+          this.validationError.tags.message = 'Cannot be more than 255 characters';
         }
         else {
           this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
           this.tagInputValue = '';
-          this.validationError.tags = false;
+          this.validationError.tags.hasErrors = false;
         }
       },
 
@@ -94,43 +107,43 @@ define([
 
       addLink: function() {
         if (this.linkInputValue.length > 255) {
-          this.validationError.links = true;
+          this.validationError.links.hasErrors = true;
         }
         else if (!util.validateLink(this.linkInputValue)) {
-          this.validationError.links = true;
+          this.validationError.links.hasErrors = true;
         }
         else {
           this.node.data.properties.links.push(new PropValue(this.linkInputValue));
           this.linkInputValue = '';
-          this.validationError.links = false;
+          this.validationError.links.hasErrors = false;
         }
       },
 
       addEmail: function() {
         if (this.emailInputValue.length > 255) {
-          this.validationError.emails = true;
+          this.validationError.emails.hasErrors = true;
         }
         else if (!util.validateEmail(this.emailInputValue)) {
-          this.validationError.emails = true;
+          this.validationError.emails.hasErrors = true;
         }
         else {
           this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
           this.emailInputValue = '';
-          this.validationError.emails = false;
+          this.validationError.emails.hasErrors = false;
         }
       },
 
       addPhoneNumber: function() {
         if (this.phoneNumberInputValue.length > 255) {
-          this.validationError.phoneNumbers = true;
+          this.validationError.phoneNumbers.hasErrors = true;
         }
         else if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
-          this.validationError.phoneNumbers = true;
+          this.validationError.phoneNumbers.hasErrors = true;
         }
         else {
           this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
           this.phoneNumberInputValue = '';
-          this.validationError.phoneNumbers = false;
+          this.validationError.phoneNumbers.hasErrors = false;
         }
       },
 

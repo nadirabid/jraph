@@ -200,15 +200,19 @@
         <span class="line-around"><i class="fa fa-tags"></i></span>
       </div>
       <div class="info-body">
-        <input
-            class="x-input"
-            type="text"
-            placeholder="Add tag"
-            v-el="tagInput"
-            v-model="tagInputValue"
-            v-class="has-error:validationError.tags"
-            v-on="keyup:addTag | key enter"
-        >
+        <div v-class="x-has-error:validationError.tags.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add tag"
+              v-el="tagInput"
+              v-model="tagInputValue"
+              v-on="keyup:addTag | key enter"
+          >
+          <p class="x-help-block" v-class="hidden:!validationError.tags.hasErrors">
+            {{validationError.tags.message}}
+          </p>
+        </div>
         <ul class="tag-list">
           <li v-repeat="tag: node.data.properties.tags">
             <i class="fa fa-times" v-on="click:removeTag(tag)"></i> {{tag.value}}
@@ -222,15 +226,16 @@
         <span class="line-around"><i class="fa fa-link"></i></span>
       </div>
       <div class="info-body">
-        <input
-            class="x-input"
-            type="text"
-            placeholder="Add link"
-            v-class="has-error:validationError.links"
-            v-el="linkInput"
-            v-model="linkInputValue"
-            v-on="keyup:addLink | key enter"
-        >
+        <div v-class="x-has-error:validationError.links.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add link"
+              v-el="linkInput"
+              v-model="linkInputValue"
+              v-on="keyup:addLink | key enter"
+          >
+        </div>
         <ul class="email-list">
           <li v-repeat="link: node.data.properties.links">{{link.value}}</li>
         </ul>
@@ -242,15 +247,16 @@
         <span class="line-around"><i class="fa fa-envelope-o"></i></span>
       </div>
       <div class="info-body">
-        <input
-            class="x-input"
-            type="text"
-            placeholder="Add email"
-            v-class="has-error:validationError.emails"
-            v-el="emailInput"
-            v-model="emailInputValue"
-            v-on="keyup:addEmail | key enter"
-        >
+        <div v-class="x-has-error:validationError.emails.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add email"
+              v-el="emailInput"
+              v-model="emailInputValue"
+              v-on="keyup:addEmail | key enter"
+          >
+        </div>
         <ul class="email-list">
           <li v-repeat="email: node.data.properties.emails">{{email.value}}</li>
         </ul>
@@ -262,15 +268,16 @@
         <span class="line-around"><i class="fa fa-phone"></i></span>
       </div>
       <div class="info-body">
-        <input
-            class="x-input"
-            type="text"
-            placeholder="Add phone number"
-            v-class="has-error:validationError.phoneNumbers"
-            v-el="phoneNumberInput"
-            v-model="phoneNumberInputValue"
-            v-on="keyup:addPhoneNumber | key enter"
-        >
+        <div v-class="x-has-error:validationError.phoneNumbers.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add phone number"
+              v-el="phoneNumberInput"
+              v-model="phoneNumberInputValue"
+              v-on="keyup:addPhoneNumber | key enter"
+          >
+        </div>
         <ul class="email-list">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">{{phoneNumber.value}}</li>
         </ul>

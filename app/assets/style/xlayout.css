@@ -210,6 +210,19 @@ ul.x-navbar-nav {
     border-bottom:solid 2px #FF80AB;
 }
 
-.x-input.has-error {
+.x-has-error > .x-input {
     border-bottom:solid 2px #D50000;
+}
+
+.x-help-block {
+    margin:6px 0;
+    font-size:13px;
+}
+
+* > .x-help-block {
+    color:#aaa;
+}
+
+.x-has-error > .x-help-block {
+    color:#D50000;
 }
