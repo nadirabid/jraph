@@ -303,7 +303,7 @@
         >
         <ul class="tag-list">
           <li v-repeat="tag: node.data.properties.tags">
-            <i class="fa fa-times"></i> {{tag.value}}
+            <i class="fa fa-times" v-on="click:removeTag(tag)"></i> {{tag.value}}
           </li>
         </ul>
       </div>

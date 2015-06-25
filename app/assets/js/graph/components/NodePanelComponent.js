@@ -81,6 +81,11 @@ define([
         }
       },
 
+      removeTag: function(tag) {
+        var indexOfTag = this.node.data.properties.tags.indexOf(tag);
+        this.node.data.properties.tags.$remove(indexOfTag);
+      },
+
       addLink: function() {
         if (this.linkInputValue.length > 255) {
           this.$$.linkInput.classList.add('has-error');
