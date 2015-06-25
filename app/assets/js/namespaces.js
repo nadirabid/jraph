@@ -15,6 +15,7 @@
 /** @namespace this.$$.nodesAndEdgesGroup */
 /** @namespace this.$$.nodeRectBackgroundHighlight */
 
+/** @namespace this.$$.nameInput */
 /** @namespace this.$$.tagInput */
 /** @namespace this.$$.emailInput */
 /** @namespace this.$$.linkInput */

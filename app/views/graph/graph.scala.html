@@ -206,6 +206,7 @@
             placeholder="Add tag"
             v-el="tagInput"
             v-model="tagInputValue"
+            v-class="has-error:validationError.tags"
             v-on="keyup:addTag | key enter"
         >
         <ul class="tag-list">
@@ -225,6 +226,7 @@
             class="x-input"
             type="text"
             placeholder="Add link"
+            v-class="has-error:validationError.links"
             v-el="linkInput"
             v-model="linkInputValue"
             v-on="keyup:addLink | key enter"
@@ -244,6 +246,7 @@
             class="x-input"
             type="text"
             placeholder="Add email"
+            v-class="has-error:validationError.emails"
             v-el="emailInput"
             v-model="emailInputValue"
             v-on="keyup:addEmail | key enter"
@@ -263,6 +266,7 @@
             class="x-input"
             type="text"
             placeholder="Add phone number"
+            v-class="has-error:validationError.phoneNumbers"
             v-el="phoneNumberInput"
             v-model="phoneNumberInputValue"
             v-on="keyup:addPhoneNumber | key enter"

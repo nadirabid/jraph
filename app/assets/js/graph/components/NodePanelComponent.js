@@ -64,7 +64,13 @@ define([
         tagInputValue: '',
         linkInputValue: '',
         emailInputValue: '',
-        phoneNumberInputValue: ''
+        phoneNumberInputValue: '',
+        validationError: {
+          tags: false,
+          links: false,
+          emails: false,
+          phoneNumbers: false
+        }
       };
     },
 
@@ -72,12 +78,12 @@ define([
 
       addTag: function() {
         if (this.tagInputValue.length > 255) {
-          this.$$.tagInput.classList.add('has-error');
+          this.validationError.tags = true;
         }
         else {
           this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
-          this.$$.tagInput.classList.remove('has-error');
           this.tagInputValue = '';
+          this.validationError.tags = false;
         }
       },
 
@@ -88,40 +94,43 @@ define([
 
       addLink: function() {
         if (this.linkInputValue.length > 255) {
-          this.$$.linkInput.classList.add('has-error');
+          this.validationError.links = true;
         }
         else if (!util.validateLink(this.linkInputValue)) {
-          this.$$.linkInput.classList.add('has-error');
+          this.validationError.links = true;
         }
         else {
           this.node.data.properties.links.push(new PropValue(this.linkInputValue));
           this.linkInputValue = '';
+          this.validationError.links = false;
         }
       },
 
       addEmail: function() {
         if (this.emailInputValue.length > 255) {
-          this.$$.emailInput.classList.add('has-error');
+          this.validationError.emails = true;
         }
         else if (!util.validateEmail(this.emailInputValue)) {
-          this.$$.emailInput.classList.add('has-error');
+          this.validationError.emails = true;
         }
         else {
           this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
           this.emailInputValue = '';
+          this.validationError.emails = false;
         }
       },
 
       addPhoneNumber: function() {
         if (this.phoneNumberInputValue.length > 255) {
-          this.$$.phoneNumberInput.classList.add('has-error');
+          this.validationError.phoneNumbers = true;
         }
         else if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
-          this.$$.phoneNumberInput.classList.add('has-error');
+          this.validationError.phoneNumbers = true;
         }
         else {
           this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
           this.phoneNumberInputValue = '';
+          this.validationError.phoneNumbers = false;
         }
       },
 
