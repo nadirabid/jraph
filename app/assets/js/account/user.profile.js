@@ -14,9 +14,9 @@ require([
     computed: {
 
       hasUpdates: function() {
-        return  this.firstName !== this.cache.firstName ||
-                this.lastName  !== this.cache.lastName  ||
-                (this.email    !== this.cache.email     && util.validateEmail(this.email));
+        return  (this.firstName !== this.cache.firstName  && this.isAlphanumeric(this.firstName))  ||
+                (this.lastName  !== this.cache.lastName   && this.isAlphanumeric(this.lastName))   ||
+                (this.email     !== this.cache.email      && util.validateEmail(this.email));
       }
 
     },
@@ -47,12 +47,16 @@ require([
         if (blurFlag === true || !this.validated.firstName) {
           this.validated.firstName = this.firstName === '' || util.validateAlphanumeric(this.firstName);
         }
+
+        return this.validated.firstName;
       },
 
       validateLastName: function(blurFlag) {
         if (blurFlag === true || !this.validated.lastName) {
           this.validated.lastName = this.lastName === '' || util.validateAlphanumeric(this.lastName);
         }
+
+        return this.validated.lastName;
       },
 
       validateEmail: function(blurFlag) {
