@@ -108,9 +108,11 @@ define([
       addLink: function() {
         if (this.linkInputValue.length > 255) {
           this.validationError.links.hasErrors = true;
+          this.validationError.links.message = 'Cannot be more than 255 characters';
         }
         else if (!util.validateLink(this.linkInputValue)) {
           this.validationError.links.hasErrors = true;
+          this.validationError.links.message = 'Link should look something like: http://www.analyte.io';
         }
         else {
           this.node.data.properties.links.push(new PropValue(this.linkInputValue));
@@ -122,9 +124,11 @@ define([
       addEmail: function() {
         if (this.emailInputValue.length > 255) {
           this.validationError.emails.hasErrors = true;
+          this.validationError.emails.message = 'Cannot be more than 255 characters';
         }
         else if (!util.validateEmail(this.emailInputValue)) {
           this.validationError.emails.hasErrors = true;
+          this.validationError.emails.message = "We know you know we know that's not a correct email";
         }
         else {
           this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
@@ -134,11 +138,9 @@ define([
       },
 
       addPhoneNumber: function() {
-        if (this.phoneNumberInputValue.length > 255) {
+        if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
           this.validationError.phoneNumbers.hasErrors = true;
-        }
-        else if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
-          this.validationError.phoneNumbers.hasErrors = true;
+          this.validationError.phoneNumbers.message = 'Phone number should have 10 digits';
         }
         else {
           this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));

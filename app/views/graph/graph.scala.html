@@ -194,7 +194,6 @@
           "
       >
     </div>
-
     <section class="info tags">
       <div class="info-title">
         <span class="line-around"><i class="fa fa-tags"></i></span>
@@ -220,7 +219,6 @@
         </ul>
       </div>
     </section>
-
     <section class="info">
       <div class="info-title">
         <span class="line-around"><i class="fa fa-link"></i></span>
@@ -235,13 +233,15 @@
               v-model="linkInputValue"
               v-on="keyup:addLink | key enter"
           >
+          <p class="x-help-block" v-class="hidden:!validationError.links.hasErrors">
+            {{validationError.links.message}}
+          </p>
         </div>
         <ul class="email-list">
           <li v-repeat="link: node.data.properties.links">{{link.value}}</li>
         </ul>
       </div>
     </section>
-
     <section class="info">
       <div class="info-title">
         <span class="line-around"><i class="fa fa-envelope-o"></i></span>
@@ -256,13 +256,15 @@
               v-model="emailInputValue"
               v-on="keyup:addEmail | key enter"
           >
+          <p class="x-help-block" v-class="hidden:!validationError.emails.hasErrors">
+            {{validationError.emails.message}}
+          </p>
         </div>
         <ul class="email-list">
           <li v-repeat="email: node.data.properties.emails">{{email.value}}</li>
         </ul>
       </div>
     </section>
-
     <section class="info">
       <div class="info-title">
         <span class="line-around"><i class="fa fa-phone"></i></span>
@@ -277,6 +279,9 @@
               v-model="phoneNumberInputValue"
               v-on="keyup:addPhoneNumber | key enter"
           >
+          <p class="x-help-block" v-class="hidden:!validationError.phoneNumbers.hasErrors">
+            {{validationError.phoneNumbers.message}}
+          </p>
         </div>
         <ul class="email-list">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">{{phoneNumber.value}}</li>
@@ -284,6 +289,7 @@
       </div>
     </section>
   </div>
+
   <div class="node-panel-menu">
     <div
         class="button"
