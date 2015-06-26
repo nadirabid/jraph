@@ -148,6 +148,7 @@ ul.email-list {
     list-style:none;
     padding:0;
     margin:14px 0;
+    color:rgba(0,0,0,.77);
 }
 
 ul.email-list > li {

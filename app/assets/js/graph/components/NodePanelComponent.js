@@ -7,6 +7,7 @@ define([
 
   function PropValue(value) {
     this.value = value;
+    this.cachedValue_ = value;
     this.editing_ = false;
   }
 
@@ -123,10 +124,28 @@ define([
       },
 
       editLink: function(linkViewModel) {
+        linkViewModel.link.cachedValue_ = linkViewModel.link.value;
         linkViewModel.link.editing_ = true;
+
+        var $inputEl = linkViewModel.$$.input;
         Vue.nextTick(function() {
-          linkViewModel.$$.input.focus();
+          $inputEl.focus();
+          $inputEl.setSelectionRange(0, $inputEl.value.length);
         });
+      },
+
+      updateLink: function(linkViewModel) {
+        var link = linkViewModel.link;
+        link.editing_ = false;
+
+        if (link.length > 255 || !util.validateLink(link.value)) {
+          link.value = link.cachedValue_;
+        }
+      },
+
+      cancelLinkUpdate: function(linkViewModel) {
+        linkViewModel.link.value = linkViewModel.link.cachedValue_;
+        linkViewModel.link.editing_ = false;
       },
 
       addEmail: function() {

@@ -254,9 +254,9 @@
                 v-class="hidden: !link.editing_"
                 v-model="link.value"
                 v-on="
-                    blur  : link.editing_ = false,
-                    keyup : link.editing_ = false | key esc,
-                    keyup : link.editing_ = false | key enter
+                    blur  : updateLink(this),
+                    keyup : updateLink(this)       | key enter,
+                    keyup : cancelLinkUpdate(this) | key esc,
                 "
             >
           </li>
