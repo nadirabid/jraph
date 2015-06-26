@@ -2,7 +2,7 @@
   <div id="all">
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
-        <div class="panel-bar-menu" v-on="click:closePanel">
+        <div class="panel-bar-menu" v-on="click: closePanel">
           <button><i class="fa fa-times"></i></button>
         </div>
         <div class="panel-bar-content" v-el="panelContent"></div>
@@ -10,17 +10,17 @@
 
       <div id="zoomBar" style="position:absolute;" v-cloak>
         <div class="btn-group-vertical zoom-bar" role="group">
-          <button type=button class="btn btn-default" v-on="click:incrementZoomLevel">
+          <button type=button class="btn btn-default" v-on="click: incrementZoomLevel">
             <i class="fa fa-plus"></i>
           </button>
-          <button type=button class="btn btn-default" v-on="click:decrementZoomLevel">
+          <button type=button class="btn btn-default" v-on="click: decrementZoomLevel">
             <i class="fa fa-minus"></i>
           </button>
         </div>
       </div>
 
       <div class="graph-container">
-        <svg id="graph" v-on="contextmenu:contextMenu, wheel:mousewheelZoom">
+        <svg id="graph" v-on="contextmenu: contextMenu, wheel: mousewheelZoom">
             <!-- Definitions -->
           <defs>
             <marker
@@ -56,17 +56,17 @@
         </svg>
 
         <ul id="nodeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-          <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Node</a></li>
-          <li role="presentation" v-on="click:link"><a role="menuitem" tabindex="-1">Link Node</a></li>
+          <li role="presentation" v-on="click: delete"><a tabindex="-1">Delete Node</a></li>
+          <li role="presentation" v-on="click: link"><a tabindex="-1">Link Node</a></li>
         </ul>
 
         <ul id="edgeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-          <li role="presentation" v-on="click:delete"><a role="menuitem" tabindex="-1">Delete Link</a></li>
+          <li role="presentation" v-on="click: delete"><a tabindex="-1">Delete Link</a></li>
         </ul>
 
         <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-          <li role="presentation" v-on="click:addNode"><a role="menuitem" tabindex="-1">Add Node</a></li>
-          <li role="presentation" v-on="click:saveGraph"><a role="menuitem" tabindex="-1">Save Graph</a></li>
+          <li role="presentation" v-on="click: addNode"><a tabindex="-1">Add Node</a></li>
+          <li role="presentation" v-on="click: saveGraph"><a tabindex="-1">Save Graph</a></li>
         </ul>
       </div>
     </main>
@@ -78,31 +78,31 @@
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
     v-on="
-        mouseenter:mouseover,
-        mouseleave:mouseout,
-        contextmenu:suppressContextMenu
+        mouseenter: mouseover,
+        mouseleave: mouseout,
+        contextmenu: suppressContextMenu
     "
   >
     <rect
         rx="2" ry="2"
         class="background"
-        v-class="hidden:!isMouseentered || dragFlag"
+        v-class="hidden: !isMouseentered || dragFlag"
         v-attr="
-            height:height,
-            width:backgroundWidth,
-            transform:backgroundTranslate
+            height: height,
+            width: backgroundWidth,
+            transform: backgroundTranslate
         "
     ></rect>
-    <g class="pill-button-list" v-class="transition-enabled:isNodeReady">
+    <g class="pill-button-list" v-class="transition-enabled: isNodeReady">
       <g
           class="pill-button"
-          v-style="transform:deleteNodePillButtonTranslate"
-          v-on="click:delete"
+          v-style="transform: deleteNodePillButtonTranslate"
+          v-on="click: delete"
       >
-        <rect rx="2" ry="2" v-attr="width:pillButtonWidth, height:height"></rect>
+        <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
         <text
             text-anchor="middle"
-            v-attr="transform:deleteNodePillButtonTextTranslate"
+            v-attr="transform: deleteNodePillButtonTextTranslate"
             v-el="deleteNodeText"
         >
           &#xf014
@@ -110,13 +110,13 @@
       </g>
       <g
           class="pill-button"
-          v-style="transform:linkNodePillButtonTranslate"
-          v-on="click:setNewEdgeSource"
+          v-style="transform: linkNodePillButtonTranslate"
+          v-on="click: setNewEdgeSource"
       >
-        <rect rx="2" ry="2" v-attr="width:pillButtonWidth, height:height"></rect>
+        <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
         <text
             text-anchor="middle"
-            v-attr="transform:linkNodePillButtonTextTranslate"
+            v-attr="transform: linkNodePillButtonTextTranslate"
         >
           &#xf0c1
         </text>
@@ -127,19 +127,19 @@
           class="node-rect-background-highlight"
           rx="2" ry="2"
           v-el="nodeRectBackgroundHighlight"
-          v-attr="width:width, height:height"
+          v-attr="width: width, height: height"
       ></rect>
       <rect
           class="node-rect-background"
           rx="2" ry="2"
           v-el="nodeRectBackground"
-          v-attr="width:width, height:height"
+          v-attr="width: width, height: height"
       ></rect>
       <rect
           class="node-rect"
           rx="2" ry="2"
           v-el="nodeRect"
-          v-attr="width:width, height:height"
+          v-attr="width: width, height: height"
       ></rect>
     </g>
     <text
@@ -153,12 +153,15 @@
 </template>
 
 <template id="graph.edge">
-  <g class="enable-pointer-events" v-on="contextmenu:edgeContextMenu">
+  <g class="enable-pointer-events" v-on="contextmenu: edgeContextMenu">
     <line
         class="edge"
         marker-end="url(#edgeArrow)"
         v-el="arrowMarkerLine"
-        v-attr="x1:sourceClipX, y1:sourceClipY, x2:targetClipX, y2:targetClipY"
+        v-attr="
+            x1: sourceClipX, y1: sourceClipY,
+            x2: targetClipX, y2: targetClipY
+        "
     ></line>
   </g>
 </template>
@@ -166,12 +169,11 @@
 <template id="graph.newEdge">
   <line
       class="edge new-edge"
-      v-class="connected:connected"
+      v-class="connected: connected"
       v-attr="
-          marker-end:edgeArrow,
-          x1:sourceClipX,
-          y1:sourceClipY,
-          x2:targetClipX, y2:targetClipY
+          marker-end: edgeArrow,
+          x1: sourceClipX, y1: sourceClipY,
+          x2: targetClipX, y2: targetClipY
       "
   >
   </line>
@@ -180,11 +182,11 @@
 <template id="node.panel">
   <div class="node-panel">
     <div class="title">
-      <h3 v-on="click:editName" v-class="hidden:editingName">{{node.data.name}}</h3>
+      <h3 v-on="click: editName" v-class="hidden: editingName">{{node.data.name}}</h3>
       <input
           class="x-input"
           type="text"
-          v-class="hidden:!editingName"
+          v-class="hidden: !editingName"
           v-model="node.data.name"
           v-el="nameInput"
           v-on="
@@ -199,14 +201,14 @@
         <span class="line-around"><i class="fa fa-tags"></i></span>
       </div>
       <div class="info-body">
-        <div v-class="x-has-error:validationError.tags.hasErrors">
+        <div v-class="x-has-error: validationError.tags.hasErrors">
           <input
               class="x-input"
               type="text"
               placeholder="Add tag"
               v-el="tagInput"
               v-model="tagInputValue"
-              v-on="keyup:addTag | key enter"
+              v-on="keyup: addTag | key enter"
           >
           <p class="x-help-block" v-class="hidden:!validationError.tags.hasErrors">
             {{validationError.tags.message}}
@@ -214,7 +216,7 @@
         </div>
         <ul class="tag-list">
           <li v-repeat="tag: node.data.properties.tags">
-            <i class="fa fa-times" v-on="click:removeTag(tag)"></i> {{tag.value}}
+            <i class="fa fa-times" v-on="click: removeTag(tag)"></i> {{tag.value}}
           </li>
         </ul>
       </div>
@@ -224,7 +226,7 @@
         <span class="line-around"><i class="fa fa-link"></i></span>
       </div>
       <div class="info-body">
-        <div v-class="x-has-error:validationError.links.hasErrors">
+        <div v-class="x-has-error: validationError.links.hasErrors">
           <input
               class="x-input"
               type="text"
@@ -233,12 +235,31 @@
               v-model="linkInputValue"
               v-on="keyup:addLink | key enter"
           >
-          <p class="x-help-block" v-class="hidden:!validationError.links.hasErrors">
+          <p class="x-help-block" v-class="hidden: !validationError.links.hasErrors">
             {{validationError.links.message}}
           </p>
         </div>
         <ul class="email-list">
-          <li v-repeat="link: node.data.properties.links">{{link.value}}</li>
+          <li v-repeat="link: node.data.properties.links">
+            <div
+                v-class="hidden: link.editing_"
+                v-on="click: editLink(this)"
+            >
+              {{link.value}}
+            </div>
+            <input
+                class="x-input"
+                type="text"
+                v-el="input"
+                v-class="hidden: !link.editing_"
+                v-model="link.value"
+                v-on="
+                    blur  : link.editing_ = false,
+                    keyup : link.editing_ = false | key esc,
+                    keyup : link.editing_ = false | key enter
+                "
+            >
+          </li>
         </ul>
       </div>
     </section>
@@ -247,7 +268,7 @@
         <span class="line-around"><i class="fa fa-envelope-o"></i></span>
       </div>
       <div class="info-body">
-        <div v-class="x-has-error:validationError.emails.hasErrors">
+        <div v-class="x-has-error: validationError.emails.hasErrors">
           <input
               class="x-input"
               type="text"
@@ -256,7 +277,7 @@
               v-model="emailInputValue"
               v-on="keyup:addEmail | key enter"
           >
-          <p class="x-help-block" v-class="hidden:!validationError.emails.hasErrors">
+          <p class="x-help-block" v-class="hidden: !validationError.emails.hasErrors">
             {{validationError.emails.message}}
           </p>
         </div>
@@ -270,16 +291,16 @@
         <span class="line-around"><i class="fa fa-phone"></i></span>
       </div>
       <div class="info-body">
-        <div v-class="x-has-error:validationError.phoneNumbers.hasErrors">
+        <div v-class="x-has-error: validationError.phoneNumbers.hasErrors">
           <input
               class="x-input"
               type="text"
               placeholder="Add phone number"
               v-el="phoneNumberInput"
               v-model="phoneNumberInputValue"
-              v-on="keyup:addPhoneNumber | key enter"
+              v-on="keyup: addPhoneNumber | key enter"
           >
-          <p class="x-help-block" v-class="hidden:!validationError.phoneNumbers.hasErrors">
+          <p class="x-help-block" v-class="hidden: !validationError.phoneNumbers.hasErrors">
             {{validationError.phoneNumbers.message}}
           </p>
         </div>
@@ -293,15 +314,15 @@
   <div class="node-panel-menu">
     <div
         class="button"
-        v-class="hidden:isNew || !hasChanges, disabled:saving"
+        v-class="hidden: isNew || !hasChanges, disabled: saving"
         v-on="click:saveNode"
     >
       Save
     </div>
     <div
         class="button"
-        v-class="hidden:!isNew, disabled:saving"
-        v-on="click:createNode"
+        v-class="hidden: !isNew, disabled: saving"
+        v-on="click: createNode"
     >
       Create
     </div>

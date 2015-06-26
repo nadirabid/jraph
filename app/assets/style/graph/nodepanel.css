@@ -48,7 +48,7 @@
     background-color:rgba(0,0,0,.05);
 }
 
-.node-panel > .title > h3, .node-panel > .title > input {
+.node-panel > .title > h3, .node-panel > .title > .x-input {
     color: rgba(0, 0, 0, .7);
     font-size: 34px;
     font-weight:400;
@@ -151,10 +151,18 @@ ul.email-list {
 }
 
 ul.email-list > li {
+    margin:5px;
+    cursor:pointer;
+}
+
+ul.email-list > li:hover {
+    background-color:rgba(0,0,0,.05);
+}
+
+ul.email-list > li > div:first-child {
     white-space: nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
-    margin:5px;
 }
 
 .node-panel-menu {

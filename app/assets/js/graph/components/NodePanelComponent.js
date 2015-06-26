@@ -7,6 +7,7 @@ define([
 
   function PropValue(value) {
     this.value = value;
+    this.editing_ = false;
   }
 
   function Properties() {
@@ -119,6 +120,13 @@ define([
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
         }
+      },
+
+      editLink: function(linkViewModel) {
+        linkViewModel.link.editing_ = true;
+        Vue.nextTick(function() {
+          linkViewModel.$$.input.focus();
+        });
       },
 
       addEmail: function() {
