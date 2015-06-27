@@ -242,10 +242,11 @@
         <ul class="email-list">
           <li v-repeat="link: node.data.properties.links">
             <div
+                class="display-value"
                 v-class="hidden: link.editing_"
                 v-on="click: editProperty(this, link)"
             >
-              {{link.value}}
+              <i class="fa fa-times"></i> <p>{{link.value}}</p>
             </div>
             <input
                 class="x-input"

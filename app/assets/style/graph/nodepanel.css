@@ -133,7 +133,7 @@ ul.tag-list .fa {
     left: -4px;
     top: -1px;
     color: rgba(0, 0, 0, .30);
-    transition:color 140ms ease-in-out;
+    transition:color 100ms ease;
 }
 
 ul.tag-list .fa:hover {
@@ -152,7 +152,7 @@ ul.email-list {
 }
 
 ul.email-list > li {
-    margin:5px;
+    margin:5px 0;
     cursor:pointer;
 }
 
@@ -160,10 +160,39 @@ ul.email-list > li:hover {
     background-color:rgba(0,0,0,.05);
 }
 
-ul.email-list > li > div:first-child {
+ul.email-list > li > div:first-child, ul.email-list > li > .display-value {
+    position: relative;
+    line-height:2;
+}
+
+ul.email-list > li > .display-value > p {
     white-space: nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin:0;
+}
+
+ul.email-list > li > .display-value:hover > p {
+    margin-right:18px;
+}
+
+ul.email-list > li > .display-value > .fa-times {
+    display:none;
+    position: absolute;
+    right: 6px;
+    top: 9px;
+    font-size: .8em;
+    color: rgba(0,0,0,.30);
+    transition:color 100ms ease;
+}
+
+ul.email-list > li > .display-value:hover > .fa-times {
+    display:inline-block;
+}
+
+ul.email-list > li > .display-value > .fa-times:hover {
+    display:inline-block;
+    color: rgba(0,0,0,.60);
 }
 
 .node-panel-menu {
