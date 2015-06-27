@@ -243,7 +243,7 @@
           <li v-repeat="link: node.data.properties.links">
             <div
                 v-class="hidden: link.editing_"
-                v-on="click: editLink(this)"
+                v-on="click: editProperty(this, link)"
             >
               {{link.value}}
             </div>
@@ -254,9 +254,9 @@
                 v-class="hidden: !link.editing_"
                 v-model="link.value"
                 v-on="
-                    blur  : updateLink(this),
-                    keyup : updateLink(this)       | key enter,
-                    keyup : cancelLinkUpdate(this) | key esc,
+                    blur  : updateLink(this, link),
+                    keyup : updateLink(this, link)            | key enter,
+                    keyup : cancelEditingProperty(this, link) | key esc,
                 "
             >
           </li>
@@ -282,7 +282,26 @@
           </p>
         </div>
         <ul class="email-list">
-          <li v-repeat="email: node.data.properties.emails">{{email.value}}</li>
+          <li v-repeat="email: node.data.properties.emails">
+            <div
+                v-class="hidden: email.editing_"
+                v-on="click: editProperty(this, email)"
+            >
+              {{email.value}}
+            </div>
+            <input
+                class="x-input"
+                type="text"
+                v-el="input"
+                v-class="hidden: !email.editing_"
+                v-model="email.value"
+                v-on="
+                    blur  : updateEmail(this, email),
+                    keyup : updateEmail(this, email)           | key enter,
+                    keyup : cancelEditingProperty(this, email) | key esc
+                "
+            >
+          </li>
         </ul>
       </div>
     </section>
@@ -305,7 +324,25 @@
           </p>
         </div>
         <ul class="email-list">
-          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">{{phoneNumber.value}}</li>
+          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">
+            <div
+              v-class="hidden: phoneNumber.editing_"
+              v-on="click: editProperty(this,phoneNumber)"
+            >
+              {{phoneNumber.value}}
+            </div>
+            <input
+              class="x-input"
+              v-class="hidden: !phoneNumber.editing_"
+              v-el="input"
+              v-model="phoneNumber.value"
+              v-on="
+                  blur  : updatePhoneNumber(this, phoneNumber),
+                  keyup : updatePhoneNumber(this, phoneNumber)      | key enter,
+                  keyup : cancelEditingProperty(this, phoneNumber)  | key esc
+              "
+            >
+          </li>
         </ul>
       </div>
     </section>

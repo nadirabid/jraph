@@ -90,6 +90,12 @@ define([
 
     methods: {
 
+      /**
+       *
+       * Methods to handle updates for tag properties
+       *
+       */
+
       addTag: function() {
         if (this.tagInputValue.length > 255) {
           this.validationError.tags.hasErrors = true;
@@ -107,6 +113,34 @@ define([
         this.node.data.properties.tags.$remove(indexOfTag);
       },
 
+      /**
+       *
+       * General methods used for emails, phoneNumbers, links (not tags)
+       *
+       */
+
+      editProperty: function(viewModel, model) {
+        model.cachedValue_ = model.value;
+        model.editing_ = true;
+
+        var $inputEl = viewModel.$$.input;
+        Vue.nextTick(function() {
+          $inputEl.focus();
+          $inputEl.setSelectionRange(0, $inputEl.value.length);
+        });
+      },
+
+      cancelEditingProperty: function(viewModel, model) {
+        model.value = model.cachedValue_;
+        model.editing_ = false;
+      },
+
+      /**
+       *
+       * Methods specifically for link properties
+       *
+       */
+
       addLink: function() {
         if (this.linkInputValue.length > 255) {
           this.validationError.links.hasErrors = true;
@@ -123,19 +157,7 @@ define([
         }
       },
 
-      editLink: function(linkViewModel) {
-        linkViewModel.link.cachedValue_ = linkViewModel.link.value;
-        linkViewModel.link.editing_ = true;
-
-        var $inputEl = linkViewModel.$$.input;
-        Vue.nextTick(function() {
-          $inputEl.focus();
-          $inputEl.setSelectionRange(0, $inputEl.value.length);
-        });
-      },
-
-      updateLink: function(linkViewModel) {
-        var link = linkViewModel.link;
+      updateLink: function(linkViewModel, link) {
         link.editing_ = false;
 
         if (link.length > 255 || !util.validateLink(link.value)) {
@@ -143,10 +165,11 @@ define([
         }
       },
 
-      cancelLinkUpdate: function(linkViewModel) {
-        linkViewModel.link.value = linkViewModel.link.cachedValue_;
-        linkViewModel.link.editing_ = false;
-      },
+      /**
+       *
+       * Methods specifically for email properties
+       *
+       */
 
       addEmail: function() {
         if (this.emailInputValue.length > 255) {
@@ -164,6 +187,20 @@ define([
         }
       },
 
+      updateEmail: function(emailViewModel, email) {
+        email.editing_ = false;
+
+        if (email.length > 255 || !util.validateEmail(email.value)) {
+          email.value = email.cachedValue_;
+        }
+      },
+
+      /**
+       *
+       * Methods specifically to handle updates to phoneNumber properties
+       *
+       */
+
       addPhoneNumber: function() {
         if (!util.validatePhoneNumber(this.phoneNumberInputValue)) {
           this.validationError.phoneNumbers.hasErrors = true;
@@ -175,6 +212,20 @@ define([
           this.validationError.phoneNumbers.hasErrors = false;
         }
       },
+
+      updatePhoneNumber: function(phoneNumberViewModel, phoneNumber) {
+        phoneNumber.editing_ = false;
+
+        if (!util.validatePhoneNumber(phoneNumber.value)) {
+          phoneNumber.value = phoneNumber.cachedValue_;
+        }
+      },
+
+      /**
+       *
+       * Methods to handle updates to node name
+       *
+       */
 
       editName: function() {
         this.editingName = true;
@@ -207,6 +258,12 @@ define([
         this.editingName = false;
         this.node.data.name = this.nameCache;
       },
+
+      /**
+       *
+       * Methods to create and save the node
+       *
+       */
 
       createNode: function() {
         var self = this;
