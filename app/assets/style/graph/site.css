@@ -289,15 +289,20 @@ text {
     opacity:1;
 }
 
-.panel-bar-menu button {
+.panel-bar-menu > button {
     cursor:pointer;
     margin:0;
     border:0;
     background-color:#fff;
-    color:#555;
+    color: rgba(0,0,0,.30);
     display:inline;
     padding:20px 7px;
     outline-width:0;
+    transition:color 100ms ease;
+}
+
+.panel-bar-menu > button:hover {
+    color: rgba(0,0,0,.60);
 }
 
 .panel-bar-content {
