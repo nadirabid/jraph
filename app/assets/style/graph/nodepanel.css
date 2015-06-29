@@ -172,21 +172,22 @@ ul.email-list > li > .display-value > p {
     margin:0;
 }
 
-ul.email-list > li > .display-value:hover > p {
+ul.email-list > li:hover > .display-value > p {
     margin-right:18px;
 }
 
 ul.email-list > li > .display-value > .fa-times {
+    line-height:2;
+    padding:3px;
     display:none;
     position: absolute;
-    right: 6px;
-    top: 9px;
+    right: 2px;
     font-size: .8em;
     color: rgba(0,0,0,.30);
     transition:color 100ms ease;
 }
 
-ul.email-list > li > .display-value:hover > .fa-times {
+ul.email-list > li:hover > .display-value > .fa-times {
     display:inline-block;
 }
 

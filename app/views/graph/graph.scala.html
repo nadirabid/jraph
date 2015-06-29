@@ -216,7 +216,7 @@
         </div>
         <ul class="tag-list">
           <li v-repeat="tag: node.data.properties.tags">
-            <i class="fa fa-times" v-on="click: removeTag(tag)"></i> {{tag.value}}
+            <i class="fa fa-times" v-on="click: removeTag($index)"></i> {{tag.value}}
           </li>
         </ul>
       </div>
@@ -246,7 +246,8 @@
                 v-class="hidden: link.editing_"
                 v-on="click: editProperty(this, link)"
             >
-              <i class="fa fa-times"></i> <p>{{link.value}}</p>
+              <i class="fa fa-times" v-on="click:removeLink($index, $event)"></i>
+              <p>{{link.value}}</p>
             </div>
             <input
                 class="x-input"
@@ -255,9 +256,9 @@
                 v-class="hidden: !link.editing_"
                 v-model="link.value"
                 v-on="
-                    blur  : updateLink(this, link),
-                    keyup : updateLink(this, link)            | key enter,
-                    keyup : cancelEditingProperty(this, link) | key esc,
+                    blur  : updateLink(link),
+                    keyup : updateLink(link)                  | key enter,
+                    keyup : cancelEditingProperty(link)       | key esc,
                 "
             >
           </li>
@@ -285,10 +286,12 @@
         <ul class="email-list">
           <li v-repeat="email: node.data.properties.emails">
             <div
+                class="display-value"
                 v-class="hidden: email.editing_"
                 v-on="click: editProperty(this, email)"
             >
-              {{email.value}}
+              <i class="fa fa-times" v-on="click:removeEmail($index)"></i>
+              <p>{{email.value}}</p>
             </div>
             <input
                 class="x-input"
@@ -297,9 +300,9 @@
                 v-class="hidden: !email.editing_"
                 v-model="email.value"
                 v-on="
-                    blur  : updateEmail(this, email),
-                    keyup : updateEmail(this, email)           | key enter,
-                    keyup : cancelEditingProperty(this, email) | key esc
+                    blur  : updateEmail(email),
+                    keyup : updateEmail(email)                 | key enter,
+                    keyup : cancelEditingProperty(email)       | key esc
                 "
             >
           </li>
@@ -327,10 +330,12 @@
         <ul class="email-list">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">
             <div
+              class="display-value"
               v-class="hidden: phoneNumber.editing_"
               v-on="click: editProperty(this,phoneNumber)"
             >
-              {{phoneNumber.value}}
+              <i class="fa fa-times" v-on="click:removePhoneNumber($index, $event)"></i>
+              <p>{{phoneNumber.value}}</p>
             </div>
             <input
               class="x-input"
@@ -338,9 +343,9 @@
               v-el="input"
               v-model="phoneNumber.value"
               v-on="
-                  blur  : updatePhoneNumber(this, phoneNumber),
-                  keyup : updatePhoneNumber(this, phoneNumber)      | key enter,
-                  keyup : cancelEditingProperty(this, phoneNumber)  | key esc
+                  blur  : updatePhoneNumber(phoneNumber),
+                  keyup : updatePhoneNumber(phoneNumber)            | key enter,
+                  keyup : cancelEditingProperty(phoneNumber)        | key esc
               "
             >
           </li>

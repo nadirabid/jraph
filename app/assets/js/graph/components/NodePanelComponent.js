@@ -108,8 +108,7 @@ define([
         }
       },
 
-      removeTag: function(tag) {
-        var indexOfTag = this.node.data.properties.tags.indexOf(tag);
+      removeTag: function(indexOfTag) {
         this.node.data.properties.tags.$remove(indexOfTag);
       },
 
@@ -119,9 +118,9 @@ define([
        *
        */
 
-      editProperty: function(viewModel, model) {
-        model.cachedValue_ = model.value;
-        model.editing_ = true;
+      editProperty: function(viewModel, property) {
+        property.cachedValue_ = property.value;
+        property.editing_ = true;
 
         var $inputEl = viewModel.$$.input;
         Vue.nextTick(function() {
@@ -130,9 +129,9 @@ define([
         });
       },
 
-      cancelEditingProperty: function(viewModel, model) {
-        model.value = model.cachedValue_;
-        model.editing_ = false;
+      cancelEditingProperty: function(property) {
+        property.value = property.cachedValue_;
+        property.editing_ = false;
       },
 
       /**
@@ -157,12 +156,16 @@ define([
         }
       },
 
-      updateLink: function(linkViewModel, link) {
+      updateLink: function(link) {
         link.editing_ = false;
 
         if (link.length > 255 || !util.validateLink(link.value)) {
           link.value = link.cachedValue_;
         }
+      },
+
+      removeLink: function(indexOfLink) {
+        this.node.data.properties.links.$remove(indexOfLink);
       },
 
       /**
@@ -187,12 +190,16 @@ define([
         }
       },
 
-      updateEmail: function(emailViewModel, email) {
+      updateEmail: function(email) {
         email.editing_ = false;
 
         if (email.length > 255 || !util.validateEmail(email.value)) {
           email.value = email.cachedValue_;
         }
+      },
+
+      removeEmail: function(indexOfEmail) {
+        this.node.data.properties.emails.$remove(indexOfEmail);
       },
 
       /**
@@ -213,12 +220,16 @@ define([
         }
       },
 
-      updatePhoneNumber: function(phoneNumberViewModel, phoneNumber) {
+      updatePhoneNumber: function(phoneNumber) {
         phoneNumber.editing_ = false;
 
         if (!util.validatePhoneNumber(phoneNumber.value)) {
           phoneNumber.value = phoneNumber.cachedValue_;
         }
+      },
+
+      removePhoneNumber: function(indexOfPhoneNumber) {
+        this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
       },
 
       /**
