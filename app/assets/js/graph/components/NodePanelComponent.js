@@ -316,12 +316,8 @@ define([
         if (!node.data) {
           this.$add('node.data', { properties: new Properties() });
         }
-
-        if (!node.data.properties) {
-          this.$add('node.data.properties', new Properties());
-        }
-        else if (node.data.properties.constructor === Array) {
-          node.data.properties = new Properties();
+        else {
+          this.$set('node.data.properties', new Properties());
         }
 
         if (this.isNew) {
