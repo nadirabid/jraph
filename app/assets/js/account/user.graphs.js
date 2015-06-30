@@ -30,55 +30,6 @@ require([
     return graphData;
   });
 
-  function liangBarsky(edgeLeft, edgeRight, edgeBottom, edgeTop,
-                       x0src, y0src, x1src, y1src) {
-    var t0 = 0.0, t1 = 1.0;
-    var xDelta = x1src-x0src;
-    var yDelta = y1src-y0src;
-    var p,q,r;
-
-    for(var edge=0; edge<4; edge++) {   // Traverse through left, right, bottom, top edges.
-      if (edge === 0) {
-        p = -xDelta;
-        q = -(edgeLeft - x0src);
-      }
-      else if (edge === 1) {
-        p = xDelta;
-        q =  (edgeRight - x0src);
-      }
-      else if (edge === 2) {
-        p = -yDelta;
-        q = -(edgeBottom - y0src);
-      }
-      else if (edge === 3) {
-        p = yDelta;
-        q = (edgeTop - y0src);
-      }
-
-      r = q/p;
-
-      if (p === 0 && q < 0) {     // Don't draw line at all. (parallel line outside)
-        return false;
-      }
-
-      if (p < 0) {
-        if (r > t1) return false; // Don't draw line at all.
-        else if (r > t0) t0=r;    // Line is clipped!
-      }
-      else if (p > 0) {
-        if (r < t0) return false; // Don't draw line at all.
-        else if (r<t1) t1=r;      // Line is clipped!
-      }
-    }
-
-    return {
-      x0Clip: x0src + (t0 * xDelta), // x0clip
-      y0Clip: y0src + (t0 * yDelta), // y0clip
-      x1Clip: x0src + (t1 * xDelta), // x1clip
-      y1Clip: y0src + (t1 * yDelta)  // y1clip
-    };
-  }
-
   function calculateViewBoundsToFitAllNodes(nodes) {
     if (nodes.length === 0) {
       return { xMin: 0, xMax: 1280, yMin: 0, yMax: 675 };
@@ -129,39 +80,6 @@ require([
       targetY: function() {
         return this.target.y;
       }
-    },
-
-    methods: {
-
-      calculateEdgeNodeIntersection: function () {
-        var source = this.source;
-        var target = this.target;
-
-        var clippings = liangBarsky(
-            target.leftEdge,
-            target.rightEdge,
-            target.topEdge,
-            target.bottomEdge,
-            source.x,
-            source.y,
-            target.x,
-            target.y
-        );
-
-        if (clippings) {
-          this.targetClipX = clippings.x0Clip;
-          this.targetClipY = clippings.y0Clip;
-        }
-        else {
-          //throw 'LiangBarsky target clipping failed unexpectedly';
-        }
-      }
-
-    },
-
-    created: function() {
-      this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
     }
 
   });
@@ -210,34 +128,6 @@ require([
 
     methods: {
 
-      calculateRectBoundingEdges: function() {
-        // we get the transform to nodesAndEdgesGroup element
-        // because, in calculating the bounding edges, we only
-        // want the transforms applied to the node element itself
-        // while disregarding the transforms to nodesAndEdgesGroup
-
-        var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndEdgesGroup);
-        var point = this.$parent.$$.svg.createSVGPoint();
-        var dimensions = this.$parent.$$.svg.createSVGPoint();
-
-        point.x = 0;
-        point.y = 0;
-
-        point = point.matrixTransform(ttm);
-
-        ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
-
-        dimensions.x = this.width;
-        dimensions.y = this.height;
-
-        dimensions = dimensions.matrixTransform(ttm);
-
-        this.leftEdge = point.x;
-        this.rightEdge = point.x + dimensions.x;
-        this.topEdge = point.y;
-        this.bottomEdge = point.y + dimensions.y;
-      },
-
       updateDimensionsOfNodeRect: function() {
         var bBox = this.$$.nodeName.getBBox();
 
@@ -249,15 +139,6 @@ require([
 
     ready: function() {
       this.updateDimensionsOfNodeRect();
-
-      var self = this;
-      // use Vue.nextTick to give Vue time to apply changes
-      // from updateDimensionsOfNodeRect() to the DOM, since
-      // calculateRectBoundingEdges relies on information
-      // directly from the DOM
-      Vue.nextTick(function() {
-        self.calculateRectBoundingEdges();
-      });
     }
 
   });
