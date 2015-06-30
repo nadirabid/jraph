@@ -214,8 +214,6 @@ define([
 
   var NodeComponent = Vue.extend({
 
-    replace: true,
-
     template: document.getElementById('graph.node.rect').innerHTML,
 
     data: function () {
@@ -300,12 +298,11 @@ define([
       bringToFront: function() {
         var nodes = this.$parent.nodes;
         if (this.$index < ( nodes.length - 1 )) {
-          nodes.push(nodes.$remove(this.$index));
+          nodes.push(nodes.splice(this.$index,1)[0]);
         }
       },
 
       calculateRectBoundingEdges: function() {
-        var bBox = this.$$.nodeRect.getBBox();
         var point = this.$parent.$el.createSVGPoint();
         var dimensions = this.$parent.$el.createSVGPoint();
 
@@ -335,13 +332,13 @@ define([
 
           var shiftX = marginTX/2, shiftY = marginTY/2;
 
-          point.x = bBox.x - shiftX;
-          point.y = bBox.y - shiftY;
+          point.x = -shiftX;
+          point.y = -shiftY;
 
           point = point.matrixTransform(transformPointToElementMat);
 
-          dimensions.x = bBox.width + marginTX; // self.width == bBox.width
-          dimensions.y = bBox.height + marginTY; // self.height == bBox.height
+          dimensions.x = self.width + marginTX; // self.width == bBox.width
+          dimensions.y = self.height + marginTY; // self.height == bBox.height
 
           dimensions = dimensions.matrixTransform(transformVectorToElementMat);
 
@@ -496,7 +493,10 @@ define([
       this.updateDimensionsOfNodeRect();
       this.calculateRectBoundingEdges();
 
-      this.isNodeReady = true;
+      var self = this;
+      Vue.nextTick(function() {
+        self.isNodeReady = true;
+      });
     },
 
     beforeDestroyed: function () {

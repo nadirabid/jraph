@@ -191,8 +191,8 @@
           v-el="nameInput"
           v-on="
               blur   : updateName,
-              keyup  : updateName       | key enter,
-              keyup  : cancelNameUpdate | key esc
+              keyup  : updateName       | key 'enter',
+              keyup  : cancelNameUpdate | key 'esc'
           "
       >
     </div>
@@ -208,7 +208,7 @@
               placeholder="Add tag"
               v-el="tagInput"
               v-model="tagInputValue"
-              v-on="keyup: addTag | key enter"
+              v-on="keyup: addTag | key 'enter'"
           >
           <p class="x-help-block" v-class="hidden:!validationError.tags.hasErrors">
             {{validationError.tags.message}}
@@ -233,7 +233,7 @@
               placeholder="Add link"
               v-el="linkInput"
               v-model="linkInputValue"
-              v-on="keyup:addLink | key enter"
+              v-on="keyup:addLink | key 'enter'"
           >
           <p class="x-help-block" v-class="hidden: !validationError.links.hasErrors">
             {{validationError.links.message}}
@@ -257,8 +257,8 @@
                 v-model="link.value"
                 v-on="
                     blur  : updateLink(link),
-                    keyup : updateLink(link)                  | key enter,
-                    keyup : cancelEditingProperty(link)       | key esc,
+                    keyup : updateLink(link)                  | key 'enter',
+                    keyup : cancelEditingProperty(link)       | key 'esc',
                 "
             >
           </li>
@@ -277,7 +277,7 @@
               placeholder="Add email"
               v-el="emailInput"
               v-model="emailInputValue"
-              v-on="keyup:addEmail | key enter"
+              v-on="keyup:addEmail | key 'enter'"
           >
           <p class="x-help-block" v-class="hidden: !validationError.emails.hasErrors">
             {{validationError.emails.message}}
@@ -301,8 +301,8 @@
                 v-model="email.value"
                 v-on="
                     blur  : updateEmail(email),
-                    keyup : updateEmail(email)                 | key enter,
-                    keyup : cancelEditingProperty(email)       | key esc
+                    keyup : updateEmail(email)                 | key 'enter',
+                    keyup : cancelEditingProperty(email)       | key 'esc'
                 "
             >
           </li>
@@ -321,7 +321,7 @@
               placeholder="Add phone number"
               v-el="phoneNumberInput"
               v-model="phoneNumberInputValue"
-              v-on="keyup: addPhoneNumber | key enter"
+              v-on="keyup: addPhoneNumber | key 'enter'"
           >
           <p class="x-help-block" v-class="hidden: !validationError.phoneNumbers.hasErrors">
             {{validationError.phoneNumbers.message}}
@@ -344,8 +344,8 @@
               v-model="phoneNumber.value"
               v-on="
                   blur  : updatePhoneNumber(phoneNumber),
-                  keyup : updatePhoneNumber(phoneNumber)            | key enter,
-                  keyup : cancelEditingProperty(phoneNumber)        | key esc
+                  keyup : updatePhoneNumber(phoneNumber)            | key 'enter',
+                  keyup : cancelEditingProperty(phoneNumber)        | key 'esc'
               "
             >
           </li>

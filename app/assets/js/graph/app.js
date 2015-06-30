@@ -271,7 +271,6 @@ define([
     },
 
     ready: function() {
-      var self = this;
 
       var $svg = util(this.$el);
       $svg.on('dragstart', this.panStart.bind(this));

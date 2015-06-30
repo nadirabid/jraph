@@ -133,7 +133,7 @@ require([
 
     methods: {
 
-      liangBarsky: function () {
+      calculateEdgeNodeIntersection: function () {
         var source = this.source;
         var target = this.target;
 
@@ -148,17 +148,20 @@ require([
             target.y
         );
 
-        this.targetClipX = clippings.x0Clip;
-        this.targetClipY = clippings.y0Clip;
+        if (clippings) {
+          this.targetClipX = clippings.x0Clip;
+          this.targetClipY = clippings.y0Clip;
+        }
+        else {
+          //throw 'LiangBarsky target clipping failed unexpectedly';
+        }
       }
 
     },
 
-    ready: function() {
-      var self = this;
-      Vue.nextTick(function() { // i've forgotten why we need this
-        self.liangBarsky();
-      });
+    created: function() {
+      this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
+      this.$watch('target.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
     }
 
   });
@@ -205,15 +208,6 @@ require([
 
     },
 
-    events: {
-
-      'hook:ready': function() {
-        this.updateDimensionsOfNodeRect();
-        this.calculateRectBoundingEdges();
-      }
-
-    },
-
     methods: {
 
       calculateRectBoundingEdges: function() {
@@ -223,19 +217,18 @@ require([
         // while disregarding the transforms to nodesAndEdgesGroup
 
         var ttm = this.$$.nodeRect.getTransformToElement(this.$parent.$$.nodesAndEdgesGroup);
-        var bBox = this.$$.nodeRect.getBBox();
         var point = this.$parent.$$.svg.createSVGPoint();
         var dimensions = this.$parent.$$.svg.createSVGPoint();
 
-        point.x = bBox.x;
-        point.y = bBox.y;
+        point.x = 0;
+        point.y = 0;
 
         point = point.matrixTransform(ttm);
 
         ttm.e = ttm.f = 0; // next we multiply bBox.width/height as vectors
 
-        dimensions.x = bBox.width;
-        dimensions.y = bBox.height;
+        dimensions.x = this.width;
+        dimensions.y = this.height;
 
         dimensions = dimensions.matrixTransform(ttm);
 
@@ -252,13 +245,25 @@ require([
         this.height = bBox.height + 12;
       }
 
+    },
+
+    ready: function() {
+      this.updateDimensionsOfNodeRect();
+
+      var self = this;
+      // use Vue.nextTick to give Vue time to apply changes
+      // from updateDimensionsOfNodeRect() to the DOM, since
+      // calculateRectBoundingEdges relies on information
+      // directly from the DOM
+      Vue.nextTick(function() {
+        self.calculateRectBoundingEdges();
+      });
     }
 
   });
 
   Vue.component('x-node-thumbnail', NodeThumbnailComponent);
 
-  var count = 0;
   var GraphThumbnailComponent = Vue.extend({
 
     template: '#graph.thumbnail',
@@ -349,26 +354,6 @@ require([
 
     },
 
-    events: {
-
-      'hook:attached': function() {
-        var self = this;
-
-        graphsData.forEach(function(graphData) {
-          graphData.graph.data.background = colors[counter % colors.length];
-
-          counter++;
-        });
-
-        self.hypergraphs = graphsData;
-
-        window.addEventListener('scroll', function() {
-          self.pageYOffset = window.pageYOffset;
-        });
-      }
-
-    },
-
     methods: {
 
       createNewGraph: function() {
@@ -399,6 +384,22 @@ require([
         window.addEventListener('click', closeMenu);
       }
 
+    },
+
+    attached: function() {
+      var self = this;
+
+      graphsData.forEach(function(graphData) {
+        graphData.graph.data.background = colors[counter % colors.length];
+
+        counter++;
+      });
+
+      self.hypergraphs = graphsData;
+
+      window.addEventListener('scroll', function() {
+        self.pageYOffset = window.pageYOffset;
+      });
     }
 
   });
