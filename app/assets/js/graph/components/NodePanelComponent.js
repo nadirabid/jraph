@@ -5,42 +5,68 @@ define([
 ], function(Vue, util, NodeDAO) {
   'use strict';
 
-  function PropValue(value) {
+  function DummyPropValue(value) {
     this.value = value;
-    this.cachedValue_ = value;
-    this.editing_ = false;
   }
 
-  function Properties() {
+  function DummyProperties() {
     this.tags = [
-      new PropValue('country'),
-      new PropValue('europe'),
-      new PropValue('berlin'),
-      new PropValue('democracy'),
-      new PropValue('autobahn'),
-      new PropValue('engineers')
+      new DummyPropValue('country'),
+      new DummyPropValue('europe'),
+      new DummyPropValue('berlin'),
+      new DummyPropValue('democracy'),
+      new DummyPropValue('autobahn'),
+      new DummyPropValue('engineers')
     ];
 
     this.links = [
-        new PropValue('https://en.wikipedia.org/?title=Germany'),
-        new PropValue('http://www.germany.travel/en/index.html'),
-        new PropValue('https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html')
+        new DummyPropValue('https://en.wikipedia.org/?title=Germany'),
+        new DummyPropValue('http://www.germany.travel/en/index.html'),
+        new DummyPropValue('https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html')
     ];
 
     this.emails = [
-        new PropValue('john.doe@email.com'),
-        new PropValue('jane.doe@email.com'),
-        new PropValue('mr.smith@email.com'),
-        new PropValue('mrs.smith@email.com')
+        new DummyPropValue('john.doe@email.com'),
+        new DummyPropValue('jane.doe@email.com'),
+        new DummyPropValue('mr.smith@email.com'),
+        new DummyPropValue('mrs.smith@email.com')
     ];
 
     this.phoneNumbers = [
-        new PropValue('(510) 234-2342'),
-        new PropValue('(520) 235-2499'),
-        new PropValue('(453) 934-5292'),
-        new PropValue('(342) 882-7632'),
-        new PropValue('(654) 982-2832')
+        new DummyPropValue('(510) 234-2342'),
+        new DummyPropValue('(520) 235-2499'),
+        new DummyPropValue('(453) 934-5292'),
+        new DummyPropValue('(342) 882-7632'),
+        new DummyPropValue('(654) 982-2832')
     ];
+  }
+
+  function NodeProperty(nodeProperty) {
+    this.value = nodeProperty.value;
+    this.cachedValue_ = nodeProperty.value;
+    this.editing_ = false;
+  }
+
+  function NodeProperties(nodeProperties) {
+    var tags = nodeProperties.tags || [];
+    this.tags = tags.map(function(tag) {
+      return new NodeProperty(tag);
+    });
+
+    var links = nodeProperties.links || [];
+    this.links = links.map(function(link) {
+      return new NodeProperty(link);
+    });
+
+    var emails = nodeProperties.emails || [];
+    this.emails = emails.map(function(email) {
+      return new NodeProperty(email);
+    });
+
+    var phoneNumbers = nodeProperties.phoneNumbers || [];
+    this.phoneNumbers = phoneNumbers.map(function(phoneNumber) {
+      return new NodeProperty(phoneNumber);
+    });
   }
 
   var NodePanelComponent = Vue.extend({
@@ -67,6 +93,7 @@ define([
         linkInputValue: '',
         emailInputValue: '',
         phoneNumberInputValue: '',
+        nodeProperties: new NodeProperties({}),
         validationError: {
           tags: {
             hasErrors: false,
@@ -102,7 +129,7 @@ define([
           this.validationError.tags.message = 'Cannot be more than 255 characters';
         }
         else {
-          this.node.data.properties.tags.push(new PropValue(this.tagInputValue));
+          this.node.data.properties.tags.push(new NodeProperty({ value: this.tagInputValue }));
           this.tagInputValue = '';
           this.validationError.tags.hasErrors = false;
         }
@@ -150,7 +177,7 @@ define([
           this.validationError.links.message = 'Link should look something like: http://www.analyte.io';
         }
         else {
-          this.node.data.properties.links.push(new PropValue(this.linkInputValue));
+          this.node.data.properties.links.push(new NodeProperty({ value: this.linkInputValue }));
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
         }
@@ -184,7 +211,7 @@ define([
           this.validationError.emails.message = "We know you know we know that's not a correct email";
         }
         else {
-          this.node.data.properties.emails.push(new PropValue(this.emailInputValue));
+          this.node.data.properties.emails.push(new NodeProperty({ value: this.emailInputValue }));
           this.emailInputValue = '';
           this.validationError.emails.hasErrors = false;
         }
@@ -214,7 +241,7 @@ define([
           this.validationError.phoneNumbers.message = 'Phone number should have 10 digits';
         }
         else {
-          this.node.data.properties.phoneNumbers.push(new PropValue(this.phoneNumberInputValue));
+          this.node.data.properties.phoneNumbers.push(new NodeProperty({ value: this.phoneNumberInputValue }));
           this.phoneNumberInputValue = '';
           this.validationError.phoneNumbers.hasErrors = false;
         }
@@ -314,10 +341,16 @@ define([
         this.nameCache = this.node.data.name;
 
         if (!node.data) {
-          this.$add('node.data', { properties: new Properties() });
+          this.$add('node.data', { properties: new DummyProperties() });
         }
-        else {
-          this.$set('node.data.properties', new Properties());
+        else if (this.node.data.properties.constructor != NodeProperties) {
+          this.$set('node.data.properties', new DummyProperties()); // temp
+        }
+
+        // parse if the node properties haven't already
+        // been parsed as NodeProperties
+        if (this.node.data.properties.constructor != NodeProperties) {
+          this.node.data.properties = new NodeProperties(this.node.data.properties);
         }
 
         if (this.isNew) {
