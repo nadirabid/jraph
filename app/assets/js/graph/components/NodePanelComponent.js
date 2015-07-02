@@ -124,15 +124,30 @@ define([
        */
 
       addTag: function() {
-        if (this.tagInputValue.length > 255) {
+        var tagInputValue = this.tagInputValue.toLowerCase();
+
+        if (tagInputValue.length > 255) {
           this.validationError.tags.hasErrors = true;
           this.validationError.tags.message = 'Cannot be more than 255 characters';
+          return;
         }
-        else {
-          this.node.data.properties.tags.push(new NodeProperty({ value: this.tagInputValue }));
+
+        if (tagInputValue.length === 0) {
+          return;
+        }
+
+        var isDuplicate = this.node.data.properties.tags.some(function(tag) {
+          return tag.value.toLowerCase() == tagInputValue;
+        });
+
+        if (isDuplicate) {
           this.tagInputValue = '';
-          this.validationError.tags.hasErrors = false;
+          return;
         }
+
+        this.node.data.properties.tags.push(new NodeProperty({ value: tagInputValue }));
+        this.tagInputValue = '';
+        this.validationError.tags.hasErrors = false;
       },
 
       removeTag: function(indexOfTag) {
