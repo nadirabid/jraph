@@ -381,8 +381,8 @@ define([
       },
 
       suppressContextMenu: function(e) {
-        //e.stopPropagation();
-        //e.preventDefault();
+        e.stopPropagation();
+        e.preventDefault();
       },
 
       setNewEdgeSource: function () {
