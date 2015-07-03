@@ -116,10 +116,13 @@ define([
         this.node.data.properties.tags.push(new NodeProperty({ value: tagInputValue }));
         this.tagInputValue = '';
         this.validationError.tags.hasErrors = false;
+
+        this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
       },
 
       removeTag: function(indexOfTag) {
         this.node.data.properties.tags.$remove(indexOfTag);
+        this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
       },
 
       /**
@@ -354,6 +357,8 @@ define([
           this.$set('node.data.properties', new NodeProperties(node.data.properties));
         }
 
+        this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+
         if (this.isNew) {
           this.editName();
         }
@@ -372,7 +377,7 @@ define([
           this.node.data.name = this.nameCache;
           this.node.data.properties = this.propertiesCache;
         }
-
+        
         if (this.isNew) {
           this.$emit('removeGhostNode');
         }
