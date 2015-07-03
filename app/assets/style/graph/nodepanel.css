@@ -89,6 +89,12 @@
     margin: 0 15px;
 }
 
+.info-body > .empty-message {
+    color:#ddd;
+    padding:10px;
+    text-align:center;
+}
+
 .node-panel > .close > span {
     text-shadow: 0 0 0 #000;
     font-size:1.3em;

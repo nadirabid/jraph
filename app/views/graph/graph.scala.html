@@ -215,11 +215,14 @@
             {{validationError.tags.message}}
           </p>
         </div>
-        <ul class="tag-list">
+        <ul class="tag-list" v-class="hidden:!node.data.properties.tags.length">
           <li v-repeat="tag: node.data.properties.tags">
             <i class="fa fa-times" v-on="click: removeTag($index)"></i> {{tag.value}}
           </li>
         </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.tags.length">
+          <p>None</p>
+        </div>
       </div>
     </section>
     <section class="info">
@@ -240,7 +243,7 @@
             {{validationError.links.message}}
           </p>
         </div>
-        <ul class="email-list">
+        <ul class="email-list" v-class="hidden:!node.data.properties.links.length">
           <li v-repeat="link: node.data.properties.links">
             <div
                 class="display-value"
@@ -264,6 +267,9 @@
             >
           </li>
         </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.links.length">
+          <p>None</p>
+        </div>
       </div>
     </section>
     <section class="info">
@@ -284,7 +290,7 @@
             {{validationError.emails.message}}
           </p>
         </div>
-        <ul class="email-list">
+        <ul class="email-list" v-class="hidden:!node.data.properties.emails.length">
           <li v-repeat="email: node.data.properties.emails">
             <div
                 class="display-value"
@@ -308,6 +314,9 @@
             >
           </li>
         </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.emails.length">
+          <p>None</p>
+        </div>
       </div>
     </section>
     <section class="info">
@@ -328,7 +337,7 @@
             {{validationError.phoneNumbers.message}}
           </p>
         </div>
-        <ul class="email-list">
+        <ul class="email-list" v-class="hidden: !node.data.properties.phoneNumbers.length">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">
             <div
               class="display-value"
@@ -351,6 +360,9 @@
             >
           </li>
         </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.phoneNumbers.length">
+          <p>None</p>
+        </div>
       </div>
     </section>
   </div>
