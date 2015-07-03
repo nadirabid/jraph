@@ -310,34 +310,6 @@ define([
 
   });
 
-  var nodeContextMenu = new ContextMenuComponent({
-
-    methods: {
-
-      /*
-        Called with the arguments passed to show
-        before the menu is actually shown.
-       */
-      beforeShow: function(x, y, node) {
-        this.$.node = node;
-      },
-
-      afterHide: function() {
-        this.$.node = null;
-      },
-
-      delete: function() {
-        this.$.node.delete();
-      },
-
-      link: function() {
-        this.$.node.setEdgeSource();
-      }
-
-    }
-
-  });
-
   var edgeContextMenu = new ContextMenuComponent({
 
     methods: {
@@ -372,8 +344,6 @@ define([
 
     floatingPanelBar: floatingPanelBar,
 
-    nodeContextMenu: nodeContextMenu,
-
     edgeContextMenu: edgeContextMenu,
 
     data: {
@@ -401,7 +371,6 @@ define([
   Vue.component('x-node', NodeComponent);
 
   graphContextMenu.$mount('#graphContextMenu');
-  nodeContextMenu.$mount('#nodeContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
   graphComponent.$mount('#graph');
   viewControls.$mount('#viewControls');
