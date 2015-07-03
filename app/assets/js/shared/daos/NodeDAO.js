@@ -20,14 +20,41 @@ define([
   };
 
   NodeDAO.toJSON = function (node) {
-    var json = { id: node.id };
-    json.data = _.clone(node.data) || {};
+    var json = {
+      id: node.id
+    };
+
+    json.data = {};
+
+    json.data.name = node.data.name;
 
     json.data.clientDisplay = {
       x: node.x,
       y: node.y,
       fixed: node.fixed
     };
+
+    var properties = {};
+
+    properties.tags = node.data.properties.tags.map(function(tag) {
+      return { value: tag.value };
+    });
+
+    properties.links = node.data.properties.links.map(function(link) {
+      return { value: link.value };
+    });
+
+    properties.emails = node.data.properties.emails.map(function(email) {
+      return { value: email.value };
+    });
+
+    properties.phoneNumbers = node.data.properties.phoneNumbers.map(function(phoneNumber) {
+      return { value: phoneNumber.value };
+    });
+
+    json.data.properties = properties;
+
+    console.log(json);
 
     return json;
   };
