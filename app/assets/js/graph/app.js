@@ -12,7 +12,7 @@ define([
     'graph/components/EdgeComponent',
     'graph/components/NavigationBarComponent',
     'graph/components/FloatingPanelBarComponent',
-    'graph/components/ZoomBarComponent',
+    'graph/components/ViewControlsComponent',
     'graph/components/ContextMenuComponent',
     'graph/components/NodePanelComponent'
 ], function (
@@ -29,7 +29,7 @@ define([
     EdgeComponent,
     NavigationBarComponent,
     FloatingPanelBarComponent,
-    ZoomBarComponent,
+    ViewControlsComponent,
     ContextMenuComponent,
     NodePanelComponent
 ) {
@@ -97,16 +97,7 @@ define([
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
         this.totalZoomFactor = this.totalZoomFactor * zoomFactor;
 
-        switch(this.state.zoomType) {
-          case 'scale':
-            this.scaleZoom(e, zoomFactor, this.totalZoomFactor);
-            break;
-          case 'semantic':
-            this.semanticZoom(e, zoomFactor, this.totalZoomFactor);
-            break;
-          default:
-            console.error('Unknown zoomType:', this.state.zoomType);
-        }
+        this.scaleZoom(e, zoomFactor, this.totalZoomFactor);
       },
 
       scaleZoom: function(e, zoomFactor) {
@@ -122,43 +113,12 @@ define([
             .translate(p.x, p.y)
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
-
+        
         k = ctm.multiply(k);
 
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
         });
-      },
-
-      semanticZoom: function(e, zoomFactor, totalZoomFactor) {
-        var scaledWidth = this.width * totalZoomFactor;
-        var scaledHeight = this.height * totalZoomFactor;
-        var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
-        var ctm = nodesAndLinksGroupEl.getCTM();
-
-        var p = this.$el.createSVGPoint();
-        p.x = e.clientX;
-        p.y = e.clientY;
-        p = p.matrixTransform(ctm.inverse());
-
-        var p2 = { x: p.x*zoomFactor, y: p.y*zoomFactor };
-
-        if (!this._t) {
-          this._t = { x: 0, y: 0};
-        }
-
-        var t = this._t;
-
-        t.x += (p2.x - p.x);
-        t.y += (p2.y - p.y);
-
-        this.x = d3.scale.linear()
-            .domain([0, this.width])
-            .range([(0 - t.x)/zoomFactor, (scaledWidth - t.x)/zoomFactor]);
-
-        this.y = d3.scale.linear()
-            .domain([0, this.height])
-            .range([(0 - t.y)/zoomFactor, (scaledHeight - t.y)/zoomFactor]);
       },
 
       toggleForce: function () {
@@ -200,7 +160,7 @@ define([
 
         this._ctm = this.$$.nodesAndLinksGroup.getCTM();
 
-        util.animationFrame(function() {
+        Vue.nextTick(function() {
           self.$el.style.setProperty('cursor', 'move');
         });
       },
@@ -212,8 +172,12 @@ define([
 
         var ctm = this._ctm;
 
-        var p = util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
-        util.setCTM(this.$$.nodesAndLinksGroup, ctm.translate(p.x, p.y));
+        var v = util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
+
+        var self = this;
+        Vue.nextTick(function() {
+          util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(v.x, v.y));
+        });
       },
 
       panEnd: function() {
@@ -222,11 +186,17 @@ define([
         }
 
         var self = this;
-
         this._ctm = null;
 
-        util.animationFrame(function() {
+        Vue.nextTick(function() {
           self.$el.style.setProperty('cursor', 'auto');
+        });
+      },
+
+      centerView: function() {
+        var self = this;
+        Vue.nextTick(function() {
+          util.setCTM(self.$$.nodesAndLinksGroup, self._defaultCTM);
         });
       },
 
@@ -271,13 +241,14 @@ define([
     },
 
     ready: function() {
+      this.resize();
+
+      this._defaultCTM = this.$$.nodesAndLinksGroup.getCTM();
 
       var $svg = util(this.$el);
       $svg.on('dragstart', this.panStart.bind(this));
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
-
-      this.resize();
     }
 
   });
@@ -411,7 +382,7 @@ define([
 
   });
 
-  var zoomBar = new ZoomBarComponent({
+  var viewControls = new ViewControlsComponent({
 
     graphComponent: graphComponent
 
@@ -433,7 +404,7 @@ define([
   nodeContextMenu.$mount('#nodeContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
   graphComponent.$mount('#graph');
-  zoomBar.$mount('#viewControls');
+  viewControls.$mount('#viewControls');
   floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data

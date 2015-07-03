@@ -11,7 +11,7 @@
       <div id="viewControls" style="position:absolute;" v-cloak>
         <div>
           <div class="view-controls-group">
-            <button><i class="fa fa-dot-circle-o"></i></button>
+            <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
           </div>
           <div class="view-controls-group">
             <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>

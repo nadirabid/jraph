@@ -3,7 +3,7 @@ define([
 ], function(Vue) {
   'use strict';
 
-  var ZoomBarComponent = Vue.extend({
+  var ViewControlsComponent = Vue.extend({
 
     graphComponent: null,
 
@@ -22,6 +22,10 @@ define([
 
       decrementZoomLevel: function() {
         this.$options.graphComponent.decrementZoomLevel();
+      },
+
+      centerView: function() {
+        this.$options.graphComponent.centerView();
       }
 
     },
@@ -37,6 +41,6 @@ define([
 
   });
 
-  return ZoomBarComponent;
+  return ViewControlsComponent;
 
 });
