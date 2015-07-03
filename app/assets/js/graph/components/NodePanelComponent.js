@@ -5,42 +5,6 @@ define([
 ], function(Vue, util, NodeDAO) {
   'use strict';
 
-  function DummyPropValue(value) {
-    this.value = value;
-  }
-
-  function DummyProperties() {
-    this.tags = [
-      new DummyPropValue('country'),
-      new DummyPropValue('europe'),
-      new DummyPropValue('berlin'),
-      new DummyPropValue('democracy'),
-      new DummyPropValue('autobahn'),
-      new DummyPropValue('engineers')
-    ];
-
-    this.links = [
-        new DummyPropValue('https://en.wikipedia.org/?title=Germany'),
-        new DummyPropValue('http://www.germany.travel/en/index.html'),
-        new DummyPropValue('https://www.cia.gov/library/publications/the-world-factbook/geos/gm.html')
-    ];
-
-    this.emails = [
-        new DummyPropValue('john.doe@email.com'),
-        new DummyPropValue('jane.doe@email.com'),
-        new DummyPropValue('mr.smith@email.com'),
-        new DummyPropValue('mrs.smith@email.com')
-    ];
-
-    this.phoneNumbers = [
-        new DummyPropValue('(510) 234-2342'),
-        new DummyPropValue('(520) 235-2499'),
-        new DummyPropValue('(453) 934-5292'),
-        new DummyPropValue('(342) 882-7632'),
-        new DummyPropValue('(654) 982-2832')
-    ];
-  }
-
   function NodeProperty(nodeProperty) {
     this.value = nodeProperty.value;
     this.cachedValue_ = nodeProperty.value;
@@ -48,6 +12,10 @@ define([
   }
 
   function NodeProperties(nodeProperties) {
+    if (!nodeProperties || nodeProperties.constructor == Array) {
+      nodeProperties = Object.create(null);
+    }
+
     var tags = nodeProperties.tags || [];
     this.tags = tags.map(function(tag) {
       return new NodeProperty(tag);
@@ -93,7 +61,6 @@ define([
         linkInputValue: '',
         emailInputValue: '',
         phoneNumberInputValue: '',
-        nodeProperties: new NodeProperties({}),
         validationError: {
           tags: {
             hasErrors: false,
@@ -377,16 +344,16 @@ define([
         this.nameCache = this.node.data.name;
 
         if (!node.data) {
-          this.$add('node.data', { properties: new DummyProperties() });
+          this.$add('node.data', { properties: new NodeProperties() });
+          console.log('!node.data');
         }
-        else if (this.node.data.properties.constructor != NodeProperties) {
-          this.$set('node.data.properties', new DummyProperties()); // temp
+        else if (!node.data.properties) {
+          this.$add('node.data.properties', new NodeProperties());
+          console.log('!node.data.properties');
         }
-
-        // parse if the node properties haven't already
-        // been parsed as NodeProperties
-        if (this.node.data.properties.constructor != NodeProperties) {
-          this.node.data.properties = new NodeProperties(this.node.data.properties);
+        else if (node.data.properties.constructor != NodeProperties) {
+          this.$set('node.data.properties', new NodeProperties(node.data.properties));
+          console.log('!node.data.properties.constructor != NodeProperties');
         }
 
         if (this.isNew) {
