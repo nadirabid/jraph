@@ -31,7 +31,11 @@
               src="https://secure.gravatar.com/avatar/@userHash?s=100&d=mm" width="50" height="50"
               v-on="click:toggleProfilePictureDropdown"
           >
-          <ul class="x-menu profile-picture-dropdown" v-class="hidden:!profilePictureDropdown" v-cloak>
+          <ul
+              class="x-menu x-dropdown-menu profile-picture-dropdown"
+              v-class="hidden:!profilePictureDropdown"
+              v-cloak
+          >
             <li class="x-menu-item">
                 <a href="@routes.ApplicationController.profile()">Profile</a>
             </li>

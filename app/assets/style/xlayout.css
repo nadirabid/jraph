@@ -132,8 +132,8 @@ ul.x-navbar-nav {
 }
 
 /* shared with before and after */
-.x-menu::before,
-.x-menu::after {
+.x-dropdown-menu::before,
+.x-dropdown-menu::after {
     content: ' ';
     height: 0;
     position: absolute;
@@ -145,7 +145,7 @@ ul.x-navbar-nav {
 /* these arrows will point up */
 
 /* top-stacked, smaller arrow */
-.x-menu::before {
+.x-dropdown-menu::before {
     border-bottom-color: #fff;  /* arrow color */
 
     /* positioning */
@@ -154,7 +154,7 @@ ul.x-navbar-nav {
 }
 
 /* arrow which acts as a background shadow */
-.x-menu::after {
+.x-dropdown-menu::after {
     border-bottom-color: rgba(0,0,0,0.08);  /* arrow color */
 
     /* positioning */

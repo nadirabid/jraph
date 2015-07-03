@@ -56,13 +56,13 @@
           </g>
         </svg>
 
-        <ul id="edgeContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-          <li role="presentation" v-on="click: delete"><a tabindex="-1">Delete Link</a></li>
+        <ul id="edgeContextMenu" class="x-menu hidden">
+          <li class="x-menu-item" v-on="click: delete"><a tabindex="-1">Delete Link</a></li>
         </ul>
 
-        <ul id="graphContextMenu" class="dropdown-menu hidden" role="menu" style="position:absolute;">
-          <li role="presentation" v-on="click: addNode"><a tabindex="-1">Add Node</a></li>
-          <li role="presentation" v-on="click: saveGraph"><a tabindex="-1">Save Graph</a></li>
+        <ul id="graphContextMenu" class="x-menu hidden">
+          <li class="x-menu-item" v-on="click: addNode"><a tabindex="-1">Add Node</a></li>
+          <li class="x-menu-item" v-on="click: saveGraph"><a tabindex="-1">Save Graph</a></li>
         </ul>
       </div>
     </main>
