@@ -195,8 +195,10 @@ define([
 
       centerView: function() {
         var self = this;
+        var defaultCTM = this.$el.createSVGMatrix();
+
         Vue.nextTick(function() {
-          util.setCTM(self.$$.nodesAndLinksGroup, self._defaultCTM);
+          util.setCTM(self.$$.nodesAndLinksGroup, defaultCTM);
         });
       },
 
@@ -242,8 +244,6 @@ define([
 
     ready: function() {
       this.resize();
-
-      this._defaultCTM = this.$$.nodesAndLinksGroup.getCTM();
 
       var $svg = util(this.$el);
       $svg.on('dragstart', this.panStart.bind(this));
