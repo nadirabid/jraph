@@ -1,8 +1,9 @@
 define([
     'vue',
+    'lodash',
     'shared/util',
     'shared/daos/NodeDAO'
-], function(Vue, util, NodeDAO) {
+], function(Vue, _, util, NodeDAO) {
   'use strict';
 
   function NodeProperty(nodeProperty) {
@@ -345,15 +346,12 @@ define([
 
         if (!node.data) {
           this.$add('node.data', { properties: new NodeProperties() });
-          console.log('!node.data');
         }
         else if (!node.data.properties) {
           this.$add('node.data.properties', new NodeProperties());
-          console.log('!node.data.properties');
         }
         else if (node.data.properties.constructor != NodeProperties) {
           this.$set('node.data.properties', new NodeProperties(node.data.properties));
-          console.log('!node.data.properties.constructor != NodeProperties');
         }
 
         if (this.isNew) {
