@@ -342,3 +342,7 @@ text {
 .view-controls-group > button:focus {
     outline:none;
 }
+
+.x-menu {
+    width:160px;
+}
