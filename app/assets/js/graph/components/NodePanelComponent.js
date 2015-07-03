@@ -373,11 +373,6 @@ define([
       },
 
       'hook:beforeDestroy': function() {
-        if (!this.isNew && this.hasChanges) {
-          this.node.data.name = this.nameCache;
-          this.node.data.properties = this.propertiesCache;
-        }
-        
         if (this.isNew) {
           this.$emit('removeGhostNode');
         }
