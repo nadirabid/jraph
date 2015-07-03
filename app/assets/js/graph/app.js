@@ -113,7 +113,7 @@ define([
             .translate(p.x, p.y)
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
-        
+
         k = ctm.multiply(k);
 
         Vue.nextTick(function() {

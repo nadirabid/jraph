@@ -183,16 +183,27 @@ define([
        */
 
       addLink: function() {
-        if (this.linkInputValue.length > 255) {
+        var linkInputValue = this.linkInputValue;
+
+        var isDuplicate = this.node.data.properties.links.some(function(link) {
+          return linkInputValue == link.value;
+        });
+
+        if (isDuplicate) {
+          this.linkInputValue = '';
+          return;
+        }
+
+        if (linkInputValue.length > 255) {
           this.validationError.links.hasErrors = true;
           this.validationError.links.message = 'Cannot be more than 255 characters';
         }
-        else if (!util.validateLink(this.linkInputValue)) {
+        else if (!util.validateLink(linkInputValue)) {
           this.validationError.links.hasErrors = true;
           this.validationError.links.message = 'Link should look something like: http://www.analyte.io';
         }
         else {
-          this.node.data.properties.links.push(new NodeProperty({ value: this.linkInputValue }));
+          this.node.data.properties.links.push(new NodeProperty({ value: linkInputValue }));
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
         }
@@ -217,6 +228,16 @@ define([
        */
 
       addEmail: function() {
+        var emailInputValue = this.emailInputValue;
+        var isDuplicate = this.node.data.properties.emails.some(function(email) {
+          return emailInputValue == email.value;
+        });
+
+        if (isDuplicate) {
+          this.emailInputValue = '';
+          return;
+        }
+
         if (this.emailInputValue.length > 255) {
           this.validationError.emails.hasErrors = true;
           this.validationError.emails.message = 'Cannot be more than 255 characters';
