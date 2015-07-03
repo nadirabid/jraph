@@ -8,14 +8,15 @@
         <div class="panel-bar-content" v-el="panelContent"></div>
       </div>
 
-      <div id="zoomBar" style="position:absolute;" v-cloak>
-        <div class="btn-group-vertical zoom-bar" role="group">
-          <button type=button class="btn btn-default" v-on="click: incrementZoomLevel">
-            <i class="fa fa-plus"></i>
-          </button>
-          <button type=button class="btn btn-default" v-on="click: decrementZoomLevel">
-            <i class="fa fa-minus"></i>
-          </button>
+      <div id="viewControls" style="position:absolute;" v-cloak>
+        <div>
+          <div class="view-controls-group">
+            <button><i class="fa fa-dot-circle-o"></i></button>
+          </div>
+          <div class="view-controls-group">
+            <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
+            <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
+          </div>
         </div>
       </div>
 

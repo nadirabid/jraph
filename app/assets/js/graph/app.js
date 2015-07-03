@@ -433,7 +433,7 @@ define([
   nodeContextMenu.$mount('#nodeContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
   graphComponent.$mount('#graph');
-  zoomBar.$mount('#zoomBar');
+  zoomBar.$mount('#viewControls');
   floatingPanelBar.$mount('#floatingPanelBar');
 
   // fetch data
