@@ -54,8 +54,6 @@ define([
 
     json.data.properties = properties;
 
-    console.log(json);
-
     return json;
   };
 
