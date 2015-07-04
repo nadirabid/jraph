@@ -211,7 +211,7 @@
           </p>
         </div>
         <ul class="tag-list" v-class="hidden:!node.data.properties.tags.length">
-          <li v-repeat="tag: node.data.properties.tags">
+          <li v-repeat="tag: node.data.properties.tags" track-by="$index">
             <i class="fa fa-times" v-on="click: removeTag($index)"></i> {{tag.value}}
           </li>
         </ul>
@@ -239,7 +239,7 @@
           </p>
         </div>
         <ul class="email-list" v-class="hidden:!node.data.properties.links.length">
-          <li v-repeat="link: node.data.properties.links">
+          <li v-repeat="link: node.data.properties.links" track-by="$index">
             <div
                 class="display-value"
                 v-class="hidden: link.editing_"
@@ -286,7 +286,7 @@
           </p>
         </div>
         <ul class="email-list" v-class="hidden:!node.data.properties.emails.length">
-          <li v-repeat="email: node.data.properties.emails">
+          <li v-repeat="email: node.data.properties.emails" track-by="$index">
             <div
                 class="display-value"
                 v-class="hidden: email.editing_"
@@ -333,7 +333,7 @@
           </p>
         </div>
         <ul class="email-list" v-class="hidden: !node.data.properties.phoneNumbers.length">
-          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers">
+          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers" track-by="$index">
             <div
               class="display-value"
               v-class="hidden: phoneNumber.editing_"
