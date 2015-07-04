@@ -349,7 +349,7 @@ define([
         NodeDAO.update(this.$options.hypergraphID, [ this.node ])
             .done(function(nodes) {
               var node = nodes[0];
-              
+
               self.hasChanges = false;
               self.saving = false;
               self._originalNodeName = node.data.name;
@@ -357,6 +357,13 @@ define([
             });
 
         this.saving = true;
+      },
+
+      cancelEdits: function() {
+        this.node.data.name = this._originalNodeName;
+        this.node.data.properties = new NodeProperties(_.cloneDeep(this._originalNodeProperties));
+
+        this.hasChanges = false;
       }
 
     },

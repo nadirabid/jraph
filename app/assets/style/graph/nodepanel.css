@@ -207,19 +207,18 @@ ul.email-list > li > .display-value > .fa-times:hover {
     position:absolute;
     width:280px;
     bottom:0;
+    display:flex;
 }
 
 .node-panel-menu > button {
-    border:0;
-    margin:auto;
-    padding:2px 0;
     font-size:16px;
-    display:block;
     line-height:1.8;
+    border:0;
+    padding:2px 0;
     width:100%;
     text-align:center;
     background-color:#FF80AB;
-    color:rgba(250,250,250,1);
+    color:rgba(255,255,255,.87);
     cursor:pointer;
     transition:background-color 100ms ease-in-out;
     outline:none;

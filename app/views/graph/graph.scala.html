@@ -365,6 +365,12 @@
   <div class="node-panel-menu">
     <button
         v-class="hidden: isNew || !hasChanges, disabled: saving"
+        v-on="click:cancelEdits"
+    >
+      Cancel
+    </button>
+    <button
+        v-class="hidden: isNew || !hasChanges, disabled: saving"
         v-on="click:saveNode"
     >
       Save
