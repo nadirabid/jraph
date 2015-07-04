@@ -94,12 +94,6 @@ define([
       addTag: function() {
         var tagInputValue = this.tagInputValue.toLowerCase();
 
-        if (tagInputValue.length > 255) {
-          this.validationError.tags.hasErrors = true;
-          this.validationError.tags.message = 'Cannot be more than 255 characters';
-          return;
-        }
-
         if (tagInputValue.length === 0) {
           return;
         }
@@ -113,11 +107,17 @@ define([
           return;
         }
 
-        this.node.data.properties.tags.push(new NodeProperty({ value: tagInputValue }));
-        this.tagInputValue = '';
-        this.validationError.tags.hasErrors = false;
+        if (tagInputValue.length > 255) {
+          this.validationError.tags.hasErrors = true;
+          this.validationError.tags.message = 'Cannot be more than 255 characters';
+        }
+        else {
+          this.node.data.properties.tags.push(new NodeProperty({ value: tagInputValue }));
+          this.tagInputValue = '';
+          this.validationError.tags.hasErrors = false;
 
-        this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
+        }
       },
 
       removeTag: function(indexOfTag) {
@@ -177,6 +177,8 @@ define([
           this.node.data.properties.links.push(new NodeProperty({ value: linkInputValue }));
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
+
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
         }
       },
 
@@ -186,10 +188,15 @@ define([
         if (link.length > 255 || !util.validateLink(link.value)) {
           link.value = link.cachedValue_;
         }
+        else {
+          link.cachedValue_ = link.value;
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
+        }
       },
 
       removeLink: function(indexOfLink) {
         this.node.data.properties.links.$remove(indexOfLink);
+        this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
       },
 
       /**
@@ -221,6 +228,8 @@ define([
           this.node.data.properties.emails.push(new NodeProperty({ value: this.emailInputValue }));
           this.emailInputValue = '';
           this.validationError.emails.hasErrors = false;
+
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
         }
       },
 
@@ -230,10 +239,15 @@ define([
         if (email.length > 255 || !util.validateEmail(email.value)) {
           email.value = email.cachedValue_;
         }
+        else {
+          email.cachedValue_ = email.value;
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
+        }
       },
 
       removeEmail: function(indexOfEmail) {
         this.node.data.properties.emails.$remove(indexOfEmail);
+        this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
       },
 
       /**
@@ -251,6 +265,7 @@ define([
           this.node.data.properties.phoneNumbers.push(new NodeProperty({ value: this.phoneNumberInputValue }));
           this.phoneNumberInputValue = '';
           this.validationError.phoneNumbers.hasErrors = false;
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
         }
       },
 
@@ -260,10 +275,15 @@ define([
         if (!util.validatePhoneNumber(phoneNumber.value)) {
           phoneNumber.value = phoneNumber.cachedValue_;
         }
+        else {
+          phoneNumber.cachedValue_ = phoneNumber.value;
+          this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+        }
       },
 
       removePhoneNumber: function(indexOfPhoneNumber) {
         this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
+        this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
       },
 
       /**
