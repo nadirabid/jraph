@@ -56,7 +56,7 @@ define([
         isNew: false,
         hasChanges: false,
         editingName: false,
-        nameCache: '',
+        nodeNameCache: '',
         propertiesCache: [],
         tagInputValue: '',
         linkInputValue: '',
@@ -294,7 +294,7 @@ define([
 
       editName: function() {
         this.editingName = true;
-        this.nameCache = this.node.data.name;
+        this.nodeNameCache = this.node.data.name;
 
         var $nameInput = this.$$.nameInput;
 
@@ -310,18 +310,16 @@ define([
         }
 
         if (!this.node.data.name) {
-          this.node.data.name = this.nameCache;
-        }
-        else if (this.node.data.name !== this.nameCache) {
-          this.hasChanges = true;
+          this.node.data.name = this.nodeNameCache;
         }
 
+        this.hasChanges = this.node.data.name !== this._originalNodeName;
         this.editingName = false;
       },
 
       cancelNameUpdate: function() {
         this.editingName = false;
-        this.node.data.name = this.nameCache;
+        this.node.data.name = this.nodeNameCache;
       },
 
       /**
@@ -365,8 +363,6 @@ define([
       'hook:ready': function() {
         var node = this.node;
 
-        this.nameCache = this.node.data.name;
-
         if (!node.data) {
           this.$add('node.data', { properties: new NodeProperties() });
         }
@@ -377,6 +373,7 @@ define([
           this.$set('node.data.properties', new NodeProperties(node.data.properties));
         }
 
+        this._originalNodeName = this.node.data.name;
         this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
 
         if (this.isNew) {
