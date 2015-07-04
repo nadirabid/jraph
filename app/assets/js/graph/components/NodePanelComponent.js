@@ -347,10 +347,13 @@ define([
         var self = this;
 
         NodeDAO.update(this.$options.hypergraphID, [ this.node ])
-            .done(function(node) {
+            .done(function(nodes) {
+              var node = nodes[0];
+              
               self.hasChanges = false;
               self.saving = false;
-              //TODO: replace node in nodesAry??
+              self._originalNodeName = node.data.name;
+              self._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
             });
 
         this.saving = true;
