@@ -224,6 +224,10 @@ ul.email-list > li > .display-value > .fa-times:hover {
     outline:none;
 }
 
+.node-panel-menu > button:nth-child(even) {
+    border-left:solid 1px #fff;
+}
+
 .node-panel-menu > button:focus {
     outline:none;
 }
