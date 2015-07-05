@@ -55,9 +55,8 @@ define([
         saving:false,
         isNew: false,
         hasChanges: false,
-        editingName: false,
+        editingNodeName: false,
         nodeNameCache: '',
-        propertiesCache: [],
         tagInputValue: '',
         linkInputValue: '',
         emailInputValue: '',
@@ -293,7 +292,7 @@ define([
        */
 
       editName: function() {
-        this.editingName = true;
+        this.editingNodeName = true;
         this.nodeNameCache = this.node.data.name;
 
         var $nameInput = this.$$.nameInput;
@@ -305,20 +304,20 @@ define([
       },
 
       updateName: function() {
-        if (!this.editingName) { //blur is called redundantly after 'enter' and 'esc' action
+        if (!this.editingNodeName) { //blur is called redundantly after 'enter' and 'esc' action
           return;
         }
 
-        if (!this.node.data.name) {
+        if (!this.node.data.name || this.node.data.name.length > 255) {
           this.node.data.name = this.nodeNameCache;
         }
 
         this.hasChanges = this.node.data.name !== this._originalNodeName;
-        this.editingName = false;
+        this.editingNodeName = false;
       },
 
       cancelNameUpdate: function() {
-        this.editingName = false;
+        this.editingNodeName = false;
         this.node.data.name = this.nodeNameCache;
       },
 

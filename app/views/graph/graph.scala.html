@@ -178,11 +178,11 @@
 <template id="node.panel">
   <div class="node-panel">
     <div class="title">
-      <h3 v-on="click: editName" v-class="hidden: editingName">{{node.data.name}}</h3>
+      <h3 v-on="click: editName" v-class="hidden: editingNodeName">{{node.data.name}}</h3>
       <input
           class="x-input"
           type="text"
-          v-class="hidden: !editingName"
+          v-class="hidden: !editingNodeName"
           v-model="node.data.name"
           v-el="nameInput"
           v-on="
@@ -210,7 +210,7 @@
             {{validationError.tags.message}}
           </p>
         </div>
-        <ul class="tag-list" v-class="hidden:!node.data.properties.tags.length">
+        <ul class="x-noselect tag-list" v-class="hidden:!node.data.properties.tags.length">
           <li v-repeat="tag: node.data.properties.tags" track-by="$index">
             <i class="fa fa-times" v-on="click: removeTag($index)"></i> {{tag.value}}
           </li>

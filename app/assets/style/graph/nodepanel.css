@@ -38,14 +38,7 @@
 }
 
 .node-panel > .title {
-    z-index:2;
     margin: 10px 16px 10px 16px;
-    cursor:pointer;
-}
-
-.node-panel > .title:hover {
-    border-radius:2px;
-    background-color:rgba(0,0,0,.05);
 }
 
 .node-panel > .title > h3, .node-panel > .title > .x-input {
@@ -55,6 +48,15 @@
     line-height:2;
     margin:0;
     padding:0;
+}
+
+.node-panel > .title > h3 {
+    cursor:pointer;
+}
+
+.node-panel > .title > h3:hover {
+    border-radius:2px;
+    background-color:rgba(0,0,0,.05);
 }
 
 .info-title .fa {
@@ -115,8 +117,6 @@ ul.tag-list {
 
 ul.tag-list > li {
     cursor:default;
-    user-select:none;
-    -webkit-user-select:none;
     white-space: nowrap;
     margin-top: 5px;
     text-transform: lowercase;
