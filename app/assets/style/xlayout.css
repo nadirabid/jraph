@@ -189,10 +189,13 @@ ul.x-navbar-nav {
     background-color:rgba(0,0,0,.05);
 }
 
-.x-menu > .x-menu-item > a, .x-menu > .x-menu-item > a:hover {
+.x-menu > .x-menu-item > a,
+.x-menu > .x-menu-item > a:hover,
+.x-menu > .x-menu-item > a:focus {
     display:block;
     color:inherit;
     text-decoration:none;
+    outline:none;
 }
 
 .x-input {
