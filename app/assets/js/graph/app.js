@@ -281,7 +281,8 @@ define([
 
         var nodeComponent = graphComponent
             .$addChild({ data: nodeData}, NodeComponent)
-            .$mount(graphComponent.$$.dynamicContent);
+            .$mount()
+            .$appendTo(graphComponent.$$.dynamicContent);
 
         var nodePanel = new NodePanelComponent({
 
