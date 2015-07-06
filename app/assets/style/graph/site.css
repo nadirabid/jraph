@@ -157,31 +157,29 @@ text {
     fill: #E91E63;
 }
 
-.node > .background {
+.node > .catch-all-background {
     stroke-width:10px;
     fill:transparent;
     stroke:transparent;
 }
 
 .node-rect-background {
-    opacity:0;
+    stroke-width:0;
     fill: #FAFAFA;
-    stroke-width:0px;
     stroke:#FAFAFA;
     transition: all 140ms ease-in-out;
 }
 
-.new-edge-node > g > .node-rect-background {
-    opacity: 1;
-    stroke-width:4px;
-    stroke:#FAFAFA;
-}
-
 .node-rect-background-highlight {
-    opacity: 1;
+    opacity: 0;
     stroke-width:0;
     stroke:#E91E63;
     transition: all 140ms ease;
+}
+
+.new-edge-node > g > .node-rect-background {
+    stroke-width:4px;
+    stroke:#FAFAFA;
 }
 
 .new-edge-node > g > .node-rect-background-highlight {

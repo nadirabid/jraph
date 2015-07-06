@@ -18,6 +18,10 @@ body {
     visibility: hidden !important;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 .x-noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
