@@ -89,7 +89,7 @@
             transform: backgroundTranslate
         "
     ></rect>
-    <g class="pill-button-list" v-class="transition-enabled: isNodeReady">
+    <g class="pill-button-list" v-if="!isNew" v-class="transition-enabled: isNodeReady">
       <g
           class="pill-button"
           v-style="transform: deleteNodePillButtonTranslate"

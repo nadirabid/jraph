@@ -227,6 +227,7 @@ define([
         width: 0,
         height: 0,
         pillButtonWidth: 21,
+        isNew: false,
         isNodeReady: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         dragFlag: false,

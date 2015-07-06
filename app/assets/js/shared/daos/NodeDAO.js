@@ -8,6 +8,8 @@ define([
   NodeDAO.parseJSON = function (datum) {
     var clientDisplay = datum.data.clientDisplay;
 
+    datum.markedForDeletion = datum.markedForDeletion || false;
+
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
