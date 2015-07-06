@@ -367,43 +367,39 @@ define([
 
     },
 
-    events: {
+    created: function() {
+      var node = this.node;
 
-      'hook:created': function() {
-        var node = this.node;
-
-        if (!node.data) {
-          this.$add('node.data', { properties: new NodeProperties() });
-        }
-        else if (!node.data.properties) {
-          this.$add('node.data.properties', new NodeProperties());
-        }
-        else if (node.data.properties.constructor != NodeProperties) {
-          this.$set('node.data.properties', new NodeProperties(node.data.properties));
-        }
-
-        this._originalNodeName = this.node.data.name;
-        this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
-
-        if (this.isNew) {
-          this.editName();
-        }
-
-        if (!this.$options.hypergraphID) {
-          throw 'Option hypergraphID must be set';
-        }
-
-        if (!this.$options.graphComponent) {
-          throw 'Option graphComponent must be set';
-        }
-      },
-
-      'hook:beforeDestroy': function() {
-        if (this.isNew) {
-          this.$emit('removeGhostNode');
-        }
+      if (!node.data) {
+        this.$add('node.data', { properties: new NodeProperties() });
+      }
+      else if (!node.data.properties) {
+        this.$add('node.data.properties', new NodeProperties());
+      }
+      else if (node.data.properties.constructor != NodeProperties) {
+        this.$set('node.data.properties', new NodeProperties(node.data.properties));
       }
 
+      this._originalNodeName = this.node.data.name;
+      this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+
+      if (this.isNew) {
+        this.editName();
+      }
+
+      if (!this.$options.hypergraphID) {
+        throw 'Option hypergraphID must be set';
+      }
+
+      if (!this.$options.graphComponent) {
+        throw 'Option graphComponent must be set';
+      }
+    },
+
+    beforeDestroy: function() {
+      if (this.isNew) {
+        this.$emit('removeGhostNode');
+      }
     }
 
   });
