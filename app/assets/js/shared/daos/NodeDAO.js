@@ -38,19 +38,19 @@ define([
 
     var properties = {};
 
-    properties.tags = node.data.properties.tags.map(function(tag) {
+    properties.tags = (node.data.properties.tags || []).map(function(tag) {
       return { value: tag.value };
     });
 
-    properties.links = node.data.properties.links.map(function(link) {
+    properties.links = (node.data.properties.links || []).map(function(link) {
       return { value: link.value };
     });
 
-    properties.emails = node.data.properties.emails.map(function(email) {
+    properties.emails = (node.data.properties.emails || []).map(function(email) {
       return { value: email.value };
     });
 
-    properties.phoneNumbers = node.data.properties.phoneNumbers.map(function(phoneNumber) {
+    properties.phoneNumbers = (node.data.properties.phoneNumbers || []).map(function(phoneNumber) {
       return { value: phoneNumber.value };
     });
 
