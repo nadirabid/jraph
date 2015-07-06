@@ -143,14 +143,13 @@ text {
 }
 
 .new-edge {
-    stroke-width: .25em;
-    stroke-dasharray: 2, 1;
-    stroke: #E91E63;
+    stroke-width: .20em;
+    stroke: #FF80AB;
 }
 
 .new-edge.connected {
-    stroke-dasharray: 0;
-    stroke: #E91E63;
+    stroke-width: .25em;
+    stroke: #F50057;
 }
 
 .node-rect {

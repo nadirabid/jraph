@@ -369,7 +369,7 @@ define([
 
     events: {
 
-      'hook:ready': function() {
+      'hook:created': function() {
         var node = this.node;
 
         if (!node.data) {
