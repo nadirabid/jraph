@@ -48,8 +48,6 @@ define([
 
     graphComponent: null,
 
-    floatingPanelBar: null,
-
     data: function() {
       return {
         saving:false,
@@ -336,6 +334,8 @@ define([
               self.saving = false;
               self.hasChanges = false;
               self.isNew = false;
+              self.node = node;
+              self.initializeNodeData();
               self.$emit('removeGhostNode');
             });
 
@@ -363,25 +363,37 @@ define([
         this.node.data.properties = new NodeProperties(_.cloneDeep(this._originalNodeProperties));
 
         this.hasChanges = false;
+      },
+
+      initializeNodeData: function() {
+        var node = this.node;
+
+        if (!node.data) {
+          this.$add('node.data', { properties: new NodeProperties() });
+        }
+        else if (!node.data.properties) {
+          this.$add('node.data.properties', new NodeProperties());
+        }
+        else if (node.data.properties.constructor != NodeProperties) {
+          this.$set('node.data.properties', new NodeProperties(node.data.properties));
+        }
+
+        this._originalNodeName = this.node.data.name;
+        this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
       }
 
     },
 
     created: function() {
-      var node = this.node;
-
-      if (!node.data) {
-        this.$add('node.data', { properties: new NodeProperties() });
-      }
-      else if (!node.data.properties) {
-        this.$add('node.data.properties', new NodeProperties());
-      }
-      else if (node.data.properties.constructor != NodeProperties) {
-        this.$set('node.data.properties', new NodeProperties(node.data.properties));
+      if (!this.$options.hypergraphID) {
+        throw 'Option hypergraphID must be set';
       }
 
-      this._originalNodeName = this.node.data.name;
-      this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+      if (!this.$options.graphComponent) {
+        throw 'Option graphComponent must be set';
+      }
+
+      this.initializeNodeData();
     },
 
     ready: function() {
@@ -389,12 +401,16 @@ define([
         this.editName();
       }
 
-      if (!this.$options.hypergraphID) {
-        throw 'Option hypergraphID must be set';
-      }
+      var self = this;
 
-      if (!this.$options.graphComponent) {
-        throw 'Option graphComponent must be set';
+      this.$watch('node.markedForDeletion', function(markedForDeletion) {
+        if (markedForDeletion === true) {
+          self.$options.graphComponent.$options.floatingPanelBar.closePanel();
+        }
+      });
+
+      if (this.node.markedForDeletion) {
+        self.$options.graphComponent.$options.floatingPanelBar.closePanel();
       }
     },
 

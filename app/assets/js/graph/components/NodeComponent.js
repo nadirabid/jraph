@@ -413,6 +413,8 @@ define([
 
         NodeDAO.delete(hypergraphID, this)
             .done(function() {
+              self.markedForDeletion = true;
+
               graphComponent.edges = graphComponent.edges.filter(function(l) {
                 return l.sourceId != self.id && l.targetId != self.id;
               });

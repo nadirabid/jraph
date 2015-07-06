@@ -272,9 +272,10 @@ define([
           x: p.x,
           y: p.y,
           fixed: false,
+          isNew: true,
           data: {
-            name: 'Name',
-            properties: []
+            name: 'Node Name',
+            properties: {}
           }
         };
 
@@ -295,7 +296,7 @@ define([
 
         });
 
-        nodePanel.$once('removeGhostNode', function() {
+        nodePanel.$on('removeGhostNode', function() {
           nodeComponent.$destroy(true);
         });
 
