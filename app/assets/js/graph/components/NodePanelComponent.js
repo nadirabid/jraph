@@ -382,7 +382,9 @@ define([
 
       this._originalNodeName = this.node.data.name;
       this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+    },
 
+    ready: function() {
       if (this.isNew) {
         this.editName();
       }
