@@ -262,11 +262,11 @@ define([
     methods: {
 
       addNode: function(e) {
-        var p = util.transformPointFromClientToEl(
-            e.clientX,
-            e.clientY,
-            graphComponent.$el
-        );
+        var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
+        var p = graphComponent.$el.createSVGPoint();
+        p.x = e.clientX;
+        p.y = e.clientY;
+        p = p.matrixTransform(ctm.inverse());
 
         var nodeData = {
           x: p.x,
