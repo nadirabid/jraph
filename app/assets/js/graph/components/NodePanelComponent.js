@@ -191,9 +191,10 @@ define([
         }
       },
 
-      removeLink: function(indexOfLink) {
+      removeLink: function(indexOfLink, e) {
         this.node.data.properties.links.$remove(indexOfLink);
         this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
+        e.stopPropagation();
       },
 
       /**
@@ -242,9 +243,10 @@ define([
         }
       },
 
-      removeEmail: function(indexOfEmail) {
+      removeEmail: function(indexOfEmail, e) {
         this.node.data.properties.emails.$remove(indexOfEmail);
         this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
+        e.stopPropagation();
       },
 
       /**
@@ -278,9 +280,10 @@ define([
         }
       },
 
-      removePhoneNumber: function(indexOfPhoneNumber) {
+      removePhoneNumber: function(indexOfPhoneNumber, e) {
         this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
         this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+        e.stopPropagation();
       },
 
       /**

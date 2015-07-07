@@ -295,7 +295,7 @@
                 v-class="hidden: email.editing_"
                 v-on="click: editProperty(this, email)"
             >
-              <i class="fa fa-times" v-on="click:removeEmail($index)"></i>
+              <i class="fa fa-times" v-on="click:removeEmail($index, $event)"></i>
               <p>{{email.value}}</p>
             </div>
             <input
