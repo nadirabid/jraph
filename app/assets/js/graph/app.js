@@ -59,7 +59,6 @@ define([
         minX: 0,
         minY: 0,
         zoomSensitivity: 0.22,
-        totalZoomFactor: 1,
         maxZoomFactor: 1.55,
         minZoomFactor: 0.55,
         zoomTranslateX: 0,
@@ -95,9 +94,7 @@ define([
 
       zoomUpdate: function(e, zoomDelta) {
         var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
-        this.totalZoomFactor = this.totalZoomFactor * zoomFactor;
-
-        this.scaleZoom(e, zoomFactor, this.totalZoomFactor);
+        this.scaleZoom(e, zoomFactor);
       },
 
       scaleZoom: function(e, zoomFactor) {
