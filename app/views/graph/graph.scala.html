@@ -139,7 +139,7 @@
       ></rect>
     </g>
     <text
-        class="node-name disable-pointer-events"
+        class="node-name x-disable-pointer-events"
         text-anchor="middle"
         v-el="nodeName"
     >
@@ -149,7 +149,7 @@
 </template>
 
 <template id="graph.edge">
-  <g class="enable-pointer-events" v-on="contextmenu: edgeContextMenu">
+  <g class="x-enable-pointer-events" v-on="contextmenu: edgeContextMenu">
     <line
         class="edge"
         marker-end="url(#edgeArrow)"

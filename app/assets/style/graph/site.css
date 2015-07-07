@@ -14,32 +14,6 @@
     Uncategorized
 ***/
 
-[v-cloak] {
-    display: none !important; /* hide element with v-cloak attribute */
-}
-
-.disable-pointer-events {
-    pointer-events: none;
-}
-
-.default-pointer-events {
-    pointer-events: auto;
-}
-
-.enable-pointer-events {
-    pointer-events: all;
-}
-
-.disable-user-selection {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: default;
-}
-
 .signin-form {
     max-width: 500px;
     margin-top: 200px;
@@ -79,16 +53,6 @@ body {
     display: -webkit-flex;
 }
 
-.sidebar-container {
-    order:2;
-    -webkit-order:2;
-
-    width: 30em;
-    background-color: #263238;
-    color: #ffffff;
-    box-shadow: inset .05em 0 .2em rgba(0, 0, 0, .35);
-}
-
 .graph-container {
     flex: auto;
     order: 1;
@@ -97,14 +61,6 @@ body {
     -webkit-order: 1;
     display: -webkit-flex;
     background-color: #fafafa;
-}
-
-/***
-    Sidebar
-***/
-
-.sidebar-menu {
-    padding : 1.8em;
 }
 
 /***

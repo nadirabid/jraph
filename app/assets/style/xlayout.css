@@ -22,6 +22,10 @@ body {
     visibility: hidden;
 }
 
+[v-cloak] {
+    display: none !important; /* hide element with v-cloak attribute */
+}
+
 .x-noselect {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -33,6 +37,14 @@ body {
 
 .x-disable-pointer-events {
     pointer-events: none;
+}
+
+.x-default-pointer-events {
+    pointer-events: auto;
+}
+
+.x-enable-pointer-events {
+    pointer-events: all;
 }
 
 .x-paper {
