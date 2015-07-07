@@ -150,22 +150,6 @@ define([
       return childClassWrapper;
     }
 
-    function deepResolveIndex(obj, index) {
-      var resolve = function (o, i) {
-        return o ? o[i] : o;
-      };
-      return index.split('.').reduce(resolve, obj);
-    }
-
-    function chainEvalVm(vm, varName) {
-      if (!vm.$parent || deepResolveIndex(vm, varName)) {
-        return vm;
-      }
-      else {
-        return chainEvalVm(vm.$parent, varName);
-      }
-    }
-
     function setCTM(element, m) {
       element.setAttributeNS(
           null,
@@ -174,47 +158,10 @@ define([
       );
     }
 
-    function transformPointFromViewportToEl(x, y, el) {
-      var viewportEl = el.nearestViewportElement || el;
-
-      var ctm = viewportEl.getCTM().inverse();
-      var etm = el.getTransformToElement(viewportEl).inverse();
-      etm.e = etm.f = 0;
-
-      var svgPoint = viewportEl.createSVGPoint();
-
-      svgPoint.x = x;
-      svgPoint.y = y;
-
-      svgPoint = svgPoint.matrixTransform(ctm);
-      svgPoint = svgPoint.matrixTransform(etm);
-
-      return svgPoint;
-    }
-
     function transformPointFromClientToEl(x, y, el) {
       var viewportEl = el.nearestViewportElement || el;
 
       var ctm = viewportEl.getScreenCTM().inverse();
-      var etm = el.getTransformToElement(viewportEl).inverse();
-      etm.e = etm.f = 0;
-
-      var svgPoint = viewportEl.createSVGPoint();
-
-      svgPoint.x = x;
-      svgPoint.y = y;
-
-      svgPoint = svgPoint.matrixTransform(ctm);
-      svgPoint = svgPoint.matrixTransform(etm);
-
-      return svgPoint;
-    }
-
-    function transformVectorFromViewportToEl(x, y, el) {
-      var viewportEl = el.nearestViewportElement;
-      var ctm = viewportEl.getCTM().inverse();
-      ctm.e = ctm.f = 0; // specifically for dealing with vectors
-
       var etm = el.getTransformToElement(viewportEl).inverse();
       etm.e = etm.f = 0;
 
@@ -315,8 +262,6 @@ define([
     Util.selectText = selectText;
     Util.isNullOrUndefined = isNullOrUndefined;
     Util.animationFrame = animationFrame;
-    Util.chainEvalVm = chainEvalVm;
-    Util.deepResolveIndex = deepResolveIndex;
     Util.extendClass = extendClass;
     Util.noop = noop;
     Util.mixin = mixin;
@@ -326,8 +271,6 @@ define([
     Util.trigger = trigger;
     Util.transformVectorFromClientToEl = transformVectorFromClientToEl;
     Util.transformPointFromClientToEl = transformPointFromClientToEl;
-    Util.transformPointFromViewportToEl = transformPointFromViewportToEl;
-    Util.transformVectorFromViewportToEl = transformVectorFromViewportToEl;
   })();
 
   //Wrapper definitions
