@@ -203,24 +203,6 @@ define([
       };
     }
 
-    function selectText(textEl) {
-      var doc = document;
-      var range;
-      var selection;
-
-      if (doc.body.createTextRange) {
-        range = document.body.createTextRange();
-        range.moveToElementText(textEl);
-        range.select();
-      } else if (window.getSelection) {
-        selection = window.getSelection();
-        range = document.createRange();
-        range.selectNodeContents(textEl);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-    }
-
     function validateEmail(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return re.test(email);
@@ -259,7 +241,6 @@ define([
     Util.validateEmail = validateEmail;
     Util.validateLink = validateLink;
     Util.validatePhoneNumber = validatePhoneNumber;
-    Util.selectText = selectText;
     Util.isNullOrUndefined = isNullOrUndefined;
     Util.animationFrame = animationFrame;
     Util.extendClass = extendClass;
