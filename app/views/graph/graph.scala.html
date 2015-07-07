@@ -42,6 +42,9 @@
             </marker>
           </defs>
 
+          <!-- The rect below is to capture the wheel event for the Safari browser -->
+          <rect x="0" y="0" fill="transparent" v-attr="width:width,height:height"></rect>
+
           <g v-el="nodesAndLinksGroup">
             <!-- Dynamic Content -->
             <g class="dynamic-content" v-el="dynamicContent"></g>
