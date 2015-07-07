@@ -89,7 +89,7 @@ define([
 
       mousewheelZoom: function(e) {
         e.preventDefault(); // this stops the page "overscroll" effect
-        this.zoomUpdate(e, e.wheelDeltaY / 360);
+        this.zoomUpdate(e, -(e.deltaY / 360));
       },
 
       zoomUpdate: function(e, zoomDelta) {
