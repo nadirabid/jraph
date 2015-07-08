@@ -9,14 +9,12 @@
       </div>
 
       <div id="viewControls" v-cloak>
-        <div>
-          <div class="view-controls-group">
-            <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
-          </div>
-          <div class="view-controls-group">
-            <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
-            <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
-          </div>
+        <div class="view-controls-group">
+          <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
+        </div>
+        <div class="view-controls-group">
+          <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
+          <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
         </div>
       </div>
 
@@ -246,7 +244,7 @@
             {{validationError.links.message}}
           </p>
         </div>
-        <ul class="x-noselect email-list" v-class="hidden:!node.data.properties.links.length">
+        <ul class="x-noselect node-property-list" v-class="hidden:!node.data.properties.links.length">
           <li v-repeat="link: node.data.properties.links" track-by="$index">
             <div
                 class="display-value"
@@ -293,7 +291,7 @@
             {{validationError.emails.message}}
           </p>
         </div>
-        <ul class="x-noselect email-list" v-class="hidden:!node.data.properties.emails.length">
+        <ul class="x-noselect node-property-list" v-class="hidden:!node.data.properties.emails.length">
           <li v-repeat="email: node.data.properties.emails" track-by="$index">
             <div
                 class="display-value"
@@ -340,7 +338,7 @@
             {{validationError.phoneNumbers.message}}
           </p>
         </div>
-        <ul class="x-noselect email-list" v-class="hidden: !node.data.properties.phoneNumbers.length">
+        <ul class="x-noselect node-property-list" v-class="hidden: !node.data.properties.phoneNumbers.length">
           <li v-repeat="phoneNumber: node.data.properties.phoneNumbers" track-by="$index">
             <div
               class="display-value"

@@ -150,39 +150,39 @@ ul.tag-list .fa:active {
     color: rgba(0,0,0,.45);
 }
 
-ul.email-list {
+ul.node-property-list {
     list-style:none;
     padding:0;
     margin:14px 0;
     color:rgba(0,0,0,.77);
 }
 
-ul.email-list > li {
+ul.node-property-list > li {
     margin:5px 0;
     cursor:pointer;
 }
 
-ul.email-list > li:hover {
+ul.node-property-list > li:hover {
     background-color:rgba(0,0,0,.05);
 }
 
-ul.email-list > li > div:first-child, ul.email-list > li > .display-value {
+ul.node-property-list > li > div:first-child, ul.node-property-list > li > .display-value {
     position: relative;
     line-height:2;
 }
 
-ul.email-list > li > .display-value > p {
+ul.node-property-list > li > .display-value > p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     margin:0;
 }
 
-ul.email-list > li:hover > .display-value > p {
+ul.node-property-list > li:hover > .display-value > p {
     margin-right:18px;
 }
 
-ul.email-list > li > .display-value > .fa-times {
+ul.node-property-list > li > .display-value > .fa-times {
     line-height:2;
     padding:3px;
     display:none;
@@ -193,11 +193,11 @@ ul.email-list > li > .display-value > .fa-times {
     transition:color 100ms ease;
 }
 
-ul.email-list > li:hover > .display-value > .fa-times {
+ul.node-property-list > li:hover > .display-value > .fa-times {
     display:inline-block;
 }
 
-ul.email-list > li > .display-value > .fa-times:hover {
+ul.node-property-list > li > .display-value > .fa-times:hover {
     display:inline-block;
     color: rgba(0,0,0,.60);
 }
