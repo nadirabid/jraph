@@ -382,7 +382,6 @@ define([
       },
 
       suppressContextMenu: function(e) {
-        e.stopPropagation();
         e.preventDefault();
       },
 

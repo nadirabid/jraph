@@ -200,19 +200,24 @@ define([
       },
 
       contextMenu: function (e) {
-        if (e.target != this.$el) return;
+        if (e.target != this.$$.backdrop) return;
 
-        e.stopPropagation();
         e.preventDefault();
+
+        if (this._closeContextMenu) {
+          this._closeContextMenu();
+        }
 
         graphContextMenu.show(e.clientX, e.clientY);
 
-        var closeContextMenu = function () {
+        var self = this;
+        this._closeContextMenu = function () {
           graphContextMenu.hide();
-          window.removeEventListener('click', closeContextMenu);
+          window.removeEventListener('click', self._closeContextMenu);
+          self._closeContextMenu = null;
         };
 
-        window.addEventListener('click', closeContextMenu);
+        document.body.addEventListener('click', this._closeContextMenu);
       }
 
     },

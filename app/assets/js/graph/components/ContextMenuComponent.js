@@ -21,19 +21,23 @@ define([
 
         var $el = this.$el;
 
-        $el.classList.add('show');
-        $el.classList.remove('hidden');
+        Vue.nextTick(function() {
+          $el.classList.add('show');
+          $el.classList.remove('hidden');
 
-        $el.style.left = x + 'px';
-        $el.style.top = y + 'px';
-        $el.style.position = 'absolute';
+          $el.style.left = x + 'px';
+          $el.style.top = y + 'px';
+          $el.style.position = 'absolute';
+        });
       },
 
       hide: function() {
         var $el = this.$el;
 
-        $el.classList.add('hidden');
-        $el.classList.remove('show');
+        Vue.nextTick(function() {
+          $el.classList.add('hidden');
+          $el.classList.remove('show');
+        });
 
         if (this.afterHide) {
           this.afterHide.apply(this, arguments);

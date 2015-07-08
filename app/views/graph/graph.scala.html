@@ -21,7 +21,7 @@
       </div>
 
       <div class="graph-container">
-        <svg id="graph" v-on="contextmenu: contextMenu, wheel: mousewheelZoom">
+        <svg id="graph" class="x-noselect" v-on="contextmenu: contextMenu, wheel: mousewheelZoom">
             <!-- Definitions -->
           <defs>
             <marker
@@ -43,7 +43,12 @@
           </defs>
 
           <!-- The rect below is to capture the wheel event for the Safari browser -->
-          <rect x="0" y="0" fill="transparent" v-attr="width:width,height:height"></rect>
+          <rect
+              x="0" y="0"
+              fill="transparent"
+              v-attr="width:width,height:height"
+              v-el="backdrop"
+          ></rect>
 
           <g v-el="nodesAndLinksGroup">
             <!-- Dynamic Content -->
