@@ -16,6 +16,10 @@ define([
           this.beforeShow.apply(this, arguments);
         }
 
+        if (this._closeContextMenu) {
+          this._closeContextMenu();
+        }
+
         this.x = x;
         this.y = y;
 
@@ -29,6 +33,16 @@ define([
           $el.style.top = y + 'px';
           $el.style.position = 'absolute';
         });
+
+        var self = this;
+
+        this._closeContextMenu = function () {
+          self.hide();
+          document.body.removeEventListener('click', self._closeContextMenu);
+          self._closeContextMenu = null;
+        };
+
+        document.body.addEventListener('click', self._closeContextMenu);
       },
 
       hide: function() {

@@ -204,20 +204,7 @@ define([
 
         e.preventDefault();
 
-        if (this._closeContextMenu) {
-          this._closeContextMenu();
-        }
-
         graphContextMenu.show(e.clientX, e.clientY);
-
-        var self = this;
-        this._closeContextMenu = function () {
-          graphContextMenu.hide();
-          window.removeEventListener('click', self._closeContextMenu);
-          self._closeContextMenu = null;
-        };
-
-        document.body.addEventListener('click', this._closeContextMenu);
       }
 
     },

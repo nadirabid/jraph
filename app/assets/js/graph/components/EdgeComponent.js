@@ -134,19 +134,11 @@ define([
       edgeContextMenu: function(e) {
         if (e.target != this.$$.arrowMarkerLine) return;
 
-        e.stopPropagation();
         e.preventDefault();
 
         var edgeContextMenu = this.$parent.$options.edgeContextMenu;
 
         edgeContextMenu.show(e.clientX, e.clientY, this);
-
-        var closeContextMenu = function () {
-          edgeContextMenu.hide();
-          window.removeEventListener('click', closeContextMenu);
-        };
-
-        window.addEventListener('click', closeContextMenu);
       },
 
       freezePosition: function () {
