@@ -9,13 +9,6 @@ define([
 
     methods: {
 
-      updatePosition: function() {
-        var padding = 12;
-
-        this.$el.style.setProperty('bottom', padding + 'px');
-        this.$el.style.setProperty('right', padding + 'px');
-      },
-
       incrementZoomLevel: function() {
         this.$options.graphComponent.incrementZoomLevel();
       },
@@ -32,11 +25,6 @@ define([
 
     created: function() {
       if (!this.$options.graphComponent) throw 'graphComponent must be specified';
-    },
-
-    ready: function() {
-      this.updatePosition();
-      window.addEventListener('resize', this.updatePosition.bind(this));
     }
 
   });
