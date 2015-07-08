@@ -178,7 +178,9 @@ text {
 }
 
 .pill-button-list.transition-enabled > .pill-button {
-    transition:-webkit-transform 140ms ease-in-out;
+    transition:transform 100ms ease-in-out;
+    -webkit-transition:-webkit-transform 100ms ease-in-out;
+    -moz-transition:-moz-transform 100ms ease-in-out;
 }
 
 .pill-button {
