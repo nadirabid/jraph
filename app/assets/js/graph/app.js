@@ -10,7 +10,6 @@ define([
     'graph/state',
     'graph/components/NodeComponent',
     'graph/components/EdgeComponent',
-    'graph/components/NavigationBarComponent',
     'graph/components/FloatingPanelBarComponent',
     'graph/components/ViewControlsComponent',
     'graph/components/ContextMenuComponent',
@@ -27,7 +26,6 @@ define([
     State,
     NodeComponent,
     EdgeComponent,
-    NavigationBarComponent,
     FloatingPanelBarComponent,
     ViewControlsComponent,
     ContextMenuComponent,
@@ -346,15 +344,6 @@ define([
   var viewControls = new ViewControlsComponent({
 
     graphComponent: graphComponent
-
-  });
-
-  var navigationBarComponent = new NavigationBarComponent({
-
-    data: {
-      hypergraphID: hypergraphID,
-      state: state
-    }
 
   });
 
