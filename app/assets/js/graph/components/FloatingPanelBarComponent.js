@@ -23,12 +23,12 @@ define([
 
         Vue.nextTick(function() {
           $(self.$el).css({
-            top: 50 + padding + 'px',
+            top: padding + 'px',
             left: padding + 'px'
           });
 
           $(self.$el).outerHeight(
-              windowHeight - (2*padding) - 50
+              windowHeight - (2*padding)
           );
 
           $(self.$$.panelContent).outerHeight(

@@ -9,8 +9,6 @@
       }
     </style>
 
-    <nav></nav>
-    
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -26,6 +24,47 @@
         <div class="view-controls-group">
           <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
           <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
+        </div>
+      </div>
+
+
+      <style>
+        #graphControls {
+          position:absolute;
+          z-index:100;
+          top:12px;
+          right:12px;
+        }
+
+        .graph-controls-group {
+          background-color:#E91E63;
+          border-radius:2px;
+          opacity:.8;
+        }
+
+        .graph-controls-group > button {
+          cursor:pointer;
+          color:#eee;
+          font-size:14px;
+          font-weight:100;
+          border:0;
+          background-color:transparent;
+          transition:color 100ms ease;
+          padding:8px;
+        }
+
+        .graph-controls-group > button:hover {
+
+        }
+
+        .graph-controls-group > button:focus {
+          outline:none;
+        }
+      </style>
+
+      <div id="graphControls">
+        <div class="graph-controls-group">
+          <button>Create node</button>
         </div>
       </div>
 
