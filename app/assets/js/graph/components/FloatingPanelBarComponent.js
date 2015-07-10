@@ -18,6 +18,7 @@ define([
       updateDimensionsAndPosition: function() {
         var padding = this.padding;
         var windowHeight = $(window).outerHeight();
+        var navHeight = 50;
 
         var self = this;
 
@@ -28,7 +29,7 @@ define([
           });
 
           $(self.$el).outerHeight(
-              windowHeight - (2*padding)
+              windowHeight - (2*padding) - navHeight
           );
 
           $(self.$$.panelContent).outerHeight(

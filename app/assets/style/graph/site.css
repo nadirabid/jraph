@@ -47,6 +47,7 @@ body {
     display: flex;
     -webkit-flex: auto;
     display: -webkit-flex;
+    position:relative;
 }
 
 .graph-container {

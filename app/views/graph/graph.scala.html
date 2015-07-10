@@ -1,14 +1,14 @@
 @layout("Data Visualization") {
   <div id="all">
     <style>
-      nav {
-        height:50px;
-        background-color:#fff;
-        box-shadow:0 1px 4px rgba(0,0,0,0.1);
-        z-index:2;
-      }
+    nav {
+      height:50px;
+      background-color:#fff;
+      box-shadow:0 1px 4px rgba(0,0,0,0.2);
+      z-index:1;
+    }
     </style>
-
+    <nav></nav>
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -27,45 +27,54 @@
         </div>
       </div>
 
-
       <style>
         #graphControls {
-          position:absolute;
+          position:fixed;
           z-index:100;
-          top:12px;
+          top:8px;
           right:12px;
         }
 
-        .graph-controls-group {
-          background-color:#E91E63;
-          border-radius:2px;
-          opacity:.8;
+        #graphControls > button {
+          width:80px;
         }
 
-        .graph-controls-group > button {
-          cursor:pointer;
-          color:#eee;
-          font-size:14px;
-          font-weight:100;
+        #graphControls > button:focus {
+          outline:none;
+        }
+
+        #graphControls > button.saved {
+          background-color:#ccc;
           border:0;
-          background-color:transparent;
-          transition:color 100ms ease;
+          border-radius:2px;
+          opacity:.6;
+          cursor:default;
+          color:#fff;
+          font-size:14px;
+          font-weight:400;
           padding:8px;
         }
 
-        .graph-controls-group > button:hover {
-
+        #graphControls > button.save {
+          box-shadow:0 1px 4px rgba(0,0,0,0.4);
+          background-color:#E91E63;
+          border:none;
+          border-radius:3px;
+          opacity:1;
+          cursor:pointer;
+          color:#fff;
+          font-size:14px;
+          font-weight:100;
+          padding:8px;
         }
 
-        .graph-controls-group > button:focus {
+        #graphControls > button.saving {
           outline:none;
         }
       </style>
 
       <div id="graphControls">
-        <div class="graph-controls-group">
-          <button>Create node</button>
-        </div>
+        <button class="saved">Saved</button>
       </div>
 
       <div class="graph-container">
