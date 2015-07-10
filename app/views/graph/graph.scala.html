@@ -1,14 +1,62 @@
 @layout("Data Visualization") {
   <div id="all">
     <style>
-    nav {
-      height:50px;
-      background-color:#fff;
-      box-shadow:0 1px 4px rgba(0,0,0,0.2);
-      z-index:1;
-    }
+      nav {
+        height:50px;
+        background-color:#fff;
+        box-shadow:0 1px 4px rgba(0,0,0,0.2);
+        z-index:1;
+        position:relative;
+      }
+
+      #graphControls {
+        position:absolute;
+        top:8px;
+        right:12px;
+      }
+
+      #graphControls > button {
+        width:80px;
+      }
+
+      #graphControls > button:focus {
+        outline:none;
+      }
+
+      #graphControls > button.saved {
+        background-color:#ccc;
+        border:0;
+        border-radius:2px;
+        opacity:.6;
+        cursor:default;
+        color:#fff;
+        font-size:14px;
+        font-weight:400;
+        padding:8px;
+      }
+
+      #graphControls > button.save {
+        box-shadow:0 1px 4px rgba(0,0,0,0.4);
+        background-color:#F50057;
+        border:none;
+        border-radius:3px;
+        opacity:1;
+        cursor:pointer;
+        color:#fff;
+        font-size:14px;
+        font-weight:400;
+        padding:8px;
+      }
+
+      #graphControls > button.saving {
+        outline:none;
+      }
     </style>
-    <nav></nav>
+    <nav>
+      <div id="graphControls">
+        <button class="save">Save</button>
+      </div>
+    </nav>
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -25,56 +73,6 @@
           <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
           <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
         </div>
-      </div>
-
-      <style>
-        #graphControls {
-          position:fixed;
-          z-index:100;
-          top:8px;
-          right:12px;
-        }
-
-        #graphControls > button {
-          width:80px;
-        }
-
-        #graphControls > button:focus {
-          outline:none;
-        }
-
-        #graphControls > button.saved {
-          background-color:#ccc;
-          border:0;
-          border-radius:2px;
-          opacity:.6;
-          cursor:default;
-          color:#fff;
-          font-size:14px;
-          font-weight:400;
-          padding:8px;
-        }
-
-        #graphControls > button.save {
-          box-shadow:0 1px 4px rgba(0,0,0,0.4);
-          background-color:#E91E63;
-          border:none;
-          border-radius:3px;
-          opacity:1;
-          cursor:pointer;
-          color:#fff;
-          font-size:14px;
-          font-weight:100;
-          padding:8px;
-        }
-
-        #graphControls > button.saving {
-          outline:none;
-        }
-      </style>
-
-      <div id="graphControls">
-        <button class="saved">Saved</button>
       </div>
 
       <div class="graph-container">
