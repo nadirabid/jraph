@@ -40,8 +40,6 @@ define([
 
   var NodePanelComponent = Vue.extend({
 
-    replace: true,
-
     template: '#node.panel',
 
     hypergraphID: null,

@@ -50,6 +50,7 @@ define([
 
     data: function () {
       return {
+        dataState: 'saved',
         x: null,
         y: null,
         nodes: [ ],
@@ -349,8 +350,7 @@ define([
 
   });
 
-  var navComponent = new NavComponent();
-
+  Vue.component('x-nav', NavComponent);
   Vue.component('x-edge', EdgeComponent);
   Vue.component('x-node', NodeComponent);
 
@@ -359,7 +359,16 @@ define([
   graphComponent.$mount('#graph');
   viewControls.$mount('#viewControls');
   floatingPanelBar.$mount('#floatingPanelBar');
-  navComponent.$mount('#nav');
+
+  var app = new Vue({
+
+    el: '#all',
+
+    data: {
+      dataState: 'saved'
+    }
+
+  });
 
   // fetch data
 

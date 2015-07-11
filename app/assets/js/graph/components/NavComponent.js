@@ -5,12 +5,15 @@ define([
 
   var NavComponent = Vue.extend({
 
-    data: function() {
-      return {
-        dataState: 'saved'
-      };
-    }
+    template: '#nav',
 
+    props: {
+      dataState: {
+        type: String,
+        required: true
+      }
+    }
+    
   });
 
   return NavComponent;
