@@ -1,59 +1,7 @@
 @layout("Data Visualization") {
   <div id="all">
-    <style>
-      nav {
-        height:50px;
-        background-color:#fff;
-        box-shadow:0 1px 4px rgba(0,0,0,0.2);
-        z-index:1;
-        position:relative;
-      }
-
-      #graphControls {
-        position:absolute;
-        top:8px;
-        right:12px;
-      }
-
-      #graphControls > button {
-        width:80px;
-      }
-
-      #graphControls > button:focus {
-        outline:none;
-      }
-
-      #graphControls > button.saved {
-        background-color:#ccc;
-        border:0;
-        border-radius:2px;
-        opacity:.6;
-        cursor:default;
-        color:#fff;
-        font-size:14px;
-        font-weight:400;
-        padding:8px;
-      }
-
-      #graphControls > button.save {
-        box-shadow:0 1px 4px rgba(0,0,0,0.4);
-        background-color:#F50057;
-        border:none;
-        border-radius:3px;
-        opacity:1;
-        cursor:pointer;
-        color:#fff;
-        font-size:14px;
-        font-weight:400;
-        padding:8px;
-      }
-
-      #graphControls > button.saving {
-        outline:none;
-      }
-    </style>
     <nav>
-      <div id="graphControls">
+      <div class="graph-controls">
         <button class="save">Save</button>
       </div>
     </nav>

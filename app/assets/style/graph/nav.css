@@ -1,0 +1,55 @@
+nav {
+    height:50px;
+    background-color:#fff;
+    box-shadow:0 1px 4px rgba(0,0,0,0.2);
+    z-index:1;
+    position:relative;
+}
+
+.graph-controls {
+    position:absolute;
+    top:8px;
+    right:12px;
+    transition:all 100ms ease;
+}
+
+.graph-controls > button {
+    width:80px;
+}
+
+.graph-controls > button:focus {
+    outline:none;
+}
+
+.graph-controls > button.saved {
+    background-color:#ccc;
+    border:0;
+    border-radius:2px;
+    opacity:.6;
+    cursor:default;
+    color:#fff;
+    font-size:14px;
+    font-weight:400;
+    padding:8px;
+}
+
+.graph-controls > button.save {
+    box-shadow:0 1px 4px rgba(0,0,0,0.4);
+    background-color:#F50057;
+    border:none;
+    border-radius:3px;
+    opacity:1;
+    cursor:pointer;
+    color:#fff;
+    font-size:14px;
+    font-weight:400;
+    padding:8px;
+}
+
+.graph-controls > button.save:active {
+    box-shadow:0 1px 1px rgba(0,0,0,0.2);
+}
+
+.graph-controls > button.saving {
+    outline:none;
+}
