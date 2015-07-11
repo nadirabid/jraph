@@ -17,6 +17,10 @@ nav {
     width:80px;
 }
 
+.graph-controls > button::first-letter {
+    text-transform:uppercase;
+}
+
 .graph-controls > button:focus {
     outline:none;
 }

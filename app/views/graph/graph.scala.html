@@ -1,8 +1,8 @@
 @layout("Data Visualization") {
   <div id="all">
-    <nav>
-      <div class="graph-controls">
-        <button class="save">Save</button>
+    <nav id="nav">
+      <div class="graph-controls" v-cloak>
+        <button v-attr="class:dataState">{{dataState}}</button>
       </div>
     </nav>
     <main id="main">

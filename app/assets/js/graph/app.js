@@ -8,6 +8,7 @@ define([
     'shared/daos/NodeDAO',
     'shared/daos/EdgeDAO',
     'graph/state',
+    'graph/components/NavComponent',
     'graph/components/NodeComponent',
     'graph/components/EdgeComponent',
     'graph/components/FloatingPanelBarComponent',
@@ -24,6 +25,7 @@ define([
     NodeDAO,
     EdgeDAO,
     State,
+    NavComponent,
     NodeComponent,
     EdgeComponent,
     FloatingPanelBarComponent,
@@ -347,6 +349,8 @@ define([
 
   });
 
+  var navComponent = new NavComponent();
+
   Vue.component('x-edge', EdgeComponent);
   Vue.component('x-node', NodeComponent);
 
@@ -355,6 +359,7 @@ define([
   graphComponent.$mount('#graph');
   viewControls.$mount('#viewControls');
   floatingPanelBar.$mount('#floatingPanelBar');
+  navComponent.$mount('#nav');
 
   // fetch data
 
