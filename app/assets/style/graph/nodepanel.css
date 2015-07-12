@@ -38,7 +38,7 @@
 }
 
 .node-panel > .title {
-    margin: 10px 16px 10px 16px;
+    margin: 10px;
 }
 
 .node-panel > .title > h3, .node-panel > .title > .x-input {
@@ -88,7 +88,7 @@
 .info-body {
     padding-top:26px;
     font-size: 14px;
-    margin: 0 15px;
+    margin: 0 10px;
 }
 
 .info-body > .empty-message {

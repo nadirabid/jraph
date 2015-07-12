@@ -13,7 +13,7 @@ define([
         required: true
       }
     }
-    
+
   });
 
   return NavComponent;

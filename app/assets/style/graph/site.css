@@ -38,10 +38,6 @@ body {
     -webkit-flex-flow: column;
 }
 
-#nav {
-    margin-bottom:0; /* bootstrap adds margin-bottom:20px for some reason */
-}
-
 #main {
     flex: auto;
     display: flex;

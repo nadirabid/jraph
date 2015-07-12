@@ -50,7 +50,6 @@ define([
 
     data: function () {
       return {
-        dataState: 'saved',
         x: null,
         y: null,
         nodes: [ ],
