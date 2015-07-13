@@ -57,3 +57,25 @@ nav {
 .graph-controls > button.saving {
     outline:none;
 }
+
+.graph-name > p {
+    display:block;
+    width:200px;
+    margin:12px 0 0 10px;
+
+    font-weight:600;
+    font-size:16px;
+    color:#666;
+    line-height:1.5;
+}
+
+.graph-name > input {
+    display:block;
+    width:200px;
+    margin:12px 0 0 10px;
+
+    font-size:16px;
+    color:#666;
+    font-weight:600;
+    line-height:1.5;
+}

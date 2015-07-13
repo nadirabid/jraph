@@ -85,24 +85,25 @@
 
 <template id="nav">
   <nav>
-    <style>
-      .graph-name {
-        font-size:16px;
-        color:#666;
-        margin-left:12px;
-        line-height:1;
-        font-weight:600;
-      }
-
-      .graph-name > p {
-        text-transform : uppercase;
-      }
-    </style>
     <div class="graph-name">
-      <p>People I Know</p>
+      <p v-class="hidden: editingGraphName" v-on="click: editGraphName">
+        {{graphName}}
+      </p>
+      <input
+          class="x-input"
+          type="text"
+          v-class="hidden: !editingGraphName"
+          v-model="graphName"
+          v-el="graphNameInput"
+          v-on="
+              blur  : updateGraphName,
+              keyup : updateGraphName        | key 'enter',
+              keyup : cancelGraphNameUpdate  | key 'esc'
+          "
+      >
     </div>
     <div class="graph-controls">
-      <button v-attr="class:dataState">{{dataState}}</button>
+      <button v-attr="class: dataState">{{dataState}}</button>
     </div>
   </nav>
 </template>

@@ -364,7 +364,7 @@ define([
     el: '#all',
 
     data: {
-      dataState: 'saved'
+      dataState: 'save'
     }
 
   });
