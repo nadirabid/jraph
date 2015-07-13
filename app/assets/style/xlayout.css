@@ -63,7 +63,6 @@ body {
 }
 
 .x-navbar-content {
-    display:inline-block;
     max-width:1240px;
     display:block;
     margin:auto;
@@ -224,6 +223,7 @@ ul.x-navbar-nav {
     font-size:13px;
     transition:border 140ms ease-in-out;
     margin:0;
+    padding:0;
 }
 
 .x-input:focus {
