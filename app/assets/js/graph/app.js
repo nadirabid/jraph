@@ -364,7 +364,8 @@ define([
     el: '#all',
 
     data: {
-      dataState: 'save'
+      dataState: 'saved',
+      graphName: 'People I Know'
     }
 
   });

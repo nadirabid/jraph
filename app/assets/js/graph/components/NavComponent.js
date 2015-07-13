@@ -11,12 +11,15 @@ define([
       dataState: {
         type: String,
         required: true
+      },
+      graphName: {
+        type: String,
+        required: true
       }
     },
 
     data: function() {
       return {
-        graphName: 'People I Know',
         editingGraphName: false
       };
     },
