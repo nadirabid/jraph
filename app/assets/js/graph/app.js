@@ -50,21 +50,20 @@ define([
 
   var GraphComponent = Vue.extend({
 
+    template: document.getElementById('graphView').innerHTML,
+
     data: function () {
       return {
-        x: null,
-        y: null,
-        nodes: [ ],
-        edges: [ ],
+        state: state,
+        nodes: [],
+        edges: [],
         width: 0,
         height: 0,
         minX: 0,
         minY: 0,
         zoomSensitivity: 0.22,
         maxZoomFactor: 1.55,
-        minZoomFactor: 0.55,
-        zoomTranslateX: 0,
-        zoomTranslateY: 0
+        minZoomFactor: 0.55
       };
     },
 
@@ -188,6 +187,13 @@ define([
     },
 
     ready: function() {
+      this.$options.state = this.$parent.$options.state;
+      this.$options.edgesMap = this.$parent.$options.edgesMap;
+      this.$options.nodeComponentsMap = this.$parent.$options.nodeComponentsMap;
+      this.$options.hypergraphID = this.$parent.$options.hypergraphID;
+      this.$options.floatingPanelBar = this.$parent.$options.floatingPanelBar;
+      this.$options.edgeContextMenu = this.$parent.$options.edgeContextMenu;
+
       this.resize();
 
       var $svg = util(this.$el);
@@ -201,6 +207,8 @@ define([
   ///
   /// MAIN APP CODE
   ///
+
+  var graphComponent = new GraphComponent({});
 
   var graphContextMenu = new ContextMenuComponent({
 
@@ -279,7 +287,24 @@ define([
 
   var floatingPanelBar = new FloatingPanelBarComponent();
 
-  var graphComponent = new GraphComponent({
+  var viewControls = new ViewControlsComponent({
+
+    graphComponent: graphComponent
+
+  });
+
+  Vue.component('x-nav', NavComponent);
+  Vue.component('x-edge', EdgeComponent);
+  Vue.component('x-node', NodeComponent);
+
+  graphContextMenu.$mount('#graphContextMenu');
+  edgeContextMenu.$mount('#edgeContextMenu');
+  viewControls.$mount('#viewControls');
+  floatingPanelBar.$mount('#floatingPanelBar');
+
+  var app = new Vue({
+
+    el: '#all',
 
     state: state,
 
@@ -294,34 +319,8 @@ define([
     edgeContextMenu: edgeContextMenu,
 
     data: {
-      state: state
-    }
-
-  });
-
-  var viewControls = new ViewControlsComponent({
-
-    graphComponent: graphComponent
-
-  });
-
-  Vue.component('x-nav', NavComponent);
-  Vue.component('x-edge', EdgeComponent);
-  Vue.component('x-node', NodeComponent);
-
-  graphContextMenu.$mount('#graphContextMenu');
-  edgeContextMenu.$mount('#edgeContextMenu');
-  graphComponent.$mount('#graph');
-  viewControls.$mount('#viewControls');
-  floatingPanelBar.$mount('#floatingPanelBar');
-
-  var app = new Vue({
-
-    el: '#all',
-
-    data: {
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
-      graph: _graph, // _graph is bootstrapped into the graph.scala.html template
+      graph: _graph, // _graph is bootstrapped into the graph.scala.html view
       nodes: [],
       edges: []
     },
@@ -343,6 +342,22 @@ define([
             });
       }
 
+    },
+
+    watch: {
+      'nodes': function(nodes) {
+        this.$.graphComponent.nodes = nodes;
+      },
+      'edges': function(edges) {
+        this.$.graphComponent.edges = edges;
+      }
+    },
+
+    ready: function() {
+      this.$.graphComponent = this
+          .$addChild({ nodes: this.nodes, edges: this.edges }, GraphComponent)
+          .$mount()
+          .$appendTo(this.$$.graphContainer);
     }
 
   });
@@ -363,8 +378,5 @@ define([
 
         app.nodes = nodes;
         app.edges = links;
-
-        graphComponent.edges = links;
-        graphComponent.nodes = nodes;
       });
 });
