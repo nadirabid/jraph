@@ -5,6 +5,7 @@ define([
     'vue',
     'd3',
     'shared/util',
+    'shared/daos/HypergraphDAO',
     'shared/daos/NodeDAO',
     'shared/daos/EdgeDAO',
     'graph/state',
@@ -22,6 +23,7 @@ define([
     Vue,
     d3,
     util,
+    HypergraphDAO,
     NodeDAO,
     EdgeDAO,
     State,
@@ -327,7 +329,18 @@ define([
     methods: {
 
       saveAllGraphData: function() {
-        NodeDAO.update(hypergraphID, graphComponent.nodes);
+        var updateNodesPromise = NodeDAO.update(hypergraphID, this.nodes);
+        var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
+        var updateGraphPromise = HypergraphDAO.update(this.graph);
+
+        var self = this;
+        this.dataState = 'SAVING';
+
+        return $
+            .when(updateGraphPromise, updateNodesPromise, updateEdgesPromise)
+            .then(function() {
+              self.dataState = 'SAVED';
+            });
       }
 
     }
