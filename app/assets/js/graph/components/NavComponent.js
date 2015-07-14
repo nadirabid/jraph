@@ -16,6 +16,10 @@ define([
       graph: {
         type: Object,
         required: true
+      },
+      onSave: {
+        type: Function,
+        required: true
       }
     },
 
@@ -43,6 +47,7 @@ define([
     },
 
     methods: {
+
       editGraphName: function() {
         this.editingGraphName = true;
         this.cachedGraphName = this.graph.data.name;

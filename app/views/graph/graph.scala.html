@@ -4,7 +4,11 @@
 
 @layout("Data Visualization") {
   <div id="all">
-    <x-nav data-state="{{@@ dataState }}" graph="{{@@ graph }}"></x-nav>
+    <x-nav
+        data-state="{{@@ dataState }}"
+        graph="{{@@ graph }}"
+        on-save="{{ saveAllGraphData }}"
+    ></x-nav>
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -106,7 +110,12 @@
         >
       </div>
       <div class="graph-controls">
-        <button v-attr="class: dataStateCssClassValue">{{dataStateDisplayValue}}</button>
+        <button
+            v-attr="class: dataStateCssClassValue"
+            v-on="click:onSave"
+        >
+          {{dataStateDisplayValue}}
+        </button>
       </div>
     </nav>
   </template>
