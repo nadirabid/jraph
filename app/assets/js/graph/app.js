@@ -44,7 +44,7 @@ define([
 
   var state = new State();
 
-  var hypergraphID = window.location.pathname.split('/')[2];
+  var hypergraphID = _graph.id;
 
   var GraphComponent = Vue.extend({
 
@@ -365,6 +365,7 @@ define([
 
     data: {
       dataState: 'saved',
+      graph: _graph, // _graph is bootstrapped into the graph.scala.html template
       graphName: 'People I Know'
     }
 

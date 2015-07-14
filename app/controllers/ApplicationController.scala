@@ -61,8 +61,11 @@ class ApplicationController @Inject() (
     }
   }
 
-  def hypergraph(hypergraphID: UUID) = SecuredAction(WithAccess("normal")) { req =>
-    Ok(views.html.graph.graph())
+  def hypergraph(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+    Hypergraph.read(req.identity.email, hypergraphID).map {
+      case Some(hypergraph) => Ok(views.html.graph.graph(Json.toJson(hypergraph)))
+      case None => Redirect(routes.ApplicationController.userGraphs())
+    }
   }
 
   def profile = SecuredAction(WithAccess("normal")) { req =>
