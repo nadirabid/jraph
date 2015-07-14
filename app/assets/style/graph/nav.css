@@ -17,10 +17,6 @@ nav {
     width:80px;
 }
 
-.graph-controls > button::first-letter {
-    text-transform:uppercase;
-}
-
 .graph-controls > button:focus {
     outline:none;
 }
@@ -55,7 +51,13 @@ nav {
 }
 
 .graph-controls > button.saving {
-    outline:none;
+    background-color:transparent;
+    border:0;
+    cursor:default;
+    color:#F50057;
+    font-size:14px;
+    font-weight:400;
+    padding:8px;
 }
 
 .graph-name > p {

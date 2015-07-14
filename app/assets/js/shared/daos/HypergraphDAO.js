@@ -37,6 +37,9 @@ define([
           data: JSON.stringify({
             data: hypergraph.data
           })
+        })
+        .then(function(response) {
+          return HypergraphDAO.parseJSON(response);
         });
   };
 

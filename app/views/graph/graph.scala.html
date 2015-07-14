@@ -4,7 +4,7 @@
 
 @layout("Data Visualization") {
   <div id="all">
-    <x-nav data-state="{{ dataState }}" graph-name="{{@@ graph.data.name }}"></x-nav>
+    <x-nav data-state="{{@@ dataState }}" graph="{{@@ graph }}"></x-nav>
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -90,13 +90,13 @@
     <nav>
       <div class="graph-name">
         <p v-class="hidden: editingGraphName" v-on="click: editGraphName">
-          {{graphName}}
+          {{graph.data.name}}
         </p>
         <input
             class="x-input"
             type="text"
             v-class="hidden: !editingGraphName"
-            v-model="graphName"
+            v-model="graph.data.name"
             v-el="graphNameInput"
             v-on="
                 blur  : updateGraphName,
@@ -106,7 +106,7 @@
         >
       </div>
       <div class="graph-controls">
-        <button v-attr="class: dataState">{{dataState}}</button>
+        <button v-attr="class: dataState">{{dataStateDisplayValue}}</button>
       </div>
     </nav>
   </template>

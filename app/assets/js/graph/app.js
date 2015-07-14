@@ -364,9 +364,17 @@ define([
     el: '#all',
 
     data: {
-      dataState: 'saved',
+      dataState: 'saving',
       graph: _graph, // _graph is bootstrapped into the graph.scala.html template
       graphName: 'People I Know'
+    },
+
+    methods: {
+
+      updateGraph: function() {
+
+      }
+
     }
 
   });
