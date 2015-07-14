@@ -364,14 +364,14 @@ define([
     el: '#all',
 
     data: {
-      dataState: 'saving',
+      dataState: 'SAVED', // UNSAVED/SAVING/SAVED
       graph: _graph, // _graph is bootstrapped into the graph.scala.html template
       graphName: 'People I Know'
     },
 
     methods: {
 
-      updateGraph: function() {
+      saveAllGraphData: function() {
 
       }
 

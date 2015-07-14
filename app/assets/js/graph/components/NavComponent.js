@@ -30,10 +30,14 @@ define([
 
       dataStateDisplayValue: function() {
         switch(this.dataState) {
-          case 'saved': return 'Saved';
-          case 'saving': return 'Saving';
-          case 'save': return 'Save';
+          case 'UNSAVED': return 'Save';
+          case 'SAVING': return 'Saving';
+          case 'SAVED': return 'Saved';
         }
+      },
+
+      dataStateCssClassValue: function() {
+        return this.dataState.toLowerCase();
       }
 
     },
@@ -54,21 +58,20 @@ define([
       updateGraphName: function() {
         if (!this.graph.data.name || this.graph.data.name.length > 255) {
           this.graph.data.name = this.cachedGraphName;
-          this.editingGraphName = false;
         }
         else if (this.graph.data.name !== this.cachedGraphName) {
           var self = this;
-          self.dataState = 'saving';
+          self.dataState = 'SAVING';
 
           HypergraphDAO
               .update(this.graph)
               .done(function(graph) {
                 self.graph = graph;
-                self.dataState = 'saved';
+                self.dataState = 'SAVED';
               });
-
-          this.editingGraphName = false;
         }
+
+        this.editingGraphName = false;
       },
 
       cancelGraphNameUpdate: function() {
