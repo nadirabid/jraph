@@ -95,22 +95,7 @@ define([
   });
 
   function State(initData) {
-    // since state will sometimes be passed
-    // to Vue components, every method/property which
-    // doesn't need to be watched by Vue (avoid overhead)
-    // should be prefixed with '$'
-
-    initData = initData || {};
-
     this.nodeState = 'initial';
-    this.zoomType = 'scale';
-    this.links = initData.links || [];
-    this.nodes = initData.nodes || [];
-    this.$layout = new ForceLayout();
-
-    if (!util.isNullOrUndefined(initData.layoutEnabled)) {
-      this.$layout.enabled = initData.layoutEnabled;
-    }
   }
 
   return State;

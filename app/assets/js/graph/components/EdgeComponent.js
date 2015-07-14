@@ -229,8 +229,6 @@ define([
 
         target.px = target.x = this.target_x + v.x;
         target.py = target.y = this.target_y + v.y;
-
-        this.$parent.$options.state.$layout.resume();
       },
 
       dragend: function() {

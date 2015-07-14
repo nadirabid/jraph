@@ -66,17 +66,6 @@ define([
       };
     },
 
-    events: {
-
-      'startForceLayout': function(nodes, edges) {
-        this.state.$layout
-            .nodes(nodes)
-            .links(edges)
-            .start();
-      }
-
-    },
-
     methods: {
 
       incrementZoomLevel: function() {
@@ -118,11 +107,6 @@ define([
         });
       },
 
-      toggleForce: function () {
-        var layout = this.state.layout;
-        layout.enabled = !layout.enabled;
-      },
-
       resize: function () {
         var newWidth = util.width(this.$el),
             newHeight = util.height(this.$el);
@@ -131,18 +115,6 @@ define([
             this.height == newHeight) {
           return;
         }
-
-        var layout = this.state.$layout;
-        layout.size([ newWidth, newHeight ]);
-        layout.resume();
-
-        this.x = d3.scale.linear()
-            .domain([0, newWidth])
-            .range([0, newWidth]);
-
-        this.y = d3.scale.linear()
-            .domain([0, newHeight])
-            .range([0, newHeight]);
 
         this.width = newWidth;
         this.height = newHeight;
@@ -210,24 +182,6 @@ define([
     },
 
     created: function () {
-      var layout = this.state.$layout;
-
-      // TODO: unwatch when component is destroyed
-
-      this.$watch('state.nodes', function (value, mutation) {
-        if (!mutation) return;
-
-        layout.force.nodes(value);
-        layout.start();
-      }, false, true);
-
-      this.$watch('state.edges', function (value, mutation) {
-        if (!mutation) return;
-
-        layout.force.edges(value);
-        layout.start();
-      }, false, true);
-
       window.addEventListener('resize', this.resize.bind(this));
     },
 
@@ -366,13 +320,14 @@ define([
     data: {
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
       graph: _graph, // _graph is bootstrapped into the graph.scala.html template
-      graphName: 'People I Know'
+      nodes: [],
+      edges: []
     },
 
     methods: {
 
       saveAllGraphData: function() {
-
+        NodeDAO.update(hypergraphID, graphComponent.nodes);
       }
 
     }
@@ -393,8 +348,10 @@ define([
           });
         });
 
+        app.nodes = nodes;
+        app.edges = links;
+
         graphComponent.edges = links;
         graphComponent.nodes = nodes;
-        graphComponent.$emit('startForceLayout', nodes, links);
       });
 });

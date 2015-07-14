@@ -120,8 +120,6 @@ define([
       ctx.py = ctx.y = p.y;
 
       ctx.dragFlag = true;
-
-      ctx.$parent.$options.state.$layout.resume();
     };
 
     this.dragend = function () {
@@ -191,9 +189,6 @@ define([
 
               graphComponent.edges.push(link);
             });
-      }
-      else {
-        ctx.$parent.$options.state.$layout.resume();
       }
 
       sourceCtx.$.newEdge.$destroy(true);
