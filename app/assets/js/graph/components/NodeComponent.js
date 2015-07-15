@@ -209,7 +209,7 @@ define([
 
   var NodeComponent = Vue.extend({
 
-    template: document.getElementById('graph.node.rect').innerHTML,
+    template: document.getElementById('graph.node').innerHTML,
 
     data: function () {
       return {

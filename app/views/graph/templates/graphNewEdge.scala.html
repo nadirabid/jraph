@@ -1,0 +1,12 @@
+<template id="graph.new.edge">
+    <line
+        class="edge new-edge"
+        v-class="connected: connected"
+        v-attr="
+            marker-end: edgeArrow,
+            x1: sourceClipX, y1: sourceClipY,
+            x2: targetClipX, y2: targetClipY
+        "
+    >
+    </line>
+</template>

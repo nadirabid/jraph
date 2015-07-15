@@ -1,0 +1,78 @@
+<template id="graph.node">
+  <g
+    class="node enable-pointer-events"
+    v-attr="id: id, transform: nodeTranslate"
+    v-on="
+        mouseenter: mouseover,
+        mouseleave: mouseout,
+        contextmenu: suppressContextMenu
+    "
+  >
+    <rect
+        rx="2" ry="2"
+        class="catch-all-background"
+        v-class="hidden: !isMouseentered || dragFlag"
+        v-attr="
+            height: height,
+            width: backgroundWidth,
+            transform: backgroundTranslate
+        "
+    ></rect>
+    <g class="pill-button-list" v-if="!isNew" v-class="transition-enabled: isNodeReady">
+      <g
+          class="pill-button"
+          v-style="transform: deleteNodePillButtonTranslate"
+          v-on="click: delete"
+      >
+        <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
+        <text
+            text-anchor="middle"
+            v-attr="transform: deleteNodePillButtonTextTranslate"
+            v-el="deleteNodeText"
+        >
+          &#xf014
+        </text>
+      </g>
+      <g
+          class="pill-button"
+          v-style="transform: linkNodePillButtonTranslate"
+          v-on="click: setNewEdgeSource"
+      >
+        <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
+        <text
+            text-anchor="middle"
+            v-attr="transform: linkNodePillButtonTextTranslate"
+        >
+          &#xf0c1
+        </text>
+      </g>
+    </g>
+    <g v-attr="transform:rectTranslate">
+      <rect
+          class="node-rect-background-highlight"
+          rx="2" ry="2"
+          v-el="nodeRectBackgroundHighlight"
+          v-attr="width: width, height: height"
+      ></rect>
+      <rect
+          class="node-rect-background"
+          rx="2" ry="2"
+          v-el="nodeRectBackground"
+          v-attr="width: width, height: height"
+      ></rect>
+      <rect
+          class="node-rect"
+          rx="2" ry="2"
+          v-el="nodeRect"
+          v-attr="width: width, height: height"
+      ></rect>
+    </g>
+    <text
+        class="node-name x-disable-pointer-events"
+        text-anchor="middle"
+        v-el="nodeName"
+    >
+      {{data.name}}
+    </text>
+  </g>
+</template>

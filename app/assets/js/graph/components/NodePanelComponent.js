@@ -38,7 +38,7 @@ define([
     });
   }
 
-  var NodePanelComponent = Vue.extend({
+  return Vue.extend({
 
     template: '#node.panel',
 
@@ -423,5 +423,4 @@ define([
 
   });
 
-  return NodePanelComponent;
 });

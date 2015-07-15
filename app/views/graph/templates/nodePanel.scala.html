@@ -1,0 +1,208 @@
+<template id="node.panel">
+  <div class="node-panel">
+    <div class="title">
+      <h3 v-on="click: editName" v-class="hidden: editingNodeName">{{node.data.name}}</h3>
+      <input
+          class="x-input"
+          type="text"
+          v-class="hidden: !editingNodeName"
+          v-model="node.data.name"
+          v-el="nameInput"
+          v-on="
+              blur   : updateName,
+              keyup  : updateName       | key 'enter',
+              keyup  : cancelNameUpdate | key 'esc'
+          "
+      >
+    </div>
+    <section class="info tags">
+      <div class="info-title">
+        <span class="line-around"><i class="fa fa-tags"></i></span>
+      </div>
+      <div class="info-body">
+        <div v-class="x-has-error: validationError.tags.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add tag"
+              v-el="tagInput"
+              v-model="tagInputValue"
+              v-on="keyup: addTag | key 'enter'"
+          >
+          <p class="x-help-block" v-class="hidden:!validationError.tags.hasErrors">
+              {{validationError.tags.message}}
+          </p>
+        </div>
+        <ul class="x-noselect tag-list" v-class="hidden:!node.data.properties.tags.length">
+          <li v-repeat="tag: node.data.properties.tags" track-by="$index">
+            <i class="fa fa-times" v-on="click: removeTag($index)"></i> {{tag.value}}
+          </li>
+        </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.tags.length">
+          <p>None</p>
+        </div>
+      </div>
+    </section>
+    <section class="info">
+      <div class="info-title">
+        <span class="line-around"><i class="fa fa-link"></i></span>
+      </div>
+      <div class="info-body">
+        <div v-class="x-has-error: validationError.links.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add link"
+              v-el="linkInput"
+              v-model="linkInputValue"
+              v-on="keyup:addLink | key 'enter'"
+          >
+          <p class="x-help-block" v-class="hidden: !validationError.links.hasErrors">
+              {{validationError.links.message}}
+          </p>
+        </div>
+        <ul class="x-noselect node-property-list" v-class="hidden:!node.data.properties.links.length">
+          <li v-repeat="link: node.data.properties.links" track-by="$index">
+            <div
+                class="display-value"
+                v-class="hidden: link.editing_"
+                v-on="click: editProperty(this, link)"
+            >
+              <i class="fa fa-times" v-on="click:removeLink($index, $event)"></i>
+              <p>{{link.value}}</p>
+            </div>
+            <input
+                class="x-input"
+                type="text"
+                v-el="input"
+                v-class="hidden: !link.editing_"
+                v-model="link.value"
+                v-on="
+                    blur  : updateLink(link),
+                    keyup : updateLink(link)                  | key 'enter',
+                    keyup : cancelEditingProperty(link)       | key 'esc',
+                "
+            >
+          </li>
+        </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.links.length">
+          <p>None</p>
+        </div>
+      </div>
+    </section>
+    <section class="info">
+      <div class="info-title">
+        <span class="line-around"><i class="fa fa-envelope-o"></i></span>
+      </div>
+      <div class="info-body">
+        <div v-class="x-has-error: validationError.emails.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add email"
+              v-el="emailInput"
+              v-model="emailInputValue"
+              v-on="keyup:addEmail | key 'enter'"
+          >
+          <p class="x-help-block" v-class="hidden: !validationError.emails.hasErrors">
+              {{validationError.emails.message}}
+          </p>
+        </div>
+        <ul class="x-noselect node-property-list" v-class="hidden:!node.data.properties.emails.length">
+          <li v-repeat="email: node.data.properties.emails" track-by="$index">
+            <div
+                class="display-value"
+                v-class="hidden: email.editing_"
+                v-on="click: editProperty(this, email)"
+            >
+              <i class="fa fa-times" v-on="click:removeEmail($index, $event)"></i>
+              <p>{{email.value}}</p>
+            </div>
+            <input
+                class="x-input"
+                type="text"
+                v-el="input"
+                v-class="hidden: !email.editing_"
+                v-model="email.value"
+                v-on="
+                    blur  : updateEmail(email),
+                    keyup : updateEmail(email)                 | key 'enter',
+                    keyup : cancelEditingProperty(email)       | key 'esc'
+                "
+            >
+          </li>
+        </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.emails.length">
+          <p>None</p>
+        </div>
+      </div>
+    </section>
+    <section class="info">
+      <div class="info-title">
+        <span class="line-around"><i class="fa fa-phone"></i></span>
+      </div>
+      <div class="info-body">
+        <div v-class="x-has-error: validationError.phoneNumbers.hasErrors">
+          <input
+              class="x-input"
+              type="text"
+              placeholder="Add phone number"
+              v-el="phoneNumberInput"
+              v-model="phoneNumberInputValue"
+              v-on="keyup: addPhoneNumber | key 'enter'"
+          >
+          <p class="x-help-block" v-class="hidden: !validationError.phoneNumbers.hasErrors">
+              {{validationError.phoneNumbers.message}}
+          </p>
+        </div>
+        <ul class="x-noselect node-property-list" v-class="hidden: !node.data.properties.phoneNumbers.length">
+          <li v-repeat="phoneNumber: node.data.properties.phoneNumbers" track-by="$index">
+            <div
+                class="display-value"
+                v-class="hidden: phoneNumber.editing_"
+                v-on="click: editProperty(this,phoneNumber)"
+            >
+              <i class="fa fa-times" v-on="click:removePhoneNumber($index, $event)"></i>
+              <p>{{phoneNumber.value}}</p>
+            </div>
+            <input
+                class="x-input"
+                v-class="hidden: !phoneNumber.editing_"
+                v-el="input"
+                v-model="phoneNumber.value"
+                v-on="
+                    blur  : updatePhoneNumber(phoneNumber),
+                    keyup : updatePhoneNumber(phoneNumber)            | key 'enter',
+                    keyup : cancelEditingProperty(phoneNumber)        | key 'esc'
+                "
+            >
+          </li>
+        </ul>
+        <div class="empty-message" v-class="hidden: node.data.properties.phoneNumbers.length">
+          <p>None</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="node-panel-menu">
+    <button
+        v-class="hidden: isNew || !hasChanges, disabled: saving"
+        v-on="click:cancelEdits"
+    >
+        Cancel
+    </button>
+    <button
+        v-class="hidden: isNew || !hasChanges, disabled: saving"
+        v-on="click:saveNode"
+    >
+        Save
+    </button>
+    <button
+        v-class="hidden: !isNew, disabled: saving"
+        v-on="click: createNode"
+    >
+        Create
+    </button>
+  </div>
+</template>

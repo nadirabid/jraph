@@ -55,11 +55,11 @@ define([
     };
   }
 
-  var NewEdgeComponent = Vue.extend({
+  return Vue.extend({
 
     replace: true,
 
-    template: document.getElementById('graph.newEdge').innerHTML,
+    template: document.getElementById('graph.new.edge').innerHTML,
 
     data: function () {
       return {
@@ -198,5 +198,4 @@ define([
 
   });
 
-  return NewEdgeComponent;
 });

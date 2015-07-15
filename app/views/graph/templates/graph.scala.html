@@ -1,0 +1,47 @@
+<template id="graph">
+  <svg
+      class="x-noselect graph"
+      v-on="contextmenu: contextMenu, wheel: mousewheelZoom"
+  >
+      <!-- Definitions -->
+    <defs>
+      <marker
+          id="edgeArrow"
+          markerWidth="5" markerHeight="3"
+          refx="1.2" refy="1.5"
+          orient="auto"
+      >
+        <path d="M0,0 L0,3 L3,1.5 L0,0" class="edge-arrow"></path>
+      </marker>
+      <marker
+          id="connectedEdgeArrow"
+          markerWidth="5" markerHeight="3"
+          refx="1.2" refy="1.5"
+          orient="auto"
+      >
+        <path d="M0,0 L0,3 L3,1.5 L0,0" class="connected-edge-arrow"></path>
+      </marker>
+    </defs>
+
+      <!-- The rect below is to capture the wheel event for the Safari browser -->
+    <rect
+        x="0" y="0"
+        fill="transparent"
+        v-attr="width:width,height:height"
+        v-el="backdrop"
+    ></rect>
+
+    <g v-el="nodesAndLinksGroup">
+        <!-- Dynamic Content -->
+      <g class="dynamic-content" v-el="dynamicContent"></g>
+
+        <!-- Edges -->
+      <x-edge v-repeat="edges" track-by="id"></x-edge>
+
+      <g v-el="newEdgeContainer"></g>
+
+        <!-- Nodes -->
+      <x-node v-repeat="nodes" track-by="id"></x-node>
+    </g>
+  </svg>
+</template>

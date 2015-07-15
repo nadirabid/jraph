@@ -1,0 +1,29 @@
+<template id="nav">
+  <nav>
+    <div class="graph-name">
+      <p v-class="hidden: editingGraphName" v-on="click: editGraphName">
+        {{graph.data.name}}
+      </p>
+      <input
+          class="x-input"
+          type="text"
+          v-class="hidden: !editingGraphName"
+          v-model="graph.data.name"
+          v-el="graphNameInput"
+          v-on="
+              blur  : updateGraphName,
+              keyup : updateGraphName        | key 'enter',
+              keyup : cancelGraphNameUpdate  | key 'esc'
+          "
+      >
+    </div>
+    <div class="graph-data-state">
+      <button
+          v-attr="class: dataStateCssClassValue"
+          v-on="click:onSave"
+      >
+        {{dataStateDisplayValue}}
+      </button>
+    </div>
+  </nav>
+</template>

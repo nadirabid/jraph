@@ -1,0 +1,13 @@
+<template id="graph.edge">
+  <g class="x-enable-pointer-events" v-on="contextmenu: edgeContextMenu">
+    <line
+        class="edge"
+        marker-end="url(#edgeArrow)"
+        v-el="arrowMarkerLine"
+        v-attr="
+            x1: sourceClipX, y1: sourceClipY,
+            x2: targetClipX, y2: targetClipY
+        "
+    ></line>
+  </g>
+</template>
