@@ -5,7 +5,7 @@ define([
 
   return Vue.extend({
 
-    template: '#graphControls',
+    template: '#graph.controls',
 
     props: {
       incrementZoom: {
