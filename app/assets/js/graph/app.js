@@ -50,7 +50,9 @@ define([
 
   var GraphComponent = Vue.extend({
 
-    template: document.getElementById('graphView').innerHTML,
+    template: document.getElementById('graph').innerHTML,
+
+    props: [ 'nodes', 'edges' ],
 
     data: function () {
       return {
@@ -287,19 +289,14 @@ define([
 
   var floatingPanelBar = new FloatingPanelBarComponent();
 
-  var viewControls = new ViewControlsComponent({
-
-    graphComponent: graphComponent
-
-  });
-
+  Vue.component('x-graph-controls', ViewControlsComponent);
+  Vue.component('x-graph', GraphComponent);
   Vue.component('x-nav', NavComponent);
   Vue.component('x-edge', EdgeComponent);
   Vue.component('x-node', NodeComponent);
 
   graphContextMenu.$mount('#graphContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
-  viewControls.$mount('#viewControls');
   floatingPanelBar.$mount('#floatingPanelBar');
 
   var app = new Vue({
@@ -327,6 +324,18 @@ define([
 
     methods: {
 
+      incrementZoom: function() {
+        this.$.graphComponent.incrementZoomLevel();
+      },
+
+      decrementZoom: function() {
+        this.$.graphComponent.decrementZoomLevel();
+      },
+
+      centerView: function() {
+        this.$.graphComponent.centerView();
+      },
+
       saveAllGraphData: function() {
         var updateNodesPromise = NodeDAO.update(hypergraphID, this.nodes);
         var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
@@ -342,22 +351,6 @@ define([
             });
       }
 
-    },
-
-    watch: {
-      'nodes': function(nodes) {
-        this.$.graphComponent.nodes = nodes;
-      },
-      'edges': function(edges) {
-        this.$.graphComponent.edges = edges;
-      }
-    },
-
-    ready: function() {
-      this.$.graphComponent = this
-          .$addChild({ nodes: this.nodes, edges: this.edges }, GraphComponent)
-          .$mount()
-          .$appendTo(this.$$.graphContainer);
     }
 
   });

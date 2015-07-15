@@ -5,26 +5,21 @@ define([
 
   var ViewControlsComponent = Vue.extend({
 
-    graphComponent: null,
+    template: '#graphControls',
 
-    methods: {
-
-      incrementZoomLevel: function() {
-        this.$options.graphComponent.incrementZoomLevel();
+    props: {
+      incrementZoom: {
+        required: true,
+        type: Function
       },
-
-      decrementZoomLevel: function() {
-        this.$options.graphComponent.decrementZoomLevel();
+      decrementZoom: {
+        required: true,
+        type: Function
       },
-
-      centerView: function() {
-        this.$options.graphComponent.centerView();
+      centerView: {
+        required: true,
+        type: Function
       }
-
-    },
-
-    created: function() {
-      if (!this.$options.graphComponent) throw 'graphComponent must be specified';
     }
 
   });

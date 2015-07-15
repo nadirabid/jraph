@@ -259,7 +259,7 @@ text {
     background-color:inherit;
 }
 
-#viewControls {
+.view-controls {
     position:absolute;
     bottom:12px;
     right:12px;

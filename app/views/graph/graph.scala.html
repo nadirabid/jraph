@@ -7,8 +7,9 @@
     <x-nav
         data-state="{{@@ dataState }}"
         graph="{{@@ graph }}"
-        on-save="{{ saveAllGraphData }}"
-    ></x-nav>
+        on-save="{{ saveAllGraphData }}">
+    </x-nav>
+
     <main id="main">
       <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
         <div class="panel-bar-menu" v-on="click: closePanel">
@@ -17,17 +18,18 @@
         <div class="panel-bar-content" v-el="panelContent"></div>
       </div>
 
-      <div id="viewControls" v-cloak>
-        <div class="view-controls-group">
-          <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
-        </div>
-        <div class="view-controls-group">
-          <button v-on="click: incrementZoomLevel"><i class="fa fa-plus"></i></button>
-          <button v-on="click: decrementZoomLevel"><i class="fa fa-minus"></i></button>
-        </div>
-      </div>
-
       <div v-el="graphContainer" class="graph-container">
+        <x-graph
+            v-ref="graphComponent"
+            nodes="{{@@ nodes }}"
+            edges="{{@@ edges }}">
+        </x-graph>
+
+        <x-graph-controls
+          increment-zoom="{{ incrementZoom }}"
+          decrement-zoom="{{ decrementZoom }}"
+          center-view="{{ centerView }}">
+        </x-graph-controls>
       </div>
     </main>
 
@@ -41,7 +43,19 @@
     </ul>
   </div>
 
-  <template id="graphView">
+  <template id="graphControls">
+    <div class="view-controls">
+      <div class="view-controls-group">
+        <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
+      </div>
+      <div class="view-controls-group">
+        <button v-on="click: incrementZoom"><i class="fa fa-plus"></i></button>
+        <button v-on="click: decrementZoom"><i class="fa fa-minus"></i></button>
+      </div>
+    </div>
+  </template>
+
+  <template id="graph">
     <svg
         id="graph"
         class="x-noselect"
