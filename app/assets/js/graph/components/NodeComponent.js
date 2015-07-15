@@ -40,29 +40,7 @@ define([
         return;
       }
 
-      var nodePanel = new NodePanelComponent({
-
-        hypergraphID: ctx.$parent.$options.hypergraphID,
-
-        graphComponent: ctx.$parent,
-
-        data: {
-          isNew: false,
-          node: ctx.$data
-        },
-
-        methods: {
-
-          // TODO: should abstract this method out into FloatingPanelBar
-          closeNodePanel: function() {
-            ctx.$parent.$options.floatingPanelBar.removePanel();
-          }
-
-        }
-
-      });
-
-      ctx.$parent.$options.floatingPanelBar.setPanel(nodePanel);
+      ctx.$parent.$parent.nodeInfoToDisplay = ctx.$data;
     };
 
     // focus on node

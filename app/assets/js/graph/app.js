@@ -289,6 +289,7 @@ define([
 
   var floatingPanelBar = new FloatingPanelBarComponent();
 
+  Vue.component('x-node-panel', NodePanelComponent);
   Vue.component('x-graph-controls', GraphControlsComponent);
   Vue.component('x-graph', GraphComponent);
   Vue.component('x-nav', NavComponent);
@@ -297,7 +298,6 @@ define([
 
   graphContextMenu.$mount('#graphContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
-  floatingPanelBar.$mount('#floatingPanelBar');
 
   var app = new Vue({
 
@@ -316,10 +316,12 @@ define([
     edgeContextMenu: edgeContextMenu,
 
     data: {
+      hypergraphID: hypergraphID,
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
       graph: _graph, // _graph is bootstrapped into the graph.scala.html view
       nodes: [],
-      edges: []
+      edges: [],
+      nodeInfoToDisplay: null
     },
 
     methods: {
@@ -334,6 +336,19 @@ define([
 
       centerView: function() {
         this.$.graphComponent.centerView();
+      },
+
+      createNode: function(node) {
+        var self = this;
+
+        return NodeDAO.create(this.hypergraphID, node)
+            .then(function(node) {
+              self.nodes.push(node);
+            });
+      },
+
+      updateNode: function(node) {
+        return NodeDAO.update(this.hypergraphID, [ node ]);
       },
 
       saveAllGraphData: function() {

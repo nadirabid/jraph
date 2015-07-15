@@ -11,12 +11,11 @@
     </x-nav>
 
     <main id="main">
-      <div class="x-paper hidden floating-panel-bar" id="floatingPanelBar" v-cloak>
-        <div class="panel-bar-menu" v-on="click: closePanel">
-          <button><i class="fa fa-times"></i></button>
-        </div>
-        <div class="panel-bar-content" v-el="panelContent"></div>
-      </div>
+      <x-node-panel
+          v-if="nodeInfoToDisplay"
+          hypergraph-id="{{ hypergraphID }}"
+          node="{{@@ nodeInfoToDisplay }}">
+      </x-node-panel>
 
       <div v-el="graphContainer" class="graph-container">
         <x-graph

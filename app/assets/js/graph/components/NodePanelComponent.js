@@ -1,9 +1,10 @@
 define([
     'vue',
     'lodash',
+    'jquery',
     'shared/util',
     'shared/daos/NodeDAO'
-], function(Vue, _, util, NodeDAO) {
+], function(Vue, _, $, util, NodeDAO) {
   'use strict';
 
   function NodeProperty(nodeProperty) {
@@ -40,14 +41,22 @@ define([
 
   return Vue.extend({
 
-    template: '#node.panel',
+    template: document.getElementById('node.panel').innerHTML,
 
-    hypergraphID: null,
-
-    graphComponent: null,
+    props: {
+      'hypergraphID': {
+        required: true,
+        type: String
+      },
+      'node': {
+        required: true,
+        type: Object
+      }
+    },
 
     data: function() {
       return {
+        padding: 0,
         saving:false,
         isNew: false,
         hasChanges: false,
@@ -80,7 +89,34 @@ define([
 
     methods: {
 
-      /**
+      closePanel: function() {
+        this.$destroy(true);
+      },
+
+      updateDimensionsAndPosition: function() {
+        var padding = this.padding;
+        var windowHeight = $(window).outerHeight();
+        var navHeight = 50;
+
+        var self = this;
+
+        Vue.nextTick(function () {
+          $(self.$el).css({
+            top: padding + 'px',
+            left: padding + 'px'
+          });
+
+          $(self.$el).outerHeight(
+              windowHeight - (2 * padding) - navHeight
+          );
+
+          $(self.$$.panelContent).outerHeight(
+              $(self.$el).innerHeight() - (2 * padding)
+          );
+        });
+      },
+
+        /**
        *
        * Methods to handle updates for tag properties
        *
@@ -329,9 +365,9 @@ define([
       createNode: function() {
         var self = this;
 
-        NodeDAO.create(this.$options.hypergraphID, this.node)
+        NodeDAO.create(this.hypergraphID, this.node)
             .done(function(node) {
-              self.$options.graphComponent.nodes.push(node);
+              self.$parent.nodes.push(node);
               self.saving = false;
               self.hasChanges = false;
               self.isNew = false;
@@ -346,7 +382,7 @@ define([
       saveNode: function() {
         var self = this;
 
-        NodeDAO.update(this.$options.hypergraphID, [ this.node ])
+        NodeDAO.update(this.hypergraphID, [ this.node ])
             .done(function(nodes) {
               var node = nodes[0];
 
@@ -386,18 +422,14 @@ define([
     },
 
     created: function() {
-      if (!this.$options.hypergraphID) {
-        throw 'Option hypergraphID must be set';
-      }
-
-      if (!this.$options.graphComponent) {
-        throw 'Option graphComponent must be set';
-      }
-
       this.initializeNodeData();
     },
 
     ready: function() {
+      this.$updateDimensionsAndPosition = this.updateDimensionsAndPosition.bind(this);
+      window.addEventListener('resize', this.$updateDimensionsAndPosition);
+      this.updateDimensionsAndPosition();
+
       if (this.isNew) {
         this.editName();
       }
@@ -406,16 +438,18 @@ define([
 
       this.$watch('node.markedForDeletion', function(markedForDeletion) {
         if (markedForDeletion === true) {
-          self.$options.graphComponent.$options.floatingPanelBar.closePanel();
+          self.$destroy(true);
         }
       });
 
       if (this.node.markedForDeletion) {
-        self.$options.graphComponent.$options.floatingPanelBar.closePanel();
+        self.$destroy(true);
       }
     },
 
     beforeDestroy: function() {
+      window.removeEventListener('resize', this.$updateDimensionsAndPosition);
+
       if (this.isNew) {
         this.$emit('removeGhostNode');
       }
