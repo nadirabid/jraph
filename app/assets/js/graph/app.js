@@ -13,7 +13,7 @@ define([
     'graph/components/NodeComponent',
     'graph/components/EdgeComponent',
     'graph/components/FloatingPanelBarComponent',
-    'graph/components/ViewControlsComponent',
+    'graph/components/GraphControlsComponent',
     'graph/components/ContextMenuComponent',
     'graph/components/NodePanelComponent'
 ], function (
@@ -31,7 +31,7 @@ define([
     NodeComponent,
     EdgeComponent,
     FloatingPanelBarComponent,
-    ViewControlsComponent,
+    GraphControlsComponent,
     ContextMenuComponent,
     NodePanelComponent
 ) {
@@ -289,7 +289,7 @@ define([
 
   var floatingPanelBar = new FloatingPanelBarComponent();
 
-  Vue.component('x-graph-controls', ViewControlsComponent);
+  Vue.component('x-graph-controls', GraphControlsComponent);
   Vue.component('x-graph', GraphComponent);
   Vue.component('x-nav', NavComponent);
   Vue.component('x-edge', EdgeComponent);

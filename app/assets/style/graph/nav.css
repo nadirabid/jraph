@@ -6,22 +6,22 @@ nav {
     position:relative;
 }
 
-.graph-controls {
+.graph-data-state {
     position:absolute;
     top:8px;
     right:12px;
     transition:all 100ms ease;
 }
 
-.graph-controls > button {
+.graph-data-state > button {
     width:80px;
 }
 
-.graph-controls > button:focus {
+.graph-data-state > button:focus {
     outline:none;
 }
 
-.graph-controls > button.saved {
+.graph-data-state > button.saved {
     background-color:#ccc;
     border:0;
     border-radius:2px;
@@ -34,7 +34,7 @@ nav {
     pointer-events: none;
 }
 
-.graph-controls > button.unsaved {
+.graph-data-state > button.unsaved {
     box-shadow:0 1px 4px rgba(0,0,0,0.4);
     background-color:#F50057;
     border:none;
@@ -47,11 +47,11 @@ nav {
     padding:8px;
 }
 
-.graph-controls > button.unsaved:active {
+.graph-data-state > button.unsaved:active {
     box-shadow:0 1px 1px rgba(0,0,0,0.2);
 }
 
-.graph-controls > button.saving {
+.graph-data-state > button.saving {
     background-color:transparent;
     border:0;
     cursor:default;

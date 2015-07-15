@@ -60,7 +60,7 @@ body {
     Graph view styles
 ***/
 
-#graph {
+.graph {
     flex: 1 1 auto;
     -webkit-flex: 1 1 auto;
 }
@@ -259,13 +259,13 @@ text {
     background-color:inherit;
 }
 
-.view-controls {
+.graph-controls {
     position:absolute;
     bottom:12px;
     right:12px;
 }
 
-.view-controls-group {
+.graph-controls-group {
     background-color:#fff;
     box-shadow:0px 1px 4px rgba(0,0,0,0.3);
     display:flex;
@@ -274,11 +274,11 @@ text {
     width:30px;
 }
 
-.view-controls-group:first-child {
+.graph-controls-group:first-child {
     margin-bottom:5px;
 }
 
-.view-controls-group > button {
+.graph-controls-group > button {
     cursor:pointer;
     color:#777;
     font-size:14px;
@@ -289,11 +289,11 @@ text {
     padding:6px;
 }
 
-.view-controls-group > button:hover {
+.graph-controls-group > button:hover {
     color:#333;
 }
 
-.view-controls-group > button:focus {
+.graph-controls-group > button:focus {
     outline:none;
 }
 

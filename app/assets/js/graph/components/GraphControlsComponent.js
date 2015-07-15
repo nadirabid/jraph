@@ -3,7 +3,7 @@ define([
 ], function(Vue) {
   'use strict';
 
-  var ViewControlsComponent = Vue.extend({
+  return Vue.extend({
 
     template: '#graphControls',
 
@@ -23,7 +23,5 @@ define([
     }
 
   });
-
-  return ViewControlsComponent;
 
 });

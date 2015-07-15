@@ -44,11 +44,11 @@
   </div>
 
   <template id="graphControls">
-    <div class="view-controls">
-      <div class="view-controls-group">
+    <div class="graph-controls">
+      <div class="graph-controls-group">
         <button v-on="click: centerView"><i class="fa fa-dot-circle-o"></i></button>
       </div>
-      <div class="view-controls-group">
+      <div class="graph-controls-group">
         <button v-on="click: incrementZoom"><i class="fa fa-plus"></i></button>
         <button v-on="click: decrementZoom"><i class="fa fa-minus"></i></button>
       </div>
@@ -57,8 +57,7 @@
 
   <template id="graph">
     <svg
-        id="graph"
-        class="x-noselect"
+        class="x-noselect graph"
         v-on="
             contextmenu: contextMenu,
             wheel: mousewheelZoom
@@ -126,7 +125,7 @@
             "
         >
       </div>
-      <div class="graph-controls">
+      <div class="graph-data-state">
         <button
             v-attr="class: dataStateCssClassValue"
             v-on="click:onSave"
