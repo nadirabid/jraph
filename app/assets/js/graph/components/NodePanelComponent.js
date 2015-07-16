@@ -92,7 +92,7 @@ define([
     methods: {
 
       closePanel: function() {
-        this.$destroy(true);
+        this.$parent.nodeInfoToDisplay = null;
       },
 
       updateDimensionsAndPosition: function() {
@@ -453,12 +453,12 @@ define([
 
       this.$watch('node.markedForDeletion', function(markedForDeletion) {
         if (markedForDeletion === true) {
-          self.$destroy(true);
+          self.$parent.nodeInfoToDisplay = null;
         }
       });
 
       if (this.node.markedForDeletion) {
-        self.$destroy(true);
+        this.$parent.nodeInfoToDisplay = null;
       }
     },
 
