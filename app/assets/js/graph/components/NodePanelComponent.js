@@ -454,6 +454,10 @@ define([
 
       var self = this;
 
+      Mousetrap.bind('esc', function() {
+        self.$parent.nodeInfoToDisplay = null;
+      });
+
       this.$watch('node.markedForDeletion', function(markedForDeletion) {
         if (markedForDeletion === true) {
           self.$parent.nodeInfoToDisplay = null;
@@ -466,6 +470,7 @@ define([
     },
 
     beforeDestroy: function() {
+      Mousetrap.unbind('esc');
       window.removeEventListener('resize', this.$updateDimensionsAndPosition);
 
       if (this.node.isNew) {
