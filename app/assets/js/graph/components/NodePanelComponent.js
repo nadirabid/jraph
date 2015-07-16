@@ -89,21 +89,6 @@ define([
       };
     },
 
-    computed: {
-
-      hasChanges: function() {
-        if (this.node.data.name !== this.node._savedName) {
-          return true;
-        }
-        else if (!_.isEqual(this.node._savedProperties, this.node.data.properties)) {
-          return true;
-        }
-
-        return false;
-      }
-
-    },
-
     methods: {
 
       closePanel: function() {
