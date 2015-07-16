@@ -98,6 +98,8 @@ define([
       ctx.py = ctx.y = p.y;
 
       ctx.dragFlag = true;
+
+      ctx.$parent.$parent.dataState = 'UNSAVED';
     };
 
     this.dragend = function () {

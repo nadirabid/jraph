@@ -328,14 +328,14 @@ define([
 
       saveAllGraphData: function() {
         var updateNodesPromise = NodeDAO.update(hypergraphID, this.nodes);
-        var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
+        //var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
         var updateGraphPromise = HypergraphDAO.update(this.graph);
 
         var self = this;
         this.dataState = 'SAVING';
 
         return $
-            .when(updateGraphPromise, updateNodesPromise, updateEdgesPromise)
+            .when(updateGraphPromise, updateNodesPromise)
             .then(function() {
               self.dataState = 'SAVED';
             });
