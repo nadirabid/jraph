@@ -57,15 +57,17 @@ define([
     data: function() {
       return {
         padding: 0,
+
         saving:false,
-        isNew: false,
-        hasChanges: false,
+
         editingNodeName: false,
         nodeNameCache: '',
+
         tagInputValue: '',
         linkInputValue: '',
         emailInputValue: '',
         phoneNumberInputValue: '',
+
         validationError: {
           tags: {
             hasErrors: false,
@@ -85,6 +87,21 @@ define([
           }
         }
       };
+    },
+
+    computed: {
+
+      hasChanges: function() {
+        if (this.node.data.name !== this.node._savedName) {
+          return true;
+        }
+        else if (!_.isEqual(this.node._savedProperties, this.node.data.properties)) {
+          return true;
+        }
+
+        return false;
+      }
+
     },
 
     methods: {
@@ -147,13 +164,13 @@ define([
           this.tagInputValue = '';
           this.validationError.tags.hasErrors = false;
 
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.tags, this.node.data.properties.tags);
         }
       },
 
       removeTag: function(indexOfTag) {
         this.node.data.properties.tags.$remove(indexOfTag);
-        this.hasChanges = !_.isEqual(this._originalNodeProperties.tags, this.node.data.properties.tags);
+        this.node.hasChanges = !_.isEqual(this.node._savedProperties.tags, this.node.data.properties.tags);
       },
 
       /**
@@ -209,7 +226,7 @@ define([
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
 
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
         }
       },
 
@@ -221,13 +238,13 @@ define([
         }
         else {
           link.cachedValue_ = link.value;
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
         }
       },
 
       removeLink: function(indexOfLink, e) {
         this.node.data.properties.links.$remove(indexOfLink);
-        this.hasChanges = !_.isEqual(this._originalNodeProperties.links, this.node.data.properties.links);
+        this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
         e.stopPropagation();
       },
 
@@ -261,7 +278,7 @@ define([
           this.emailInputValue = '';
           this.validationError.emails.hasErrors = false;
 
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
         }
       },
 
@@ -273,13 +290,13 @@ define([
         }
         else {
           email.cachedValue_ = email.value;
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
         }
       },
 
       removeEmail: function(indexOfEmail, e) {
         this.node.data.properties.emails.$remove(indexOfEmail);
-        this.hasChanges = !_.isEqual(this._originalNodeProperties.emails, this.node.data.properties.emails);
+        this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
         e.stopPropagation();
       },
 
@@ -298,7 +315,7 @@ define([
           this.node.data.properties.phoneNumbers.push(new NodeProperty({ value: this.phoneNumberInputValue }));
           this.phoneNumberInputValue = '';
           this.validationError.phoneNumbers.hasErrors = false;
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
         }
       },
 
@@ -310,13 +327,13 @@ define([
         }
         else {
           phoneNumber.cachedValue_ = phoneNumber.value;
-          this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+          this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
         }
       },
 
       removePhoneNumber: function(indexOfPhoneNumber, e) {
         this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
-        this.hasChanges = !_.isEqual(this._originalNodeProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+        this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
         e.stopPropagation();
       },
 
@@ -347,7 +364,7 @@ define([
           this.node.data.name = this.nodeNameCache;
         }
 
-        this.hasChanges = this.node.data.name !== this._originalNodeName;
+        this.node.hasChanges = this.node.data.name !== this.node._savedName;
         this.editingNodeName = false;
       },
 
@@ -369,10 +386,8 @@ define([
             .done(function(node) {
               self.$parent.nodes.push(node);
               self.saving = false;
-              self.hasChanges = false;
-              self.isNew = false;
               self.node = node;
-              self.initializeNodeData();
+              self.initializeData();
               self.$emit('removeGhostNode');
             });
 
@@ -386,23 +401,23 @@ define([
             .done(function(nodes) {
               var node = nodes[0];
 
-              self.hasChanges = false;
               self.saving = false;
-              self._originalNodeName = node.data.name;
-              self._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+              self.node = node;
+              self.node._savedName = node.data.name;
+              self.node._savedProperties = new NodeProperties(_.cloneDeep(node.data.properties));
             });
 
         this.saving = true;
       },
 
       cancelEdits: function() {
-        this.node.data.name = this._originalNodeName;
-        this.node.data.properties = new NodeProperties(_.cloneDeep(this._originalNodeProperties));
+        this.node.data.name = this.node._savedName;
+        this.node.data.properties = new NodeProperties(_.cloneDeep(this.node._savedProperties));
 
-        this.hasChanges = false;
+        this.node.hasChanges = false;
       },
 
-      initializeNodeData: function() {
+      initializeData: function() {
         var node = this.node;
 
         if (!node.data) {
@@ -415,14 +430,29 @@ define([
           this.$set('node.data.properties', new NodeProperties(node.data.properties));
         }
 
-        this._originalNodeName = this.node.data.name;
-        this._originalNodeProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+        if (!this.node._savedName) {
+          this.node._savedName = this.node.data.name;
+        }
+
+        if (!this.node._savedProperties) {
+          this.node._savedProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+        }
       }
 
     },
 
+    watch: {
+      'node': function() {
+        this.initializeData();
+
+        if (this.node.isNew) {
+          this.editName();
+        }
+      }
+    },
+
     created: function() {
-      this.initializeNodeData();
+      this.initializeData();
     },
 
     ready: function() {
@@ -430,7 +460,7 @@ define([
       window.addEventListener('resize', this.$updateDimensionsAndPosition);
       this.updateDimensionsAndPosition();
 
-      if (this.isNew) {
+      if (this.node.isNew) {
         this.editName();
       }
 
@@ -450,7 +480,7 @@ define([
     beforeDestroy: function() {
       window.removeEventListener('resize', this.$updateDimensionsAndPosition);
 
-      if (this.isNew) {
+      if (this.node.isNew) {
         this.$emit('removeGhostNode');
       }
     }

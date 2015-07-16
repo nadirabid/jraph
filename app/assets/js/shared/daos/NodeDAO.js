@@ -18,6 +18,9 @@ define([
 
     datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
 
+    datum.isNew = datum.isNew || false;
+    datum.hasChanges = datum.hasChanges || false;
+
     return datum;
   };
 
