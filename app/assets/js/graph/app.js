@@ -12,7 +12,6 @@ define([
     'graph/components/NavComponent',
     'graph/components/NodeComponent',
     'graph/components/EdgeComponent',
-    'graph/components/FloatingPanelBarComponent',
     'graph/components/GraphControlsComponent',
     'graph/components/ContextMenuComponent',
     'graph/components/NodePanelComponent'
@@ -30,7 +29,6 @@ define([
     NavComponent,
     NodeComponent,
     EdgeComponent,
-    FloatingPanelBarComponent,
     GraphControlsComponent,
     ContextMenuComponent,
     NodePanelComponent
@@ -193,7 +191,6 @@ define([
       this.$options.edgesMap = this.$parent.$options.edgesMap;
       this.$options.nodeComponentsMap = this.$parent.$options.nodeComponentsMap;
       this.$options.hypergraphID = this.$parent.$options.hypergraphID;
-      this.$options.floatingPanelBar = this.$parent.$options.floatingPanelBar;
       this.$options.edgeContextMenu = this.$parent.$options.edgeContextMenu;
 
       this.resize();
@@ -210,57 +207,16 @@ define([
   /// MAIN APP CODE
   ///
 
-  var graphComponent = new GraphComponent({});
-
   var graphContextMenu = new ContextMenuComponent({
 
     methods: {
 
       addNode: function(e) {
-        var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
-        var p = graphComponent.$el.createSVGPoint();
-        p.x = e.clientX;
-        p.y = e.clientY;
-        p = p.matrixTransform(ctm.inverse());
-
-        var nodeData = {
-          x: p.x,
-          y: p.y,
-          fixed: false,
-          isNew: true,
-          data: {
-            name: 'Node Name',
-            properties: {}
-          }
-        };
-
-        var nodeComponent = graphComponent
-            .$addChild({ data: nodeData}, NodeComponent)
-            .$mount()
-            .$appendTo(graphComponent.$$.dynamicContent);
-
-        var nodePanel = new NodePanelComponent({
-
-          graphComponent: graphComponent,
-
-          hypergraphID: hypergraphID,
-
-          data: {
-            isNew: true,
-            node: nodeData
-          }
-
-        });
-
-        nodePanel.$on('removeGhostNode', function() {
-          nodeComponent.$destroy(true);
-        });
-
-        floatingPanelBar.setPanel(nodePanel);
+        app.newNode(e.clientX, e.clientY);
       },
 
       saveGraph: function() {
-        NodeDAO.update(hypergraphID, graphComponent.nodes);
+        app.saveAllGraphData();
       }
 
     }
@@ -287,8 +243,6 @@ define([
 
   });
 
-  var floatingPanelBar = new FloatingPanelBarComponent();
-
   Vue.component('x-node-panel', NodePanelComponent);
   Vue.component('x-graph-controls', GraphControlsComponent);
   Vue.component('x-graph', GraphComponent);
@@ -311,8 +265,6 @@ define([
 
     hypergraphID: hypergraphID,
 
-    floatingPanelBar: floatingPanelBar,
-
     edgeContextMenu: edgeContextMenu,
 
     data: {
@@ -326,6 +278,42 @@ define([
 
     methods: {
 
+      newNode: function(x, y) {
+        var graphComponent = this.$.graphComponent;
+
+        var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
+        var p = graphComponent.$el.createSVGPoint();
+        p.x = x;
+        p.y = y;
+        p = p.matrixTransform(ctm.inverse());
+
+        var nodeData = {
+          x: p.x,
+          y: p.y,
+          fixed: false,
+          isNew: true,
+          hasChanges: false,
+          markedForDeletion: false,
+          data: {
+            name: 'Node Name',
+            properties: {}
+          }
+        };
+
+        var nodeComponent = graphComponent
+            .$addChild({ data: nodeData}, NodeComponent)
+            .$mount()
+            .$appendTo(graphComponent.$$.dynamicContent);
+
+        nodeComponent.$watch('markedForDeletion', function(markedForDeletion) {
+          if (markedForDeletion) {
+            nodeComponent.$destroy(true);
+          }
+        });
+
+        this.nodeInfoToDisplay = nodeData;
+      },
+
       incrementZoom: function() {
         this.$.graphComponent.incrementZoomLevel();
       },
@@ -336,19 +324,6 @@ define([
 
       centerView: function() {
         this.$.graphComponent.centerView();
-      },
-
-      createNode: function(node) {
-        var self = this;
-
-        return NodeDAO.create(this.hypergraphID, node)
-            .then(function(node) {
-              self.nodes.push(node);
-            });
-      },
-
-      updateNode: function(node) {
-        return NodeDAO.update(this.hypergraphID, [ node ]);
       },
 
       saveAllGraphData: function() {

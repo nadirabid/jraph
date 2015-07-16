@@ -369,9 +369,12 @@ define([
 
         NodeDAO.create(this.hypergraphID, this.node)
             .done(function(node) {
+              self.node.markedForDeletion = true; // mark temp node as markedForDeletion
+
+              // reset data now
+              self.node = node;
               self.$parent.nodes.push(node);
               self.saving = false;
-              self.node = node;
               self.initializeData();
               self.$emit('removeGhostNode');
             });
@@ -466,7 +469,7 @@ define([
       window.removeEventListener('resize', this.$updateDimensionsAndPosition);
 
       if (this.node.isNew) {
-        this.$emit('removeGhostNode');
+        this.node.markedForDeletion = true;
       }
     }
 
