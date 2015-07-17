@@ -15,6 +15,7 @@ nav {
 
 .graph-data-state > button {
     width:80px;
+    transition:all 100ms ease;
 }
 
 .graph-data-state > button:focus {
@@ -22,7 +23,7 @@ nav {
 }
 
 .graph-data-state > button.saved {
-    background-color:#ccc;
+    background-color:#dfdfdf;
     border:0;
     border-radius:2px;
     opacity:.6;
