@@ -173,6 +173,10 @@ class ApplicationController @Inject() (
     }
   }
 
+  def createAccount = UserAwareAction { implicit req =>
+    Ok(views.html.account.createAccount(SignInForm.form))
+  }
+
   def signIn = UserAwareAction { implicit req =>
     req.identity match {
       case Some(user) if WithAccess("dev").isAuthorized(user) =>
