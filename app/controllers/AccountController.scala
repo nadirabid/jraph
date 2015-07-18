@@ -30,7 +30,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
 
   def createAccount = UserAwareAction.async { implicit  req =>
     req.identity match {
-      case Some(user) => Redirect(routes.ApplicationController.userGraphs())
+      case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None =>
         CreateAccountForm.form.bindFromRequest.fold(
           form => Future.successful(BadRequest(views.html.account.createAccount(form))),
@@ -39,7 +39,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
             userService.retrieve(loginInfo).flatMap {
               case Some(user) => Future.successful(Redirect(routes.ApplicationController.createAccount()))
               case None =>
-                val passwordInfo = passwordHasher.hash(data.password)
+                val passwordInfo = passwordHasher.hash(data.passphrase)
                 val fullName = data.fullName.getOrElse("").split(" ")
                 val firstName = fullName.lift(0)
                 val lastName = fullName.lift(1)

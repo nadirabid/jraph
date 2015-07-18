@@ -21,7 +21,7 @@ POST          /account/password/update                         @controllers.Appl
 POST          /credentials                                     @controllers.CredentialsAuthController.authenticate
 POST          /devAccessCredentials                            @controllers.CredentialsAuthController.authenticateDevAccess
 
-POST          /account/create                                  @controllers.AccountController.create
+POST          /account/create                                  @controllers.AccountController.createAccount
 DELETE        /account/delete                                  @controllers.AccountController.delete
 
 POST          /hypergraph                                      @controllers.HypergraphController.create
