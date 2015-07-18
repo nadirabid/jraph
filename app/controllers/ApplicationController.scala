@@ -174,7 +174,7 @@ class ApplicationController @Inject() (
   }
 
   def createAccount = UserAwareAction { implicit req =>
-    Ok(views.html.account.createAccount(SignInForm.form))
+    Ok(views.html.account.createAccount(CreateAccountForm.form))
   }
 
   def signIn = UserAwareAction { implicit req =>
