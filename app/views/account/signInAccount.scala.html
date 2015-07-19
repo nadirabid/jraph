@@ -1,0 +1,193 @@
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sign up!</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
+
+    <style>
+    ::-webkit-input-placeholder {
+      color: #ccc;
+    }
+
+    :-moz-placeholder { /* Firefox 18- */
+      color: #ccc;
+    }
+
+    ::-moz-placeholder {  /* Firefox 19+ */
+      color: #ccc;
+    }
+
+    :-ms-input-placeholder {
+      color: #ccc;
+    }
+
+    * {
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      box-sizing:border-box;
+    }
+
+    html, body {
+      background-color:#EC407A;
+      width:100%;
+      height:100%;
+      margin:0;
+    }
+
+    #app {
+      width:390px;
+      margin:auto;
+      top:130px;
+      position:relative;
+    }
+
+    #appLogo {
+      width:200px;
+      margin:auto;
+      padding-bottom:10px;
+    }
+
+    form#createAccount {
+      display:block;
+      width:100%;
+    }
+
+    .form-group {
+      display:flex;
+      margin-bottom:1px;
+      align-content: center;
+    }
+
+    .form-group:first-child {
+      overflow:hidden;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+    }
+
+    input {
+      flex:auto;
+      font-family: 'Nato Sans', sans-serif;
+      font-size:20px;
+      font-weight:400;
+      border:0;
+      margin:0;
+      padding:10px 20px;
+      color:#C2185B;
+    }
+
+    label {
+      font-weight:600;
+      text-transform:lowercase;
+      padding:0 10px 0 0;
+      text-align:right;
+      width:100px;
+      font-size:12px;
+      color:#FCE4EC;
+      font-family: 'Nato Sans', sans-serif;
+      background-color:#F06292;
+      display:flex;
+      align-items:center;
+      justify-content: flex-end;
+    }
+
+    input:first-child {
+      display:inline;
+    }
+
+    input:focus {
+      outline:none;
+    }
+
+    button {
+      cursor:pointer;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      font-family: 'Nato Sans', sans-serif;
+      font-size:14px;
+      font-weight:600;
+      line-height:1.6;
+      color:#FCE4EC;
+      display:block;
+      background-color:#FF4081;
+      width:100%;
+      border:0;
+      padding:10px 15px;
+      text-transform : uppercase;
+      transition:background 100ms ease;
+    }
+
+    button:hover {
+      background-color:#F50057;
+    }
+
+    button:active {
+      background-color:#C2185B;
+    }
+
+    button:focus {
+      outline:none;
+    }
+
+    p {
+      font-family: 'Nato Sans', sans-serif;
+      color: #fff;
+      text-align: center;
+      font-size: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div id="appLogo">
+        <svg version="1.1" viewBox="0.0 0.0 640.0 490.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="p.0"><path d="m0 0l640.0 0l0 490.0l-640.0 0l0 -490.0z" clip-rule="nonzero"></path></clipPath><g clip-path="url(#p.0)"><path fill="#000000" fill-opacity="0.0" d="m0 0l640.0 0l0 490.0l-640.0 0z" fill-rule="nonzero"></path><path fill="#ffffff" d="m247.53543 16.223303l0 0c0 -5.69401 4.615906 -10.309917 10.309906 -10.309917l41.238434 0l0 0c2.734375 0 5.3567505 1.0862203 7.290222 3.0197053c1.9335022 1.9334841 3.0197144 4.555852 3.0197144 7.2902117l0 134.49828c0 5.6940155 -4.615906 10.309921 -10.309937 10.309921l-41.238434 0c-5.6940002 0 -10.309906 -4.615906 -10.309906 -10.309921z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m247.53543 16.223303l0 0c0 -5.69401 4.615906 -10.309917 10.309906 -10.309917l41.238434 0l0 0c2.734375 0 5.3567505 1.0862203 7.290222 3.0197053c1.9335022 1.9334841 3.0197144 4.555852 3.0197144 7.2902117l0 134.49828c0 5.6940155 -4.615906 10.309921 -10.309937 10.309921l-41.238434 0c-5.6940002 0 -10.309906 -4.615906 -10.309906 -10.309921z" fill-rule="nonzero"></path><path fill="#ffffff" d="m330.6378 16.218054l0 0c0 -5.69401 4.615906 -10.309917 10.309937 -10.309917l41.238434 0l0 0c2.7343445 0 5.35672 1.0862203 7.2901917 3.0197048c1.9335022 1.933485 3.0197144 4.555853 3.0197144 7.2902126l0 134.49828c0 5.6940155 -4.615906 10.309921 -10.309906 10.309921l-41.238434 0c-5.694031 0 -10.309937 -4.615906 -10.309937 -10.309921z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m330.6378 16.218054l0 0c0 -5.69401 4.615906 -10.309917 10.309937 -10.309917l41.238434 0l0 0c2.7343445 0 5.35672 1.0862203 7.2901917 3.0197048c1.9335022 1.933485 3.0197144 4.555853 3.0197144 7.2902126l0 134.49828c0 5.6940155 -4.615906 10.309921 -10.309906 10.309921l-41.238434 0c-5.694031 0 -10.309937 -4.615906 -10.309937 -10.309921z" fill-rule="nonzero"></path><path fill="#ffffff" d="m283.5857 465.3839l0 0c0 -7.9668274 16.505524 -14.425201 36.86615 -14.425201l0 0c20.360596 0 36.86612 6.458374 36.86612 14.425201l0 0c0 7.966797 -16.505524 14.425171 -36.86612 14.425171l0 0c-20.360626 0 -36.86615 -6.458374 -36.86615 -14.425171z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m283.5857 465.3839l0 0c0 -7.9668274 16.505524 -14.425201 36.86615 -14.425201l0 0c20.360596 0 36.86612 6.458374 36.86612 14.425201l0 0c0 7.966797 -16.505524 14.425171 -36.86612 14.425171l0 0c-20.360626 0 -36.86615 -6.458374 -36.86615 -14.425171z" fill-rule="nonzero"></path><path fill="#ffffff" d="m418.54453 199.63893l0 0c6.4795837 22.326218 59.824677 25.999603 119.14963 8.204727q28.699219 -8.608505 51.935303 -36.041q46.884277 -25.804062 43.749695 -36.60466l0 0c-6.479553 -22.326225 -59.824646 -25.999603 -119.1496 -8.204727l0 0c-59.32492 17.794876 -102.16458 50.319443 -95.68503 72.64566z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m418.54453 199.63893l0 0c6.4795837 22.326218 59.824677 25.999603 119.14963 8.204727q28.699219 -8.608505 51.935303 -36.041q46.884277 -25.804062 43.749695 -36.60466l0 0c-6.479553 -22.326225 -59.824646 -25.999603 -119.1496 -8.204727l0 0c-59.32492 17.794876 -102.16458 50.319443 -95.68503 72.64566z" fill-rule="nonzero"></path><path fill="#ffffff" d="m294.2132 458.16733l0 0c-2.0003967 -6.262146 0.56604004 -12.72757 5.7322693 -14.4409485l0 0c2.4809265 -0.8227844 5.241852 -0.41729736 7.6753845 1.1272888c2.4335632 1.5445862 4.340393 4.1017456 5.300995 7.108917l0 0c2.0003967 6.262146 -0.5660095 12.72757 -5.7322693 14.4409485l0 0c-5.16626 1.7134094 -10.975983 -1.9740906 -12.976379 -8.236206z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m294.2132 458.16733l0 0c-2.0003967 -6.262146 0.56604004 -12.72757 5.7322693 -14.4409485l0 0c2.4809265 -0.8227844 5.241852 -0.41729736 7.6753845 1.1272888c2.4335632 1.5445862 4.340393 4.1017456 5.300995 7.108917l0 0c2.0003967 6.262146 -0.5660095 12.72757 -5.7322693 14.4409485l0 0c-5.16626 1.7134094 -10.975983 -1.9740906 -12.976379 -8.236206z" fill-rule="nonzero"></path><path fill="#ffffff" d="m210.85301 259.3962l0 0c0 -16.568542 15.017853 -30.0 33.54332 -30.0l0 0c18.525452 0 33.543304 13.4314575 33.543304 30.0l0 0c0 16.568542 -15.017853 30.0 -33.543304 30.0l0 0c-18.525467 0 -33.54332 -13.4314575 -33.54332 -30.0z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m210.85301 259.3962l0 0c0 -16.568542 15.017853 -30.0 33.54332 -30.0l0 0c18.525452 0 33.543304 13.4314575 33.543304 30.0l0 0c0 16.568542 -15.017853 30.0 -33.543304 30.0l0 0c-18.525467 0 -33.54332 -13.4314575 -33.54332 -30.0z" fill-rule="nonzero"></path><path fill="#ffffff" d="m363.1391 259.39102l0 0c0 -16.568542 15.017853 -30.0 33.543304 -30.0l0 0c18.525482 0 33.543304 13.4314575 33.543304 30.0l0 0c0 16.568542 -15.017822 30.0 -33.543304 30.0l0 0c-18.525452 0 -33.543304 -13.4314575 -33.543304 -30.0z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m363.1391 259.39102l0 0c0 -16.568542 15.017853 -30.0 33.543304 -30.0l0 0c18.525482 0 33.543304 13.4314575 33.543304 30.0l0 0c0 16.568542 -15.017822 30.0 -33.543304 30.0l0 0c-18.525452 0 -33.543304 -13.4314575 -33.543304 -30.0z" fill-rule="nonzero"></path><path fill="#ffffff" d="m347.61893 458.16733l0 0c2.0003967 -6.262146 -0.56604004 -12.72757 -5.7322693 -14.4409485l0 0c-2.4809265 -0.8227844 -5.241852 -0.41729736 -7.6753845 1.1272888c-2.4335632 1.5445862 -4.3403625 4.1017456 -5.300995 7.108917l0 0c-2.0003967 6.262146 0.5660095 12.72757 5.7322693 14.4409485l0 0c5.16626 1.7134094 10.975983 -1.9740906 12.976379 -8.236206z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m347.61893 458.16733l0 0c2.0003967 -6.262146 -0.56604004 -12.72757 -5.7322693 -14.4409485l0 0c-2.4809265 -0.8227844 -5.241852 -0.41729736 -7.6753845 1.1272888c-2.4335632 1.5445862 -4.3403625 4.1017456 -5.300995 7.108917l0 0c-2.0003967 6.262146 0.5660095 12.72757 5.7322693 14.4409485l0 0c5.16626 1.7134094 10.975983 -1.9740906 12.976379 -8.236206z" fill-rule="nonzero"></path><path fill="#ffffff" d="m217.27724 199.97365l0 0c-6.5491333 22.300125 -59.90834 25.80429 -119.1811 7.826767q-27.293808 -8.278244 -48.760815 -36.39702q-49.719486 -26.263397 -46.70375 -36.532104l0 0c6.5491405 -22.300133 59.908337 -25.804298 119.18111 -7.8267746l0 0c59.27276 17.977516 102.01371 50.629005 95.46456 72.92913z" fill-rule="nonzero"></path><path stroke="#ffffff" stroke-width="2.0" stroke-linejoin="round" stroke-linecap="butt" d="m217.27724 199.97365l0 0c-6.5491333 22.300125 -59.90834 25.80429 -119.1811 7.826767q-27.293808 -8.278244 -48.760815 -36.39702q-49.719486 -26.263397 -46.70375 -36.532104l0 0c6.5491405 -22.300133 59.908337 -25.804298 119.18111 -7.8267746l0 0c59.27276 17.977516 102.01371 50.629005 95.46456 72.92913z" fill-rule="nonzero"></path></g></svg>
+      </div>
+
+      <form
+          id="createAccount"
+          method="POST"
+          action="@routes.CredentialsAuthController.authenticate()"
+      >
+        <div class="form-group">
+          <label>Email</label>
+          <input
+              type="text"
+              title="email"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="winston@@churchill.com"
+              id="@signInForm("identifier").id"
+              name="@signInForm("identifier").name"
+              value="@signInForm("identifier").value"
+          >
+        </div>
+        <div class="form-group">
+          <label>Passphrase</label>
+          <input
+              type="password"
+              title="password"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="never give up"
+              id="@signInForm("password").id"
+              name="@signInForm("password").name"
+              value="@signInForm("password").value"
+          >
+        </div>
+        <button type="submit">Sign in</button>
+      </form>
+
+      <p>jraph</p>
+    </div>
+  </body>
+
+  <script>
+
+  </script>
+</html>

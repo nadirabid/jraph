@@ -180,7 +180,7 @@ class ApplicationController @Inject() (
   def signIn = UserAwareAction { implicit req =>
     req.identity match {
       case Some(user) if WithAccess("dev").isAuthorized(user) =>
-        Ok(views.html.account.signIn(SignInForm.form))
+        Ok(views.html.account.signInAccount(SignInForm.form))
       case Some(user) =>
         Redirect(routes.ApplicationController.userGraphs())
       case None =>
