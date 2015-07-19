@@ -132,13 +132,34 @@
       outline:none;
     }
 
-    p {
+    .app-name {
+      margin-top:20px;
       font-family: 'Nato Sans', sans-serif;
       color: #fff;
       text-align: center;
-      font-size: 20px;
+      font-size: 22px;
       text-transform: uppercase;
       letter-spacing: 2px;
+    }
+
+    span {
+      display: flex;
+      justify-content: center;
+    }
+
+    a {
+      margin-top:10px;
+      color: #FCE4EC;
+      text-decoration:none;
+      font-family: 'Nato Sans', sans-serif;
+      font-size:12px;
+      display:inline;
+      transition: color 100ms ease;
+    }
+
+    a:hover {
+      color:#fff;
+      text-decoration:underline;
     }
     </style>
   </head>
@@ -183,7 +204,11 @@
         <button type="submit">Sign in</button>
       </form>
 
-      <p>jraph</p>
+      <div class="app-name">jraph</div>
+
+      <span>
+        <a href="@routes.ApplicationController.createAccount()">Create an account</a>
+      </span>
     </div>
   </body>
 
