@@ -30,14 +30,14 @@ html, body {
 #app {
     width:390px;
     margin:auto;
-    top:130px;
+    top:100px;
     position:relative;
 }
 
 #appLogo {
     width:200px;
     margin:auto;
-    padding-bottom:10px;
+    padding-bottom:20px;
 }
 
 form#createAccount {
@@ -129,6 +129,7 @@ button:focus {
     font-size: 22px;
     text-transform: uppercase;
     letter-spacing: 2px;
+    font-weight:600;
 }
 
 span {
