@@ -32,7 +32,7 @@ class CredentialsAuthController @Inject()(
   def authenticate = SecuredAction(WithAccess("dev")).async { implicit req =>
     SignInForm.form.bindFromRequest.fold(
       formWithErrors => Future.successful {
-        BadRequest(views.html.account.signIn(formWithErrors))
+        BadRequest(views.html.account.signInAccount(formWithErrors))
       },
       credentials => credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
         userService.retrieve(loginInfo).flatMap {
