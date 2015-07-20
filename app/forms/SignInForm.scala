@@ -15,8 +15,8 @@ object SignInForm {
    */
   val form = Form(
     mapping(
-      "identifier" -> email,
-      "password" -> nonEmptyText
+      "email" -> email,
+      "passphrase" -> nonEmptyText
     )(Credentials.apply)(Credentials.unapply)
   )
 }

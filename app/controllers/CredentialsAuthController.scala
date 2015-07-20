@@ -54,7 +54,7 @@ class CredentialsAuthController @Inject()(
           e.getMessage
           val signInFormWithErrors = SignInForm.form
             .fill(Credentials("",""))
-            .withError("password", "Email and passphrase did not match.")
+            .withError("passphrase", "Email and passphrase did not match.")
           BadRequest(views.html.account.signIn(signInFormWithErrors))
       }
     )

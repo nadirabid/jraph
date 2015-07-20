@@ -27,13 +27,13 @@
               title="email"
               spellcheck="false"
               placeholder="winston@@churchill.com"
-              id="@signInForm("identifier").id"
-              name="@signInForm("identifier").name"
-              value="@signInForm("identifier").value"
+              id="@signInForm("email").id"
+              name="@signInForm("email").name"
+              value="@signInForm("email").value"
           >
 
         </div>
-        @signInForm("identifier").errors.map { formError =>
+        @signInForm("email").errors.map { formError =>
           @if(formError.message == "error.email") {
             <p class="help-block"> Please enter a valid email address. </p>
           } else {
@@ -44,15 +44,15 @@
           <label>Passphrase</label>
           <input
               type="password"
-              title="password"
+              title="passphrase"
               spellcheck="false"
               placeholder="never give up"
-              id="@signInForm("password").id"
-              name="@signInForm("password").name"
-              value="@signInForm("password").value"
+              id="@signInForm("passphrase").id"
+              name="@signInForm("passphrase").name"
+              value="@signInForm("passphrase").value"
           >
         </div>
-        @signInForm.error("password").map { formError =>
+        @signInForm.error("passphrase").map { formError =>
           @if(formError.message == "error.required") {
             <p class="help-block"> Please enter your super secret passphrase. </p>
           } else {
