@@ -47,6 +47,13 @@
             value="@createAccountForm("email").value"
         >
       </div>
+      @createAccountForm("email").errors.map { formError =>
+        @if(formError.message == "error.email") {
+          <p class="help-block">Please enter your email address.</p>
+        } else {
+          <p class="help-block"> @formError.message </p>
+        }
+      }
       <div class="form-group">
         <label>Passphrase</label>
         <input
@@ -60,6 +67,13 @@
             value="@createAccountForm("passphrase").value"
         >
       </div>
+      @createAccountForm("passphrase").errors.map { formError =>
+        @if(formError.message == "error.required") {
+          <p class="help-block">You need a strong passphrase.</p>
+        } else {
+          <p class="help-block"> @formError.message </p>
+        }
+      }
       <button type="submit">Create Account</button>
     </form>
 
