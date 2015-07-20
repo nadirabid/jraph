@@ -9,7 +9,6 @@
     <link href='http://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="@routes.Assets.at("style/account/signInAndSignUp.css")">
   </head>
-
   <body>
     <div id="app">
       <div id="appLogo">
@@ -32,7 +31,15 @@
               name="@signInForm("identifier").name"
               value="@signInForm("identifier").value"
           >
+
         </div>
+        @signInForm("identifier").errors.map { formError =>
+          @if(formError.message == "error.email") {
+            <p class="help-block"> Please enter a valid email address. </p>
+          } else {
+            <p class="help-block"> @formError.message </p>
+          }
+        }
         <div class="form-group">
           <label>Passphrase</label>
           <input
@@ -45,6 +52,13 @@
               value="@signInForm("password").value"
           >
         </div>
+        @signInForm.error("password").map { formError =>
+          @if(formError.message == "error.required") {
+            <p class="help-block"> Please enter your super secret passphrase. </p>
+          } else {
+            <p class="help-block"> @formError.message </p>
+          }
+        }
         <button type="submit">Sign in</button>
       </form>
 
@@ -55,8 +69,4 @@
       <div class="app-name">jraph</div>
     </div>
   </body>
-
-  <script>
-
-  </script>
 </html>

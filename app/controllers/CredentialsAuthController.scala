@@ -51,8 +51,11 @@ class CredentialsAuthController @Inject()(
         }
       }.recover {
         case e: ProviderException =>
-          Redirect(routes.ApplicationController.signIn())
-            .flashing("error" -> Messages("invalid.credentials"))
+          e.getMessage
+          val signInFormWithErrors = SignInForm.form
+            .fill(Credentials("",""))
+            .withError("password", "Email and passphrase did not match.")
+          BadRequest(views.html.account.signInAccount(signInFormWithErrors))
       }
     )
   }
