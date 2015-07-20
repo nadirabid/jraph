@@ -32,7 +32,7 @@ class CredentialsAuthController @Inject()(
   def authenticate = SecuredAction(WithAccess("dev")).async { implicit req =>
     SignInForm.form.bindFromRequest.fold(
       formWithErrors => Future.successful {
-        BadRequest(views.html.account.signInAccount(formWithErrors))
+        BadRequest(views.html.account.signIn(formWithErrors))
       },
       credentials => credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
         userService.retrieve(loginInfo).flatMap {
@@ -55,7 +55,7 @@ class CredentialsAuthController @Inject()(
           val signInFormWithErrors = SignInForm.form
             .fill(Credentials("",""))
             .withError("password", "Email and passphrase did not match.")
-          BadRequest(views.html.account.signInAccount(signInFormWithErrors))
+          BadRequest(views.html.account.signIn(signInFormWithErrors))
       }
     )
   }

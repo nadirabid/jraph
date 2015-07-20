@@ -1,4 +1,4 @@
-@(createAccountForm: Form[forms.CreateAccountForm.Data])
+@(signUpForm: Form[forms.SignUpForm.Data])
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,9 +17,9 @@
     </div>
 
     <form
-        id="createAccount"
+        id="signUp"
         method="POST"
-        action="@routes.AccountController.createAccount()"
+        action="@routes.AccountController.create()"
     >
       <div class="form-group">
         <label>Name</label>
@@ -29,9 +29,9 @@
             autocomplete="off"
             spellcheck="false"
             placeholder="Winston Churchill"
-            id="@createAccountForm("fullName").id"
-            name="@createAccountForm("fullName").name"
-            value="@createAccountForm("fullName").value"
+            id="@signUpForm("fullName").id"
+            name="@signUpForm("fullName").name"
+            value="@signUpForm("fullName").value"
         >
       </div>
       <div class="form-group">
@@ -42,12 +42,12 @@
             autocomplete="off"
             spellcheck="false"
             placeholder="winston@@churchill.com"
-            id="@createAccountForm("email").id"
-            name="@createAccountForm("email").name"
-            value="@createAccountForm("email").value"
+            id="@signUpForm("email").id"
+            name="@signUpForm("email").name"
+            value="@signUpForm("email").value"
         >
       </div>
-      @createAccountForm("email").errors.map { formError =>
+      @signUpForm("email").errors.map { formError =>
         @if(formError.message == "error.email") {
           <p class="help-block">Please enter your email address.</p>
         } else {
@@ -62,12 +62,12 @@
             autocomplete="off"
             spellcheck="false"
             placeholder="never give up"
-            id="@createAccountForm("passphrase").id"
-            name="@createAccountForm("passphrase").name"
-            value="@createAccountForm("passphrase").value"
+            id="@signUpForm("passphrase").id"
+            name="@signUpForm("passphrase").name"
+            value="@signUpForm("passphrase").value"
         >
       </div>
-      @createAccountForm("passphrase").errors.map { formError =>
+      @signUpForm("passphrase").errors.map { formError =>
         @if(formError.message == "error.required") {
           <p class="help-block">You need a strong passphrase.</p>
         } else {

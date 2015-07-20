@@ -10,7 +10,7 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
 import core.authorization.WithAccess
 
-import forms.{CreateAccountForm, SignUpForm}
+import forms.SignUpForm
 
 import models.User
 import models.services.UserService
@@ -28,22 +28,24 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
                                    val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
-  def createAccount = UserAwareAction.async { implicit  req =>
+  def create = UserAwareAction.async { implicit  req =>
+    // play.api.Play.isTest(play.api.Play.current)
+
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None =>
-        CreateAccountForm.form.bindFromRequest.fold(
+        SignUpForm.form.bindFromRequest.fold(
           formWithErrors => Future.successful{
-            BadRequest(views.html.account.createAccount(formWithErrors))
+            BadRequest(views.html.account.signUp(formWithErrors))
           },
           data => {
             val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
             userService.retrieve(loginInfo).flatMap {
               case Some(user) => Future.successful {
-                val createAccountForm = CreateAccountForm.form
+                val signUpForm = SignUpForm.form
                   .fill(data)
                   .withError("email", "Sorry, that email has already been registered.")
-                BadRequest(views.html.account.createAccount(createAccountForm))
+                BadRequest(views.html.account.signUp(signUpForm))
               }
               case None =>
                 val passwordInfo = passwordHasher.hash(data.passphrase)
@@ -67,42 +69,6 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
             }
           }
         )
-    }
-  }
-
-  def create = UserAwareAction.async { implicit req =>
-    // TODO: make sure we don't create an account with a user email/id that already exists
-
-    if (play.api.Play.isTest(play.api.Play.current) ||
-      (req.identity.isDefined && WithAccess("dev").isAuthorized(req.identity.get))) {
-      SignUpForm.form.bindFromRequest.fold(
-        form => Future.successful(BadRequest(views.html.account.signUp(form))),
-        data => {
-          val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
-          userService.retrieve(loginInfo).flatMap {
-            case Some(user) => Future.successful(Redirect(routes.ApplicationController.signUp())
-              .flashing("error" -> Messages("user.exists")))
-            case None =>
-              val passwordInfo = passwordHasher.hash(data.password)
-              val user = User(UUID.randomUUID(), data.email, None, None, loginInfo)
-
-              for {
-                user <- userService.create(user.copy())
-                savedPasswordInfo <- authInfoService.save(loginInfo, passwordInfo)
-                authenticator <- env.authenticatorService.create(user.loginInfo)
-                value <- env.authenticatorService.init(authenticator)
-                result <- env.authenticatorService.embed(value,
-                  Redirect(routes.ApplicationController.userGraphs())
-                )
-              } yield {
-                result
-              }
-          }
-        }
-      )
-    }
-    else {
-      Future.successful(Redirect(routes.ApplicationController.devAccess()))
     }
   }
 

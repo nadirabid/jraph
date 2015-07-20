@@ -174,13 +174,13 @@ class ApplicationController @Inject() (
   }
 
   def createAccount = UserAwareAction { implicit req =>
-    Ok(views.html.account.createAccount(CreateAccountForm.form))
+    Ok(views.html.account.signUp(SignUpForm.form))
   }
 
   def signIn = UserAwareAction { implicit req =>
     req.identity match {
       case Some(user) if WithAccess("dev").isAuthorized(user) =>
-        Ok(views.html.account.signInAccount(SignInForm.form))
+        Ok(views.html.account.signIn(SignInForm.form))
       case Some(user) =>
         Redirect(routes.ApplicationController.userGraphs())
       case None =>
@@ -190,12 +190,10 @@ class ApplicationController @Inject() (
 
   def signUp = UserAwareAction { implicit req =>
     req.identity match {
-      case Some(user) if WithAccess("dev").isAuthorized(user) =>
-        Ok(views.html.account.signUp(SignUpForm.form))
       case Some(user) =>
         Redirect(routes.ApplicationController.userGraphs())
       case None =>
-        Redirect(routes.ApplicationController.devAccess())
+        Ok(views.html.account.signUp(SignUpForm.form))
     }
   }
 
