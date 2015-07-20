@@ -33,14 +33,17 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None =>
         CreateAccountForm.form.bindFromRequest.fold(
-          form => Future.successful{
-            BadRequest(views.html.account.createAccount(form))
+          formWithErrors => Future.successful{
+            BadRequest(views.html.account.createAccount(formWithErrors))
           },
           data => {
             val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
             userService.retrieve(loginInfo).flatMap {
               case Some(user) => Future.successful {
-                Redirect(routes.ApplicationController.createAccount())
+                val createAccountForm = CreateAccountForm.form
+                  .fill(data)
+                  .withError("email", "Sorry, that email has already been registered.")
+                BadRequest(views.html.account.createAccount(createAccountForm))
               }
               case None =>
                 val passwordInfo = passwordHasher.hash(data.passphrase)
