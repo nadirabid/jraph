@@ -109,7 +109,7 @@ define([
     };
   });
 
-  var LinkingNodeState = Util.extendClass(InitialNodeState, function (ctx) {
+  var LinkingNodeState = Util.extendClass(StateEventHandlers, function (ctx) {
 
     //select node target
     this.mouseover = function () {
@@ -181,9 +181,13 @@ define([
 
       ctx.isMouseentered = true;
       sourceCtx.fixed = false;
-
       ctx.$parent.$options.state.nodeState = 'initial';
       mouse.data.source = null;
+    };
+
+    this.dragstart = function(e) {
+      // to stop drag event from propagating to panning handler on svg
+      e.stopPropagation();
     };
   });
 
