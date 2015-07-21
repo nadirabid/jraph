@@ -91,6 +91,11 @@ define([
 
     methods: {
 
+      doesNodeHaveUnsavedChanges: function() {
+        return !_.isEqual(this.node._savedProperties, this.node.data.properties) ||
+            this.node.data.name !== this.node._savedName;
+      },
+
       closePanel: function() {
         this.$parent.nodeInfoToDisplay = null;
       },
@@ -149,13 +154,13 @@ define([
           this.tagInputValue = '';
           this.validationError.tags.hasErrors = false;
 
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.tags, this.node.data.properties.tags);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeTag: function(indexOfTag) {
         this.node.data.properties.tags.$remove(indexOfTag);
-        this.node.hasChanges = !_.isEqual(this.node._savedProperties.tags, this.node.data.properties.tags);
+        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
       },
 
       /**
@@ -211,7 +216,7 @@ define([
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
 
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -223,13 +228,13 @@ define([
         }
         else {
           link.cachedValue_ = link.value;
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeLink: function(indexOfLink, e) {
         this.node.data.properties.links.$remove(indexOfLink);
-        this.node.hasChanges = !_.isEqual(this.node._savedProperties.links, this.node.data.properties.links);
+        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -263,7 +268,7 @@ define([
           this.emailInputValue = '';
           this.validationError.emails.hasErrors = false;
 
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -275,13 +280,13 @@ define([
         }
         else {
           email.cachedValue_ = email.value;
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeEmail: function(indexOfEmail, e) {
         this.node.data.properties.emails.$remove(indexOfEmail);
-        this.node.hasChanges = !_.isEqual(this.node._savedProperties.emails, this.node.data.properties.emails);
+        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -300,7 +305,7 @@ define([
           this.node.data.properties.phoneNumbers.push(new NodeProperty({ value: this.phoneNumberInputValue }));
           this.phoneNumberInputValue = '';
           this.validationError.phoneNumbers.hasErrors = false;
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -312,13 +317,13 @@ define([
         }
         else {
           phoneNumber.cachedValue_ = phoneNumber.value;
-          this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removePhoneNumber: function(indexOfPhoneNumber, e) {
         this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
-        this.node.hasChanges = !_.isEqual(this.node._savedProperties.phoneNumbers, this.node.data.properties.phoneNumbers);
+        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -349,7 +354,7 @@ define([
           this.node.data.name = this.nodeNameCache;
         }
 
-        this.node.hasChanges = this.node.data.name !== this.node._savedName;
+        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         this.editingNodeName = false;
       },
 

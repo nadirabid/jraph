@@ -95,7 +95,7 @@ class UserDAOImpl extends UserDAO {
             "createdAt" -> timestamp,
             "updatedAt" -> timestamp,
             "data" -> Json.stringify(Json.obj(
-              "name" -> "default"
+              "name" -> "My First Graph"
             ))
           ),
           "userData" -> Json.obj(
