@@ -63,11 +63,14 @@ nav {
     pointer-events: none;
 }
 
-.graph-name > p {
-    display:block;
+.graph-name {
     width:200px;
     margin:12px 0 0 10px;
+    display:block;
+    float:left
+}
 
+.graph-name > span {
     font-weight:600;
     font-size:16px;
     color:#666;
@@ -75,10 +78,6 @@ nav {
 }
 
 .graph-name > input {
-    display:block;
-    width:200px;
-    margin:12px 0 0 10px;
-
     font-size:16px;
     color:#666;
     font-weight:600;
