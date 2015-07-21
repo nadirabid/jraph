@@ -5,7 +5,6 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import core.authorization.WithAccess
 import models.{Hypernode, User}
 import org.joda.time.DateTime
 
@@ -18,7 +17,7 @@ import scala.concurrent.Future
 class HypernodeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Hypernode(
       UUID.randomUUID(),
       DateTime.now,
@@ -30,7 +29,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
         .map(hypernode => Ok(Json.toJson(hypernode)))
   }
 
-  def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
     Hypernode.read(req.identity.email, hypergraphID, hypernodeID) map {
       case Some(hypernode) => Ok(Json.toJson(hypernode))
       case None => NotFound
@@ -42,7 +41,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
         .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
 
-  def update(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def update(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Hypernode(
       hypernodeID,
       DateTime.now,
@@ -54,7 +53,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
         .map(hypernode => Ok(Json.toJson(hypernode)))
   }
 
-  def batchUpdate(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def batchUpdate(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val models = (req.body \ "data").as[Seq[JsObject]].map { json =>
       Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").asOpt[JsObject])
     }
@@ -64,7 +63,7 @@ class HypernodeController @Inject() (implicit val env: Environment[User, Session
   }
 
   def delete(hypergraphID: UUID,
-             hypernodeID: UUID) = SecuredAction(WithAccess("normal")).async(parse.anyContent) { req =>
+             hypernodeID: UUID) = SecuredAction.async(parse.anyContent) { req =>
 
     Hypernode.delete(req.identity.email, hypergraphID, hypernodeID)
         .map(res => Ok(Json.toJson(res)))

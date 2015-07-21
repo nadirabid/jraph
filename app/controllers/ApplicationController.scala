@@ -8,7 +8,6 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, PasswordInfo}
-import core.authorization.WithAccess
 import models.daos.PasswordInfoDAO
 
 import play.api.i18n.Messages
@@ -39,7 +38,7 @@ class ApplicationController @Inject() (
     )
   }
 
-  def userGraphs = SecuredAction(WithAccess("normal")).async { req =>
+  def userGraphs = SecuredAction.async { req =>
     val userEmail = req.identity.email
 
     Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
@@ -61,14 +60,14 @@ class ApplicationController @Inject() (
     }
   }
 
-  def hypergraph(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def hypergraph(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(views.html.graph.graph(Json.toJson(hypergraph)))
       case None => Redirect(routes.ApplicationController.userGraphs())
     }
   }
 
-  def profile = SecuredAction(WithAccess("normal")) { req =>
+  def profile = SecuredAction { req =>
     val userEmail = req.identity.email.trim.toLowerCase
 
     val userProfileData = UserProfileForm.Data(req.identity.firstName, req.identity.lastName, userEmail)
@@ -81,7 +80,7 @@ class ApplicationController @Inject() (
     ))
   }
 
-  def handleUserInfoUpdate = SecuredAction(WithAccess("normal")).async { implicit req =>
+  def handleUserInfoUpdate = SecuredAction.async { implicit req =>
     UserProfileForm.form.bindFromRequest.fold(
       formWithErrors => Future.successful {
         val userEmail = req.identity.email.trim.toLowerCase
@@ -110,7 +109,7 @@ class ApplicationController @Inject() (
     )
   }
 
-  def handleUserPasswordUpdate = SecuredAction(WithAccess("normal")).async { implicit req =>
+  def handleUserPasswordUpdate = SecuredAction.async { implicit req =>
     ChangeUserPasswordForm.form.bindFromRequest.fold(
       formWithErrors => {
         val userEmail = req.identity.email.trim.toLowerCase
@@ -162,29 +161,16 @@ class ApplicationController @Inject() (
     )
   }
 
-  def devAccess = UserAwareAction { implicit req =>
-    req.identity match {
-      case Some(user) if WithAccess("dev").isAuthorized(user) =>
-          Redirect(routes.ApplicationController.signIn())
-      case Some(user) =>
-          Redirect(routes.ApplicationController.userGraphs())
-      case None =>
-        Ok(views.html.account.devAccess(DevAccessForm.form))
-    }
-  }
-
   def createAccount = UserAwareAction { implicit req =>
     Ok(views.html.account.signUp(SignUpForm.form))
   }
 
   def signIn = UserAwareAction { implicit req =>
     req.identity match {
-      case Some(user) if WithAccess("dev").isAuthorized(user) =>
-        Ok(views.html.account.signIn(SignInForm.form))
       case Some(user) =>
         Redirect(routes.ApplicationController.userGraphs())
       case None =>
-        Redirect(routes.ApplicationController.devAccess())
+        Ok(views.html.account.signIn(SignInForm.form))
     }
   }
 

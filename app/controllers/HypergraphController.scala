@@ -4,7 +4,6 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import core.authorization.WithAccess
 import models.{Hypergraph, User}
 import org.joda.time.DateTime
 
@@ -18,7 +17,7 @@ class HypergraphController @Inject() (
     implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def create = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(
       UUID.randomUUID(),
       DateTime.now,
@@ -30,19 +29,19 @@ class HypergraphController @Inject() (
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def read(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def read(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypergraph.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => NotFound
     }
   }
 
-  def readAll = SecuredAction(WithAccess("dev")).async { req =>
+  def readAll = SecuredAction.async { req =>
     Hypergraph.readAll(req.identity.email)
         .map(hypergraphs => Ok(Json.toJson(hypergraphs)))
   }
 
-  def update(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def update(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Hypergraph(
       hypergraphID,
       DateTime.now,
@@ -54,7 +53,7 @@ class HypergraphController @Inject() (
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
-  def delete(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def delete(hypergraphID: UUID) = SecuredAction.async { req =>
     Hypergraph.delete(req.identity.email, hypergraphID)
         .map(res => Ok(Json.toJson(res)))
   }

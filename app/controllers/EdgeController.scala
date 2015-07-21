@@ -6,7 +6,6 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import core.authorization.WithAccess
 
 import models.{ User, Edge }
 import org.joda.time.DateTime
@@ -19,7 +18,7 @@ import scala.concurrent.Future
 class EdgeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
-  def create(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+  def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     Future.successful(Ok)
 
     val model = Edge(
@@ -35,20 +34,20 @@ class EdgeController @Inject() (implicit val env: Environment[User, SessionAuthe
         .map(edge => Ok(Json.toJson(edge)))
   }
 
-  def read(hypergraphID: UUID, edgeID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def read(hypergraphID: UUID, edgeID: UUID) = SecuredAction.async { req =>
     Edge.read(req.identity.email, hypergraphID, edgeID) map {
       case Some(edge) => Ok(Json.toJson(edge))
       case None => NotFound
     }
   }
 
-  def readAll(hypergraphID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
     Edge.readAll(req.identity.email, hypergraphID)
         .map(edges => Ok(Json.toJson(edges)))
   }
 
   def update(hypergraphID: UUID,
-             edgeID: UUID) = SecuredAction(WithAccess("normal")).async(parse.json) { req =>
+             edgeID: UUID) = SecuredAction.async(parse.json) { req =>
     val model = Edge(
       edgeID,
       (req.body \ "sourceId").as[UUID],
@@ -62,7 +61,7 @@ class EdgeController @Inject() (implicit val env: Environment[User, SessionAuthe
         .map(edge => Ok(Json.toJson(edge)))
   }
 
-  def delete(hypergraphID: UUID, edgeID: UUID) = SecuredAction(WithAccess("normal")).async { req =>
+  def delete(hypergraphID: UUID, edgeID: UUID) = SecuredAction.async { req =>
     Edge.delete(req.identity.email, hypergraphID, edgeID)
         .map(res => Ok(Json.toJson(res)))
   }
