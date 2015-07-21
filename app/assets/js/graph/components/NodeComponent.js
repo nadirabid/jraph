@@ -101,7 +101,9 @@ define([
     };
 
     this.dragend = function () {
-      ctx.$parent.$parent.dataState = 'UNSAVED';
+      if (ctx.dragFlag) {
+        ctx.$parent.$parent.dataState = 'UNSAVED';
+      }
 
       Vue.nextTick(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'auto');
