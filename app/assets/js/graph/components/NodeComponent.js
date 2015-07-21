@@ -98,11 +98,11 @@ define([
       ctx.py = ctx.y = p.y;
 
       ctx.dragFlag = true;
-
-      ctx.$parent.$parent.dataState = 'UNSAVED';
     };
 
     this.dragend = function () {
+      ctx.$parent.$parent.dataState = 'UNSAVED';
+
       Vue.nextTick(function() {
         ctx.$parent.$el.style.setProperty('cursor', 'auto');
       });

@@ -234,6 +234,8 @@ define([
       dragend: function() {
         var self = this;
 
+        this.$parent.$parent.dataState = 'UNSAVED';
+
         Vue.nextTick(function() {
           self.$el.querySelector('.edge').classList.remove('hover');
           self.$parent.$el.style.removeProperty('cursor', 'auto');
