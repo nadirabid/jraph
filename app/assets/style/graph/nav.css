@@ -65,23 +65,36 @@ nav {
 
 .graph-name {
     width:200px;
-    margin:12px 0 0 0;
     display:block;
-    float:left
+    float:left;
+    height:50px;
+    cursor:pointer;
 }
 
 .graph-name > span {
+    display:inline-block;
+    height:50px;
+    padding:12px 0;
     font-weight:600;
     font-size:16px;
     color:#666;
     line-height:1.5;
 }
 
+.graph-name:hover > span {
+    border-radius:2px;
+    background-color:rgba(0,0,0,.05);
+}
+
 .graph-name > input {
+    display:inline-block;
+    height:50px;
+    padding:12px 0;
     font-size:16px;
     color:#666;
     font-weight:600;
     line-height:1.5;
+    width:100%;
 }
 
 .app-logo {
