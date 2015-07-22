@@ -83,3 +83,22 @@ nav {
     font-weight:600;
     line-height:1.5;
 }
+
+.app-logo {
+    margin:10px 5px;
+    display:block;
+    float:left;
+}
+
+.app-logo-group {
+    cursor:pointer;
+}
+
+.app-logo-group > path:not(:first-child) {
+    fill:#ff80ab;
+    transition:fill 100ms ease;
+}
+
+.app-logo-group:hover > path:not(:first-child) {
+    fill:#F50057;
+}
