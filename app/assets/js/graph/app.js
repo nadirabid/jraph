@@ -61,9 +61,10 @@ define([
         height: 0,
         minX: 0,
         minY: 0,
-        zoomSensitivity: 0.22,
-        maxZoomFactor: 1.55,
-        minZoomFactor: 0.55
+        offset: {
+          left: 0,
+          top: 0
+        }
       };
     },
 
@@ -83,17 +84,19 @@ define([
       },
 
       zoomUpdate: function(e, zoomDelta) {
-        var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
+        var zoomFactor = Math.pow(1 + Math.abs(zoomDelta)/2 , zoomDelta > 0 ? 1 : -1);
+        //var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
         this.scaleZoom(e, zoomFactor);
       },
 
       scaleZoom: function(e, zoomFactor) {
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
+
         var ctm = nodesAndLinksGroupEl.getCTM();
 
         var p = this.$el.createSVGPoint();
-        p.x = e.clientX;
-        p.y = e.clientY;
+        p.x = e.clientX - this.offset.left;
+        p.y = e.clientY - this.offset.top;
         p = p.matrixTransform(ctm.inverse());
 
         var k = ctm
@@ -101,19 +104,22 @@ define([
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
 
+
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
         });
       },
 
       resize: function () {
-        var newWidth = util.width(this.$el),
-            newHeight = util.height(this.$el);
+        var newWidth = this.$$el.width(),
+            newHeight = this.$$el.height();
 
         if (this.width == newWidth &&
             this.height == newHeight) {
           return;
         }
+
+        this.offset = this.$$el.offset();
 
         this.width = newWidth;
         this.height = newHeight;
@@ -185,6 +191,7 @@ define([
     },
 
     ready: function() {
+      this.$$el = $(this.$el);
       this.$options.state = this.$parent.$options.state;
       this.$options.edgesMap = this.$parent.$options.edgesMap;
       this.$options.nodeComponentsMap = this.$parent.$options.nodeComponentsMap;
