@@ -96,12 +96,10 @@ define([
         p.y = e.clientY;
         p = p.matrixTransform(ctm.inverse());
 
-        var k = this.$el.createSVGMatrix()
+        var k = ctm
             .translate(p.x, p.y)
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
-
-        k = ctm.multiply(k);
 
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
