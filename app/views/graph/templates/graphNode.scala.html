@@ -22,7 +22,7 @@
       <g
           class="pill-button"
           v-style="transform: deleteNodePillButtonTranslate"
-          v-on="click: delete"
+          v-on="click: delete, mousedown:$event.stopPropagation()"
       >
         <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
         <text
@@ -36,7 +36,7 @@
       <g
           class="pill-button"
           v-style="transform: linkNodePillButtonTranslate"
-          v-on="click: setNewEdgeSource"
+          v-on="click: setNewEdgeSource, mousedown:$event.stopPropagation()"
       >
         <rect rx="2" ry="2" v-attr="width: pillButtonWidth, height: height"></rect>
         <text
