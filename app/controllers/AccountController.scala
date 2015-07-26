@@ -22,7 +22,7 @@ import play.api.mvc.Results._
 import scala.concurrent.Future
 
 class AccountController @Inject() (val messagesApi: MessagesApi,
-                                   implicit val env: Environment[User, SessionAuthenticator],
+                                   val env: Environment[User, SessionAuthenticator],
                                    val authInfoRepository: AuthInfoRepository,
                                    val userService: UserService,
                                    val passwordHasher: PasswordHasher)

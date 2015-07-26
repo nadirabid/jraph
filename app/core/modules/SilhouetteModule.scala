@@ -66,10 +66,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   @Provides
   def provideEnvironment(
                           userService: UserService,
-                          authenticatorService: AuthenticatorService[CookieAuthenticator],
-                          eventBus: EventBus): Environment[User, CookieAuthenticator] = {
+                          authenticatorService: AuthenticatorService[SessionAuthenticator],
+                          eventBus: EventBus): Environment[User, SessionAuthenticator] = {
 
-    Environment[User, CookieAuthenticator](
+    Environment[User, SessionAuthenticator](
       userService,
       authenticatorService,
       Seq(),
@@ -89,12 +89,12 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   @Provides
   def provideAuthenticatorService(
                                    fingerprintGenerator: FingerprintGenerator,
-                                   idGenerator: IDGenerator,
                                    configuration: Configuration,
-                                   clock: Clock): AuthenticatorService[CookieAuthenticator] = {
+                                   clock: Clock): AuthenticatorService[SessionAuthenticator] = {
 
-    val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
-    new CookieAuthenticatorService(config, None, fingerprintGenerator, idGenerator, clock)
+    val config = configuration.underlying.as[SessionAuthenticatorSettings]("silhouette.authenticator")
+    new SessionAuthenticatorService(config, fingerprintGenerator, clock)
+
   }
 
   /**
