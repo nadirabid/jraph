@@ -50,7 +50,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
         }
   }
 
-  def save(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
+  def add(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
     val cypherCreate =
       """
         | MATCH (user:User { email: {email} })
@@ -97,5 +97,16 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
           )
         ))
         .map(_.rows.head(0).as[PasswordInfo])
+  }
+
+  def save(loginInfo: LoginInfo, passwordInfo: PasswordInfo): Future[PasswordInfo] = {
+    find(loginInfo).flatMap {
+      case Some(_) => update(loginInfo, passwordInfo)
+      case None => add(loginInfo, passwordInfo)
+    }
+  }
+
+  def remove(loginInfo: LoginInfo): Future[Unit] = {
+    Future.failed(throw new NotImplementedError("You've still got this method to implement you bozo!"))
   }
 }

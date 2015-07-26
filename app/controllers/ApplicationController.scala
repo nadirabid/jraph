@@ -3,14 +3,14 @@ package controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.services.AuthInfoService
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.mohiva.play.silhouette.api.util.{PasswordHasher, Credentials, PasswordInfo}
+import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
 import models.daos.PasswordInfoDAO
 
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, Messages}
 import play.api.libs.Codecs
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
@@ -23,8 +23,9 @@ import models.{Hypergraph, Hypernode, Edge, User}
 import models.services.UserService
 
 class ApplicationController @Inject() (
+    val messagesApi: MessagesApi,
     implicit val env: Environment[User, SessionAuthenticator],
-    val authInfoService: AuthInfoService,
+    val authInfoRepository: AuthInfoRepository,
     val userService: UserService,
     val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
@@ -129,7 +130,7 @@ class ApplicationController @Inject() (
         val loginInfo = LoginInfo(CredentialsProvider.ID, req.identity.email)
         val currentPassword = changeUserPasswordFormData.currentPassword
 
-        authInfoService.retrieve[PasswordInfo](loginInfo).flatMap {
+        authInfoRepository.find[PasswordInfo](loginInfo).flatMap {
           case Some(currentPasswordInfo) if passwordHasher.matches(currentPasswordInfo, currentPassword) =>
             val newPasswordInfo = passwordHasher.hash(changeUserPasswordFormData.newPassword)
             (new PasswordInfoDAO).update(loginInfo, newPasswordInfo).flatMap { _ =>

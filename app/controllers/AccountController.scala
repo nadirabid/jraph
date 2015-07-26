@@ -4,7 +4,7 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api._
-import com.mohiva.play.silhouette.api.services.AuthInfoService
+import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.util.PasswordHasher
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
@@ -14,22 +14,21 @@ import forms.SignUpForm
 import models.User
 import models.services.UserService
 
-import play.api.i18n.Messages
+import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 import play.api.mvc.Results._
 
 import scala.concurrent.Future
 
-class AccountController @Inject() (implicit val env: Environment[User, SessionAuthenticator],
-                                   val authInfoService: AuthInfoService,
+class AccountController @Inject() (val messagesApi: MessagesApi,
+                                   implicit val env: Environment[User, SessionAuthenticator],
+                                   val authInfoRepository: AuthInfoRepository,
                                    val userService: UserService,
                                    val passwordHasher: PasswordHasher)
   extends Silhouette[User, SessionAuthenticator] {
 
   def create = UserAwareAction.async { implicit  req =>
-    // play.api.Play.isTest(play.api.Play.current)
-
     req.identity match {
       case Some(user) => Future.successful(Redirect(routes.ApplicationController.userGraphs()))
       case None =>
@@ -56,7 +55,7 @@ class AccountController @Inject() (implicit val env: Environment[User, SessionAu
 
                 for {
                   user <- userService.create(user.copy())
-                  savedPasswordInfo <- authInfoService.save(loginInfo, passwordInfo)
+                  savedPasswordInfo <- authInfoRepository.add(loginInfo, passwordInfo)
                   authenticator <- env.authenticatorService.create(user.loginInfo)
                   value <- env.authenticatorService.init(authenticator)
                   result <- env.authenticatorService.embed(value,

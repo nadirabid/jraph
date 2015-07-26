@@ -11,7 +11,7 @@ import com.mohiva.play.silhouette.impl.providers._
 import forms.{DevAccessForm, SignInForm}
 import models.User
 import models.services.UserService
-import play.api.i18n.Messages
+import play.api.i18n.{MessagesApi, Messages}
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
@@ -23,6 +23,7 @@ import scala.concurrent.Future
  * @param env The Silhouette environment.
  */
 class CredentialsAuthController @Inject()(
+    val messagesApi: MessagesApi,
     implicit val env: Environment[User, SessionAuthenticator],
     val credentialsProvider: CredentialsProvider,
     val userService: UserService)

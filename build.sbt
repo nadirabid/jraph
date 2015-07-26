@@ -1,20 +1,25 @@
-name := """analyte"""
+//import scalariform.formatter.preferences._
+import play.sbt.routes.RoutesKeys._
+
+name := """jraph"""
 
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
-resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
   cache,
   ws,
-  "net.codingwell" %% "scala-guice" % "4.0.0-beta5",
+  filters,
+  "com.mohiva" %% "play-silhouette" % "3.0.0",
+  "net.codingwell" %% "scala-guice" % "4.0.0",
+  "net.ceedubs" %% "ficus" % "1.1.2",
   "org.scalatestplus" %% "play" % "1.2.0" % "test",
-  "com.mohiva" %% "play-silhouette" % "2.1-SNAPSHOT",
-  "com.mohiva" %% "play-silhouette-testkit" % "2.1-SNAPSHOT" % "test"
+  "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test"
 )
 
 TaskKey[Unit]("stop") := {
@@ -25,7 +30,34 @@ TaskKey[Unit]("stop") := {
   println(s"Stopped application with process ID $pid")
 }
 
-PlayKeys.routesImport += "java.util.UUID"
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
-//TwirlKeys.templateImports +=
-//MochaKeys.requires ++= Seq("./Setup.js")
+play.sbt.routes.RoutesKeys.routesImport += "java.util.UUID"
+
+routesGenerator := InjectedRoutesGenerator
+
+/*
+scalacOptions ++= Seq(
+  "-deprecation", // Emit warning and location for usages of deprecated APIs.
+  "-feature", // Emit warning and location for usages of features that should be imported explicitly.
+  "-unchecked", // Enable additional warnings where generated code depends on assumptions.
+  "-Xfatal-warnings", // Fail the compilation if there are any warnings.
+  "-Xlint", // Enable recommended additional warnings.
+  "-Ywarn-adapted-args", // Warn if an argument list is modified to match the receiver.
+  "-Ywarn-dead-code", // Warn when dead code is identified.
+  "-Ywarn-inaccessible", // Warn about inaccessible types in method signatures.
+  "-Ywarn-nullary-override", // Warn when non-nullary overrides nullary, e.g. def foo() over def foo.
+  "-Ywarn-numeric-widen" // Warn when numerics are widened.
+)
+
+//********************************************************
+// Scalariform settings
+//********************************************************
+
+defaultScalariformSettings
+
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+  .setPreference(FormatXml, false)
+  .setPreference(DoubleIndentClassDeclaration, false)
+  .setPreference(PreserveDanglingCloseParenthesis, true)
+*/

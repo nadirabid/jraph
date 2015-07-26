@@ -25,6 +25,7 @@ class HypernodeControllerSpec extends WordSpec
   with OneAppPerTest
   with BeforeAndAfter {
 
+  /*
   val userEmail = UUID.randomUUID().toString + "@test.com"
 
   before {
@@ -158,4 +159,5 @@ class HypernodeControllerSpec extends WordSpec
       nodesDeleted shouldBe true
     }
   }
+  */
 }

@@ -1,6 +1,12 @@
 package core.cypher
 
 import play.api.Play.current
+import javax.inject.Inject
+import scala.concurrent.Future
+
+import play.api.mvc._
+import play.api.libs.ws._
+
 import play.api.libs.ws.{WS, WSAuthScheme}
 import play.api.libs.json._
 import play.api.libs.json.Reads._
@@ -74,6 +80,8 @@ import scala.concurrent.Future
 */
 
 class Neo4jConnection(host: String, port: Int, username: String, password: String) {
+  val ws:WSClient = WS.client(play.api.Play.application)
+
   private val url = s"http://$host:$port/db/data/transaction/commit"
 
   private val neo4jHeaders = Seq(
@@ -84,7 +92,7 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
   def sendQuery(cypherStatement: String,
                 parameters: JsObject): Future[CypherResult] = {
 
-    val reqHolder = WS
+    val reqHolder = ws
         .url(url)
         .withAuth(username, password, WSAuthScheme.BASIC)
         .withHeaders(neo4jHeaders:_*)
@@ -104,7 +112,7 @@ class Neo4jConnection(host: String, port: Int, username: String, password: Strin
       val errors = (resp.json \ "errors").as[Vector[JsObject]]
 
       if (errors.nonEmpty) {
-        throw new CypherException(Json.prettyPrint(resp.json \ "errors"))
+        throw new CypherException(Json.prettyPrint((resp.json \ "errors").as[JsValue]))
       }
 
       val result = (resp.json \ "results")(0)

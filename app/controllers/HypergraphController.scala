@@ -6,6 +6,7 @@ import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.{Hypergraph, User}
 import org.joda.time.DateTime
+import play.api.i18n.MessagesApi
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -14,7 +15,8 @@ import play.api.libs.json._
 import java.util.UUID
 
 class HypergraphController @Inject() (
-    implicit val env: Environment[User, SessionAuthenticator])
+                                       val messagesApi: MessagesApi,
+                                       implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   def create = SecuredAction.async(parse.json) { req =>

@@ -9,13 +9,16 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 
 import models.{ User, Edge }
 import org.joda.time.DateTime
+import play.api.i18n.MessagesApi
 
 import play.api.libs.json._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EdgeController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
+class EdgeController @Inject() (
+                                 val messagesApi: MessagesApi,
+                                 implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   def create(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>

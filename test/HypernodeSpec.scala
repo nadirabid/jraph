@@ -27,6 +27,7 @@ class HypernodeSpec extends WordSpec
   with OneAppPerTest
   with OptionValues
   with BeforeAndAfter {
+  /*
 
   implicit val defaultPatience =
     PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
@@ -160,4 +161,5 @@ class HypernodeSpec extends WordSpec
       }
     }
   }
+  */
 }
