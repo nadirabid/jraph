@@ -47,6 +47,9 @@ class ErrorHandler @Inject() (
    * @return The result to send to the client.
    */
   override def onNotAuthorized(request: RequestHeader, messages: Messages): Option[Future[Result]] = {
-    Some(Future.successful(Redirect(routes.ApplicationController.signIn()).flashing("error" -> Messages("access.denied")(messages))))
+    Some(Future.successful(
+      Redirect(routes.ApplicationController.signIn())
+        .flashing("error" -> Messages("access.denied")(messages))
+    ))
   }
 }

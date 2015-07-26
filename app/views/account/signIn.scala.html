@@ -1,4 +1,4 @@
-@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])
+@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +20,7 @@
           method="POST"
           action="@routes.CredentialsAuthController.authenticate()"
       >
+        @helper.CSRF.formField
         <div class="form-group">
           <label>Email</label>
           <input
