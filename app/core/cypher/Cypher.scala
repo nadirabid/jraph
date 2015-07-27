@@ -80,7 +80,7 @@ import scala.concurrent.Future
 */
 
 class Neo4jConnection(host: String, port: Int, username: String, password: String) {
-  val ws:WSClient = WS.client(play.api.Play.application)
+  private val ws:WSClient = WS.client(play.api.Play.application)
 
   private val url = s"http://$host:$port/db/data/transaction/commit"
 
