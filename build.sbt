@@ -15,20 +15,13 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   filters,
+  "com.typesafe.play" %% "play-mailer" % "3.0.1",
   "com.mohiva" %% "play-silhouette" % "3.0.0",
   "net.codingwell" %% "scala-guice" % "4.0.0",
   "net.ceedubs" %% "ficus" % "1.1.2",
   "org.scalatestplus" %% "play" % "1.2.0" % "test",
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test"
 )
-
-TaskKey[Unit]("stop") := {
-  val pidFile = target.value / "universal" / "stage" / "RUNNING_PID"
-  if (!pidFile.exists) throw new Exception("App not started!")
-  val pid = IO.read(pidFile)
-  s"kill $pid".!
-  println(s"Stopped application with process ID $pid")
-}
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
