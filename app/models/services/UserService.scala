@@ -1,7 +1,5 @@
 package models.services
 
-import java.util.UUID
-
 import com.mohiva.play.silhouette.api.services.IdentityService
 import models.User
 

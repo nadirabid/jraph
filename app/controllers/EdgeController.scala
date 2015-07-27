@@ -12,8 +12,8 @@ import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
 
 import play.api.libs.json._
+import play.api.libs.concurrent.Execution.Implicits._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EdgeController @Inject() (

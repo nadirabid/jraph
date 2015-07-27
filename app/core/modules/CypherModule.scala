@@ -2,7 +2,6 @@ package core.modules
 
 import com.google.inject.{Provides, AbstractModule}
 import core.cypher.{Neo4jConnectionSettings, Neo4jConnection}
-import models.daos.HypernodeDAO
 import net.codingwell.scalaguice.ScalaModule
 
 import play.api.Configuration

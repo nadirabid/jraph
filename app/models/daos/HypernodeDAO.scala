@@ -12,7 +12,7 @@ import play.api.libs.functional.syntax._
 import core.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits._
 
 import models.Hypernode
 

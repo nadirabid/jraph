@@ -4,8 +4,7 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.Play.current
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
