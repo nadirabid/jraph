@@ -8,22 +8,23 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
-import models.daos.{HypernodeDAO, PasswordInfoDAO}
+import models.daos.{HypergraphDAO, HypernodeDAO, PasswordInfoDAO}
 
 import play.api.i18n.{MessagesApi, Messages}
 import play.api.libs.Codecs
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
+import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 import forms._
 import models.{Hypergraph, Hypernode, Edge, User}
 import models.services.UserService
 
 class ApplicationController @Inject() (
-    val hypernodeDAO: HypernodeDAO,
+    hypergraphDAO: HypergraphDAO,
+    hypernodeDAO: HypernodeDAO,
     val messagesApi: MessagesApi,
     val authInfoRepository: AuthInfoRepository,
     val userService: UserService,
@@ -43,7 +44,7 @@ class ApplicationController @Inject() (
   def userGraphs = SecuredAction.async { req =>
     val userEmail = req.identity.email
 
-    Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
+    hypergraphDAO.readAll(userEmail).flatMap { hypergraphs =>
       val graphsDataRequests = hypergraphs.map { hypergraph =>
         for { //this can be sped up by doing Hypernode/Edge.read in parallel
           nodes <- hypernodeDAO.readAll(userEmail, hypergraph.id)
@@ -63,7 +64,7 @@ class ApplicationController @Inject() (
   }
 
   def hypergraph(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypergraph.read(req.identity.email, hypergraphID).map {
+    hypergraphDAO.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(views.html.graph.graph(Json.toJson(hypergraph)))
       case None => Redirect(routes.ApplicationController.userGraphs())
     }

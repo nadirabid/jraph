@@ -4,17 +4,19 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.daos.HypergraphDAO
 import models.{Hypergraph, User}
 import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits._
 
 import play.api.libs.json._
 
 import java.util.UUID
 
 class HypergraphController @Inject() (
+                                       hypergraphDAO: HypergraphDAO,
                                        val messagesApi: MessagesApi,
                                        implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
@@ -27,19 +29,19 @@ class HypergraphController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypergraph.create(req.identity.email, model)
+    hypergraphDAO.create(req.identity.email, model)
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
   def read(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypergraph.read(req.identity.email, hypergraphID).map {
+    hypergraphDAO.read(req.identity.email, hypergraphID).map {
       case Some(hypergraph) => Ok(Json.toJson(hypergraph))
       case None => NotFound
     }
   }
 
   def readAll = SecuredAction.async { req =>
-    Hypergraph.readAll(req.identity.email)
+    hypergraphDAO.readAll(req.identity.email)
         .map(hypergraphs => Ok(Json.toJson(hypergraphs)))
   }
 
@@ -51,12 +53,12 @@ class HypergraphController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypergraph.update(req.identity.email, model)
+    hypergraphDAO.update(req.identity.email, model)
         .map(hypergraph => Ok(Json.toJson(hypergraph)))
   }
 
   def delete(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypergraph.delete(req.identity.email, hypergraphID)
+    hypergraphDAO.delete(req.identity.email, hypergraphID)
         .map(res => Ok(Json.toJson(res)))
   }
 
