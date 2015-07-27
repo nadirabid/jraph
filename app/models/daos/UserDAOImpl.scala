@@ -27,14 +27,7 @@ class UserDAOImpl extends UserDAO {
     (JsPath \ "email").read[String](email)
   )(LoginInfo.apply _)
 
-  implicit val userReads: Reads[User] = (
-      (JsPath \ "id").read[UUID] and
-      (JsPath \ "email").read[String](email) and
-      (JsPath \ "firstName").readNullable[String] and
-      (JsPath \ "lastName").readNullable[String] and
-      JsPath.read[LoginInfo] and
-      (JsPath \ "role").readNullable[String]
-  )(User.apply _)
+
 
   def find(loginInfo: LoginInfo) = {
     val cypherReadByEmail =
