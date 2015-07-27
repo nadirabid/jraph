@@ -1,42 +1,32 @@
-package models
+package models.daos
 
 import java.util.UUID
 
 import com.google.inject.Inject
+import models.Hypernode
+import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.ws.WS
-import play.api.libs.ws.WSAuthScheme
+import play.api.libs.ws.{WSClient, WSAuthScheme}
 import play.api.libs.functional.syntax._
 import core.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import org.joda.time._
-
-case class Hypernode(
-  id: UUID,
-  updatedAt: DateTime,
-  createdAt: DateTime,
-  data: Option[JsObject]
-)
-
-object Hypernode {
+class HypernodeDAO @Inject() (ws: WSClient, implicit val neo4jConnection: Neo4jConnection) {
   val dbHost = "localhost"
   val dbPort = current.configuration.getInt("neo4j.port").get
   val dbUsername = current.configuration.getString("neo4j.username").get
   val dbPassword = current.configuration.getString("neo4j.password").get
 
-  implicit val neo4jConnection = Neo4jConnection(dbHost, dbPort, dbUsername, dbPassword)
-
   implicit val hypernodeReads: Reads[Hypernode] = (
-    (JsPath \ "id").read[UUID] and
-    (JsPath \ "createdAt").read[DateTime] and
-    (JsPath \ "updatedAt").read[DateTime] and
-    (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
-  )(Hypernode.apply _)
+      (JsPath \ "id").read[UUID] and
+      (JsPath \ "createdAt").read[DateTime] and
+      (JsPath \ "updatedAt").read[DateTime] and
+      (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
+    )(Hypernode.apply _)
 
   implicit val hypernodeWrites = new Writes[Hypernode] {
     def writes(hypernode: Hypernode) = Json.obj(
@@ -59,17 +49,17 @@ object Hypernode {
       """.stripMargin
 
     Cypher(cypherCreate)
-        .apply(Json.obj(
-          "userEmail" -> userEmail,
-          "hypergraphID" -> hypergraphID,
-          "hn" -> Json.obj(
-            "id" -> hypernode.id,
-            "createdAt" -> hypernode.createdAt.getMillis,
-            "updatedAt" -> hypernode.updatedAt.getMillis,
-            "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
-          )
-        ))
-        .map(_.rows.head(0).as[Hypernode])
+      .apply(Json.obj(
+        "userEmail" -> userEmail,
+        "hypergraphID" -> hypergraphID,
+        "hn" -> Json.obj(
+          "id" -> hypernode.id,
+          "createdAt" -> hypernode.createdAt.getMillis,
+          "updatedAt" -> hypernode.updatedAt.getMillis,
+          "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
+        )
+      ))
+      .map(_.rows.head(0).as[Hypernode])
   }
 
   def read(userEmail: String,
@@ -83,17 +73,17 @@ object Hypernode {
       """.stripMargin
 
     Cypher(cypherRead)
-        .apply(Json.obj(
-          "hypernodeID" -> hypernodeID
-        ))
-        .map { cypherResult =>
-          cypherResult.rows.headOption.map(row => row(0).validate[Hypernode])
-        }
-        .map {
-          case Some(s: JsSuccess[Hypernode]) => Some(s.get)
-          case Some(e: JsError) => None
-          case None => None
-        }
+      .apply(Json.obj(
+        "hypernodeID" -> hypernodeID
+      ))
+      .map { cypherResult =>
+        cypherResult.rows.headOption.map(row => row(0).validate[Hypernode])
+      }
+      .map {
+        case Some(s: JsSuccess[Hypernode]) => Some(s.get)
+        case Some(e: JsError) => None
+        case None => None
+      }
   }
 
   def readAll(userEmail: String,
@@ -107,11 +97,11 @@ object Hypernode {
       """.stripMargin
 
     Cypher(cypherReadAll)
-        .apply(Json.obj(
-          "hypergraphID" -> hypergraphID,
-          "userEmail" -> userEmail
-        ))
-        .map(_.rows.map(row => row(0).as[Hypernode]))
+      .apply(Json.obj(
+        "hypergraphID" -> hypergraphID,
+        "userEmail" -> userEmail
+      ))
+      .map(_.rows.map(row => row(0).as[Hypernode]))
   }
 
   def update(userEmail: String,
@@ -126,12 +116,12 @@ object Hypernode {
       """.stripMargin
 
     Cypher(cypherUpdate)
-        .apply(Json.obj(
-          "hypernodeID" -> hypernode.id,
-          "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
-          "updatedAt" -> hypernode.updatedAt.getMillis
-        ))
-        .map(_.rows.head(0).as[Hypernode])
+      .apply(Json.obj(
+        "hypernodeID" -> hypernode.id,
+        "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
+        "updatedAt" -> hypernode.updatedAt.getMillis
+      ))
+      .map(_.rows.head(0).as[Hypernode])
   }
 
   def batchUpdate(userEmail: String,
@@ -149,10 +139,10 @@ object Hypernode {
 
     implicit val hypernodeReads: Reads[Hypernode] = (
       ((JsPath \ "row")(0) \ "id").read[UUID] and
-      ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-      ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
-      ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
-    )(Hypernode.apply _)
+        ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
+        ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
+        ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
+      )(Hypernode.apply _)
 
     val neo4jHeaders = Seq(
       "Content-Type" -> "application/json",
@@ -172,10 +162,10 @@ object Hypernode {
       }
     )
 
-    val holder = WS
-        .url(dbTxUrl)
-        .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
-        .withHeaders(neo4jHeaders:_*)
+    val holder = ws
+      .url(dbTxUrl)
+      .withAuth(dbUsername, dbPassword, WSAuthScheme.BASIC)
+      .withHeaders(neo4jHeaders:_*)
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
@@ -197,12 +187,11 @@ object Hypernode {
       """.stripMargin
 
     Cypher(cypherDelete)
-        .apply(Json.obj(
-          "hypernodeID" -> hypernodeID,
-          "hypergraphID" -> hypergraphID,
-          "userEmail" -> userEmail
-        ))
-        .map(_.stats.nodesDeleted > 0) //TODO: throw exception if nodesDeleted == 0
+      .apply(Json.obj(
+        "hypernodeID" -> hypernodeID,
+        "hypergraphID" -> hypergraphID,
+        "userEmail" -> userEmail
+      ))
+      .map(_.stats.nodesDeleted > 0) //TODO: throw exception if nodesDeleted == 0
   }
-
 }

@@ -5,17 +5,19 @@ import java.util.UUID
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.daos.HypernodeDAO
 import models.{Hypernode, User}
 import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import play.api.libs.json._
 
 import scala.concurrent.Future
 
 class HypernodeController @Inject() (
+                                      hypernodeDAO: HypernodeDAO,
                                       val messagesApi: MessagesApi,
                                       implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
@@ -28,8 +30,10 @@ class HypernodeController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypernode.create(req.identity.email, hypergraphID, model)
-        .map(hypernode => Ok(Json.toJson(hypernode)))
+    hypernodeDAO.create(req.identity.email, hypergraphID, model)
+        .map { hypernode =>
+          Ok(Json.toJson(hypernode))
+        }
   }
 
   def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
