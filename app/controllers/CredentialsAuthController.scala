@@ -8,12 +8,11 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.exceptions.IdentityNotFoundException
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
-import forms.{DevAccessForm, SignInForm}
+import forms.SignInForm
 import models.User
 import models.services.UserService
-import play.api.i18n.{MessagesApi, Messages}
+import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.mvc.Action
 
 import scala.concurrent.Future
 

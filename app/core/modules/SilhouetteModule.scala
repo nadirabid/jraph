@@ -81,7 +81,6 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    * Provides the authenticator service.
    *
    * @param fingerprintGenerator The fingerprint generator implementation.
-   * @param idGenerator The ID generator implementation.
    * @param configuration The Play configuration.
    * @param clock The clock instance.
    * @return The authenticator service.
