@@ -12,6 +12,8 @@ import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
 
+import play.api.libs.concurrent.Execution.Implicits._
+
 // By default the tests of a given ScalaTest Suite (WordSpec, FlatSpec, etc)
 // are run sequentially inferred from the order in which the tests are defined.
 
@@ -20,7 +22,7 @@ class AccountControllerSpec extends WordSpec
   with OneAppPerTest {
 
   val userEmail = UUID.randomUUID.toString + "@test.com"
-/*
+
   "The Account controller" should {
     "should create a new user given unique username and password" in {
       val userCreateRequest = FakeRequest(POST, "/account/create")
@@ -41,6 +43,5 @@ class AccountControllerSpec extends WordSpec
       status(userDeleteResult) shouldBe OK
     }
   }
-  */
 
 }
