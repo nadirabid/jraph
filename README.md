@@ -1,1 +1,1 @@
-# analyte [![Circle CI](https://circleci.com/gh/nadirabid/hypergraph/tree/master.svg?style=svg&circle-token=9897e473a5d267d30024fd79f51bd8d415767b34)](https://circleci.com/gh/nadirabid/hypergraph/tree/master)
+# jraph.io [![Circle CI](https://circleci.com/gh/nadirabid/hypergraph/tree/master.svg?style=svg&circle-token=9897e473a5d267d30024fd79f51bd8d415767b34)](https://circleci.com/gh/nadirabid/hypergraph/tree/master)
