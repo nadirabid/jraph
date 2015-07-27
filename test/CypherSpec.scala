@@ -18,6 +18,7 @@ class CypherSpec extends WordSpec
   implicit val defaultPatience =
       PatienceConfig(timeout = Span(3, Seconds), interval = Span(15, Millis))
 
+  /*
   "The `Cypher.apply` method" should {
     "be able to execute a simple create and delete cypher query" in new Neo4jConnectionFixture {
       val testNodeID = UUID.randomUUID().toString
@@ -100,4 +101,5 @@ class CypherSpec extends WordSpec
     }
 
   }
+  */
 }
