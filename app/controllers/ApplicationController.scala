@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
-import models.daos.PasswordInfoDAO
+import models.daos.{HypernodeDAO, PasswordInfoDAO}
 
 import play.api.i18n.{MessagesApi, Messages}
 import play.api.libs.Codecs
@@ -23,11 +23,12 @@ import models.{Hypergraph, Hypernode, Edge, User}
 import models.services.UserService
 
 class ApplicationController @Inject() (
+    val hypernodeDAO: HypernodeDAO,
     val messagesApi: MessagesApi,
-    implicit val env: Environment[User, SessionAuthenticator],
     val authInfoRepository: AuthInfoRepository,
     val userService: UserService,
-    val passwordHasher: PasswordHasher)
+    val passwordHasher: PasswordHasher,
+    implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
 
   implicit val graphsDataWrite =
@@ -45,7 +46,7 @@ class ApplicationController @Inject() (
     Hypergraph.readAll(userEmail).flatMap { hypergraphs =>
       val graphsDataRequests = hypergraphs.map { hypergraph =>
         for { //this can be sped up by doing Hypernode/Edge.read in parallel
-          nodes <- Hypernode.readAll(userEmail, hypergraph.id)
+          nodes <- hypernodeDAO.readAll(userEmail, hypergraph.id)
           edges <- Edge.readAll(userEmail, hypergraph.id)
         } yield {
           (hypergraph, nodes, edges)

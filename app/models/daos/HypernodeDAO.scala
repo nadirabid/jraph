@@ -3,7 +3,6 @@ package models.daos
 import java.util.UUID
 
 import com.google.inject.Inject
-import models.Hypernode
 import org.joda.time.DateTime
 import play.api.Play.current
 import play.api.libs.json.Reads._
@@ -15,27 +14,9 @@ import core.cypher.{Cypher, Neo4jConnection}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import models.Hypernode
+
 class HypernodeDAO @Inject() (ws: WSClient, implicit val neo4jConnection: Neo4jConnection) {
-  val dbHost = "localhost"
-  val dbPort = current.configuration.getInt("neo4j.port").get
-  val dbUsername = current.configuration.getString("neo4j.username").get
-  val dbPassword = current.configuration.getString("neo4j.password").get
-
-  implicit val hypernodeReads: Reads[Hypernode] = (
-      (JsPath \ "id").read[UUID] and
-      (JsPath \ "createdAt").read[DateTime] and
-      (JsPath \ "updatedAt").read[DateTime] and
-      (JsPath \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
-    )(Hypernode.apply _)
-
-  implicit val hypernodeWrites = new Writes[Hypernode] {
-    def writes(hypernode: Hypernode) = Json.obj(
-      "id" -> hypernode.id,
-      "createdAt" -> hypernode.createdAt.getMillis,
-      "updatedAt" -> hypernode.updatedAt.getMillis,
-      "data" -> hypernode.data
-    )
-  }
 
   def create(userEmail: String,
              hypergraphID: UUID,
@@ -135,6 +116,8 @@ class HypernodeDAO @Inject() (ws: WSClient, implicit val neo4jConnection: Neo4jC
         | RETURN hn;
       """.stripMargin
 
+    val dbUsername = current.configuration.getString("neo4j.username").get
+    val dbPassword = current.configuration.getString("neo4j.password").get
     val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
 
     implicit val hypernodeReads: Reads[Hypernode] = (

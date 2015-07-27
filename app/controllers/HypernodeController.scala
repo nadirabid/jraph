@@ -14,8 +14,6 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
 import play.api.libs.json._
 
-import scala.concurrent.Future
-
 class HypernodeController @Inject() (
                                       hypernodeDAO: HypernodeDAO,
                                       val messagesApi: MessagesApi,
@@ -37,14 +35,14 @@ class HypernodeController @Inject() (
   }
 
   def read(hypergraphID: UUID, hypernodeID: UUID) = SecuredAction.async { req =>
-    Hypernode.read(req.identity.email, hypergraphID, hypernodeID) map {
+    hypernodeDAO.read(req.identity.email, hypergraphID, hypernodeID) map {
       case Some(hypernode) => Ok(Json.toJson(hypernode))
       case None => NotFound
     }
   }
 
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
-    Hypernode.readAll(req.identity.email, hypergraphID)
+    hypernodeDAO.readAll(req.identity.email, hypergraphID)
         .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
 
@@ -56,7 +54,7 @@ class HypernodeController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Hypernode.update(req.identity.email, hypergraphID, model)
+    hypernodeDAO.update(req.identity.email, hypergraphID, model)
         .map(hypernode => Ok(Json.toJson(hypernode)))
   }
 
@@ -65,14 +63,14 @@ class HypernodeController @Inject() (
       Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").asOpt[JsObject])
     }
 
-    Hypernode.batchUpdate(req.identity.email, hypergraphID, models)
+    hypernodeDAO.batchUpdate(req.identity.email, hypergraphID, models)
         .map(hypernodes => Ok(Json.toJson(hypernodes)))
   }
 
   def delete(hypergraphID: UUID,
              hypernodeID: UUID) = SecuredAction.async(parse.anyContent) { req =>
 
-    Hypernode.delete(req.identity.email, hypergraphID, hypernodeID)
+    hypernodeDAO.delete(req.identity.email, hypergraphID, hypernodeID)
         .map(res => Ok(Json.toJson(res)))
   }
 
