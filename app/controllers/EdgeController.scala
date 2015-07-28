@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import models.daos.EdgeDAO
 
 import models.{ User, Edge }
 import org.joda.time.DateTime
@@ -17,6 +18,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent.Future
 
 class EdgeController @Inject() (
+                                 edgeDAO: EdgeDAO,
                                  val messagesApi: MessagesApi,
                                  implicit val env: Environment[User, SessionAuthenticator])
   extends Silhouette[User, SessionAuthenticator] {
@@ -33,19 +35,19 @@ class EdgeController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Edge.create(req.identity.email, hypergraphID, model)
+    edgeDAO.create(req.identity.email, hypergraphID, model)
         .map(edge => Ok(Json.toJson(edge)))
   }
 
   def read(hypergraphID: UUID, edgeID: UUID) = SecuredAction.async { req =>
-    Edge.read(req.identity.email, hypergraphID, edgeID) map {
+    edgeDAO.read(req.identity.email, hypergraphID, edgeID) map {
       case Some(edge) => Ok(Json.toJson(edge))
       case None => NotFound
     }
   }
 
   def readAll(hypergraphID: UUID) = SecuredAction.async { req =>
-    Edge.readAll(req.identity.email, hypergraphID)
+    edgeDAO.readAll(req.identity.email, hypergraphID)
         .map(edges => Ok(Json.toJson(edges)))
   }
 
@@ -60,12 +62,12 @@ class EdgeController @Inject() (
       (req.body \ "data").asOpt[JsObject]
     )
 
-    Edge.update(req.identity.email, hypergraphID, model)
+    edgeDAO.update(req.identity.email, hypergraphID, model)
         .map(edge => Ok(Json.toJson(edge)))
   }
 
   def delete(hypergraphID: UUID, edgeID: UUID) = SecuredAction.async { req =>
-    Edge.delete(req.identity.email, hypergraphID, edgeID)
+    edgeDAO.delete(req.identity.email, hypergraphID, edgeID)
         .map(res => Ok(Json.toJson(res)))
   }
 
