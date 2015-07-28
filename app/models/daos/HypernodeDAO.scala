@@ -4,15 +4,18 @@ import java.util.UUID
 
 import com.google.inject.Inject
 import org.joda.time.DateTime
+
 import play.api.Play.current
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSAuthScheme}
+import play.api.libs.ws._
 import play.api.libs.functional.syntax._
+import play.api.libs.concurrent.Execution.Implicits._
+
 import core.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
 
 import models.Hypernode
 
@@ -118,10 +121,12 @@ class HypernodeDAO @Inject() (ws: WSClient, implicit val neo4jConnection: Neo4jC
 
     val dbUsername = current.configuration.getString("neo4j.username").get
     val dbPassword = current.configuration.getString("neo4j.password").get
-    val dbTxUrl = current.configuration.getString("neo4j.host").map(_ + "/db/data/transaction/commit").get
-
+    val dbHost = current.configuration.getString("neo4j.host").get
+    val dbPort = current.configuration.getInt("neo4j.port").get
+    val dbTxUrl = s"http://$dbHost:$dbPort/db/data/transaction/commit"
+    
     implicit val hypernodeReads: Reads[Hypernode] = (
-      ((JsPath \ "row")(0) \ "id").read[UUID] and
+        ((JsPath \ "row")(0) \ "id").read[UUID] and
         ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
         ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
         ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
