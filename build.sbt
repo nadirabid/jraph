@@ -6,8 +6,6 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
-resolvers += Resolver.sonatypeRepo("snapshots")
-
 libraryDependencies ++= Seq(
   cache,
   ws,
@@ -21,6 +19,8 @@ libraryDependencies ++= Seq(
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 play.sbt.routes.RoutesKeys.routesImport += "java.util.UUID"
 
