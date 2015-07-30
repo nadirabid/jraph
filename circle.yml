@@ -7,10 +7,7 @@ machine:
   java:
     version: oraclejdk8
 dependencies:
-  cache_directories:
-    - ~/.sbt
-    - ~/.m2
-    - ~/.ivy2
+
   override:
     - ./activator clean update
 database:
