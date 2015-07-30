@@ -6,6 +6,12 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.7"
 
+resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
+
+resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
+
+resolvers += Resolver.sonatypeRepo("snapshots")
+
 libraryDependencies ++= Seq(
   cache,
   ws,
@@ -17,10 +23,6 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" %% "play" % "1.2.0" % "test",
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test"
 )
-
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
-resolvers += Resolver.sonatypeRepo("snapshots")
 
 play.sbt.routes.RoutesKeys.routesImport += "java.util.UUID"
 
