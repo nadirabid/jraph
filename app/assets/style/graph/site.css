@@ -32,17 +32,18 @@ body {
 #all {
     height: 100%;
 
-    display: flex;
-    flex-flow: column;
     display: -webkit-flex;
+    display: flex;
+
     -webkit-flex-flow: column;
+    flex-flow: column;
 }
 
 #main {
     flex: auto;
-    display: flex;
     -webkit-flex: auto;
     display: -webkit-flex;
+    display: flex;
     position:relative;
 }
 

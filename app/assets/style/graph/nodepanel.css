@@ -207,6 +207,8 @@ ul.node-property-list > li > .display-value > .fa-times:hover {
     position:absolute;
     width:280px;
     bottom:0;
+    display:-ms-flexbox;
+    display:-webkit-flex;
     display:flex;
 }
 

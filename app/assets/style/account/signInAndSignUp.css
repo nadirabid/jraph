@@ -46,8 +46,10 @@ form#createAccount {
 }
 
 .form-group {
-    display:flex;
-    margin-bottom:1px;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    margin-bottom: 1px;
     align-content: center;
 }
 
@@ -58,6 +60,8 @@ form#createAccount {
 }
 
 input {
+    -webkit-flex:auto;
+    -ms-flex:auto;
     flex:auto;
     font-family: 'Nato Sans', sans-serif;
     font-size:20px;
@@ -78,8 +82,14 @@ label {
     color:#FCE4EC;
     font-family: 'Nato Sans', sans-serif;
     background-color:#F06292;
+
+    display:-ms-flexbox;
+    display:-webkit-flex;
     display:flex;
+
+    -webkit-align-items: center;
     align-items:center;
+    -webkit-justify-content: center;
     justify-content: flex-end;
 }
 
@@ -139,7 +149,10 @@ button:focus {
 }
 
 span {
+    display: -ms-flexbox;
+    display: -webkit-flex;
     display: flex;
+    -webkit-justify-content: center;
     justify-content: center;
 }
 
@@ -159,10 +172,13 @@ a:hover {
 }
 
 .help-block {
+    -ms-flex:1;
+    -webkit-flex:1;
+    flex:1;
+
     color:#fff;
     font-family: 'Nato Sans', sans-serif;
     background-color:#D04066;
-    flex:1;
     margin:-1px 0 0 0;
     padding:10px 20px;
     text-align:center;
