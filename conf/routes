@@ -5,6 +5,7 @@
 
 # API
 GET           /                                                @controllers.ApplicationController.signIn
+GET           /unsupportedBrowser                              @controllers.ApplicationController.unsupportedBrowser
 GET           /*path/                                          @controllers.ApplicationController.trimTrailingForwardSlash(path: String)
 GET           /signIn                                          @controllers.ApplicationController.signIn
 GET           /signUp                                          @controllers.ApplicationController.signUp

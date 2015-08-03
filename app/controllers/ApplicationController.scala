@@ -71,6 +71,10 @@ class ApplicationController @Inject() (
     }
   }
 
+  def unsupportedBrowser = Action {
+    Ok(views.html.unsupportedBrowser())
+  }
+
   def profile = SecuredAction { req =>
     val userEmail = req.identity.email.trim.toLowerCase
 
