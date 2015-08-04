@@ -6,6 +6,10 @@ html, body {
     display:none !important;
 }
 
+text {
+    fill: rgba(255,255,255,.87);
+}
+
 .marker-arrow {
     fill: rgba(255, 255, 255, 1);
     stroke-opacity: 0;
@@ -13,14 +17,14 @@ html, body {
 }
 
 .edge {
-    opacity: .3;
-    stroke: #eee;
-    stroke-width: .25em;
+    opacity: 1;
+    stroke: #BDBDBD;
+    stroke-width: .20em;
 }
 
 .node-rect {
     stroke-width: 0;
-    fill: #fff;
+    fill: #E91E63;
 }
 
 .curved-shadow {
@@ -138,15 +142,20 @@ html, body {
 }
 
 .graph-thumbnail > svg {
-    background-color:#e74c3c;
+    background-color:#fafafa;
     display:block;  /* SVG element default to display:inline; which causes weird padding/margin issues */
     width:400px;
     height:220px;
 }
 
 .graph-thumbnail > .caption {
+    background-color:#fff;
     position:relative;
     padding:5px 10px;
+}
+
+.graph-thumbnail > .caption > h6 {
+    color:#666;
 }
 
 .graph-thumbnail > .caption > .fa {

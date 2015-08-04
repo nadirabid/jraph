@@ -270,12 +270,6 @@ require([
     attached: function() {
       var self = this;
 
-      graphsData.forEach(function(graphData) {
-        graphData.graph.data.background = colors[counter % colors.length];
-
-        counter++;
-      });
-
       self.hypergraphs = graphsData;
 
       window.addEventListener('scroll', function() {
