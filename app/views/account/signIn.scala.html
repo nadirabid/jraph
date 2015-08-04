@@ -58,8 +58,10 @@
             <p class="help-block"> @formError.message </p>
           }
         }
-        <button type="submit">Sign in</button>
+
         @helper.CSRF.formField
+
+        <button type="submit">Sign in</button>
       </form>
 
       <span>

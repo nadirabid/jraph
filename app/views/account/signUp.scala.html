@@ -1,4 +1,4 @@
-@(signUpForm: Form[forms.SignUpForm.Data])
+@(signUpForm: Form[forms.SignUpForm.Data])(implicit request: RequestHeader)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -74,6 +74,9 @@
           <p class="help-block"> @formError.message </p>
         }
       }
+
+      @helper.CSRF.formField
+
       <button type="submit">Create Account</button>
     </form>
 
