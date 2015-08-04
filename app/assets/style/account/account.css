@@ -166,7 +166,7 @@ text {
 
 .sub-nav {
     height:60px;
-    background: #fff;
+    background-color: #fff;
     transition:box-shadow 200ms ease-in-out;
 }
 
