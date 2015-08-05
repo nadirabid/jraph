@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   filters,
+
   "com.typesafe.play" %% "play-mailer" % "3.0.1",
   "com.mohiva" %% "play-silhouette" % "3.0.0",
   "net.codingwell" %% "scala-guice" % "4.0.0",
