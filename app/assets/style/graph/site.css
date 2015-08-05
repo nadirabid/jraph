@@ -66,10 +66,6 @@ body {
     -webkit-flex: 1 1 auto;
 }
 
-text {
-    fill: rgba(255,255,255,.87);
-}
-
 .edge-arrow {
     fill:#BDBDBD;
     stroke-opacity: 0;
@@ -138,8 +134,10 @@ text {
 }
 
 .node-name {
+    fill: rgba(255,255,255,.87);
     font-family: 'Noto Sans', sans-serif;
     font-weight:600;
+    text-rendering:geometricPrecision;
 }
 
 .node-menu {
@@ -199,9 +197,11 @@ text {
 }
 
 .pill-button > text {
+    fill: rgba(255,255,255,.87);
     font-weight:600;
     font-size:12px;
     font-family: FontAwesome;
+    text-rendering:geometricPrecision;
 }
 
 /***
