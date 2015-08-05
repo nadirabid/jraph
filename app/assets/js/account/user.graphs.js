@@ -116,12 +116,8 @@ require([
         return 'translate(' + this.x + ',' + this.y + ')';
       },
 
-      nameTranslate: function() {
-        return 'translate(' + this.nameX + ',' + this.nameY + ')';
-      },
-
       rectTranslate: function() {
-        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 12)/2) + ')';
+        return 'translate(' + (-this.width/2) + ',' + (-(this.height + 10)/2) + ')';
       }
 
     },
@@ -131,8 +127,11 @@ require([
       updateDimensionsOfNodeRect: function() {
         var bBox = this.$$.nodeName.getBBox();
 
-        this.width = bBox.width + 24;
-        this.height = bBox.height + 12;
+        var minWidth = Math.max(bBox.width, 50);
+        var minHeight = Math.max(bBox.height, 18);
+
+        this.width = minWidth + 24;
+        this.height = minHeight + 12;
       }
 
     },

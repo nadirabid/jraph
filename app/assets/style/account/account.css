@@ -6,10 +6,6 @@ html, body {
     display:none !important;
 }
 
-text {
-    fill: rgba(255,255,255,.87);
-}
-
 .marker-arrow {
     fill: rgba(255, 255, 255, 1);
     stroke-opacity: 0;
@@ -25,6 +21,13 @@ text {
 .node-rect {
     stroke-width: 0;
     fill: #E91E63;
+}
+
+.node-name {
+    fill: rgba(255,255,255,.87);
+    font-family: 'Noto Sans', sans-serif;
+    font-weight:600;
+    text-anchor:middle;
 }
 
 .curved-shadow {
