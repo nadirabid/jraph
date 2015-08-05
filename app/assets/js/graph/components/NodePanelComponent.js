@@ -209,7 +209,7 @@ define([
         }
         else if (!util.validateLink(linkInputValue)) {
           this.validationError.links.hasErrors = true;
-          this.validationError.links.message = 'Link should look something like: http://www.analyte.io';
+          this.validationError.links.message = 'Link should look something like: http://www.jraph.io';
         }
         else {
           this.node.data.properties.links.push(new NodeProperty({ value: linkInputValue }));
