@@ -29,6 +29,7 @@ html, body {
     font-weight:600;
     text-anchor:middle;
     text-rendering:geometricPrecision;
+    letter-spacing:0.5px;
 }
 
 .curved-shadow {
