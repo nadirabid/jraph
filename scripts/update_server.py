@@ -21,7 +21,7 @@ def execute(command, exitOutput=None):
         else:
             print(line)
 
-print "\n ### Cloning repository..."
+print "\n ### Finding directory to clone repository to..."
 
 target_dir_base = "jraph"
 target_dir_counter = 0
@@ -34,16 +34,15 @@ while os.path.exists(target_dir):
 print "\n ### Cloning repository to " + target_dir + "..."
 
 Repo.clone_from("git@github.com:nadirabid/jraph.git", target_dir, progress=Progress())
+os.chdir(target_dir)
 
 print "\n ### Building project..."
-
-os.chdir(target_dir)
 
 execute("./activator -J-Xms256m -J-Xmx256m clean stage");
 
 print "\n ### Starting server..."
 
-start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dapplication.secret=VPb0t04YT^T@80DbA7f9aZB:NwjhfRJph5ctdJ@n1Bz3Ahfu0dEZpJ9tyA_qD3ce -Dneo4j.username=neo4j -Dneo4j.password=c4Q-q9N-wSp-uWk &"
+start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dconfig.resource=application.prod.conf"
 execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
 
 os.chdir("..")
