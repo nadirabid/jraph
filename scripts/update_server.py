@@ -5,6 +5,8 @@ import subprocess
 from git import Repo
 from git.remote import RemoteProgress
 
+### SOME DEFINITIONS
+
 class Progress(RemoteProgress):
     def line_dropped(self, line):
         print line
@@ -21,7 +23,22 @@ def execute(command, exitOutput=None):
         else:
             print(line)
 
-print "\n ### Finding directory to clone repository to..."
+def hilite(string, status, bold):
+    attr = []
+    if status:
+        # green
+        attr.append('32')
+    else:
+        # red
+        attr.append('31')
+    if bold:
+        attr.append('1')
+    return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
+
+
+### SCRIPT	STARTS	HERE
+
+print hilite("\nFinding directory to clone repository to...", True, True)
 
 target_dir_base = "jraph"
 target_dir_counter = 0
@@ -31,20 +48,22 @@ while os.path.exists(target_dir):
     target_dir_counter += 1
     target_dir = target_dir_base + "_" + str(target_dir_counter)
 
-print "\n ### Cloning repository to " + target_dir + "..."
+print hilite("Cloning repository to " + target_dir + "...", True, True)
 
 Repo.clone_from("git@github.com:nadirabid/jraph.git", target_dir, progress=Progress())
 os.chdir(target_dir)
 
-print "\n ### Building project..."
+print hilite("\nShutting down current running server...", True, True)
+
+print hilite("\nBuilding project...", True, True)
 
 execute("./activator -J-Xms256m -J-Xmx256m clean stage")
 
-print "\n ### Starting server..."
+print hilite("\nStarting server...", True, True)
 
 start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dconfig.resource=application.prod.conf"
 execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
 
 os.chdir("..")
 
-print "\n ### Finished"
+print hilite("\nFinished", True, True)
