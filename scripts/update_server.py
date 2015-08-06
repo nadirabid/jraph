@@ -11,11 +11,15 @@ class Progress(RemoteProgress):
     def update(self, *args):
         print self._cur_line
 
-def execute(command):
+def execute(command, exitOutput=None):
     popen = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     lines_iterator = iter(popen.stdout.readline, b"")
     for line in lines_iterator:
-        print(line) # yield line
+        if exitOutput is not None and exitOutput in line:
+            print(line) # yield line
+            break
+        else:
+            print(line)
 
 print "\n ### Cloning repository..."
 
@@ -40,7 +44,7 @@ execute("./activator -J-Xms256m -J-Xmx256m clean stage");
 print "\n ### Starting server..."
 
 start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dapplication.secret=VPb0t04YT^T@80DbA7f9aZB:NwjhfRJph5ctdJ@n1Bz3Ahfu0dEZpJ9tyA_qD3ce -Dneo4j.username=neo4j -Dneo4j.password=c4Q-q9N-wSp-uWk &"
-execute(start_server)
+execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
 
 os.chdir("..")
 
