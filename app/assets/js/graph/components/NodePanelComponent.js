@@ -436,10 +436,14 @@ define([
 
     watch: {
       'node': function() {
+        console.log('watch.node');
         this.initializeData();
 
         if (this.node.isNew) {
           this.editName();
+        }
+        else {
+          this.$$.nameInput.blur();
         }
       }
     },
