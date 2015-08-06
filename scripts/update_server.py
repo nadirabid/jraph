@@ -13,9 +13,17 @@ class Progress(RemoteProgress):
 
 print "\n ### Cloning repository..."
 
-target_dir = "hypergraph"
+target_dir_base = "jraph"
+target_dir_counter = 0
+target_dir = target_dir_base + "_" + str(target_dir_counter)
 
-Repo.clone_from("git@github.com:nadirabid/hypergraph.git", target_dir, progress=Progress())
+while os.path.exists(target_dir):
+    target_dir_counter += 1
+    target_dir = target_dir_base + "_" + str(target_dir_counter)
+
+print "\n ### Cloning repository to " + target_dir + "..."
+
+Repo.clone_from("git@github.com:nadirabid/jraph.git", target_dir, progress=Progress())
 
 print "\n ### Building project..."
 
