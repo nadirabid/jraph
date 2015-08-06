@@ -2,10 +2,6 @@ html, body {
     overflow-x:hidden;
 }
 
-[v-cloak] {
-    display:none !important;
-}
-
 .marker-arrow {
     fill: rgba(255, 255, 255, 1);
     stroke-opacity: 0;
@@ -63,6 +59,7 @@ html, body {
 }
 
 .main-panel {
+    margin:auto;
     margin-top:90px;
     width:1260px;
     padding:0 10px;
@@ -160,7 +157,10 @@ html, body {
 }
 
 .graph-thumbnail > .caption > h6 {
-    color:#666;
+    margin: 8px 0;
+    font-size: 14px;
+    font-weight: 300;
+    color: #666;
 }
 
 .graph-thumbnail > .caption > .fa {
@@ -187,12 +187,31 @@ html, body {
     top:70px;
 }
 
-.sub-nav > * > button {
-    padding:8px 16px;
+.create-new-graph-button {
+    padding:10px 16px;
     display:inline-block;
     width:160px;
     margin-top:10px;
+    background-color:#FF4081;
+    cursor:pointer;
+    border:none;
+    border-radius:4px;
+    color:rgba(255,255,255,1);
+    font-weight:500;
+    font-size:14px;
+    font-family: 'Noto Sans', sans-serif;
+    transition:background-color 140ms ease;
 }
+
+.create-new-graph-button:hover {
+    background-color:#F50057;
+}
+
+.create-new-graph-button:focus {
+    outline:none;
+}
+
+/** shared between UserGraphs page and Profile apge **/
 
 .nav {
     z-index:3;
@@ -201,7 +220,7 @@ html, body {
 .nav > * > .profile-picture {
     display:inline-block;
     position:absolute;
-    bottom:10px;
+    bottom:4px;
     right:0;
 }
 
