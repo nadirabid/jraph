@@ -38,7 +38,7 @@ os.chdir(target_dir)
 
 print "\n ### Building project..."
 
-execute("./activator -J-Xms256m -J-Xmx256m clean stage");
+execute("./activator -J-Xms256m -J-Xmx256m clean stage")
 
 print "\n ### Starting server..."
 
