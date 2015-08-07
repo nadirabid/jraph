@@ -35,6 +35,9 @@ def hilite(string, status, bold):
         attr.append('1')
     return '\x1b[%sm%s\x1b[0m' % (';'.join(attr), string)
 
+def app_dir_name(base_dir_name, dir_counter):
+    return base_dir_name + "_" + str(dir_counter)
+
 
 ### SCRIPT	STARTS	HERE
 
@@ -42,28 +45,43 @@ print hilite("\nFinding directory to clone repository to...", True, True)
 
 target_dir_base = "jraph"
 target_dir_counter = 0
-target_dir = target_dir_base + "_" + str(target_dir_counter)
+target_dir = app_dir_name(target_dir_base, target_dir_counter)
 
 while os.path.exists(target_dir):
     target_dir_counter += 1
-    target_dir = target_dir_base + "_" + str(target_dir_counter)
+    target_dir = app_dir_name(target_dir_base, target_dir_counter)
+
+
 
 print hilite("Cloning repository to " + target_dir + "...", True, True)
 
 Repo.clone_from("git@github.com:nadirabid/jraph.git", target_dir, progress=Progress())
-os.chdir(target_dir)
+
+
 
 print hilite("\nShutting down current running server...", True, True)
 
+old_target_dir = app_dir_name(target_dir_base, 0)
+if os.path.exists(old_target_dir + "/target/universal/stage/RUNNING_PID"):
+    os.chdir(old_target_dir)
+    execute("./activator stopProd -J-Xms64m -J-Xmx256m")
+    os.chdir("..")
+
+
+
 print hilite("\nBuilding project...", True, True)
 
+os.chdir(target_dir)
 execute("./activator -J-Xms256m -J-Xmx256m clean stage")
+
+
 
 print hilite("\nStarting server...", True, True)
 
 start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dconfig.resource=application.prod.conf"
-execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
-
+#execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
 os.chdir("..")
+
+
 
 print hilite("\nFinished", True, True)
