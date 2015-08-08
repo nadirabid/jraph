@@ -4,6 +4,7 @@ import os
 import subprocess
 import time
 import glob
+import re
 from git import Repo
 from git.remote import RemoteProgress
 
@@ -43,7 +44,8 @@ def app_dir_name(dir_version):
     return BASE_APP_DIR_NAME + "_" + str(dir_version)
 
 def find_most_recent_app_dir_version():
-    app_dirs_list = glob.glob(BASE_APP_DIR_NAME + "_*")
+    dir_name_regex = re.compile(BASE_APP_DIR_NAME + "_\d+")
+    app_dirs_list = filter(dir_name_regex.match, glob.glob(BASE_APP_DIR_NAME + "_*"))
     sorted_app_dir_versions_list = sorted(map(lambda app_dir: int(app_dir.split("_")[1]), app_dirs_list))
     return max(max(sorted_app_dir_versions_list, [-1]))
 
