@@ -2,13 +2,14 @@
 
 import os
 import subprocess
+import time
 import glob
 from git import Repo
 from git.remote import RemoteProgress
 
 ### SOME DEFINITIONS
 
-BASE_APP_DIR_NAME = "jraph_"
+BASE_APP_DIR_NAME = "jraph"
 
 class Progress(RemoteProgress):
     def line_dropped(self, line):
@@ -26,7 +27,7 @@ def execute(command, exitOutput=None):
         else:
             print(line)
 
-def hilite(string, status, bold):
+def hilite(string, status=True, bold=True):
     attr = []
     if status:
         # green
@@ -42,46 +43,47 @@ def app_dir_name(dir_version):
     return BASE_APP_DIR_NAME + "_" + str(dir_version)
 
 def find_most_recent_app_dir_version():
-    app_dirs_list = glob.glob(BASE_APP_DIR_NAME + "*")
+    app_dirs_list = glob.glob(BASE_APP_DIR_NAME + "_*")
     sorted_app_dir_versions_list = sorted(map(lambda app_dir: int(app_dir.split("_")[1]), app_dirs_list))
-    return max(sorted_app_dir_versions_list)
+    return max(max(sorted_app_dir_versions_list, [-1]))
 
 
 
 ### SCRIPT	STARTS	HERE
 
+startTime = time.time()
+
 previous_app_dir_version = find_most_recent_app_dir_version()
 previous_app_dir_name = app_dir_name(previous_app_dir_version)
 
-print hilite("\nFinding directory to clone repository to...", True, True)
+if previous_app_dir_version != -1 and os.path.exists(previous_app_dir_name + "/target/universal/stage/RUNNING_PID"):
+    print hilite("Shutting down previous version of the app found running from " + previous_app_dir_name)
+
+    os.chdir(previous_app_dir_name)
+    execute("./activator -J-Xms64m -J-Xmx256m stopProd")
+    os.chdir("..")
+
 
 current_app_dir_version = previous_app_dir_version + 1
 current_app_dir_name = app_dir_name(current_app_dir_version)
 
-
-
-print hilite("Cloning repository to " + current_app_dir_name + "...", True, True)
+print hilite("Cloning repository to " + current_app_dir_name + "...")
 
 Repo.clone_from("git@github.com:nadirabid/jraph.git", current_app_dir_name, progress=Progress())
 
 
-
-print hilite("\nShutting down current running server...", True, True)
-
-
-print hilite("\nBuilding project...", True, True)
+print hilite("Building project...")
 
 os.chdir(current_app_dir_name)
-execute("./activator -J-Xms256m -J-Xmx256m clean stage")
+execute("./activator -J-Xms128m -J-Xmx512m clean stage")
 
 
-
-print hilite("\nStarting server...", True, True)
+print hilite("Starting server...")
 
 start_server = "target/universal/stage/bin/jraph -J-Xms256m -J-Xmx512m -Dconfig.resource=application.prod.conf"
-#execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
+execute(start_server, "p.c.s.NettyServer - Listening for HTTP on")
 os.chdir("..")
 
+endTime = time.time()
 
-
-print hilite("\nFinished", True, True)
+print hilite("Finished. Total time: " + str(endTime - startTime) + " seconds.")
