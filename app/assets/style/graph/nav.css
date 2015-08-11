@@ -109,7 +109,7 @@ nav {
 
 .app-logo-group > path:not(:first-child) {
     fill:#ff80ab;
-    transition:fill 100ms ease;
+    transition:fill 140ms ease;
 }
 
 .app-logo-group:hover > path:not(:first-child) {

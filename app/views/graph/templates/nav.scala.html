@@ -1,8 +1,20 @@
 <template id="nav">
   <nav>
+    <style>
+      .app-logo-group:hover > path {
+        filter:url(#glow)
+      }
+    </style>
     <div class="app-logo">
       <a href="@routes.ApplicationController.userGraphs()">
         <svg version="1.1" height="30" viewBox="0.0 0.0 640.0 490.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"></feGaussianBlur>
+            <feMerge>
+              <feMergeNode in="coloredBlur"></feMergeNode>
+              <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+          </filter>
           <clipPath id="p.0"><path d="m0 0l640.0 0l0 490.0l-640.0 0l0 -490.0z" clip-rule="nonzero"></path></clipPath>
           <g class="app-logo-group" clip-path="url(#p.0)">
             <path fill="transparent" d="m-0.4238845 0.007874016l640.8504 0l0 489.98425l-640.8504 0z" fill-rule="nonzero"></path>
