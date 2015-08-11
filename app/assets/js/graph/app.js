@@ -190,6 +190,16 @@ define([
       window.addEventListener('resize', this.resize.bind(this));
     },
 
+    watch: {
+      nodes: function(nodes) {
+        this._forceLayout.nodes(nodes);
+      },
+
+      edges: function(edges) {
+        this._forceLayout.links(edges);
+      }
+    },
+
     ready: function() {
       this.$$el = $(this.$el);
       this.$options.state = this.$parent.$options.state;
@@ -204,6 +214,14 @@ define([
       $svg.on('dragstart', this.panStart.bind(this));
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
+
+      this._forceLayout = d3.layout.force()
+          .size([this.width, this.height])
+          .theta(0.1)
+          .friction(0.5)
+          .gravity(0.3)
+          .charge(-6000)
+          .linkDistance(100);
     }
 
   });
@@ -366,5 +384,9 @@ define([
 
         app.nodes = nodes;
         app.edges = links;
+
+        Vue.nextTick(function() {
+          app.$.graphComponent._forceLayout.start();
+        });
       });
 });

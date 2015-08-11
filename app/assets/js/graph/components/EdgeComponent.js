@@ -245,6 +245,7 @@ define([
     },
 
     ready: function () {
+      /*
       this.$watch('source.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
       this.$watch('source.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
       this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
@@ -253,7 +254,7 @@ define([
       this.$watch('target.y',         this.calculateEdgeNodeIntersection.bind(this));
       this.$watch('source.x',         this.calculateEdgeNodeIntersection.bind(this));
       this.$watch('source.y',         this.calculateEdgeNodeIntersection.bind(this));
-
+      */
       this.calculateEdgeNodeIntersection();
 
       var $g = util(this.$el);
