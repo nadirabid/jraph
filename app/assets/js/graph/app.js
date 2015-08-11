@@ -50,13 +50,18 @@ define([
 
     template: document.getElementById('graph').innerHTML,
 
-    props: [ 'nodes', 'edges' ],
+    props: {
+      nodes: { required: true },
+      edges: { required: true },
+      forceLayout: { required: true }
+    },
 
     data: function () {
       return {
         state: state,
         nodes: [],
         edges: [],
+        forceLayout: null,
         width: 0,
         height: 0,
         minX: 0,
@@ -192,11 +197,11 @@ define([
 
     watch: {
       nodes: function(nodes) {
-        this._forceLayout.nodes(nodes);
+        this.$forceLayout.nodes(nodes);
       },
 
       edges: function(edges) {
-        this._forceLayout.links(edges);
+        this.$forceLayout.links(edges);
       }
     },
 
@@ -215,14 +220,16 @@ define([
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
 
-      this._forceLayout = d3.layout.force()
+      var forceLayoutParameters = this.forceLayout.parameters;
+      this.$forceLayout = d3.layout.force()
           .size([this.width, this.height])
-          .theta(0.8)
-          .friction(0.5)
-          .gravity(0.3)
-          .charge(-5000)
-          .linkDistance(200)
-          .linkStrength(10);
+          .alpha(forceLayoutParameters.alpha)
+          .theta(forceLayoutParameters.theta)
+          .friction(forceLayoutParameters.friction)
+          .gravity(forceLayoutParameters.gravity)
+          .charge(forceLayoutParameters.charge)
+          .linkDistance(forceLayoutParameters.linkDistance)
+          .linkStrength(forceLayoutParameters.linkStrength);
     }
 
   });
@@ -297,7 +304,19 @@ define([
       graph: _graph, // _graph is bootstrapped into the graph.scala.html view
       nodes: [],
       edges: [],
-      nodeInfoToDisplay: null
+      nodeInfoToDisplay: null,
+      forceLayout: {
+        isRunning: false,
+        parameters: {
+          alpha: 1,
+          theta: 0.1,
+          friction: 0.5,
+          gravity: 0.3,
+          charge: -20000,
+          linkDistance: 200,
+          linkStrength: 10
+        }
+      }
     },
 
     methods: {
@@ -387,7 +406,7 @@ define([
         app.edges = links;
 
         Vue.nextTick(function() {
-          app.$.graphComponent._forceLayout.start();
+          app.$.graphComponent.$forceLayout.start();
         });
       });
 });
