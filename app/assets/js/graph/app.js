@@ -217,11 +217,12 @@ define([
 
       this._forceLayout = d3.layout.force()
           .size([this.width, this.height])
-          .theta(0.1)
+          .theta(0.8)
           .friction(0.5)
           .gravity(0.3)
-          .charge(-6000)
-          .linkDistance(100);
+          .charge(-5000)
+          .linkDistance(200)
+          .linkStrength(10);
     }
 
   });
