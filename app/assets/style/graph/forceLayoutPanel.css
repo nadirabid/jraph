@@ -10,10 +10,10 @@
 
 @keyframes pulseColor {
     0% {
-        color: #FF1744;
+        color: #F44336;
     }
     100% {
-        color: #D50000;
+        color: #B71C1C;
     }
 }
 
@@ -23,7 +23,7 @@
 
 .force-layout-panel > .fa-stop {
     animation-name: pulseColor;
-    animation-duration: 1s;
+    animation-duration: 500ms;
     animation-iteration-count: infinite;
     animation-direction: alternate;
     animation-timing-function: ease-in-out;
