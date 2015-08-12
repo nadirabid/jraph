@@ -323,7 +323,7 @@ define([
       edges: [],
       nodeInfoToDisplay: null,
       forceLayout: {
-        isRunning: true,
+        isRunning: false,
         parameters: {
           alpha: 1,
           theta: 0.1,
