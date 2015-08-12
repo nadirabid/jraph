@@ -51,9 +51,15 @@ define([
     template: document.getElementById('graph').innerHTML,
 
     props: {
-      nodes: { required: true },
-      edges: { required: true },
-      forceLayout: { required: true }
+      nodes: {
+        required: true
+      },
+      edges: {
+        required: true
+      },
+      forceLayout: {
+        required: true
+      }
     },
 
     data: function () {
@@ -61,7 +67,6 @@ define([
         state: state,
         nodes: [],
         edges: [],
-        forceLayout: null,
         width: 0,
         height: 0,
         minX: 0,
@@ -301,7 +306,7 @@ define([
     data: {
       hypergraphID: hypergraphID,
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
-      graph: _graph, // _graph is bootstrapped into the graph.scala.html view
+      graph: _graph, // _graph is bootstrapped into the graphEditor.scala.html view
       nodes: [],
       edges: [],
       nodeInfoToDisplay: null,
