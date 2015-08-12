@@ -260,6 +260,11 @@ define([
           .charge(forceLayoutParameters.charge)
           .linkDistance(forceLayoutParameters.linkDistance)
           .linkStrength(forceLayoutParameters.linkStrength);
+
+      var self = this;
+      this.$forceLayout.on('end', function() {
+        self.forceLayout.isRunning = false;
+      });
     }
 
   });
