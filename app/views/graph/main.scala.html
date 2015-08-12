@@ -2,7 +2,7 @@
 
 @import play.api.libs.json.Json
 
-@layout("JRAPH: Graph Name") {
+@layout("JRAPH: " + (graph \ "data" \ "name").as[String]) {
     <div id="all">
       <x-nav
           data-state="{{@@ dataState }}"
