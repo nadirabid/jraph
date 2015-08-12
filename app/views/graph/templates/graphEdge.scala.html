@@ -1,7 +1,7 @@
 <template id="graph.edge">
   <g class="x-enable-pointer-events" v-on="contextmenu: edgeContextMenu">
     <line
-        v-if="isForceLayoutRunning"
+        v-if="isViewOptimizedForSpeed"
         class="edge"
         v-el="arrowMarkerLine"
         v-attr="
@@ -10,7 +10,7 @@
         "
     ></line>
     <line
-        v-if="!isForceLayoutRunning"
+        v-if="!isViewOptimizedForSpeed"
         class="edge"
         marker-end="url(#edgeArrow)"
         v-el="arrowMarkerLine"

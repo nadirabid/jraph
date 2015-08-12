@@ -20,7 +20,7 @@
     ></rect>
     <g
         class="pill-button-list"
-        v-if="!isNew && !isForceLayoutRunning"
+        v-if="!isNew && !isViewOptimizedForSpeed"
         v-class="transition-enabled: isNodeReady"
     >
       <g
@@ -55,14 +55,14 @@
       <rect
           class="node-rect-background-highlight"
           rx="2" ry="2"
-          v-if="!isForceLayoutRunning"
+          v-if="!isViewOptimizedForSpeed"
           v-el="nodeRectBackgroundHighlight"
           v-attr="width: width, height: height"
       ></rect>
       <rect
           class="node-rect-background"
           rx="2" ry="2"
-          v-if="!isForceLayoutRunning"
+          v-if="!isViewOptimizedForSpeed"
           v-el="nodeRectBackground"
           v-attr="width: width, height: height"
       ></rect>
@@ -77,7 +77,7 @@
         class="node-name x-disable-pointer-events"
         text-anchor="middle"
         v-el="nodeName"
-        v-if="!isForceLayoutRunning"
+        v-if="!isViewOptimizedForSpeed"
     >
       {{data.name}}
     </text>

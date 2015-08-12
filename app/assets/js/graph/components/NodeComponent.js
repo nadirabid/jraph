@@ -200,6 +200,9 @@ define([
     props: {
       isForceLayoutRunning: {
         required: true
+      },
+      isZooming: {
+        required: true
       }
     },
 
@@ -226,6 +229,10 @@ define([
     },
 
     computed: {
+
+      isViewOptimizedForSpeed: function() {
+        return this.isForceLayoutRunning || this.isZooming;
+      },
 
       backgroundWidth: function() {
         return this.width + this.pillButtonWidth*2 + 1 + 4;

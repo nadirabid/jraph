@@ -66,6 +66,7 @@ define([
 
     data: function () {
       return {
+        isZooming: false,
         state: state,
         nodes: [],
         edges: [],
@@ -116,10 +117,19 @@ define([
             .scale(zoomFactor)
             .translate(-p.x, -p.y);
 
-
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
         });
+
+        if (this.$setIsZoomingToFalseTimeout) {
+          clearTimeout(this.$setIsZoomingToFalseTimeout);
+        }
+        this.isZooming = true;
+
+        var self = this;
+        this.$setIsZoomingToFalseTimeout = setTimeout(function() {
+          self.isZooming = false;
+        }, 100);
       },
 
       resize: function () {
@@ -203,6 +213,10 @@ define([
     },
 
     watch: {
+      isZooming: function(isZooming) {
+        console.log('isZooming:', isZooming);
+      },
+
       nodes: function(nodes) {
         this.$forceLayout.nodes(nodes);
       },
@@ -419,6 +433,7 @@ define([
           });
         });
 
+        console.log(nodes.length);
         app.nodes = nodes;
         app.edges = links;
 

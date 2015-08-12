@@ -65,6 +65,9 @@ define([
     props: {
       isForceLayoutRunning: {
         required: true
+      },
+      isZooming: {
+        required: true
       }
     },
 
@@ -75,6 +78,14 @@ define([
         targetClipX: 0,
         targetClipY: 0
       };
+    },
+
+    computed: {
+
+      isViewOptimizedForSpeed: function() {
+        return this.isForceLayoutRunning || this.isZooming;
+      },
+
     },
 
     methods: {
