@@ -7,6 +7,8 @@
 /** @namespace this.$parent */
 /** @namespace this.$parent.$$ */
 
+/** @namespace this.$.graphComponent */
+
 /** @namespace this.$$.nodeRect */
 /** @namespace this.$$.arrowMarkerLine */
 /** @namespace this.$$.dynamicContent */
