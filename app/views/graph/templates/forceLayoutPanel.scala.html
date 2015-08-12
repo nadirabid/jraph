@@ -1,0 +1,14 @@
+<template id="forceLayout.panel">
+  <div class="force-layout-panel x-noselect">
+    <i
+        class="fa"
+        v-class="
+            fa-play:!forceLayout.isRunning,
+            fa-stop:forceLayout.isRunning
+        "
+        v-on="click:forceLayout.isRunning = !forceLayout.isRunning"
+    >
+    </i>
+    <span>Force Layout</span>
+  </div>
+</template>

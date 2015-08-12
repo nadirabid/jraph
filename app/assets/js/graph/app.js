@@ -14,7 +14,8 @@ define([
     'graph/components/EdgeComponent',
     'graph/components/GraphControlsComponent',
     'graph/components/ContextMenuComponent',
-    'graph/components/NodePanelComponent'
+    'graph/components/NodePanelComponent',
+    'graph/components/ForceLayoutPanel'
 ], function (
     _,
     $,
@@ -31,7 +32,8 @@ define([
     EdgeComponent,
     GraphControlsComponent,
     ContextMenuComponent,
-    NodePanelComponent
+    NodePanelComponent,
+    ForceLayoutPanel
 ) {
   'use strict';
 
@@ -207,6 +209,15 @@ define([
 
       edges: function(edges) {
         this.$forceLayout.links(edges);
+      },
+
+      'forceLayout.isRunning': function(isRunning) {
+        if (isRunning) {
+          this.$forceLayout.start();
+        }
+        else {
+          this.$forceLayout.stop();
+        }
       }
     },
 
@@ -279,6 +290,7 @@ define([
 
   });
 
+  Vue.component('x-force-layout-panel', ForceLayoutPanel);
   Vue.component('x-node-panel', NodePanelComponent);
   Vue.component('x-graph-controls', GraphControlsComponent);
   Vue.component('x-graph', GraphComponent);
@@ -311,7 +323,7 @@ define([
       edges: [],
       nodeInfoToDisplay: null,
       forceLayout: {
-        isRunning: false,
+        isRunning: true,
         parameters: {
           alpha: 1,
           theta: 0.1,
@@ -411,7 +423,7 @@ define([
         app.edges = links;
 
         Vue.nextTick(function() {
-          app.$.graphComponent.$forceLayout.start();
+          app.$.graphComponent.$forceLayout.stop();
         });
       });
 });

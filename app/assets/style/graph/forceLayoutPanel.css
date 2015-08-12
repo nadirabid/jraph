@@ -1,0 +1,40 @@
+.force-layout-panel {
+    background-color: #fff;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 5px 10px;
+    color: #777;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulseColor {
+    0% {
+        color: #FF1744;
+    }
+    100% {
+        color: #D50000;
+    }
+}
+
+.force-layout-panel > .fa {
+    cursor:pointer;
+}
+
+.force-layout-panel > .fa-stop {
+    animation-name: pulseColor;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: ease-in-out;
+    color: #FF1744;
+}
+
+.force-layout-panel > .fa-play {
+    color: #00C853;
+}
+
+.force-layout-panel > span {
+    margin-left: 5px;
+    margin-right: 5px;
+}

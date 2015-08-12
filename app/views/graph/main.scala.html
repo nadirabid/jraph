@@ -3,55 +3,60 @@
 @import play.api.libs.json.Json
 
 @layout("JRAPH: " + (graph \ "data" \ "name").as[String]) {
-    <div id="all">
-      <x-nav
-          data-state="{{@@ dataState }}"
-          graph="{{@@ graph }}"
-          on-save="{{ saveAllGraphData }}">
-      </x-nav>
+  <div id="all">
+    <x-nav
+        data-state="{{@@ dataState }}"
+        graph="{{@@ graph }}"
+        on-save="{{ saveAllGraphData }}">
+    </x-nav>
 
-      <main id="main">
-        <x-node-panel
-            v-if="nodeInfoToDisplay"
-            hypergraph-id="{{ hypergraphID }}"
-            node="{{@@ nodeInfoToDisplay }}">
-        </x-node-panel>
+    <main id="main">
+      <x-force-layout-panel
+          force-layout="{{@@ forceLayout }}">
+      </x-force-layout-panel>
 
-        <div v-el="graphContainer" class="graph-container">
-          <x-graph
-              v-ref="graphComponent"
-              nodes="{{@@ nodes }}"
-              edges="{{@@ edges }}"
-              force-layout="{{* forceLayout }}">
-          </x-graph>
+      <x-node-panel
+          v-if="nodeInfoToDisplay"
+          hypergraph-id="{{ hypergraphID }}"
+          node="{{@@ nodeInfoToDisplay }}">
+      </x-node-panel>
 
-          <x-graph-controls
-              increment-zoom="{{ incrementZoom }}"
-              decrement-zoom="{{ decrementZoom }}"
-              center-view="{{ centerView }}">
-          </x-graph-controls>
-        </div>
-      </main>
+      <div v-el="graphContainer" class="graph-container">
+        <x-graph
+            v-ref="graphComponent"
+            nodes="{{@@ nodes }}"
+            edges="{{@@ edges }}"
+            force-layout="{{* forceLayout }}">
+        </x-graph>
 
-      <ul id="edgeContextMenu" class="x-menu hidden">
-        <li class="x-menu-item" v-on="click: delete"><a>Delete Link</a></li>
-      </ul>
+        <x-graph-controls
+            increment-zoom="{{ incrementZoom }}"
+            decrement-zoom="{{ decrementZoom }}"
+            center-view="{{ centerView }}">
+        </x-graph-controls>
+      </div>
+    </main>
 
-      <ul id="graphContextMenu" class="x-menu hidden">
-        <li class="x-menu-item" v-on="click: addNode"><a>Add Node</a></li>
-        <li class="x-menu-item" v-on="click: saveGraph"><a>Save Graph</a></li>
-      </ul>
-    </div>
+    <ul id="edgeContextMenu" class="x-menu hidden">
+      <li class="x-menu-item" v-on="click: delete"><a>Delete Link</a></li>
+    </ul>
 
-    @templates.nav()
-    @templates.graph()
-    @templates.graphNode()
-    @templates.graphEdge()
-    @templates.graphNewEdge()
-    @templates.graphControls()
-    @templates.nodePanel()
+    <ul id="graphContextMenu" class="x-menu hidden">
+      <li class="x-menu-item" v-on="click: addNode"><a>Add Node</a></li>
+      <li class="x-menu-item" v-on="click: saveGraph"><a>Save Graph</a></li>
+    </ul>
+  </div>
 
-    <script>
-      var _graph = @Html(Json.stringify(graph));
-    </script>
+  @templates.nav()
+  @templates.graph()
+  @templates.graphNode()
+  @templates.graphEdge()
+  @templates.graphNewEdge()
+  @templates.graphControls()
+  @templates.nodePanel()
+  @templates.forceLayoutPanel()
+
+  <script>
+    var _graph = @Html(Json.stringify(graph));
+  </script>
 }
