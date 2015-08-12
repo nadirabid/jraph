@@ -36,12 +36,20 @@
       <g class="dynamic-content" v-el="dynamicContent"></g>
 
         <!-- Edges -->
-      <x-edge v-repeat="edges" track-by="id"></x-edge>
+      <x-edge
+          v-repeat="edges"
+          track-by="id"
+          is-force-layout-running="{{ forceLayout.isRunning }}">
+      </x-edge>
 
       <g v-el="newEdgeContainer"></g>
 
         <!-- Nodes -->
-      <x-node v-repeat="nodes" track-by="id"></x-node>
+      <x-node
+          v-repeat="nodes"
+          track-by="id"
+          is-force-layout-running="{{ forceLayout.isRunning }}">
+      </x-node>
     </g>
   </svg>
 </template>

@@ -197,6 +197,12 @@ define([
 
     template: document.getElementById('graph.node').innerHTML,
 
+    props: {
+      isForceLayoutRunning: {
+        required: true
+      }
+    },
+
     data: function () {
       return {
         x:0,

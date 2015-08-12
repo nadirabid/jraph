@@ -1,12 +1,22 @@
 <template id="graph.edge">
   <g class="x-enable-pointer-events" v-on="contextmenu: edgeContextMenu">
     <line
+        v-if="isForceLayoutRunning"
         class="edge"
-        marker-end="url(#edgeArrow)"
         v-el="arrowMarkerLine"
         v-attr="
             x1: source.x, y1: source.y,
             x2: target.x, y2: target.y
+        "
+    ></line>
+    <line
+        v-if="!isForceLayoutRunning"
+        class="edge"
+        marker-end="url(#edgeArrow)"
+        v-el="arrowMarkerLine"
+        v-attr="
+            x1: sourceClipX, y1: sourceClipY,
+            x2: targetClipX, y2: targetClipY
         "
     ></line>
   </g>

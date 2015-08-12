@@ -62,6 +62,12 @@ define([
 
     template: document.getElementById('graph.edge').innerHTML,
 
+    props: {
+      isForceLayoutRunning: {
+        required: true
+      }
+    },
+
     data: function() {
       return {
         sourceClipX: 0,
@@ -240,22 +246,51 @@ define([
           self.$el.querySelector('.edge').classList.remove('hover');
           self.$parent.$el.style.removeProperty('cursor', 'auto');
         });
+      },
+
+      enableWatchersForCalculatingEdgeNodeIntersection: function() {
+        this.$unwatch.sourceLeftEdge  = this.$watch('source.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.sourceTopEdge   = this.$watch('source.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.targetLeftEdge  = this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.targetTopEdge   = this.$watch('target.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.targetX         = this.$watch('target.x',         this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.targetY         = this.$watch('target.y',         this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.sourceX         = this.$watch('source.x',         this.calculateEdgeNodeIntersection.bind(this));
+        this.$unwatch.sourceY         = this.$watch('source.y',         this.calculateEdgeNodeIntersection.bind(this));
+      },
+
+      disabledWatchersForCalculatingEdgeNodeIntersection: function() {
+        this.$unwatch.sourceLeftEdge();
+        this.$unwatch.sourceTopEdge();
+        this.$unwatch.targetLeftEdge();
+        this.$unwatch.targetTopEdge();
+        this.$unwatch.targetX();
+        this.$unwatch.targetY();
+        this.$unwatch.sourceX();
+        this.$unwatch.sourceY();
       }
 
     },
 
+    watch: {
+      isForceLayoutRunning: function(newValue, prevValue) {
+        if (newValue && !prevValue) {
+          this.disabledWatchersForCalculatingEdgeNodeIntersection();
+        }
+        else if (!newValue && prevValue) {
+          this.enableWatchersForCalculatingEdgeNodeIntersection();
+          this.calculateEdgeNodeIntersection();
+        }
+      }
+    },
+
     ready: function () {
-      /*
-      this.$watch('source.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('source.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.leftEdge',  this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.topEdge',   this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.x',         this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('target.y',         this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('source.x',         this.calculateEdgeNodeIntersection.bind(this));
-      this.$watch('source.y',         this.calculateEdgeNodeIntersection.bind(this));
-      */
-      this.calculateEdgeNodeIntersection();
+      this.$unwatch = {};
+
+      if (!this.isForceLayoutRunning) {
+        this.enableWatchersForCalculatingEdgeNodeIntersection();
+        this.calculateEdgeNodeIntersection();
+      }
 
       var $g = util(this.$el);
       $g.on('mouseover', this.freezePosition.bind(this));
