@@ -1,0 +1,57 @@
+@(graph: play.api.libs.json.JsValue)
+
+@import play.api.libs.json.Json
+
+@layout("JRAPH: Graph Name") {
+    <div id="all">
+      <x-nav
+          data-state="{{@@ dataState }}"
+          graph="{{@@ graph }}"
+          on-save="{{ saveAllGraphData }}">
+      </x-nav>
+
+      <main id="main">
+        <x-node-panel
+            v-if="nodeInfoToDisplay"
+            hypergraph-id="{{ hypergraphID }}"
+            node="{{@@ nodeInfoToDisplay }}">
+        </x-node-panel>
+
+        <div v-el="graphContainer" class="graph-container">
+          <x-graph
+              v-ref="graphComponent"
+              nodes="{{@@ nodes }}"
+              edges="{{@@ edges }}"
+              force-layout="{{* forceLayout }}">
+          </x-graph>
+
+          <x-graph-controls
+              increment-zoom="{{ incrementZoom }}"
+              decrement-zoom="{{ decrementZoom }}"
+              center-view="{{ centerView }}">
+          </x-graph-controls>
+        </div>
+      </main>
+
+      <ul id="edgeContextMenu" class="x-menu hidden">
+        <li class="x-menu-item" v-on="click: delete"><a>Delete Link</a></li>
+      </ul>
+
+      <ul id="graphContextMenu" class="x-menu hidden">
+        <li class="x-menu-item" v-on="click: addNode"><a>Add Node</a></li>
+        <li class="x-menu-item" v-on="click: saveGraph"><a>Save Graph</a></li>
+      </ul>
+    </div>
+
+    @templates.nav()
+    @templates.graph()
+    @templates.graphNode()
+    @templates.graphEdge()
+    @templates.graphNewEdge()
+    @templates.graphControls()
+    @templates.nodePanel()
+
+    <script>
+      var _graph = @Html(Json.stringify(graph));
+    </script>
+}
