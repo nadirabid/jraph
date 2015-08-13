@@ -61,6 +61,9 @@ define([
       },
       forceLayout: {
         required: true
+      },
+      saveAllGraphData: {
+        required: true
       }
     },
 
@@ -204,6 +207,14 @@ define([
         e.preventDefault();
 
         graphContextMenu.show(e.clientX, e.clientY);
+      },
+
+      onForceLayoutEnd: function() {
+        if (this.forceLayout.isRunning) {
+          this.saveAllGraphData();
+        }
+
+        this.forceLayout.isRunning = false;
       }
 
     },
@@ -213,10 +224,6 @@ define([
     },
 
     watch: {
-      isZooming: function(isZooming) {
-        console.log('isZooming:', isZooming);
-      },
-
       nodes: function(nodes) {
         this.$forceLayout.nodes(nodes);
       },
@@ -261,10 +268,7 @@ define([
           .linkDistance(forceLayoutParameters.linkDistance)
           .linkStrength(forceLayoutParameters.linkStrength);
 
-      var self = this;
-      this.$forceLayout.on('end', function() {
-        self.forceLayout.isRunning = false;
-      });
+      this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     }
 
   });
@@ -438,12 +442,9 @@ define([
           });
         });
 
-        console.log(nodes.length);
         app.nodes = nodes;
         app.edges = links;
 
-        Vue.nextTick(function() {
-          app.$.graphComponent.$forceLayout.stop();
-        });
+        app.$.graphComponent.$forceLayout.stop();
       });
 });
