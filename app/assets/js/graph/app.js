@@ -96,16 +96,16 @@ define([
 
       mousewheelZoom: function(e) {
         e.preventDefault(); // this stops the page "overscroll" effect
-        this.zoomUpdate(e, -(e.deltaY / 360));
+        this.zoomUpdate(e, -(e.deltaY / 360), true);
       },
 
-      zoomUpdate: function(e, zoomDelta) {
+      zoomUpdate: function(e, zoomDelta, optimizeForSpeed) {
         var zoomFactor = Math.pow(1 + Math.abs(zoomDelta)/2 , zoomDelta > 0 ? 1 : -1);
         //var zoomFactor = Math.pow(1 + this.zoomSensitivity, zoomDelta);
-        this.scaleZoom(e, zoomFactor);
+        this.scaleZoom(e, zoomFactor, optimizeForSpeed);
       },
 
-      scaleZoom: function(e, zoomFactor) {
+      scaleZoom: function(e, zoomFactor, optimizeForSpeed) {
         var nodesAndLinksGroupEl = this.$$.nodesAndLinksGroup;
 
         var ctm = nodesAndLinksGroupEl.getCTM();
@@ -123,6 +123,15 @@ define([
         Vue.nextTick(function() {
           util.setCTM(nodesAndLinksGroupEl, k);
         });
+
+        if (!optimizeForSpeed) {
+          return;
+        }
+
+
+        // set isZooming to true and automatically reset it to false
+        // after 100ms of idle zoom ... the isZooming flag is used
+        // to speed up rendering
 
         if (this.$setIsZoomingToFalseTimeout) {
           clearTimeout(this.$setIsZoomingToFalseTimeout);
