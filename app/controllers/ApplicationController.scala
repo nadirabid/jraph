@@ -66,7 +66,10 @@ class ApplicationController @Inject() (
 
   def hypergraph(hypergraphID: UUID) = SecuredAction.async { req =>
     hypergraphDAO.read(req.identity.email, hypergraphID).map {
-      case Some(hypergraph) => Ok(views.html.graph.main(Json.toJson(hypergraph)))
+      case Some(hypergraph) => Ok(views.html.graph.main(
+        Json.toJson(hypergraph),
+        Codecs.md5(req.identity.email.trim.toLowerCase.getBytes)
+      ))
       case None => Redirect(routes.ApplicationController.userGraphs())
     }
   }

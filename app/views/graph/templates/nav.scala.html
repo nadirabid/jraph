@@ -1,10 +1,7 @@
+@(userHash: String)
+
 <template id="nav">
   <nav>
-    <style>
-      .app-logo-group:hover > path {
-        filter:url(#glow)
-      }
-    </style>
     <div class="app-logo">
       <a href="@routes.ApplicationController.userGraphs()">
         <svg version="1.1" height="30" viewBox="0.0 0.0 640.0 490.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -48,13 +45,28 @@
           "
       >
     </div>
-    <div class="graph-data-state">
-      <button
-          v-attr="class: dataStateCssClassValue"
-          v-on="click:onSave"
-      >
-        {{dataStateDisplayValue}}
-      </button>
+
+    <div id="tool-belt">
+      Show Layout Panel
     </div>
+
+    <span class="profile-picture">
+      <img
+          src="https://secure.gravatar.com/avatar/@userHash?s=80&d=mm" width="40" height="40"
+          v-on="click:toggleProfilePictureDropdown"
+      >
+      <ul
+          class="x-menu x-dropdown-menu profile-picture-dropdown"
+          v-class="hidden:!profilePictureDropdown"
+          v-cloak
+      >
+        <li class="x-menu-item">
+          <a href="@routes.ApplicationController.profile()">Profile</a>
+        </li>
+        <li class="x-menu-item">
+          <a href="@routes.ApplicationController.signOut()">Sign out</a>
+        </li>
+      </ul>
+    </span>
   </nav>
 </template>

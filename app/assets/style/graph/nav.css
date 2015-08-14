@@ -1,9 +1,12 @@
 nav {
-    height:50px;
+    height:60px;
     background-color:#fff;
     box-shadow:0 1px 4px rgba(0,0,0,0.2);
     z-index:1;
     position:relative;
+    padding:0 20px 0 20px;
+
+    display:flex;
 }
 
 .graph-data-state {
@@ -114,4 +117,34 @@ nav {
 
 .app-logo-group:hover > path:not(:first-child) {
     fill:#F50057;
+}
+
+.app-logo-group:hover > path {
+    filter:url(#glow)
+}
+
+/* testing */
+#tool-belt {
+    border-left: solid 1px #999;
+}
+
+nav > .profile-picture {
+    float:right;
+    top:4px;
+    right:0;
+}
+
+nav > .profile-picture > img {
+    cursor:pointer;
+    border-radius:2px;
+}
+
+.profile-picture-dropdown {
+    width:140px;
+    right:0;
+    top:60px;
+}
+
+.profile-picture-dropdown::before, .profile-picture-dropdown::after {
+    right:15px;
 }

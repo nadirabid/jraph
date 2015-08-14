@@ -1,4 +1,4 @@
-@(graph: play.api.libs.json.JsValue)
+@(graph: play.api.libs.json.JsValue, userHash: String)
 
 @import play.api.libs.json.Json
 
@@ -48,7 +48,7 @@
     </ul>
   </div>
 
-  @templates.nav()
+  @templates.nav(userHash)
   @templates.graph()
   @templates.graphNode()
   @templates.graphEdge()
