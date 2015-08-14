@@ -2,7 +2,7 @@
 
 <template id="nav">
   <nav>
-    <div class="app-logo">
+    <div class="nav-item app-logo">
       <a href="@routes.ApplicationController.userGraphs()">
         <svg version="1.1" height="30" viewBox="0.0 0.0 640.0 490.0" fill="none" stroke="none" stroke-linecap="square" stroke-miterlimit="10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <filter id="glow">
@@ -28,7 +28,7 @@
         </svg>
       </a>
     </div>
-    <div class="graph-name">
+    <div class="nav-item graph-name">
       <span v-class="hidden: editingGraphName" v-on="click: editGraphName">
         {{graph.data.name}}
       </span>
@@ -46,11 +46,11 @@
       >
     </div>
 
-    <div id="tool-belt">
+    <div class="nav-item controls">
       Show Layout Panel
     </div>
 
-    <span class="profile-picture">
+    <span class="nav-item profile-picture">
       <img
           src="https://secure.gravatar.com/avatar/@userHash?s=80&d=mm" width="40" height="40"
           v-on="click:toggleProfilePictureDropdown"

@@ -1,150 +1,172 @@
 nav {
-    height:60px;
-    background-color:#fff;
-    box-shadow:0 1px 4px rgba(0,0,0,0.2);
-    z-index:1;
-    position:relative;
-    padding:0 20px 0 20px;
+    height: 60px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    position: relative;
+    padding: 0 10px;
 
-    display:flex;
+    display: flex;
+    align-items: center;
+}
+
+nav > .nav-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+nav > .nav-item:first-child {
+    margin-right: 5px;
+}
+
+nav > .nav-item:last-child {
+    margin-left: 5px;
+}
+
+nav > .nav-item:not(:first-child):not(:last-child) {
+    margin: 5px;
+}
+
+/* app logo */
+
+nav > .app-logo {
+    flex: 0 0 fit-content;
+}
+
+.app-logo-group {
+    cursor: pointer;
+}
+
+.app-logo-group > path:not(:first-child) {
+    fill: #ff80ab;
+    transition: fill 140ms ease;
+}
+
+.app-logo-group:hover > path:not(:first-child) {
+    fill: #F50057;
+}
+
+.app-logo-group:hover > path {
+    filter: url(#glow)
+}
+
+/* graph name */
+
+nav > .graph-name {
+    cursor: pointer;
+
+    flex: 1 1 fit-content;
+}
+
+.graph-name > span {
+    display: inline-block;
+    height: 50px;
+    padding: 12px 0;
+    font-weight: 600;
+    font-size: 16px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.graph-name:hover > span {
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.graph-name > input {
+    display: inline-block;
+    height: 50px;
+    padding: 12px 0;
+    font-size: 16px;
+    color: #666;
+    font-weight: 600;
+    line-height: 1.5;
+    width: 100%;
+}
+
+/* controls */
+
+nav > .controls {
+    flex: 1 1 auto;
 }
 
 .graph-data-state {
-    position:absolute;
-    top:8px;
-    right:12px;
-    transition:all 100ms ease;
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    transition: all 100ms ease;
 }
 
 .graph-data-state > button {
-    width:80px;
-    transition:all 100ms ease;
+    width: 80px;
+    transition: all 100ms ease;
 }
 
 .graph-data-state > button:focus {
-    outline:none;
+    outline: none;
 }
 
 .graph-data-state > button.saved {
-    background-color:#dfdfdf;
-    border:0;
-    border-radius:2px;
-    opacity:.6;
-    cursor:default;
-    color:#fff;
-    font-size:14px;
-    font-weight:400;
-    padding:8px;
+    background-color: #dfdfdf;
+    border: 0;
+    border-radius: 2px;
+    opacity: .6;
+    cursor: default;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px;
     pointer-events: none;
 }
 
 .graph-data-state > button.unsaved {
-    box-shadow:0 1px 4px rgba(0,0,0,0.4);
-    background-color:#F50057;
-    border:none;
-    border-radius:3px;
-    opacity:1;
-    cursor:pointer;
-    color:#fff;
-    font-size:14px;
-    font-weight:400;
-    padding:8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    background-color: #F50057;
+    border: none;
+    border-radius: 3px;
+    opacity: 1;
+    cursor: pointer;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px;
 }
 
 .graph-data-state > button.unsaved:active {
-    box-shadow:0 1px 1px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
 
 .graph-data-state > button.saving {
-    background-color:transparent;
-    border:0;
-    cursor:default;
-    color:#F50057;
-    font-size:14px;
-    font-weight:400;
-    padding:8px;
+    background-color: transparent;
+    border: 0;
+    cursor: default;
+    color: #F50057;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 8px;
     pointer-events: none;
 }
 
-.graph-name {
-    width:200px;
-    display:block;
-    float:left;
-    height:50px;
-    cursor:pointer;
-}
-
-.graph-name > span {
-    display:inline-block;
-    height:50px;
-    padding:12px 0;
-    font-weight:600;
-    font-size:16px;
-    color:#666;
-    line-height:1.5;
-}
-
-.graph-name:hover > span {
-    border-radius:2px;
-    background-color:rgba(0,0,0,.05);
-}
-
-.graph-name > input {
-    display:inline-block;
-    height:50px;
-    padding:12px 0;
-    font-size:16px;
-    color:#666;
-    font-weight:600;
-    line-height:1.5;
-    width:100%;
-}
-
-.app-logo {
-    margin:10px 5px;
-    display:block;
-    float:left;
-}
-
-.app-logo-group {
-    cursor:pointer;
-}
-
-.app-logo-group > path:not(:first-child) {
-    fill:#ff80ab;
-    transition:fill 140ms ease;
-}
-
-.app-logo-group:hover > path:not(:first-child) {
-    fill:#F50057;
-}
-
-.app-logo-group:hover > path {
-    filter:url(#glow)
-}
-
 /* testing */
-#tool-belt {
-    border-left: solid 1px #999;
-}
 
 nav > .profile-picture {
-    float:right;
-    top:4px;
-    right:0;
+    float: right;
+    top: 4px;
+    right: 0;
 }
 
 nav > .profile-picture > img {
-    cursor:pointer;
-    border-radius:2px;
+    cursor: pointer;
+    border-radius: 2px;
 }
 
 .profile-picture-dropdown {
-    width:140px;
-    right:0;
-    top:60px;
+    width: 140px;
+    right: 0;
+    top: 60px;
 }
 
 .profile-picture-dropdown::before, .profile-picture-dropdown::after {
-    right:15px;
+    right: 15px;
 }
