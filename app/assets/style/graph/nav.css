@@ -4,10 +4,10 @@ nav {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     z-index: 1;
     position: relative;
-    padding: 0 10px;
+    padding: 0 10px 0 0;
 
     display: flex;
-    align-items: center;
+    align-items: stretch;
 }
 
 nav > .nav-item {
@@ -17,7 +17,7 @@ nav > .nav-item {
 }
 
 nav > .nav-item:first-child {
-    margin-right: 5px;
+    margin-right:5px;
 }
 
 nav > .nav-item:last-child {
@@ -25,30 +25,39 @@ nav > .nav-item:last-child {
 }
 
 nav > .nav-item:not(:first-child):not(:last-child) {
-    margin: 5px;
+    margin: 0 5px;
+}
+
+nav > .back-button {
+    font-weight:200;
+    font-size:30px;
+    color:#fff;
+    background-color:#F50057;
+    padding:0 5px 0 4px;
 }
 
 /* app logo */
 
 nav > .app-logo {
+    cursor:pointer;
+    padding:0 4px;
     flex: 0 0 fit-content;
+    background-color:#FF4081;
+    transition:background-color 140ms ease;
 }
 
-.app-logo-group {
-    cursor: pointer;
+nav > .app-logo:hover {
+    background-color:#F50057;
 }
 
-.app-logo-group > path:not(:first-child) {
-    fill: #ff80ab;
+.app-logo svg {
+    height:26px;
+    display:block; /* svg default display value for some reason adds unwated space around tag */
+}
+
+.app-logo svg > g > path:not(:first-child) {
+    fill: #fff;
     transition: fill 140ms ease;
-}
-
-.app-logo-group:hover > path:not(:first-child) {
-    fill: #F50057;
-}
-
-.app-logo-group:hover > path {
-    filter: url(#glow)
 }
 
 /* graph name */
