@@ -23,22 +23,25 @@
         </g>
       </svg>
     </a>
+
     <div class="nav-item graph-name">
-      <div v-class="hidden: editingGraphName" v-on="click: editGraphName">
-        {{graph.data.name}}
+      <div>
+        <span v-class="hidden: editingGraphName" v-on="click: editGraphName">
+          {{graph.data.name}}
+        </span>
+        <input
+            class="x-input"
+            type="text"
+            v-class="hidden: !editingGraphName"
+            v-model="graph.data.name"
+            v-el="graphNameInput"
+            v-on="
+                blur  : updateGraphName,
+                keyup : updateGraphName        | key 'enter',
+                keyup : cancelGraphNameUpdate  | key 'esc'
+            "
+        >
       </div>
-      <input
-          class="x-input"
-          type="text"
-          v-class="hidden: !editingGraphName"
-          v-model="graph.data.name"
-          v-el="graphNameInput"
-          v-on="
-              blur  : updateGraphName,
-              keyup : updateGraphName        | key 'enter',
-              keyup : cancelGraphNameUpdate  | key 'esc'
-          "
-      >
     </div>
 
     <div class="nav-item controls">

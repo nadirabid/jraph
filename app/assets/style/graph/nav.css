@@ -61,18 +61,18 @@ nav > .graph-name {
     flex: none;
 }
 
-.graph-name > div {
+.graph-name > div:first-child > span {
     font-weight: 600;
     font-size: 16px;
     color: #666;
 }
 
-.graph-name:hover > div {
+.graph-name:hover > div:first-child > span {
     border-radius: 2px;
     background-color: rgba(0, 0, 0, .05);
 }
 
-.graph-name > input {
+.graph-name > div:first-child > input {
     display: inline;
     font-size: 16px;
     font-weight: 600;
