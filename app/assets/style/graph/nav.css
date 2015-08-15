@@ -7,17 +7,17 @@ nav {
     padding: 0 10px 0 0;
 
     display: flex;
-    align-items: stretch;
 }
+
+/* nav-item */
 
 nav > .nav-item {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    align-items: center;
 }
 
 nav > .nav-item:first-child {
-    margin-right:5px;
+    margin-right: 5px;
 }
 
 nav > .nav-item:last-child {
@@ -28,31 +28,24 @@ nav > .nav-item:not(:first-child):not(:last-child) {
     margin: 0 5px;
 }
 
-nav > .back-button {
-    font-weight:200;
-    font-size:30px;
-    color:#fff;
-    background-color:#F50057;
-    padding:0 5px 0 4px;
-}
-
 /* app logo */
 
 nav > .app-logo {
-    cursor:pointer;
-    padding:0 4px;
-    flex: 0 0 fit-content;
-    background-color:#FF4081;
-    transition:background-color 140ms ease;
+    cursor: pointer;
+    padding: 0 4px;
+    background-color: #FF4081;
+    transition: background-color 140ms ease;
+
+    flex: none;
 }
 
 nav > .app-logo:hover {
-    background-color:#F50057;
+    background-color: #F50057;
 }
 
 .app-logo svg {
-    height:26px;
-    display:block; /* svg default display value for some reason adds unwated space around tag */
+    height: 26px;
+    display: block; /* svg default display value for some reason adds unwated space around tag */
 }
 
 .app-logo svg > g > path:not(:first-child) {
@@ -65,39 +58,33 @@ nav > .app-logo:hover {
 nav > .graph-name {
     cursor: pointer;
 
-    flex: 1 1 fit-content;
+    flex: none;
 }
 
-.graph-name > span {
-    display: inline-block;
-    height: 50px;
-    padding: 12px 0;
+.graph-name > div {
     font-weight: 600;
     font-size: 16px;
     color: #666;
-    line-height: 1.5;
 }
 
-.graph-name:hover > span {
+.graph-name:hover > div {
     border-radius: 2px;
     background-color: rgba(0, 0, 0, .05);
 }
 
 .graph-name > input {
-    display: inline-block;
-    height: 50px;
-    padding: 12px 0;
+    font-family: 'Noto Sans', sans-serif;
+    display: inline;
     font-size: 16px;
-    color: #666;
     font-weight: 600;
-    line-height: 1.5;
-    width: 100%;
+    color: #666;
 }
 
 /* controls */
 
 nav > .controls {
-    flex: 1 1 auto;
+    flex: auto;
+    justify-content:flex-end;
 }
 
 .graph-data-state {
@@ -160,9 +147,7 @@ nav > .controls {
 /* testing */
 
 nav > .profile-picture {
-    float: right;
-    top: 4px;
-    right: 0;
+    flex: none;
 }
 
 nav > .profile-picture > img {
