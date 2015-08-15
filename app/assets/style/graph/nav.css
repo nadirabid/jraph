@@ -73,7 +73,6 @@ nav > .graph-name {
 }
 
 .graph-name > input {
-    font-family: 'Noto Sans', sans-serif;
     display: inline;
     font-size: 16px;
     font-weight: 600;
