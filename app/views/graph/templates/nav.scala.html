@@ -26,7 +26,11 @@
 
     <div class="nav-item graph-name">
       <div>
-        <span v-class="hidden: editingGraphName" v-on="click: editGraphName">
+        <span
+            title="Click to edit"
+            v-class="hidden: editingGraphName"
+            v-on="click: editGraphName"
+        >
           {{graph.data.name}}
         </span>
         <input
