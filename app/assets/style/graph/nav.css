@@ -91,8 +91,8 @@ nav > .utilities > .toggle-layout-panel {
     font-size:12px;
     color:#fff;
     font-weight:bold;
-    background-color:#FF4081;
-    border:solid 1px #FF4081;
+    background-color:#BDBDBD;
+    border:solid 1px #BDBDBD;
     border-radius:2px;
     cursor:pointer;
     transition:background-color 140ms ease,
@@ -100,13 +100,13 @@ nav > .utilities > .toggle-layout-panel {
 }
 
 nav > .utilities > .toggle-layout-panel:hover {
-    background-color:#F50057;
-    border:solid 1px #F50057;
+    background-color:#9E9E9E;
+    border:solid 1px #9E9E9E;
 }
 
 nav > .utilities > .toggle-layout-panel:active, nav > .utilities > .toggle-layout-panel.active {
-    background-color:#C51162;
-    border:solid 1px #C2185B;
+    background-color:#757575;
+    border:solid 1px #757575;
 }
 
 /* save button */
