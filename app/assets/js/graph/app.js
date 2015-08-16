@@ -355,6 +355,7 @@ define([
       edges: [],
       nodeInfoToDisplay: null,
       forceLayout: {
+        isPanelOpen: false,
         isRunning: false,
         parameters: {
           alpha: 1,

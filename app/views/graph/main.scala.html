@@ -7,11 +7,13 @@
     <x-nav
         data-state="{{@@ dataState }}"
         graph="{{@@ graph }}"
-        on-save="{{ saveAllGraphData }}">
+        on-save="{{ saveAllGraphData }}"
+        is-force-layout-panel-open="{{@@ forceLayout.isPanelOpen }}">
     </x-nav>
 
     <main id="main">
       <x-force-layout-panel
+          v-if="forceLayout.isPanelOpen"
           force-layout="{{@@ forceLayout }}">
       </x-force-layout-panel>
 

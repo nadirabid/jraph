@@ -104,7 +104,7 @@ nav > .utilities > .toggle-layout-panel:hover {
     border:solid 1px #F50057;
 }
 
-nav > .utilities > .toggle-layout-panel:active {
+nav > .utilities > .toggle-layout-panel:active, nav > .utilities > .toggle-layout-panel.active {
     background-color:#C51162;
     border:solid 1px #C2185B;
 }

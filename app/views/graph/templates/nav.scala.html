@@ -45,7 +45,13 @@
     </div>
 
     <div class="x-noselect nav-item utilities">
-      <span class="toggle-layout-panel">Layout Panel</span>
+      <span
+          class="toggle-layout-panel"
+          v-class="active: isForceLayoutPanelOpen"
+          v-on="click: isForceLayoutPanelOpen = !isForceLayoutPanelOpen"
+      >
+        Layout Panel
+      </span>
     </div>
 
     <span class="nav-item profile-picture">

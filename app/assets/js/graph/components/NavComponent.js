@@ -20,6 +20,10 @@ define([
       onSave: {
         type: Function,
         required: true
+      },
+      isForceLayoutPanelOpen: {
+        type: Boolean,
+        required: true
       }
     },
 
