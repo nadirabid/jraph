@@ -57,8 +57,8 @@ nav > .app-logo:hover {
 
 nav > .graph-name {
     cursor: pointer;
-
-    flex: none;
+    flex:0 0 220px;
+    border-right:solid 1px #ddd;
 }
 
 .graph-name > div:first-child > span {
@@ -79,11 +79,11 @@ nav > .graph-name {
     color: #666;
 }
 
-/* controls */
+/* utilities */
 
-nav > .controls {
+nav > .utilities {
     flex: auto;
-    justify-content:flex-end;
+    justify-content:flex-start;
 }
 
 /* save button */
