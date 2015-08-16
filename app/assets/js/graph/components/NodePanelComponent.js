@@ -103,7 +103,7 @@ define([
       updateDimensionsAndPosition: function() {
         var padding = this.padding;
         var windowHeight = $(window).outerHeight();
-        var navHeight = 50;
+        var navHeight = $('nav').outerHeight();
 
         var self = this;
 
