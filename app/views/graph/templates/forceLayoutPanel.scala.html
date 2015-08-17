@@ -1,14 +1,106 @@
 <template id="forceLayout.panel">
-  <div class="force-layout-panel x-noselect">
-    <i
-        class="fa"
-        v-class="
-            fa-play:!forceLayout.isRunning,
-            fa-stop:forceLayout.isRunning
-        "
-        v-on="click:forceLayout.isRunning = !forceLayout.isRunning"
-    >
-    </i>
-    <span>Force Layout</span>
+  <div class="x-noselect force-layout-panel">
+    <style>
+    .force-layout-panel .fa {
+      cursor:pointer;
+    }
+
+    .force-layout-panel > .panel-header {
+      padding:0 6px;
+    }
+
+    .force-layout-panel > .panel-header > .title {
+      margin-left: 5px;
+      margin-right: 5px;
+    }
+
+    .force-layout-panel > .panel-header > .advanced {
+      color:#aaa;
+    }
+
+    .force-layout-panel > .panel-header > .fa-stop {
+      animation-name : pulseColor ;
+      animation-duration : 500ms;
+      animation-iteration-count : infinite ;
+      animation-direction : alternate ;
+      animation-timing-function : ease-in-out ;
+      color : #FF1744;
+    }
+
+    .force-layout-panel > .panel-header .fa-play {
+      color: #00C853;
+      font-size:13px;
+    }
+
+
+    .force-layout-panel > .panel-header .run-stop {
+      margin:0 10px;
+    }
+
+    .force-layout-panel ul {
+      margin:0;
+      padding:10px 0 0 10px;
+      list-style:none;
+      font-size:12px;
+    }
+
+    .force-layout-panel ul li input {
+      width:50px;
+    }
+
+    .force-layout-panel ul li span {
+      display:inline-block;
+      width:80px;
+    }
+    </style>
+    <div class="panel-header">
+      <span class="advanced">
+        <i
+            class="fa fa-cog"
+            v-on="click:showAdvancedSettings = !showAdvancedSettings">
+        </i>
+      </span>
+      <span class="title">Force Layout</span>
+      <span class="run-stop">
+        <i
+            class="fa"
+            v-class="
+                      fa-play:!forceLayout.isRunning,
+                      fa-stop:forceLayout.isRunning
+                  "
+            v-on="click:forceLayout.isRunning = !forceLayout.isRunning">
+        </i>
+      </span>
+    </div>
+    <ul v-if="showAdvancedSettings">
+      <li>
+        <span>Alpha</span>
+        <input type="number" v-model="forceLayout.parameters.alpha.value">
+      </li>
+      <li>
+        <span>Theta</span>
+        <input type="number" v-model="forceLayout.parameters.theta.value">
+      </li>
+      <li>
+        <span>Friction</span>
+        <input type="number" v-model="forceLayout.parameters.friction.value">
+      </li>
+      <li>
+        <span>Gravity</span>
+        <input type="number" min="0" max="1" v-model="forceLayout.parameters.gravity.value">
+      </li>
+      <li>
+        <span>Node Charge</span>
+        <input type="number" v-model="forceLayout.parameters.charge.value">
+      </li>
+      <li>
+        <span>Link Strength</span>
+        <input type="number" v-model="forceLayout.parameters.linkStrength.value">
+      </li>
+      <li>
+        <span>Link Distance</span>
+        <input type="number" v-model="forceLayout.parameters.linkDistance.value">
+      </li>
+    </ul>
   </div>
 </template>

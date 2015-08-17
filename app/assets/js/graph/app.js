@@ -224,6 +224,17 @@ define([
         }
 
         this.forceLayout.isRunning = false;
+      },
+
+      restartForceLayoutIfRunning: function() {
+        if (this.forceLayout.isRunning) {
+          this.forceLayout.isRunning = false;
+
+          var self = this;
+          Vue.nextTick(function() {
+            self.forceLayout.isRunning = true;
+          });
+        }
       }
 
     },
@@ -248,6 +259,41 @@ define([
         else {
           this.$forceLayout.stop();
         }
+      },
+
+      'forceLayout.parameters.alpha.value': function(alpha) {
+        this.$forceLayout.alpha(alpha);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.theta.value': function(theta) {
+        this.$forceLayout.theta(theta);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.friction.value': function(friction) {
+        this.$forceLayout.friction(friction);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.gravity.value': function(gravity) {
+        this.$forceLayout.gravity(gravity);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.charge.value': function(charge) {
+        this.$forceLayout.charge(charge);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.linkDistance.value': function(linkDistance) {
+        this.$forceLayout.linkDistance(linkDistance);
+        this.restartForceLayoutIfRunning();
+      },
+
+      'forceLayout.parameters.linkStrength.value': function(linkStrength) {
+        this.$forceLayout.linkStrength(linkStrength);
+        this.restartForceLayoutIfRunning();
       }
     },
 
@@ -269,13 +315,13 @@ define([
       var forceLayoutParameters = this.forceLayout.parameters;
       this.$forceLayout = d3.layout.force()
           .size([this.width, this.height])
-          .alpha(forceLayoutParameters.alpha)
-          .theta(forceLayoutParameters.theta)
-          .friction(forceLayoutParameters.friction)
-          .gravity(forceLayoutParameters.gravity)
-          .charge(forceLayoutParameters.charge)
-          .linkDistance(forceLayoutParameters.linkDistance)
-          .linkStrength(forceLayoutParameters.linkStrength);
+          .alpha(forceLayoutParameters.alpha.value)
+          .theta(forceLayoutParameters.theta.value)
+          .friction(forceLayoutParameters.friction.value)
+          .gravity(forceLayoutParameters.gravity.value)
+          .charge(forceLayoutParameters.charge.value)
+          .linkDistance(forceLayoutParameters.linkDistance.value)
+          .linkStrength(forceLayoutParameters.linkStrength.value);
 
       this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     }
@@ -333,6 +379,42 @@ define([
   graphContextMenu.$mount('#graphContextMenu');
   edgeContextMenu.$mount('#edgeContextMenu');
 
+  function ForceLayoutSettings() {
+    this.isPanelOpen = true;
+    this.isRunning = false;
+
+    this.parameters = {
+      alpha: {
+        value: 1,
+        default: 1
+      },
+      theta: {
+        value: 0.1,
+        default: 0.1
+      },
+      friction: {
+        value: 0.5,
+        default: 0.5
+      },
+      gravity: {
+        value: 0.3,
+        default: 0.3
+      },
+      charge: {
+        value: -20000,
+        default: -20000
+      },
+      linkDistance: {
+        value: 200,
+        default: 200
+      },
+      linkStrength: {
+        value: 10,
+        default: 10
+      }
+    };
+  }
+
   var app = new Vue({
 
     el: '#all',
@@ -354,19 +436,7 @@ define([
       nodes: [],
       edges: [],
       nodeInfoToDisplay: null,
-      forceLayout: {
-        isPanelOpen: false,
-        isRunning: false,
-        parameters: {
-          alpha: 1,
-          theta: 0.1,
-          friction: 0.5,
-          gravity: 0.3,
-          charge: -20000,
-          linkDistance: 200,
-          linkStrength: 10
-        }
-      }
+      forceLayout: new ForceLayoutSettings()
     },
 
     methods: {

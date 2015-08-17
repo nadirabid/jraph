@@ -11,6 +11,12 @@ define([
       forceLayout: {
         required: true
       }
+    },
+
+    data: function() {
+      return {
+        showAdvancedSettings: false
+      };
     }
 
   });
