@@ -15,7 +15,7 @@ define([
 
     data: function() {
       return {
-        showAdvancedSettings: true
+        showAdvancedSettings: false
       };
     },
 

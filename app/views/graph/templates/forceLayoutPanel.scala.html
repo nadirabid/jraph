@@ -1,9 +1,10 @@
 <template id="forceLayout.panel">
   <div class="x-noselect force-layout-panel">
     <div class="panel-header">
-      <span class="advanced">
+      <span class="advanced hidden">
         <i
-            class="fa fa-cog"
+            class="fa"
+            v-class="fa-expand:!showAdvancedSettings, fa-compress:showAdvancedSettings"
             v-on="click:showAdvancedSettings = !showAdvancedSettings">
         </i>
       </span>
@@ -19,35 +20,59 @@
         </i>
       </span>
     </div>
-    <ul v-if="showAdvancedSettings">
-      <li>
-        <span>Theta</span>
-        <input type="number" min="0" max="1" v-model="forceLayout.parameters.theta.value">
-      </li>
-      <li>
-        <span>Friction</span>
-        <input type="number" min="0" max="1" v-model="forceLayout.parameters.friction.value">
-      </li>
-      <li>
-        <span>Gravity</span>
-        <input type="number" min="0" max="1" v-model="forceLayout.parameters.gravity.value">
-      </li>
-      <li>
-        <span>Charge</span>
-        <input type="number" v-model="forceLayout.parameters.charge.value">
-      </li>
-      <li>
-        <span>Charge Distance</span>
-        <input type="number" v-model="forceLayout.parameters.chargeDistance.value">
-      </li>
-      <li>
-        <span>Link Strength</span>
-        <input type="number" min="0" max="15" v-model="forceLayout.parameters.linkStrength.value">
-      </li>
-      <li>
-        <span>Link Distance</span>
-        <input type="number" min="50" max="260" v-model="forceLayout.parameters.linkDistance.value">
-      </li>
-    </ul>
+    <style>
+      .advanced-settings {
+        color:#777;
+        background-color:#fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .advanced-settings > .show-hide-button {
+        color:#888;
+        z-index:0;
+        position:relative;
+        font-size:10px;
+        text-align:center;
+        cursor:pointer;
+      }
+    </style>
+    <div class="advanced-settings">
+      <ul v-if="showAdvancedSettings">
+        <li>
+          <span>Theta</span>
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.theta.value">
+        </li>
+        <li>
+          <span>Friction</span>
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.friction.value">
+        </li>
+        <li>
+          <span>Gravity</span>
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.gravity.value">
+        </li>
+        <li>
+          <span>Charge</span>
+          <input type="text" v-model="forceLayout.parameters.charge.value">
+        </li>
+        <li>
+          <span>Charge Distance</span>
+          <input type="text" v-model="forceLayout.parameters.chargeDistance.value">
+        </li>
+        <li>
+          <span>Link Strength</span>
+          <input type="text" min="0" max="15" v-model="forceLayout.parameters.linkStrength.value">
+        </li>
+        <li>
+          <span>Link Distance</span>
+          <input type="text" min="50" max="260" v-model="forceLayout.parameters.linkDistance.value">
+        </li>
+      </ul>
+      <div class="show-hide-button" v-if="!showAdvancedSettings" v-on="click:showAdvancedSettings = true">
+        Show Advanced <i class="fa fa-angle-down"></i>
+      </div>
+      <div class="show-hide-button" v-if="showAdvancedSettings" v-on="click:showAdvancedSettings = false">
+        Hide Advanced <i class="fa fa-angle-up"></i>
+      </div>
+    </div>
   </div>
 </template>
