@@ -286,6 +286,11 @@ define([
         this.restartForceLayoutIfRunning();
       },
 
+      'forceLayout.parameters.chargeDistance.value': function(chargeDistance) {
+        this.$forceLayout.chargeDistance(chargeDistance);
+        this.restartForceLayoutIfRunning();
+      },
+
       'forceLayout.parameters.linkDistance.value': function(linkDistance) {
         this.$forceLayout.linkDistance(linkDistance);
         this.restartForceLayoutIfRunning();
@@ -320,6 +325,7 @@ define([
           .friction(forceLayoutParameters.friction.value)
           .gravity(forceLayoutParameters.gravity.value)
           .charge(forceLayoutParameters.charge.value)
+          .chargeDistance(forceLayoutParameters.chargeDistance.value)
           .linkDistance(forceLayoutParameters.linkDistance.value)
           .linkStrength(forceLayoutParameters.linkStrength.value);
 
@@ -383,34 +389,48 @@ define([
     this.isPanelOpen = true;
     this.isRunning = false;
 
+    var DEFAULT_ALPHA             = 0.1,
+        DEFAULT_THETA             = 0.1,
+        DEFAULT_FRICTION          = 0.8,
+        DEFAULT_GRAVITY           = 0.15,
+        DEFAULT_CHARGE            = -20000,
+        DEFAULT_CHARGE_DISTANCE   = 1600,
+        DEFAULT_LINK_DISTANCE     = 200,
+        DEFAULT_LINK_STRENGTH     = 10;
+
+
     this.parameters = {
       alpha: {
-        value: 1,
-        default: 1
+        value: DEFAULT_ALPHA,
+        default: DEFAULT_ALPHA
       },
       theta: {
-        value: 0.1,
-        default: 0.1
+        value: DEFAULT_THETA,
+        default: DEFAULT_THETA
       },
       friction: {
-        value: 0.5,
-        default: 0.5
+        value: DEFAULT_FRICTION,
+        default: DEFAULT_FRICTION
       },
       gravity: {
-        value: 0.3,
-        default: 0.3
+        value: DEFAULT_GRAVITY,
+        default: DEFAULT_GRAVITY
       },
       charge: {
-        value: -20000,
-        default: -20000
+        value: DEFAULT_CHARGE,
+        default: DEFAULT_CHARGE
+      },
+      chargeDistance: {
+        value: DEFAULT_CHARGE_DISTANCE,
+        default: DEFAULT_CHARGE_DISTANCE
       },
       linkDistance: {
-        value: 200,
-        default: 200
+        value: DEFAULT_LINK_DISTANCE,
+        default: DEFAULT_LINK_DISTANCE
       },
       linkStrength: {
-        value: 10,
-        default: 10
+        value: DEFAULT_LINK_STRENGTH,
+        default: DEFAULT_LINK_STRENGTH
       }
     };
   }

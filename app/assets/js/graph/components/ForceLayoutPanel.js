@@ -15,8 +15,14 @@ define([
 
     data: function() {
       return {
-        showAdvancedSettings: false
+        showAdvancedSettings: true
       };
+    },
+
+    methods: {
+      verifyAndUpdateLinkStrength: function() {
+
+      }
     }
 
   });

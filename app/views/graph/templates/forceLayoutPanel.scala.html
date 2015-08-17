@@ -21,32 +21,32 @@
     </div>
     <ul v-if="showAdvancedSettings">
       <li>
-        <span>Alpha</span>
-        <input type="number" v-model="forceLayout.parameters.alpha.value">
-      </li>
-      <li>
         <span>Theta</span>
-        <input type="number" v-model="forceLayout.parameters.theta.value">
+        <input type="number" min="0" max="1" v-model="forceLayout.parameters.theta.value">
       </li>
       <li>
         <span>Friction</span>
-        <input type="number" v-model="forceLayout.parameters.friction.value">
+        <input type="number" min="0" max="1" v-model="forceLayout.parameters.friction.value">
       </li>
       <li>
         <span>Gravity</span>
         <input type="number" min="0" max="1" v-model="forceLayout.parameters.gravity.value">
       </li>
       <li>
-        <span>Node Charge</span>
+        <span>Charge</span>
         <input type="number" v-model="forceLayout.parameters.charge.value">
       </li>
       <li>
+        <span>Charge Distance</span>
+        <input type="number" v-model="forceLayout.parameters.chargeDistance.value">
+      </li>
+      <li>
         <span>Link Strength</span>
-        <input type="number" v-model="forceLayout.parameters.linkStrength.value">
+        <input type="number" min="0" max="15" v-model="forceLayout.parameters.linkStrength.value">
       </li>
       <li>
         <span>Link Distance</span>
-        <input type="number" v-model="forceLayout.parameters.linkDistance.value">
+        <input type="number" min="50" max="260" v-model="forceLayout.parameters.linkDistance.value">
       </li>
     </ul>
   </div>
