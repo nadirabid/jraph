@@ -135,6 +135,7 @@ define([
 
     data: {
       hypergraphID: hypergraphID,
+      nodeState: 'initial',
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
       graph: _graph, // _graph is bootstrapped into the main.scala.html view
       nodes: [],

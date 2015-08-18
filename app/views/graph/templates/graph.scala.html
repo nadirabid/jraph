@@ -40,7 +40,8 @@
           v-repeat="edges"
           track-by="id"
           is-force-layout-running="{{ forceLayout.isRunning }}"
-          is-zooming="{{ isZooming }}">
+          is-zooming="{{ isZooming }}"
+          node-state="{{ nodeState }}">
       </x-edge>
 
       <g v-el="newEdgeContainer"></g>
@@ -50,7 +51,8 @@
           v-repeat="nodes"
           track-by="id"
           is-force-layout-running="{{ forceLayout.isRunning }}"
-          is-zooming="{{ isZooming }}">
+          is-zooming="{{ isZooming }}"
+          node-state="{{@@ nodeState }}">
       </x-node>
     </g>
   </svg>

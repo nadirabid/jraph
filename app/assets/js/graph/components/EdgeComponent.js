@@ -68,6 +68,9 @@ define([
       },
       isZooming: {
         required: true
+      },
+      nodeState: {
+        required: true
       }
     },
 
@@ -159,7 +162,7 @@ define([
       },
 
       freezePosition: function () {
-        if (this.$parent.$options.state.nodeState !== 'initial' ||
+        if (this.nodeState !== 'initial' ||
             mouse.dragState.state !== util.DRAG_STATES.NONE) {
           return;
         }
@@ -188,7 +191,7 @@ define([
       },
 
       releasePosition: function () {
-        if (this.$parent.$options.state.nodeState !== 'initial' ||
+        if (this.nodeState !== 'initial' ||
             mouse.dragState.state !== util.DRAG_STATES.NONE) {
           return;
         }
@@ -206,7 +209,7 @@ define([
       },
 
       dragstart: function (e) {
-        if (this.$parent.$options.state.nodeState != 'initial') {
+        if (this.nodeState != 'initial') {
           return;
         }
 
@@ -231,7 +234,7 @@ define([
       },
 
       drag: function (e) {
-        if (this.$parent.$options.state.nodeState != 'initial') {
+        if (this.nodeState != 'initial') {
           return;
         }
 

@@ -31,8 +31,6 @@ define([
 
   /// GRAPH VIEW COMPONENTS
 
-  var DisabledNodeState = Util.extendClass(StateEventHandlers);
-
   var InitialNodeState = Util.extendClass(StateEventHandlers, function (ctx) {
     this.click = function() {
       if (ctx.dragFlag) {
@@ -183,7 +181,7 @@ define([
 
       ctx.isMouseentered = true;
       sourceCtx.fixed = false;
-      ctx.$parent.$options.state.nodeState = 'initial';
+      ctx.nodeState = 'initial';
       mouse.data.source = null;
     };
 
@@ -202,6 +200,9 @@ define([
         required: true
       },
       isZooming: {
+        required: true
+      },
+      nodeState: {
         required: true
       }
     },
@@ -346,7 +347,7 @@ define([
         };
 
         var marginBufferT, easeT;
-        if (this.$parent.$options.state.nodeState == 'linking' && this.fixed) {
+        if (this.nodeState == 'linking' && this.fixed) {
           marginBufferT = d3.interpolateRound(0, 8);
           easeT = d3.ease('quad');
 
@@ -388,7 +389,7 @@ define([
 
         this.fixed = true;
 
-        this.$parent.$options.state.nodeState = 'linking';
+        this.nodeState = 'linking';
         mouse.data.source = this;
         this.isMouseentered = false;
 
@@ -416,42 +417,38 @@ define([
             });
       },
 
-      getStateEventHandlers: function () {
-        return this.$states[ this.$parent.$options.state.nodeState ];
-      },
-
       mouseover: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.mouseover.apply(stateEventHandlers, arguments);
       },
 
       mouseout: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.mouseout.apply(stateEventHandlers, arguments);
       },
 
       click: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.click.apply(stateEventHandlers, arguments);
       },
 
       dblclick: function() {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dblclick.apply(stateEventHandlers, arguments);
       },
 
       drag: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.drag.apply(stateEventHandlers, arguments);
       },
 
       dragstart: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dragstart.apply(stateEventHandlers, arguments);
       },
 
       dragend: function () {
-        var stateEventHandlers = this.getStateEventHandlers();
+        var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dragend.apply(stateEventHandlers, arguments);
       }
 
@@ -462,8 +459,7 @@ define([
 
       this.$states = {
         initial: new InitialNodeState(this),
-        linking: new LinkingNodeState(this),
-        disabled: new DisabledNodeState(this)
+        linking: new LinkingNodeState(this)
       };
 
       this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));

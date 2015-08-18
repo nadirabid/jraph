@@ -21,13 +21,15 @@ define([
       },
       saveAllGraphData: {
         required: true
+      },
+      nodeState: {
+        required: true
       }
     },
 
     data: function () {
       return {
         isZooming: false,
-        state: null,
         nodes: [],
         edges: [],
         width: 0,
@@ -116,10 +118,6 @@ define([
       },
 
       panStart: function () {
-        if (this.state.nodeState === 'disabled') {
-          return;
-        }
-
         var self = this;
 
         this._ctm = this.$$.nodesAndLinksGroup.getCTM();
@@ -130,10 +128,6 @@ define([
       },
 
       pan: function (e) {
-        if (this.state.nodeState === 'disabled') {
-          return;
-        }
-
         var ctm = this._ctm;
 
         var v = Util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
@@ -145,10 +139,6 @@ define([
       },
 
       panEnd: function() {
-        if (this.state.nodeState === 'disabled') {
-          return;
-        }
-
         var self = this;
         this._ctm = null;
 
@@ -260,13 +250,10 @@ define([
 
     ready: function() {
       this.$$el = $(this.$el);
-      this.$options.state = this.$parent.$options.state;
       this.$options.edgesMap = this.$parent.$options.edgesMap;
       this.$options.nodeComponentsMap = this.$parent.$options.nodeComponentsMap;
       this.$options.hypergraphID = this.$parent.$options.hypergraphID;
       this.$options.edgeContextMenu = this.$parent.$options.edgeContextMenu;
-
-      this.state = this.$parent.$options.state;
 
       this.resize();
 
