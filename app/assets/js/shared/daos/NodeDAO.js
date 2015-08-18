@@ -13,8 +13,8 @@ define([
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
-    datum.px = datum.x;
-    datum.py = datum.y;
+    datum.px = datum.x ;
+    datum.py = datum.y ;
 
     datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
 

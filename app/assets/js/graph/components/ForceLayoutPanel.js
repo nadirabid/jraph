@@ -20,8 +20,8 @@ define([
     },
 
     methods: {
-      verifyAndUpdateLinkStrength: function() {
-
+      resetToForceLayoutParametersToDefaults: function() {
+        this.forceLayout.parameters = _.clone(this.forceLayout.defaultParameters);
       }
     }
 

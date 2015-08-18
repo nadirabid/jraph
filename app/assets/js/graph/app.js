@@ -261,42 +261,42 @@ define([
         }
       },
 
-      'forceLayout.parameters.alpha.value': function(alpha) {
+      'forceLayout.parameters.alpha': function(alpha) {
         this.$forceLayout.alpha(alpha);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.theta.value': function(theta) {
+      'forceLayout.parameters.theta': function(theta) {
         this.$forceLayout.theta(theta);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.friction.value': function(friction) {
+      'forceLayout.parameters.friction': function(friction) {
         this.$forceLayout.friction(friction);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.gravity.value': function(gravity) {
+      'forceLayout.parameters.gravity': function(gravity) {
         this.$forceLayout.gravity(gravity);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.charge.value': function(charge) {
+      'forceLayout.parameters.charge': function(charge) {
         this.$forceLayout.charge(charge);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.chargeDistance.value': function(chargeDistance) {
+      'forceLayout.parameters.chargeDistance': function(chargeDistance) {
         this.$forceLayout.chargeDistance(chargeDistance);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.linkDistance.value': function(linkDistance) {
+      'forceLayout.parameters.linkDistance': function(linkDistance) {
         this.$forceLayout.linkDistance(linkDistance);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.linkStrength.value': function(linkStrength) {
+      'forceLayout.parameters.linkStrength': function(linkStrength) {
         this.$forceLayout.linkStrength(linkStrength);
         this.restartForceLayoutIfRunning();
       }
@@ -320,14 +320,14 @@ define([
       var forceLayoutParameters = this.forceLayout.parameters;
       this.$forceLayout = d3.layout.force()
           .size([this.width, this.height])
-          .alpha(forceLayoutParameters.alpha.value)
-          .theta(forceLayoutParameters.theta.value)
-          .friction(forceLayoutParameters.friction.value)
-          .gravity(forceLayoutParameters.gravity.value)
-          .charge(forceLayoutParameters.charge.value)
-          .chargeDistance(forceLayoutParameters.chargeDistance.value)
-          .linkDistance(forceLayoutParameters.linkDistance.value)
-          .linkStrength(forceLayoutParameters.linkStrength.value);
+          .alpha(forceLayoutParameters.alpha)
+          .theta(forceLayoutParameters.theta)
+          .friction(forceLayoutParameters.friction)
+          .gravity(forceLayoutParameters.gravity)
+          .charge(forceLayoutParameters.charge)
+          .chargeDistance(forceLayoutParameters.chargeDistance)
+          .linkDistance(forceLayoutParameters.linkDistance)
+          .linkStrength(forceLayoutParameters.linkStrength);
 
       this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     }
@@ -389,50 +389,18 @@ define([
     this.isPanelOpen = true;
     this.isRunning = false;
 
-    var DEFAULT_ALPHA             = 0.1,
-        DEFAULT_THETA             = 0.1,
-        DEFAULT_FRICTION          = 0.8,
-        DEFAULT_GRAVITY           = 0.15,
-        DEFAULT_CHARGE            = -20000,
-        DEFAULT_CHARGE_DISTANCE   = 1600,
-        DEFAULT_LINK_DISTANCE     = 200,
-        DEFAULT_LINK_STRENGTH     = 10;
-
-
-    this.parameters = {
-      alpha: {
-        value: DEFAULT_ALPHA,
-        default: DEFAULT_ALPHA
-      },
-      theta: {
-        value: DEFAULT_THETA,
-        default: DEFAULT_THETA
-      },
-      friction: {
-        value: DEFAULT_FRICTION,
-        default: DEFAULT_FRICTION
-      },
-      gravity: {
-        value: DEFAULT_GRAVITY,
-        default: DEFAULT_GRAVITY
-      },
-      charge: {
-        value: DEFAULT_CHARGE,
-        default: DEFAULT_CHARGE
-      },
-      chargeDistance: {
-        value: DEFAULT_CHARGE_DISTANCE,
-        default: DEFAULT_CHARGE_DISTANCE
-      },
-      linkDistance: {
-        value: DEFAULT_LINK_DISTANCE,
-        default: DEFAULT_LINK_DISTANCE
-      },
-      linkStrength: {
-        value: DEFAULT_LINK_STRENGTH,
-        default: DEFAULT_LINK_STRENGTH
-      }
+    this.defaultParameters = {
+      alpha: 0.1,
+      theta: 0.1,
+      friction: 0.8,
+      gravity: 0.15,
+      charge: -20000,
+      chargeDistance: 1600,
+      linkDistance: 200,
+      linkStrength: 10
     };
+
+    this.parameters = _.clone(this.defaultParameters);
   }
 
   var app = new Vue({

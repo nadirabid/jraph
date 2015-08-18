@@ -18,13 +18,12 @@
     background-color:#fff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     padding: 6px 10px;
-    z-index:100;
+    z-index:1;
 }
 
 .force-layout-panel > .panel-header > .title {
     flex:auto;
-    margin-left: 5px;
-    margin-right: 5px;
+    padding-right:20px;
 }
 
 .force-layout-panel > .panel-header .fa-stop {
@@ -41,38 +40,54 @@
     font-size: 13px;
 }
 
-.force-layout-panel > .panel-header .run-stop {
-    margin: 0 10px;
-}
+.force-layout-panel > .advanced-settings {
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
 
-.force-layout-panel ul {
-    background-color:#fff;
-    margin: 0;
-    padding: 10px;
-    list-style: none;
-    font-size: 12px;
+    padding:2px 10px;
     color:#777;
-    border-bottom:solid 1px #ddd;
+    background-color:#fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+    font-size:12px;
 }
 
-.force-layout-panel ul li input {
+.force-layout-panel > .advanced-settings > .reset-defaults {
+    margin-top:4px;
+    padding:2px 0;
+    background-color:#BDBDBD;
+    color:#fff;
+    font-size:11px;
+    text-align:center;
+
+    border-radius:2px;
+    cursor:pointer;
+    transition:background-color 120ms ease;
+}
+
+.force-layout-panel > .advanced-settings > .reset-defaults:active {
+    background-color:#757575;
+}
+
+.force-layout-panel > .advanced-settings > ul {
+    background-color:#fff;
+    padding:0;
+    margin: 4px 0;
+    list-style: none;
+    color:#777;
+}
+
+.force-layout-panel > .advanced-settings > ul > li input {
     width: 50px;
     color:#777;
 }
 
-.force-layout-panel ul li span {
+.force-layout-panel > .advanced-settings > ul > li span {
     display: inline-block;
     width: 110px;
 }
 
-.advanced-settings {
-    padding:2px 0;
-    color:#777;
-    background-color:#fff;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-
-.advanced-settings > .show-hide-button {
+.force-layout-panel > .advanced-settings > .show-hide-button {
     color:#888;
     z-index:0;
     position:relative;
@@ -81,7 +96,7 @@
     cursor:pointer;
 }
 
-.advanced-settings > .show-hide-button > .fa {
+.force-layout-panel > .advanced-settings > .show-hide-button > .fa {
     color:#777;
     font-size:12px;
 }

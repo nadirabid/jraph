@@ -14,34 +14,41 @@
       </span>
     </div>
     <div class="advanced-settings">
+      <div
+          class="reset-defaults"
+          v-if="showAdvancedSettings"
+          v-on="click:resetToForceLayoutParametersToDefaults"
+      >
+        <i class="fa fa-undo"></i> Reset to defaults
+      </div>
       <ul v-if="showAdvancedSettings">
         <li>
           <span>Theta</span>
-          <input type="text" min="0" max="1" v-model="forceLayout.parameters.theta.value">
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.theta">
         </li>
         <li>
           <span>Friction</span>
-          <input type="text" min="0" max="1" v-model="forceLayout.parameters.friction.value">
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.friction">
         </li>
         <li>
           <span>Gravity</span>
-          <input type="text" min="0" max="1" v-model="forceLayout.parameters.gravity.value">
+          <input type="text" min="0" max="1" v-model="forceLayout.parameters.gravity">
         </li>
         <li>
           <span>Charge</span>
-          <input type="text" v-model="forceLayout.parameters.charge.value">
+          <input type="text" v-model="forceLayout.parameters.charge">
         </li>
         <li>
           <span>Charge Distance</span>
-          <input type="text" v-model="forceLayout.parameters.chargeDistance.value">
+          <input type="text" v-model="forceLayout.parameters.chargeDistance">
         </li>
         <li>
           <span>Link Strength</span>
-          <input type="text" min="0" max="15" v-model="forceLayout.parameters.linkStrength.value">
+          <input type="text" min="0" max="15" v-model="forceLayout.parameters.linkStrength">
         </li>
         <li>
           <span>Link Distance</span>
-          <input type="text" min="50" max="260" v-model="forceLayout.parameters.linkDistance.value">
+          <input type="text" min="50" max="260" v-model="forceLayout.parameters.linkDistance">
         </li>
       </ul>
       <div class="show-hide-button" v-if="!showAdvancedSettings" v-on="click:showAdvancedSettings = true">
