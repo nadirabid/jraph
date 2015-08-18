@@ -166,10 +166,7 @@ define([
       },
 
       onForceLayoutEnd: function() {
-        if (this.forceLayoutSettings.isRunning) {
-          this.saveAllGraphData();
-        }
-
+        this.saveAllGraphData();
         this.forceLayoutSettings.isRunning = false;
       },
 
@@ -210,44 +207,39 @@ define([
         }
       },
 
-      'forceLayoutSettings.parameters.alpha': function(alpha) {
-        this.$forceLayout.alpha(alpha);
-        this.restartForceLayoutIfRunning();
-      },
-
       'forceLayoutSettings.parameters.theta': function(theta) {
         this.$forceLayout.theta(theta);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.friction': function(friction) {
         this.$forceLayout.friction(friction);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.gravity': function(gravity) {
         this.$forceLayout.gravity(gravity);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.charge': function(charge) {
         this.$forceLayout.charge(charge);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.chargeDistance': function(chargeDistance) {
         this.$forceLayout.chargeDistance(chargeDistance);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.linkDistance': function(linkDistance) {
         this.$forceLayout.linkDistance(linkDistance);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       },
 
       'forceLayoutSettings.parameters.linkStrength': function(linkStrength) {
         this.$forceLayout.linkStrength(linkStrength);
-        this.restartForceLayoutIfRunning();
+        this.forceLayoutSettings.isRunning = false;
       }
     },
 
