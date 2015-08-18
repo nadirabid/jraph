@@ -1,13 +1,6 @@
 <template id="forceLayout.panel">
   <div class="x-noselect force-layout-panel">
     <div class="panel-header">
-      <span class="advanced hidden">
-        <i
-            class="fa"
-            v-class="fa-expand:!showAdvancedSettings, fa-compress:showAdvancedSettings"
-            v-on="click:showAdvancedSettings = !showAdvancedSettings">
-        </i>
-      </span>
       <span class="title">Force Layout</span>
       <span class="run-stop">
         <i
@@ -20,27 +13,6 @@
         </i>
       </span>
     </div>
-    <style>
-      .advanced-settings {
-        color:#777;
-        background-color:#fff;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-      }
-
-      .advanced-settings > .show-hide-button {
-        color:#888;
-        z-index:0;
-        position:relative;
-        font-size:10px;
-        text-align:center;
-        cursor:pointer;
-      }
-
-      .advanced-settings > .show-hide-button > .fa {
-        color:#777;
-        font-size:12px;
-      }
-    </style>
     <div class="advanced-settings">
       <ul v-if="showAdvancedSettings">
         <li>
