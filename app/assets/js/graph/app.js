@@ -135,7 +135,7 @@ define([
       nodes: [],
       edges: [],
       nodeInfoToDisplay: null,
-      forceLayout: new ForceLayoutSettings()
+      forceLayoutSettings: new ForceLayoutSettings()
     },
 
     methods: {

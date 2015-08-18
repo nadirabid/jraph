@@ -8,13 +8,13 @@
         data-state="{{@@ dataState }}"
         graph="{{@@ graph }}"
         on-save="{{ saveAllGraphData }}"
-        is-force-layout-panel-open="{{@@ forceLayout.isPanelOpen }}">
+        is-force-layout-panel-open="{{@@ forceLayoutSettings.isPanelOpen }}">
     </x-nav>
 
     <main id="main">
       <x-force-layout-panel
-          v-if="forceLayout.isPanelOpen"
-          force-layout="{{@@ forceLayout }}">
+          v-if="forceLayoutSettings.isPanelOpen"
+          force-layout-settings="{{@@ forceLayoutSettings }}">
       </x-force-layout-panel>
 
       <x-node-panel
@@ -28,7 +28,7 @@
             v-ref="graphComponent"
             nodes="{{@@ nodes }}"
             edges="{{@@ edges }}"
-            force-layout="{{ forceLayout }}"
+            force-layout-settings="{{ forceLayoutSettings }}"
             save-all-graph-data="{{ saveAllGraphData }}"
             node-state="{{@@ nodeState }}">
         </x-graph>

@@ -39,7 +39,7 @@
       <x-edge
           v-repeat="edges"
           track-by="id"
-          is-force-layout-running="{{ forceLayout.isRunning }}"
+          is-force-layout-running="{{ forceLayoutSettings.isRunning }}"
           is-zooming="{{ isZooming }}"
           node-state="{{ nodeState }}">
       </x-edge>
@@ -50,7 +50,7 @@
       <x-node
           v-repeat="nodes"
           track-by="id"
-          is-force-layout-running="{{ forceLayout.isRunning }}"
+          is-force-layout-running="{{ forceLayoutSettings.isRunning }}"
           is-zooming="{{ isZooming }}"
           node-state="{{@@ nodeState }}">
       </x-node>

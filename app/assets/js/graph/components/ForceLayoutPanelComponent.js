@@ -8,7 +8,7 @@ define([
     template: '#forceLayout.panel',
 
     props: {
-      forceLayout: {
+      forceLayoutSettings: {
         required: true
       }
     },
@@ -21,7 +21,7 @@ define([
 
     methods: {
       resetToForceLayoutParametersToDefaults: function() {
-        this.forceLayout.parameters = _.clone(this.forceLayout.defaultParameters);
+        this.forceLayoutSettings.parameters = _.clone(this.forceLayoutSettings.defaultParameters);
       }
     }
 

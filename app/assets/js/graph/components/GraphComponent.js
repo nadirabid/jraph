@@ -16,11 +16,12 @@ define([
       edges: {
         required: true
       },
-      forceLayout: {
+      forceLayoutSettings: {
         required: true
       },
       saveAllGraphData: {
-        required: true
+        required: true,
+        type: Function
       },
       nodeState: {
         required: true
@@ -165,20 +166,20 @@ define([
       },
 
       onForceLayoutEnd: function() {
-        if (this.forceLayout.isRunning) {
+        if (this.forceLayoutSettings.isRunning) {
           this.saveAllGraphData();
         }
 
-        this.forceLayout.isRunning = false;
+        this.forceLayoutSettings.isRunning = false;
       },
 
       restartForceLayoutIfRunning: function() {
-        if (this.forceLayout.isRunning) {
-          this.forceLayout.isRunning = false;
+        if (this.forceLayoutSettings.isRunning) {
+          this.forceLayoutSettings.isRunning = false;
 
           var self = this;
           Vue.nextTick(function() {
-            self.forceLayout.isRunning = true;
+            self.forceLayoutSettings.isRunning = true;
           });
         }
       }
@@ -198,7 +199,9 @@ define([
         this.$forceLayout.links(edges);
       },
 
-      'forceLayout.isRunning': function(isRunning) {
+      // don't ever start/stop forceLayout directly. toggle the
+      // forceLayout.isRunning flag to start/stop forceLayout
+      'forceLayoutSettings.isRunning': function(isRunning) {
         if (isRunning) {
           this.$forceLayout.start();
         }
@@ -207,42 +210,42 @@ define([
         }
       },
 
-      'forceLayout.parameters.alpha': function(alpha) {
+      'forceLayoutSettings.parameters.alpha': function(alpha) {
         this.$forceLayout.alpha(alpha);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.theta': function(theta) {
+      'forceLayoutSettings.parameters.theta': function(theta) {
         this.$forceLayout.theta(theta);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.friction': function(friction) {
+      'forceLayoutSettings.parameters.friction': function(friction) {
         this.$forceLayout.friction(friction);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.gravity': function(gravity) {
+      'forceLayoutSettings.parameters.gravity': function(gravity) {
         this.$forceLayout.gravity(gravity);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.charge': function(charge) {
+      'forceLayoutSettings.parameters.charge': function(charge) {
         this.$forceLayout.charge(charge);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.chargeDistance': function(chargeDistance) {
+      'forceLayoutSettings.parameters.chargeDistance': function(chargeDistance) {
         this.$forceLayout.chargeDistance(chargeDistance);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.linkDistance': function(linkDistance) {
+      'forceLayoutSettings.parameters.linkDistance': function(linkDistance) {
         this.$forceLayout.linkDistance(linkDistance);
         this.restartForceLayoutIfRunning();
       },
 
-      'forceLayout.parameters.linkStrength': function(linkStrength) {
+      'forceLayoutSettings.parameters.linkStrength': function(linkStrength) {
         this.$forceLayout.linkStrength(linkStrength);
         this.restartForceLayoutIfRunning();
       }
@@ -262,7 +265,7 @@ define([
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
 
-      var forceLayoutParameters = this.forceLayout.parameters;
+      var forceLayoutParameters = this.forceLayoutSettings.parameters;
       this.$forceLayout = d3.layout.force()
           .size([this.width, this.height])
           .alpha(forceLayoutParameters.alpha)
