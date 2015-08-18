@@ -8,7 +8,6 @@ define([
     'shared/daos/HypergraphDAO',
     'shared/daos/NodeDAO',
     'shared/daos/EdgeDAO',
-    'graph/state',
     'graph/components/GraphComponent',
     'graph/components/NavComponent',
     'graph/components/NodeComponent',
@@ -27,7 +26,6 @@ define([
     HypergraphDAO,
     NodeDAO,
     EdgeDAO,
-    State,
     GraphComponent,
     NavComponent,
     NodeComponent,
@@ -45,8 +43,6 @@ define([
 
   var edgesMap = Object.create(null);
   var nodeComponentsMap = Object.create(null);
-
-  var state = new State();
 
   var hypergraphID = _graph.id;
 
@@ -122,8 +118,6 @@ define([
   var app = new Vue({
 
     el: '#all',
-
-    state: state,
 
     edgesMap: edgesMap,
 
