@@ -213,10 +213,11 @@ ul.node-property-list > li > .display-value > .fa-times:hover {
 }
 
 .node-panel-menu > button {
+    margin:0;
+    padding:0;
     font-size:16px;
     line-height:1.8;
     border:0;
-    padding:2px 0;
     width:100%;
     text-align:center;
     background-color:#FF80AB;
