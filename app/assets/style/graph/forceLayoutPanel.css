@@ -20,7 +20,7 @@
     background-color:#fff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     padding: 6px 10px;
-    z-index:1;
+    z-index:0;
 }
 
 .force-layout-panel > .panel-header > .title {
@@ -96,7 +96,6 @@
 
 .force-layout-panel > .advanced-settings > .show-hide-button {
     color:#888;
-    z-index:0;
     position:relative;
     font-size:10px;
     text-align:center;
