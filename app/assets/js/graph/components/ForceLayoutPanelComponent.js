@@ -23,6 +23,10 @@ define([
       resetToForceLayoutParametersToDefaults: function() {
         this.forceLayoutSettings.parameters = _.clone(this.forceLayoutSettings.defaultParameters);
       }
+    },
+
+    beforeDestroy: function() {
+      this.forceLayoutSettings.isRunning = false;
     }
 
   });

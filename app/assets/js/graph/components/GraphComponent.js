@@ -198,12 +198,18 @@ define([
 
       // don't ever start/stop forceLayout directly. toggle the
       // forceLayout.isRunning flag to start/stop forceLayout
-      'forceLayoutSettings.isRunning': function(isRunning) {
-        if (isRunning) {
+      'forceLayoutSettings.isRunning': function(newVal, oldVal) {
+        if (newVal) {
           this.$forceLayout.start();
+
+          var self = this;
+          this.$forceLayoutAutoStart = setInterval(function() {
+            self.$forceLayout.alpha(0.03);
+          }, 2000);
         }
         else {
           this.$forceLayout.stop();
+          clearInterval(this.$forceLayoutAutoStart);
         }
       },
 
