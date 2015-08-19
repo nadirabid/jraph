@@ -204,7 +204,7 @@ define([
 
           var self = this;
           this.$forceLayoutAutoStart = setInterval(function() {
-            self.$forceLayout.alpha(0.03);
+            self.$forceLayout.alpha(0.02);
           }, 2000);
         }
         else {
