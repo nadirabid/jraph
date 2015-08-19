@@ -49,8 +49,11 @@ form#createAccount {
     display: -ms-flexbox;
     display: -webkit-flex;
     display: flex;
-    margin-bottom: 1px;
+
+    -webkit-align-content: center;
     align-content: center;
+
+    margin-bottom: 1px;
 }
 
 .form-group:first-child {
