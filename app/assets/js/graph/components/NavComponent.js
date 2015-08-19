@@ -1,7 +1,8 @@
 define([
     'vue',
-    'shared/daos/HypergraphDAO'
-], function(Vue, HypergraphDAO) {
+    'shared/daos/HypergraphDAO',
+    'shared/util'
+], function(Vue, HypergraphDAO, Util) {
   'use strict';
 
   var NavComponent = Vue.extend({
@@ -29,6 +30,7 @@ define([
 
     data: function() {
       return {
+        profilePictureDropdown: false,
         cachedGraphName: '',
         editingGraphName: false
       };
@@ -51,6 +53,21 @@ define([
     },
 
     methods: {
+
+      toggleProfilePictureDropdown: function (e) {
+        if (this.profilePictureDropdown)
+          return;
+
+        e.stopPropagation();
+
+        this.profilePictureDropdown = true;
+
+        var self = this;
+
+        Util.addEventListenerOnce(window, 'click', function () {
+          self.profilePictureDropdown = false;
+        });
+      },
 
       editGraphName: function() {
         this.editingGraphName = true;

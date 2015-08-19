@@ -163,6 +163,7 @@ nav > .utilities > .toggle-layout-panel:active, nav > .utilities > .toggle-layou
 nav > .profile-picture {
     -webkit-flex:none;
     flex: none;
+    position:relative;
 }
 
 nav > .profile-picture > img {
@@ -173,7 +174,7 @@ nav > .profile-picture > img {
 .profile-picture-dropdown {
     width: 140px;
     right: 0;
-    top: 60px;
+    top: 68px;
 }
 
 .profile-picture-dropdown::before, .profile-picture-dropdown::after {
