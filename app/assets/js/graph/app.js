@@ -98,7 +98,7 @@ define([
   edgeContextMenu.$mount('#edgeContextMenu');
 
   function ForceLayoutSettings() {
-    this.isPanelOpen = true;
+    this.isPanelOpen = false;
     this.isRunning = false;
 
     this.defaultParameters = {
