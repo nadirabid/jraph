@@ -61,8 +61,8 @@ form#createAccount {
 
 input {
     -webkit-flex:auto;
-    -ms-flex:auto;
     flex:auto;
+
     font-family: 'Nato Sans', sans-serif;
     font-size:20px;
     font-weight:400;
@@ -172,7 +172,6 @@ a:hover {
 }
 
 .help-block {
-    -ms-flex:1;
     -webkit-flex:1;
     flex:1;
 
