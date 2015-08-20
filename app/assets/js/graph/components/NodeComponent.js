@@ -122,10 +122,11 @@ define([
       ctx.px = ctx.x;
       ctx.py = ctx.y;
       ctx.fixed = true;
+      ctx.isNewEdgeNode = true;
 
-      Vue.nextTick(function() {
-        ctx.$el.classList.add('new-edge-node');
-      });
+      //Vue.nextTick(function() {
+      //  ctx.$el.classList.add('new-edge-node');
+      //});
 
       ctx.bringToFront();
     };
@@ -143,10 +144,11 @@ define([
       ctx.calculateRectBoundingEdges();
 
       ctx.fixed = false;
+      ctx.isNewEdgeNode = false;
 
-      Vue.nextTick(function() {
-        ctx.$el.classList.remove('new-edge-node');
-      });
+      //Vue.nextTick(function() {
+      //  ctx.$el.classList.remove('new-edge-node');
+      //});
     };
 
     //set link target
@@ -174,10 +176,12 @@ define([
       sourceCtx.$.newEdge.$destroy(true);
       sourceCtx.$.newEdge = null;
 
-      Vue.nextTick(function() {
-        ctx.$el.classList.remove('new-edge-node');
-        sourceCtx.$el.classList.remove('new-edge-node');
-      });
+      ctx.isNewEdgeNode = false;
+      sourceCtx.isNewEdgeNode = false;
+      //Vue.nextTick(function() {
+      //  ctx.$el.classList.remove('new-edge-node');
+      //  sourceCtx.$el.classList.remove('new-edge-node');
+      //});
 
       ctx.isMouseentered = true;
       sourceCtx.fixed = false;
@@ -223,7 +227,9 @@ define([
         pillButtonWidth: 21,
         isNew: false,
         isNodeReady: false,
+        isNodeInfoDisplayed: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
+        isNewEdgeNode: false,
         dragFlag: false,
         isMouseentered: false,
         data: {
@@ -350,7 +356,7 @@ define([
         };
 
         var marginBufferT, easeT;
-        if (this.nodeState == 'linking' && this.fixed) {
+        if ((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed) {
           marginBufferT = d3.interpolateRound(0, 8);
           easeT = d3.ease('quad');
 
@@ -386,10 +392,11 @@ define([
       setNewEdgeSource: function () {
         var self = this;
 
-        Vue.nextTick(function() {
-          self.$el.classList.add('new-edge-node');
-        });
+        //Vue.nextTick(function() {
+        //  self.$el.classList.add('new-edge-node');
+        //});
 
+        this.isNewEdgeNode = true;
         this.fixed = true;
 
         this.nodeState = 'linking';
@@ -471,10 +478,8 @@ define([
       this.$watch('y', this.calculateRectBoundingEdges.bind(this));
       this.$watch('width', this.calculateRectBoundingEdges.bind(this));
       this.$watch('height', this.calculateRectBoundingEdges.bind(this));
-      // hovering over node causes a "highlight border" to appear,
-      // effectively increasing the size of the node, so we have to
-      // recalculate the bounding edges
-      this.$watch('fixed', this.calculateRectBoundingEdges.bind(this));
+      this.$watch('isNewEdgeNode', this.calculateRectBoundingEdges.bind(this));
+      this.$watch('isNodeInfoDisplayed', this.calculateRectBoundingEdges.bind(this));
     },
 
     ready: function () {

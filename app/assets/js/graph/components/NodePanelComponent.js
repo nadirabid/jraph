@@ -413,6 +413,8 @@ define([
       initializeData: function() {
         var node = this.node;
 
+        node.isNodeInfoDisplayed = true;
+
         if (!node.data) {
           this.$add('node.data', { properties: new NodeProperties() });
         }
@@ -435,7 +437,11 @@ define([
     },
 
     watch: {
-      'node': function() {
+      'node': function(newNodeVal, oldNodeVal) {
+        if (oldNodeVal) {
+          oldNodeVal.isNodeInfoDisplayed = false;
+        }
+
         this.initializeData();
 
         if (this.node.isNew) {
@@ -480,6 +486,8 @@ define([
     beforeDestroy: function() {
       Mousetrap.unbind('esc');
       window.removeEventListener('resize', this.$updateDimensionsAndPosition);
+
+      this.node.isNodeInfoDisplayed = false;
 
       if (this.node.isNew) {
         this.node.markedForDeletion = true;

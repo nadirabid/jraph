@@ -125,11 +125,13 @@ body {
     transition: all 140ms ease;
 }
 
+.node-info-displayed > g > .node-rect-background,
 .new-edge-node > g > .node-rect-background {
     stroke-width:4px;
     stroke:#FAFAFA;
 }
 
+.node-info-displayed > g > .node-rect-background-highlight,
 .new-edge-node > g > .node-rect-background-highlight {
     opacity:1;
     stroke-width:8px;

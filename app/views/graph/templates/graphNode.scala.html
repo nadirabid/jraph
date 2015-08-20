@@ -2,6 +2,10 @@
   <g
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
+    v-class="
+        node-info-displayed: isNodeInfoDisplayed,
+        new-edge-node: isNewEdgeNode
+    "
     v-on="
         mouseenter: mouseover,
         mouseleave: mouseout,
