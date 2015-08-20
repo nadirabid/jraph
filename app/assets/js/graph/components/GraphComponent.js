@@ -23,6 +23,10 @@ define([
         required: true,
         type: Function
       },
+      showGraphContextMenu: {
+        required: true,
+        type: Function,
+      },
       nodeState: {
         required: true
       }
@@ -177,7 +181,7 @@ define([
 
         e.preventDefault();
 
-        graphContextMenu.show(e.clientX, e.clientY);
+        this.showGraphContextMenu(e.clientX, e.clientY);
       },
 
       onForceLayoutEnd: function() {

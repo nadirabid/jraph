@@ -188,6 +188,10 @@ define([
         this.$.graphComponent.centerView();
       },
 
+      showGraphContextMenu: function(x, y) {
+        graphContextMenu.show(x, y);
+      },
+
       saveAllGraphData: function() {
         var updateNodesPromise = NodeDAO.update(hypergraphID, this.nodes);
         //var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
