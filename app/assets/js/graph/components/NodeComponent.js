@@ -259,6 +259,10 @@ define([
 
         if (this.isMouseentered && !this.dragFlag) {
           x += this.pillButtonWidth + 4;
+
+          if (this.isNodeInfoDisplayed) {
+            x += 4;
+          }
         }
 
         var y = (-(this.height + 10)/2);
@@ -276,6 +280,10 @@ define([
 
         if (this.isMouseentered && !this.dragFlag) {
           x += this.pillButtonWidth*2 + 1 + 4;
+
+          if (this.isNodeInfoDisplayed) {
+            x += 4;
+          }
         }
 
         var y = (-(this.height + 10)/2);
