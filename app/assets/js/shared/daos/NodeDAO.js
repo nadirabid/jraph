@@ -1,8 +1,6 @@
 define([
-    'shared/util'
-], function(
-    util
-) {
+    'jquery'
+], function($) {
   var NodeDAO = {};
 
   NodeDAO.parseJSON = function (datum) {
@@ -63,7 +61,7 @@ define([
   };
 
   NodeDAO.fetchAll = function (hypergraphID) {
-    var xhr = util.getJSON('/hypergraph/' + hypergraphID + '/hypernode/all')
+    var xhr = $.getJSON('/hypergraph/' + hypergraphID + '/hypernode/all')
         .then(function (response) {
           return _.map(response, NodeDAO.parseJSON);
         });
@@ -76,7 +74,7 @@ define([
       return NodeDAO.toJSON(node);
     });
 
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hypernode',
           type: 'PUT',
@@ -89,7 +87,7 @@ define([
   };
 
   NodeDAO.create = function(hypergraphID, node) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hypernode',
           type: 'POST',
@@ -104,7 +102,7 @@ define([
   };
 
   NodeDAO.delete = function(hypergraphID, node) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/hypernode/' + node.id,
           type: 'DELETE'

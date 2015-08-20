@@ -1,7 +1,5 @@
 // Utils
-define([
-    'jquery'
-], function (jquery) {
+define(function () {
   'use strict';
 
   var slice = Array.prototype.slice;
@@ -50,35 +48,6 @@ define([
 
     Util.DRAG_STATES = DRAG_STATES;
     Util.mouse = mouse;
-  })();
-
-  // jQuery forwarding methods
-  (function() {
-    function ajax() {
-      return jquery.ajax.apply(jquery, arguments);
-    }
-
-    function getJSON() {
-      return jquery.getJSON.apply(jquery, arguments);
-    }
-
-    function when() {
-      return jquery.when.apply(jquery, arguments);
-    }
-
-    function width() {
-      return jquery.apply(jquery, arguments).width();
-    }
-
-    function height() {
-      return jquery.apply(jquery, arguments).height();
-    }
-
-    Util.ajax = ajax;
-    Util.getJSON = getJSON;
-    Util.when = when;
-    Util.width = width;
-    Util.height = height;
   })();
 
   //Unwrapped definitions

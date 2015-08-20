@@ -1,8 +1,6 @@
 define([
-    'shared/util'
-], function(
-    util
-) {
+    'jquery'
+], function($) {
 
   /*
    Link: {
@@ -23,7 +21,7 @@ define([
   };
 
   EdgeDao.create = function(hypergraphID, link) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/edge',
           type: 'POST',
@@ -36,7 +34,7 @@ define([
   };
 
   EdgeDao.delete = function(hypergraphID, link) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraphID + '/edge/' + link.id,
           type: 'DELETE'
@@ -44,7 +42,7 @@ define([
   };
 
   EdgeDao.fetchAll = function (hypergraphID) {
-    return util
+    return $
         .getJSON('/hypergraph/' + hypergraphID + '/edge')
         .then(function (response) {
           return _(response)

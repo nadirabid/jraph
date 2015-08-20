@@ -1,8 +1,6 @@
 define([
-    'shared/util'
-], function(
-    util
-) {
+    'jquery'
+], function($) {
   var HypergraphDAO = {};
 
   HypergraphDAO.parseJSON = function(datum) {
@@ -14,7 +12,7 @@ define([
   };
 
   HypergraphDAO.create = function(hypergraph) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph',
           type: 'POST',
@@ -29,7 +27,7 @@ define([
   };
 
   HypergraphDAO.update = function(hypergraph) {
-    return util
+    return $
         .ajax({
           url: '/hypergraph/' + hypergraph.id,
           type: 'PUT',
@@ -44,7 +42,7 @@ define([
   };
 
   HypergraphDAO.fetch = function(hypergraphID) {
-    return util.getJSON('/hypergraph/' + hypergraphID);
+    return $.getJSON('/hypergraph/' + hypergraphID);
   };
 
   return HypergraphDAO;

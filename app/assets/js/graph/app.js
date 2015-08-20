@@ -209,7 +209,7 @@ define([
 
   // fetch data
 
-  util.when(NodeDAO.fetchAll(hypergraphID), EdgeDAO.fetchAll(hypergraphID))
+  $.when(NodeDAO.fetchAll(hypergraphID), EdgeDAO.fetchAll(hypergraphID))
       .done(function (nodes, links) {
         nodes.forEach(function (n) {
           links.forEach(function (l) {
