@@ -436,7 +436,6 @@ define([
 
     watch: {
       'node': function() {
-        console.log('watch.node');
         this.initializeData();
 
         if (this.node.isNew) {
