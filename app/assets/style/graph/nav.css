@@ -164,6 +164,7 @@ nav > .profile-picture {
     -webkit-flex:none;
     flex: none;
     position:relative;
+    padding-right:0;
 }
 
 nav > .profile-picture > img {
