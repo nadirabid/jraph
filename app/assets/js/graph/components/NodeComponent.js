@@ -124,10 +124,6 @@ define([
       ctx.fixed = true;
       ctx.isNewEdgeNode = true;
 
-      //Vue.nextTick(function() {
-      //  ctx.$el.classList.add('new-edge-node');
-      //});
-
       ctx.bringToFront();
     };
 
@@ -145,10 +141,6 @@ define([
 
       ctx.fixed = false;
       ctx.isNewEdgeNode = false;
-
-      //Vue.nextTick(function() {
-      //  ctx.$el.classList.remove('new-edge-node');
-      //});
     };
 
     //set link target
@@ -178,10 +170,6 @@ define([
 
       ctx.isNewEdgeNode = false;
       sourceCtx.isNewEdgeNode = false;
-      //Vue.nextTick(function() {
-      //  ctx.$el.classList.remove('new-edge-node');
-      //  sourceCtx.$el.classList.remove('new-edge-node');
-      //});
 
       ctx.isMouseentered = true;
       sourceCtx.fixed = false;
@@ -398,12 +386,6 @@ define([
       },
 
       setNewEdgeSource: function () {
-        var self = this;
-
-        //Vue.nextTick(function() {
-        //  self.$el.classList.add('new-edge-node');
-        //});
-
         this.isNewEdgeNode = true;
         this.fixed = true;
 
