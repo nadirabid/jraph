@@ -31,6 +31,7 @@ define([
     data: function () {
       return {
         isZooming: false,
+        isPanning: false,
         nodes: [],
         edges: [],
         width: 0,
@@ -95,6 +96,7 @@ define([
         if (this.$setIsZoomingToFalseTimeout) {
           clearTimeout(this.$setIsZoomingToFalseTimeout);
         }
+
         this.isZooming = true;
 
         var self = this;
@@ -134,9 +136,20 @@ define([
         var v = Util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
 
         var self = this;
+
         Vue.nextTick(function() {
           Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(v.x, v.y));
         });
+
+        if (this.$setIsPanningToFalseTimeout) {
+          clearTimeout(this.$setIsPanningToFalseTimeout);
+        }
+
+        this.isPanning = true;
+
+        this.$setIsPanningToFalseTimeout = setTimeout(function() {
+          self.isPanning = false;
+        }, 100);
       },
 
       panEnd: function() {
@@ -146,6 +159,8 @@ define([
         Vue.nextTick(function() {
           self.$el.style.setProperty('cursor', 'auto');
         });
+
+        this.isPanning = false;
       },
 
       centerView: function() {

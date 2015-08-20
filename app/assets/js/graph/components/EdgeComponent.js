@@ -69,6 +69,9 @@ define([
       isZooming: {
         required: true
       },
+      isPanning: {
+        required: true
+      },
       nodeState: {
         required: true
       }
@@ -86,8 +89,8 @@ define([
     computed: {
 
       isViewOptimizedForSpeed: function() {
-        return this.isForceLayoutRunning || this.isZooming;
-      },
+        return this.isForceLayoutRunning || this.isZooming || this.isPanning;
+      }
 
     },
 
