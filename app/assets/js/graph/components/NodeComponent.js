@@ -325,7 +325,7 @@ define([
         // forwards without being completely hidden behind the node OR
         // to far back that the line from the link isn't being completely
         // covered by the arrowhead marker
-        var marginX = 8, marginY = 4;
+        var marginX = 4, marginY = 4;
 
         var self = this;
 
@@ -387,7 +387,7 @@ define([
         var minWidth = Math.max(bBox.width, 50);
         var minHeight = Math.max(bBox.height, 18);
 
-        this.width = minWidth + 24;
+        this.width = minWidth + 36;
         this.height = minHeight + 12;
       },
 
