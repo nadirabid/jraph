@@ -216,10 +216,11 @@ define([
         isNew: false,
         isNodeReady: false,
         isNodeInfoDisplayed: false,
-        fixed: false, //d3.force doesn't pick it up if not explicitly linked
-        isNewEdgeNode: false,
-        dragFlag: false,
         isMouseentered: false,
+        isNewEdgeNode: false,
+        isNodeHighlightActive: false,
+        fixed: false, //d3.force doesn't pick it up if not explicitly linked
+        dragFlag: false,
         data: {
           name: ''
         }
@@ -348,26 +349,32 @@ define([
           self.topEdge = point.y;
           self.bottomEdge = point.y + dimensions.y;
 
-          return t >= 1 || !self.fixed; // cancel timer - only way of doing so
+          return t >= 1 || !((self.isNewEdgeNode && self.fixed) || self.isNodeInfoDisplayed); // cancel timer - only way of doing so
         };
 
-        var marginBufferT, easeT;
-        if ((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed) {
-          marginBufferT = d3.interpolateRound(0, 8);
-          easeT = d3.ease('quad');
+        var marginBufferT;
+        var easeT = d3.ease('quad');
 
+        if (((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed) && !this.isNodeHighlightActive) {
+          console.log('here');
+          marginBufferT = d3.interpolateRound(0, 8);
+
+          // immediately calculate edges for T = 0
+          updateEdgesT(0, 140, easeT, marginBufferT);
+
+          // then d3 calculates edges for the rest of T values
           d3.timer(function(elapsed) {
             return updateEdgesT(elapsed, 140, easeT, marginBufferT);
           });
 
-          // immediately calculate edges first time around
-          updateEdgesT(0, 140, easeT, marginBufferT);
+          this.isNodeHighlightActive = true;
         }
-        else {
+        else if (!((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed)) {
           marginBufferT = d3.interpolateRound(0, 0);
-          easeT = d3.ease('quad');
 
           updateEdgesT(1, 1, easeT, marginBufferT);
+
+          this.isNodeHighlightActive = false;
         }
       },
 
