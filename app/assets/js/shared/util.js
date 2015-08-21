@@ -196,13 +196,13 @@ define(function () {
       return alphaNumericReg.test(str);
     }
 
-    function addEventListenerOnce(el, eventName, callback) {
+    function addEventListenerOnce(el, eventName, callback, capture) {
       var callbackWrapper = function() {
         callback.apply(this, arguments);
-        el.removeEventListener(eventName, callbackWrapper);
+        el.removeEventListener(eventName, callbackWrapper, capture);
       };
 
-      el.addEventListener(eventName, callbackWrapper);
+      el.addEventListener(eventName, callbackWrapper, capture);
     }
 
     Util.addEventListenerOnce = addEventListenerOnce;

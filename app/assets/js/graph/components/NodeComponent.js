@@ -163,18 +163,14 @@ define([
 
               graphComponent.edges.push(link);
             });
+
+        sourceCtx.removeNewEdgeState(ctx);
+      }
+      else {
+        sourceCtx.removeNewEdgeState();
       }
 
-      sourceCtx.$.newEdge.$destroy(true);
-      sourceCtx.$.newEdge = null;
-
-      ctx.isNewEdgeNode = false;
-      sourceCtx.isNewEdgeNode = false;
-
       ctx.isMouseentered = true;
-      sourceCtx.fixed = false;
-      ctx.nodeState = 'initial';
-      mouse.data.source = null;
     };
 
     this.dragstart = function(e) {
@@ -407,6 +403,28 @@ define([
             .$addChild({ source: this }, NewEdgeComponent)
             .$mount()
             .$appendTo(this.$parent.$$.newEdgeContainer);
+
+        var self = this;
+        Util.addEventListenerOnce(window, 'click', function(e) {
+          if($(e.target).closest('.node').length === 0) {
+            self.removeNewEdgeState();
+          }
+        }, true);
+      },
+
+      removeNewEdgeState: function(targetNodeComponent) {
+        this.$.newEdge.$destroy(true);
+        this.$.newEdge = null;
+
+        this.isNewEdgeNode = false;
+
+        this.nodeState = 'initial';
+        mouse.data.source = null;
+
+        if (targetNodeComponent) {
+          targetNodeComponent.isNewEdgeNode = false;
+          targetNodeComponent.fixed = false;
+        }
       },
 
       delete: function() {
