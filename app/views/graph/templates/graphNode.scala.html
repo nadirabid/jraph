@@ -2,10 +2,7 @@
   <g
     class="node enable-pointer-events"
     v-attr="id: id, transform: nodeTranslate"
-    v-class="
-        node-info-displayed: isNodeInfoDisplayed,
-        new-edge-node: isNewEdgeNode
-    "
+    v-class="activate-node-halo: isNodeSelected"
     v-on="
         mouseenter: mouseover,
         mouseleave: mouseout,
@@ -57,7 +54,7 @@
     </g>
     <g v-attr="transform:rectTranslate">
       <rect
-          class="node-rect-background-highlight"
+          class="node-rect-halo"
           rx="2" ry="2"
           v-if="!isViewOptimizedForSpeed"
           v-el="nodeRectBackgroundHighlight"

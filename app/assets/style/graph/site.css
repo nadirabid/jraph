@@ -118,21 +118,19 @@ body {
     transition: all 140ms ease-in-out;
 }
 
-.node-rect-background-highlight {
+.node-rect-halo {
     opacity: 0;
     stroke-width:0;
     stroke:#E91E63;
     transition: all 140ms ease;
 }
 
-.node-info-displayed > g > .node-rect-background,
-.new-edge-node > g > .node-rect-background {
+.activate-node-halo > g > .node-rect-background {
     stroke-width:4px;
     stroke:#FAFAFA;
 }
 
-.node-info-displayed > g > .node-rect-background-highlight,
-.new-edge-node > g > .node-rect-background-highlight {
+.activate-node-halo > g > .node-rect-halo {
     opacity:1;
     stroke-width:8px;
 }

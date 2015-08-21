@@ -218,7 +218,7 @@ define([
         isNodeInfoDisplayed: false,
         isMouseentered: false,
         isNewEdgeNode: false,
-        isNodeHighlightActive: false,
+        hasNodeHaloTransitionBeenExecuted: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         dragFlag: false,
         data: {
@@ -228,6 +228,10 @@ define([
     },
 
     computed: {
+
+      isNodeSelected: function() {
+        return this.isNewEdgeNode || this.isNodeInfoDisplayed;
+      },
 
       isViewOptimizedForSpeed: function() {
         return this.isForceLayoutRunning || this.isZooming || this.isPanning;
@@ -325,6 +329,8 @@ define([
 
         var self = this;
 
+        // updateEdgesT provides a manual way to create a transition effect
+        // that cause the the arrows around the node to slowly recede to the new margins
         var updateEdgesT = function(elapsed, animationDuration, easeT, marginBufferT) {
           var t = elapsed / animationDuration;
           var marginBuffer = marginBufferT(easeT(t));
@@ -349,15 +355,12 @@ define([
           self.topEdge = point.y;
           self.bottomEdge = point.y + dimensions.y;
 
-          return t >= 1 || !((self.isNewEdgeNode && self.fixed) || self.isNodeInfoDisplayed); // cancel timer - only way of doing so
+          return t >= 1 || !self.isNodeSelected; // cancel timer - only way of doing so
         };
 
-        var marginBufferT;
-        var easeT = d3.ease('quad');
-
-        if (((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed) && !this.isNodeHighlightActive) {
-          console.log('here');
-          marginBufferT = d3.interpolateRound(0, 8);
+        if (this.isNodeSelected && !this.hasNodeHaloTransitionBeenExecuted) {
+          var easeT = d3.ease('quad');
+          var marginBufferT = d3.interpolateRound(0, 8);
 
           // immediately calculate edges for T = 0
           updateEdgesT(0, 140, easeT, marginBufferT);
@@ -367,14 +370,14 @@ define([
             return updateEdgesT(elapsed, 140, easeT, marginBufferT);
           });
 
-          this.isNodeHighlightActive = true;
+          this.hasNodeHaloTransitionBeenExecuted = true;
         }
-        else if (!((this.isNewEdgeNode && this.fixed) || this.isNodeInfoDisplayed)) {
-          marginBufferT = d3.interpolateRound(0, 0);
-
-          updateEdgesT(1, 1, easeT, marginBufferT);
-
-          this.isNodeHighlightActive = false;
+        else if (this.isNodeSelected) {
+          updateEdgesT(1, 1, d3.ease('quad'), d3.interpolateRound(0, 8));
+        }
+        else {
+          updateEdgesT(1, 1, d3.ease('quad'), d3.interpolateRound(0, 0));
+          this.hasNodeHaloTransitionBeenExecuted = false;
         }
       },
 
@@ -457,8 +460,38 @@ define([
       dragend: function () {
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dragend.apply(stateEventHandlers, arguments);
+      },
+
+      enableWatchersForCalculateRectBoundingEdges: function() {
+        this.$unwatch.x =                   this.$watch('x',                    this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.y =                   this.$watch('y',                    this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.width =               this.$watch('width',                this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.height =              this.$watch('height',               this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.isNewEdgeNode =       this.$watch('isNewEdgeNode',        this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.isNodeInfoDisplayed = this.$watch('isNodeInfoDisplayed',  this.calculateRectBoundingEdges.bind(this));
+      },
+
+      disableWatchersForCalculateRectBoundingEdges: function() {
+        this.$unwatch.x();
+        this.$unwatch.y();
+        this.$unwatch.width();
+        this.$unwatch.height();
+        this.$unwatch.isNewEdgeNode();
+        this.$unwatch.isNodeInfoDisplayed();
       }
 
+    },
+
+    watch: {
+      isViewOptimizedForSpeed: function(isViewOptimizedForSpeed) {
+        if (isViewOptimizedForSpeed) {
+          this.disableWatchersForCalculateRectBoundingEdges();
+        }
+        else {
+          this.enableWatchersForCalculateRectBoundingEdges();
+          this.calculateRectBoundingEdges();
+        }
+      }
     },
 
     created: function () {
@@ -469,14 +502,11 @@ define([
         linking: new LinkingNodeState(this)
       };
 
+      this.$unwatch = {};
+
       this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
 
-      this.$watch('x', this.calculateRectBoundingEdges.bind(this));
-      this.$watch('y', this.calculateRectBoundingEdges.bind(this));
-      this.$watch('width', this.calculateRectBoundingEdges.bind(this));
-      this.$watch('height', this.calculateRectBoundingEdges.bind(this));
-      this.$watch('isNewEdgeNode', this.calculateRectBoundingEdges.bind(this));
-      this.$watch('isNodeInfoDisplayed', this.calculateRectBoundingEdges.bind(this));
+      this.enableWatchersForCalculateRectBoundingEdges();
     },
 
     ready: function () {
