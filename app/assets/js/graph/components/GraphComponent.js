@@ -200,6 +200,9 @@ define([
             Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(dxT, dyT));
 
             if (easedT >= 1) {
+              // add a bit of delay to make sure the DOM has been completely
+              // panned ... this gets rid of some jittering from the view going to
+              // default mode BEFORE the panning is complete
               setTimeout(function() { self.isPanning = easedT < 1; }, 60);
             }
           });
