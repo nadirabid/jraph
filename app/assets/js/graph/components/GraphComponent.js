@@ -184,6 +184,10 @@ define([
 
         var dx = p.x - x;
         var dy = p.y - y;
+        
+        if (Math.abs(dx + dy) < 1) { // view is already centered
+          return false;
+        }
 
         var self = this;
 
@@ -211,6 +215,8 @@ define([
         });
 
         this.isPanning = true;
+
+        return true;
       },
 
       contextMenu: function (e) {

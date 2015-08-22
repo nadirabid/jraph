@@ -42,7 +42,15 @@ define([
     };
 
     this.dblclick = function() {
-      ctx.centerViewTo(ctx.x, ctx.y);
+      // most of the time, centering the node in the view
+      // will result in shifting the view until the node is in the
+      // center. in this case, we assume the mouse is no longer on the node.
+      // the one exception is if the node is already in the center, the
+      // mouse will obviously remain on the node
+
+      if (ctx.centerViewTo(ctx.x, ctx.y)) {
+        ctx.isMouseentered = false;
+      }
     };
 
     // focus on node
