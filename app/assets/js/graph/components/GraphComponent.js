@@ -186,9 +186,28 @@ define([
         var dy = p.y - y;
 
         var self = this;
-        Vue.nextTick(function() {
-          Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(dx, dy));
+
+        var translateX = d3.interpolateRound(0, dx);
+        var translateY = d3.interpolateRound(0, dy);
+        var easeT = d3.ease('quad');
+
+        d3.timer(function(t) {
+          var easedT = easeT(t/140);
+          var dxT = translateX(easedT);
+          var dyT = translateY(easedT);
+
+          Vue.nextTick(function() {
+            Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(dxT, dyT));
+
+            if (easedT >= 1) {
+              setTimeout(function() { self.isPanning = easedT < 1; }, 60);
+            }
+          });
+
+          return easedT >= 1;
         });
+
+        this.isPanning = true;
       },
 
       contextMenu: function (e) {
