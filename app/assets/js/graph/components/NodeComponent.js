@@ -364,7 +364,7 @@ define([
 
         if (this.isNodeSelected && !this.hasNodeHaloTransitionBeenExecuted) {
           var easeT = d3.ease('quad');
-          var marginBufferT = d3.interpolateRound(0, 8);
+          var marginBufferT = d3.interpolateRound(2, 8);
 
           // immediately calculate edges for T = 0
           updateEdgesT(0, 140, easeT, marginBufferT);
