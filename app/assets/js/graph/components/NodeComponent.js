@@ -41,6 +41,10 @@ define([
       ctx.$parent.$parent.nodeInfoToDisplay = ctx.$data;
     };
 
+    this.dblclick = function() {
+      ctx.centerViewTo(ctx.x, ctx.y);
+    };
+
     // focus on node
     this.mouseover = function () {
       if (mouse.dragState.state !== Util.DRAG_STATES.NONE) {
@@ -195,6 +199,10 @@ define([
       },
       nodeState: {
         required: true
+      },
+      centerViewTo: {
+        required: true,
+        type: Function
       }
     },
 

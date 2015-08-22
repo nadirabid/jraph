@@ -113,11 +113,6 @@ define([
         var newWidth = this.$$el.width(),
             newHeight = this.$$el.height();
 
-        if (this.width == newWidth &&
-            this.height == newHeight) {
-          return;
-        }
-
         this.offset = this.$$el.offset();
 
         this.width = newWidth;
@@ -137,6 +132,8 @@ define([
       pan: function (e) {
         var ctm = this._ctm;
 
+        // we don't need to muck with transform the current mouse location
+        // because all we need is the change in x and the change in y
         var v = Util.transformVectorFromClientToEl(e.dx, e.dy, this.$$.nodesAndLinksGroup);
 
         var self = this;
@@ -167,12 +164,30 @@ define([
         this.isPanning = false;
       },
 
-      centerView: function() {
+      resetView: function() {
         var self = this;
         var defaultCTM = this.$el.createSVGMatrix();
 
         Vue.nextTick(function() {
           Util.setCTM(self.$$.nodesAndLinksGroup, defaultCTM);
+        });
+      },
+
+      centerViewTo: function(x, y) {
+        var ctm = this.$$.nodesAndLinksGroup.getCTM();
+        var p =  this.$el.createSVGPoint();
+
+        p.x = this.width/2;
+        p.y = this.height/2;
+
+        p = p.matrixTransform(ctm.inverse());
+
+        var dx = p.x - x;
+        var dy = p.y - y;
+
+        var self = this;
+        Vue.nextTick(function() {
+          Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(dx, dy));
         });
       },
 
@@ -200,10 +215,6 @@ define([
         }
       }
 
-    },
-
-    created: function () {
-      window.addEventListener('resize', this.resize.bind(this));
     },
 
     watch: {
@@ -266,6 +277,10 @@ define([
         this.$forceLayout.linkStrength(linkStrength);
         this.forceLayoutSettings.isRunning = false;
       }
+    },
+
+    created: function () {
+      window.addEventListener('resize', this.resize.bind(this));
     },
 
     ready: function() {

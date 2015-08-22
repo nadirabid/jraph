@@ -54,7 +54,10 @@
           is-force-layout-running="{{ forceLayoutSettings.isRunning }}"
           is-zooming="{{ isZooming }}"
           is-panning="{{ isPanning }}"
-          node-state="{{@@ nodeState }}">
+          node-state="{{@@ nodeState }}"
+          graph-width="{{ width }}"
+          graph-height="{{ height }}"
+          center-view-to="{{ centerViewTo }}">
       </x-node>
     </g>
   </svg>

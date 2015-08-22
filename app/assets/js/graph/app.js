@@ -184,8 +184,8 @@ define([
         this.$.graphComponent.decrementZoomLevel();
       },
 
-      centerView: function() {
-        this.$.graphComponent.centerView();
+      resetView: function() {
+        this.$.graphComponent.resetView();
       },
 
       showGraphContextMenu: function(x, y) {

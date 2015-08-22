@@ -16,7 +16,7 @@ define([
         required: true,
         type: Function
       },
-      centerView: {
+      resetView: {
         required: true,
         type: Function
       }
