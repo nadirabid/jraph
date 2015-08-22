@@ -184,7 +184,7 @@ define([
 
         var dx = p.x - x;
         var dy = p.y - y;
-        
+
         if (Math.abs(dx + dy) < 1) { // view is already centered
           return false;
         }
