@@ -105,7 +105,7 @@ define([
       alpha: 0.1,
       theta: 0.1,
       friction: 0.8,
-      gravity: 0.15,
+      gravity: 0.6,
       charge: -20000,
       chargeDistance: 1600,
       linkDistance: 200,
