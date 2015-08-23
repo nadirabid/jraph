@@ -205,6 +205,16 @@ define(function () {
       el.addEventListener(eventName, callbackWrapper, capture);
     }
 
+    function deferFor(timeout, callback) {
+      return setTimeout(callback, timeout);
+    }
+
+    function clearDeferFor(timeoutID) {
+      clearTimeout(timeoutID);
+    }
+
+    Util.deferFor = deferFor;
+    Util.clearDeferFor = clearDeferFor;
     Util.addEventListenerOnce = addEventListenerOnce;
     Util.validateAlphanumeric = validateAlphanumeric;
     Util.validateEmail = validateEmail;
@@ -428,6 +438,8 @@ define(function () {
 
         $util.trigger('click', e);
       }
+
+
 
       el.addEventListener('mousedown', drag_mousedown);
       el.addEventListener('mousedown', mousedown);

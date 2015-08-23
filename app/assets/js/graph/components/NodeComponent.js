@@ -233,6 +233,7 @@ define([
         hasNodeHaloTransitionBeenExecuted: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         dragFlag: false,
+        clickCount: 0,
         data: {
           name: ''
         }
@@ -473,7 +474,21 @@ define([
 
       click: function () {
         var stateEventHandlers = this.$states[ this.nodeState ];
-        return stateEventHandlers.click.apply(stateEventHandlers, arguments);
+        var args = arguments;
+
+        if (!this.clickCount) {
+          this.clickCount = 1;
+          var self = this;
+          this.$deferClickID = Util.deferFor(200, function () {
+            stateEventHandlers.click.apply(stateEventHandlers, args);
+            self.clickCount = 0;
+          });
+        }
+        else  {
+          Util.clearDeferFor(this.$deferClickID);
+          this.clickCount = 0;
+          stateEventHandlers.dblclick.apply(stateEventHandlers, args);
+        }
       },
 
       dblclick: function() {
