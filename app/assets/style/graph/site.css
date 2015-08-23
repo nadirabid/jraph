@@ -115,14 +115,14 @@ body {
     stroke-width:0;
     fill: #FAFAFA;
     stroke:#FAFAFA;
-    transition: all 140ms ease-in-out;
+    transition: all 180ms ease-in-out;
 }
 
 .node-rect-halo {
     opacity: 0;
     stroke-width:0;
     stroke:#E91E63;
-    transition: all 140ms ease;
+    transition: all 180ms ease-in-out;
 }
 
 .activate-node-halo > g > .node-rect-background {
