@@ -194,9 +194,10 @@ define([
         var translateX = d3.interpolateRound(0, dx);
         var translateY = d3.interpolateRound(0, dy);
         var easeT = d3.ease('quad');
+        var transitionTime = 180;
 
         d3.timer(function(t) {
-          var easedT = easeT(t/140);
+          var easedT = easeT(t/transitionTime);
           var dxT = translateX(easedT);
           var dyT = translateY(easedT);
 
