@@ -200,7 +200,6 @@ define([
         });
 
         var updateNodesPromise = NodeDAO.update(hypergraphID, nodesToSave);
-        //var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.edges);
         var updateGraphPromise = HypergraphDAO.update(this.graph);
 
         var self = this;
