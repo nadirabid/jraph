@@ -376,6 +376,8 @@ define([
             .done(function(node) {
               self.node.markedForDeletion = true; // mark temp node as markedForDeletion
 
+              node.isNodeInfoDisplayed = true;
+
               // reset data now
               self.node = node;
               self.$parent.nodes.push(node);
