@@ -229,7 +229,7 @@ define([
       },
 
       initializeForceLayout: function() {
-        self.$forceLayout.on('end', self.onForceLayoutEnd.bind(self));
+        this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
       },
 
       onForceLayoutEnd: function() {
