@@ -193,8 +193,14 @@ define([
       },
 
       saveAllGraphData: function() {
-        var updateNodesPromise = NodeDAO.update(hypergraphID, this.nodes);
-        //var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.nodes);
+        console.log("Saving all graph data...");
+
+        var nodesToSave = _.filter(this.nodes, function(node) {
+          return !node.isNew;
+        });
+
+        var updateNodesPromise = NodeDAO.update(hypergraphID, nodesToSave);
+        //var updateEdgesPromise = EdgeDAO.update(hypergraphID, this.edges);
         var updateGraphPromise = HypergraphDAO.update(this.graph);
 
         var self = this;
