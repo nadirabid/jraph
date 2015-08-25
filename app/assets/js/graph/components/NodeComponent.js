@@ -462,17 +462,47 @@ define([
             });
       },
 
+      enableWatchersForCalculateRectBoundingEdges: function() {
+        this.$unwatch.x =                   this.$watch('x',                    this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.y =                   this.$watch('y',                    this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.width =               this.$watch('width',                this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.height =              this.$watch('height',               this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.isNewEdgeNode =       this.$watch('isNewEdgeNode',        this.calculateRectBoundingEdges.bind(this));
+        this.$unwatch.isNodeInfoDisplayed = this.$watch('isNodeInfoDisplayed',  this.calculateRectBoundingEdges.bind(this));
+      },
+
+      disableWatchersForCalculateRectBoundingEdges: function() {
+        this.$unwatch.x();
+        this.$unwatch.y();
+        this.$unwatch.width();
+        this.$unwatch.height();
+        this.$unwatch.isNewEdgeNode();
+        this.$unwatch.isNodeInfoDisplayed();
+      },
+
       mouseover: function () {
+        if (this.isNew) {
+          return;
+        }
+
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.mouseover.apply(stateEventHandlers, arguments);
       },
 
       mouseout: function () {
+        if (this.isNew) {
+          return;
+        }
+
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.mouseout.apply(stateEventHandlers, arguments);
       },
 
       click: function () {
+        if (this.isNew) {
+          return;
+        }
+
         var stateEventHandlers = this.$states[ this.nodeState ];
         var args = arguments;
 
@@ -492,6 +522,10 @@ define([
       },
 
       dblclick: function() {
+        if (this.isNew) {
+          return;
+        }
+
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dblclick.apply(stateEventHandlers, arguments);
       },
@@ -509,24 +543,6 @@ define([
       dragend: function () {
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.dragend.apply(stateEventHandlers, arguments);
-      },
-
-      enableWatchersForCalculateRectBoundingEdges: function() {
-        this.$unwatch.x =                   this.$watch('x',                    this.calculateRectBoundingEdges.bind(this));
-        this.$unwatch.y =                   this.$watch('y',                    this.calculateRectBoundingEdges.bind(this));
-        this.$unwatch.width =               this.$watch('width',                this.calculateRectBoundingEdges.bind(this));
-        this.$unwatch.height =              this.$watch('height',               this.calculateRectBoundingEdges.bind(this));
-        this.$unwatch.isNewEdgeNode =       this.$watch('isNewEdgeNode',        this.calculateRectBoundingEdges.bind(this));
-        this.$unwatch.isNodeInfoDisplayed = this.$watch('isNodeInfoDisplayed',  this.calculateRectBoundingEdges.bind(this));
-      },
-
-      disableWatchersForCalculateRectBoundingEdges: function() {
-        this.$unwatch.x();
-        this.$unwatch.y();
-        this.$unwatch.width();
-        this.$unwatch.height();
-        this.$unwatch.isNewEdgeNode();
-        this.$unwatch.isNodeInfoDisplayed();
       }
 
     },
@@ -544,18 +560,19 @@ define([
     },
 
     created: function () {
-      this.$parent.$options.nodeComponentsMap[this.id] = this;
+      if (!this.isNew) {
+        this.$parent.$options.nodeComponentsMap[this.id] = this;
 
-      this.$states = {
-        initial: new InitialNodeState(this),
-        linking: new LinkingNodeState(this)
-      };
+        this.$states = {
+          initial: new InitialNodeState(this),
+          linking: new LinkingNodeState(this)
+        };
 
-      this.$unwatch = {};
+        this.$unwatch = {};
+        this.enableWatchersForCalculateRectBoundingEdges();
+      }
 
       this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
-
-      this.enableWatchersForCalculateRectBoundingEdges();
     },
 
     ready: function () {
