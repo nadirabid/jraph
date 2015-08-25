@@ -163,7 +163,7 @@ define([
         };
 
         var nodeComponent = graphComponent
-            .$addChild({ data: nodeData}, NodeComponent)
+            .$addChild({ data: nodeData }, NodeComponent)
             .$mount()
             .$appendTo(graphComponent.$$.dynamicContent);
 
@@ -228,6 +228,6 @@ define([
         app.nodes = nodes;
         app.edges = links;
 
-        app.$.graphComponent.$forceLayout.stop();
+        app.$.graphComponent.initializeForceLayout();
       });
 });

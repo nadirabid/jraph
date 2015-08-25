@@ -228,6 +228,10 @@ define([
         this.showGraphContextMenu(e.clientX, e.clientY);
       },
 
+      initializeForceLayout: function() {
+        self.$forceLayout.on('end', self.onForceLayoutEnd.bind(self));
+      },
+
       onForceLayoutEnd: function() {
         this.saveAllGraphData();
         this.forceLayoutSettings.isRunning = false;
@@ -336,9 +340,8 @@ define([
           .charge(forceLayoutParameters.charge)
           .chargeDistance(forceLayoutParameters.chargeDistance)
           .linkDistance(forceLayoutParameters.linkDistance)
-          .linkStrength(forceLayoutParameters.linkStrength);
-
-      this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
+          .linkStrength(forceLayoutParameters.linkStrength)
+          .stop();
     }
 
   });
