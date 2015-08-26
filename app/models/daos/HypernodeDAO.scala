@@ -3,22 +3,16 @@ package models.daos
 import java.util.UUID
 
 import com.google.inject.Inject
+import core.cypher.{Cypher, Neo4jConnection}
+import models.{Hypernode, HypernodeData}
 import org.joda.time.DateTime
-
-import play.api.Play.current
 import play.api.Configuration
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.ws.{WSClient, WSAuthScheme}
-import play.api.libs.ws._
-import play.api.libs.functional.syntax._
-import play.api.libs.concurrent.Execution.Implicits._
-
-import core.cypher.{Cypher, Neo4jConnection}
+import play.api.libs.ws.{WSAuthScheme, WSClient}
 
 import scala.concurrent.Future
-
-import models.{HypernodeData, Hypernode}
 
 class HypernodeDAO @Inject() (ws: WSClient,
                               configuration: Configuration,

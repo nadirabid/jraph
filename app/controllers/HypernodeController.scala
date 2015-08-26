@@ -1,17 +1,15 @@
 package controllers
 
-import javax.inject.Inject
 import java.util.UUID
+import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{Silhouette, Environment}
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import models.daos.HypernodeDAO
 import models._
+import models.daos.HypernodeDAO
 import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
-
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-
 import play.api.libs.json._
 
 class HypernodeController @Inject() (

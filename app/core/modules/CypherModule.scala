@@ -1,14 +1,12 @@
 package core.modules
 
-import com.google.inject.{Provides, AbstractModule}
-import core.cypher.{Neo4jConnectionSettings, Neo4jConnection}
-import net.codingwell.scalaguice.ScalaModule
-
-import play.api.Configuration
-import play.api.libs.ws.WSClient
-
+import com.google.inject.{AbstractModule, Provides}
+import core.cypher.{Neo4jConnection, Neo4jConnectionSettings}
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
+import net.codingwell.scalaguice.ScalaModule
+import play.api.Configuration
+import play.api.libs.ws.WSClient
 
 class CypherModule extends AbstractModule with ScalaModule {
 

@@ -1,6 +1,7 @@
 package core.filters
 
 import play.api.mvc._
+
 import scala.concurrent.Future
 
 class UnsupportedDeviceFilter extends Filter with Results {

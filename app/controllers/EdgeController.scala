@@ -1,19 +1,16 @@
 package controllers
 
 import java.util.UUID
-
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.{Silhouette, Environment}
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.daos.EdgeDAO
-
-import models.{ User, Edge }
+import models.{Edge, User}
 import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
-
-import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json._
 
 import scala.concurrent.Future
 

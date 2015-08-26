@@ -1,16 +1,14 @@
 package models.daos
 
 import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.api.util.PasswordInfo
-
-import play.api.libs.concurrent.Execution.Implicits._
-import play.api.Play.current
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import play.api.libs.json.Reads._
-
+import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import core.cypher._
+import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 import scala.concurrent.Future
 

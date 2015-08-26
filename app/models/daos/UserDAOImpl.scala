@@ -3,16 +3,13 @@ package models.daos
 import java.util.UUID
 
 import com.mohiva.play.silhouette.api.LoginInfo
-
-import play.api.libs.concurrent.Execution.Implicits._
-
-import play.api.Play.current
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
-import play.api.libs.json.Reads._
-
-import models.User
 import core.cypher._
+import models.User
+import play.api.Play.current
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 class UserDAOImpl extends UserDAO {
   val dbHost = "localhost"

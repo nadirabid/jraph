@@ -1,13 +1,11 @@
 package core.cypher
 
-import play.api.libs.ws._
-
-import play.api.libs.ws.{WS, WSAuthScheme}
-import play.api.libs.json._
-import play.api.libs.json.Reads._
-import play.api.libs.functional.syntax._
-
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
+import play.api.libs.json._
+import play.api.libs.ws.{WS, WSAuthScheme, _}
+
 import scala.concurrent.Future
 
 /**

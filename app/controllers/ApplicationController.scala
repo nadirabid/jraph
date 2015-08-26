@@ -4,23 +4,21 @@ import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
-import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette, Environment}
-import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
+import com.mohiva.play.silhouette.api.{Environment, LoginInfo, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
+import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
+import forms._
 import models.daos.{EdgeDAO, HypergraphDAO, HypernodeDAO, PasswordInfoDAO}
-
-import play.api.i18n.{MessagesApi, Messages}
+import models.services.UserService
+import models.{Edge, Hypergraph, Hypernode, User}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.Codecs
+import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Action
-import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
-
-import forms._
-import models.{Hypergraph, Hypernode, Edge, User}
-import models.services.UserService
 
 class ApplicationController @Inject() (
     hypergraphDAO: HypergraphDAO,

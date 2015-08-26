@@ -5,9 +5,8 @@ import java.util.UUID
 import com.google.inject.Inject
 import core.cypher.{Cypher, Neo4jConnection}
 import models.Edge
-
-import play.api.libs.json._
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json._
 
 import scala.concurrent.Future
 

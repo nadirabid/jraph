@@ -2,11 +2,10 @@ package models
 
 import java.util.UUID
 
+import org.joda.time._
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
-
-import org.joda.time._
 
 case class Edge(
   id: UUID,

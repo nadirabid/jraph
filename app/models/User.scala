@@ -1,7 +1,8 @@
 package models
 
-import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 import java.util.UUID
+
+import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 
 case class User(
     id: UUID,

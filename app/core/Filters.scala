@@ -6,8 +6,8 @@ import core.filters.UnsupportedDeviceFilter
 import play.api.http.HttpFilters
 import play.api.mvc.EssentialFilter
 import play.filters.csrf.CSRFFilter
-import play.filters.headers.SecurityHeadersFilter
 import play.filters.gzip.GzipFilter
+import play.filters.headers.SecurityHeadersFilter
 
 
 /**
