@@ -1,6 +1,38 @@
 define([
     'jquery'
 ], function($) {
+  function NodeProperty(nodeProperty) {
+    this.value = nodeProperty.value;
+    this.cachedValue_ = nodeProperty.value;
+    this.editing_ = false;
+  }
+
+  function NodeProperties(nodeProperties) {
+    if (!nodeProperties || nodeProperties.constructor == Array) {
+      nodeProperties = Object.create(null);
+    }
+
+    var tags = nodeProperties.tags || [];
+    this.tags = tags.map(function(tag) {
+      return new NodeProperty(tag);
+    });
+
+    var links = nodeProperties.links || [];
+    this.links = links.map(function(link) {
+      return new NodeProperty(link);
+    });
+
+    var emails = nodeProperties.emails || [];
+    this.emails = emails.map(function(email) {
+      return new NodeProperty(email);
+    });
+
+    var phoneNumbers = nodeProperties.phoneNumbers || [];
+    this.phoneNumbers = phoneNumbers.map(function(phoneNumber) {
+      return new NodeProperty(phoneNumber);
+    });
+  }
+
   var NodeDAO = {};
 
   NodeDAO.parseJSON = function (datum) {
@@ -11,13 +43,13 @@ define([
     datum.x = clientDisplay ? (clientDisplay.x || 0) : 0;
     datum.y = clientDisplay ? (clientDisplay.y || 0) : 0;
 
-    datum.px = datum.x ;
-    datum.py = datum.y ;
-
-    datum.fixed = clientDisplay ? (clientDisplay.fixed || false) : false;
+    datum.px = datum.x;
+    datum.py = datum.y;
 
     datum.isNew = datum.isNew || false;
     datum.hasChanges = datum.hasChanges || false;
+
+    datum.data.properties = new NodeProperties(datum.data.properties);
 
     return datum;
   };
@@ -33,25 +65,24 @@ define([
 
     json.data.clientDisplay = {
       x: node.x,
-      y: node.y,
-      fixed: node.fixed
+      y: node.y
     };
 
     var properties = {};
 
-    properties.tags = (node.data.properties.tags || []).map(function(tag) {
+    properties.tags = node.data.properties.tags.map(function(tag) {
       return { value: tag.value };
     });
 
-    properties.links = (node.data.properties.links || []).map(function(link) {
+    properties.links = node.data.properties.links.map(function(link) {
       return { value: link.value };
     });
 
-    properties.emails = (node.data.properties.emails || []).map(function(email) {
+    properties.emails = node.data.properties.emails.map(function(email) {
       return { value: email.value };
     });
 
-    properties.phoneNumbers = (node.data.properties.phoneNumbers || []).map(function(phoneNumber) {
+    properties.phoneNumbers = node.data.properties.phoneNumbers.map(function(phoneNumber) {
       return { value: phoneNumber.value };
     });
 

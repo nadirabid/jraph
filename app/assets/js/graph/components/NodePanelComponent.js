@@ -13,32 +13,6 @@ define([
     this.editing_ = false;
   }
 
-  function NodeProperties(nodeProperties) {
-    if (!nodeProperties || nodeProperties.constructor == Array) {
-      nodeProperties = Object.create(null);
-    }
-
-    var tags = nodeProperties.tags || [];
-    this.tags = tags.map(function(tag) {
-      return new NodeProperty(tag);
-    });
-
-    var links = nodeProperties.links || [];
-    this.links = links.map(function(link) {
-      return new NodeProperty(link);
-    });
-
-    var emails = nodeProperties.emails || [];
-    this.emails = emails.map(function(email) {
-      return new NodeProperty(email);
-    });
-
-    var phoneNumbers = nodeProperties.phoneNumbers || [];
-    this.phoneNumbers = phoneNumbers.map(function(phoneNumber) {
-      return new NodeProperty(phoneNumber);
-    });
-  }
-
   return Vue.extend({
 
     template: document.getElementById('node.panel').innerHTML,
@@ -92,8 +66,8 @@ define([
     methods: {
 
       doesNodeHaveUnsavedChanges: function() {
-        return !_.isEqual(this.node._savedProperties, this.node.data.properties) ||
-            this.node.data.name !== this.node._savedName;
+        return !_.isEqual(this.node._data.properties, this.node.data.properties) ||
+            this.node.data.name !== this.node._data.name;
       },
 
       closePanel: function() {
@@ -398,16 +372,16 @@ define([
 
               self.saving = false;
               self.node = node;
-              self.node._savedName = node.data.name;
-              self.node._savedProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+              self.node._data.name = node.data.name;
+              self.node._data.properties = _.cloneDeep(node.data.properties);
             });
 
         this.saving = true;
       },
 
       cancelEdits: function() {
-        this.node.data.name = this.node._savedName;
-        this.node.data.properties = new NodeProperties(_.cloneDeep(this.node._savedProperties));
+        this.node.data.name = this.node._data.name;
+        this.node.data.properties = _.cloneDeep(this.node._data.properties);
 
         this.node.hasChanges = false;
       },
@@ -417,22 +391,10 @@ define([
 
         node.isNodeInfoDisplayed = true;
 
-        if (!node.data) {
-          this.$add('node.data', { properties: new NodeProperties() });
-        }
-        else if (!node.data.properties) {
-          this.$add('node.data.properties', new NodeProperties());
-        }
-        else if (node.data.properties.constructor != NodeProperties) {
-          this.$set('node.data.properties', new NodeProperties(node.data.properties));
-        }
-
-        if (!this.node._savedName) {
-          this.node._savedName = this.node.data.name;
-        }
-
-        if (!this.node._savedProperties) {
-          this.node._savedProperties = new NodeProperties(_.cloneDeep(node.data.properties));
+        if (!node._data) {
+          node._data = {};
+          node._data.name = node.data.name;
+          node._data.properties = _.cloneDeep(node.data.properties);
         }
       }
 
