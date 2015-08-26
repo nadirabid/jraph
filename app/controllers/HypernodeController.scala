@@ -6,7 +6,7 @@ import java.util.UUID
 import com.mohiva.play.silhouette.api.{Silhouette, Environment}
 import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
 import models.daos.HypernodeDAO
-import models.{Hypernode, User}
+import models._
 import org.joda.time.DateTime
 import play.api.i18n.MessagesApi
 
@@ -25,7 +25,7 @@ class HypernodeController @Inject() (
       UUID.randomUUID(),
       DateTime.now,
       DateTime.now,
-      (req.body \ "data").asOpt[JsObject]
+      (req.body \ "data").as[HypernodeData]
     )
 
     hypernodeDAO.create(req.identity.email, hypergraphID, model)
@@ -51,7 +51,7 @@ class HypernodeController @Inject() (
       hypernodeID,
       DateTime.now,
       null,
-      (req.body \ "data").asOpt[JsObject]
+      (req.body \ "data").as[HypernodeData]
     )
 
     hypernodeDAO.update(req.identity.email, hypergraphID, model)
@@ -60,7 +60,7 @@ class HypernodeController @Inject() (
 
   def batchUpdate(hypergraphID: UUID) = SecuredAction.async(parse.json) { req =>
     val models = (req.body \ "data").as[Seq[JsObject]].map { json =>
-      Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").asOpt[JsObject])
+      Hypernode((json \ "id").as[UUID], DateTime.now, null, (json \ "data").as[HypernodeData])
     }
 
     hypernodeDAO.batchUpdate(req.identity.email, hypergraphID, models)

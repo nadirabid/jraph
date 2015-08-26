@@ -18,11 +18,20 @@ import core.cypher.{Cypher, Neo4jConnection}
 
 import scala.concurrent.Future
 
-import models.Hypernode
+import models.{HypernodeData, Hypernode}
 
 class HypernodeDAO @Inject() (ws: WSClient,
                               configuration: Configuration,
                               implicit val neo4jConnection: Neo4jConnection) {
+
+  implicit val hypernodeReads = new Reads[Hypernode] {
+    def reads(hypernodeJson: JsValue) = JsSuccess(Hypernode(
+      (hypernodeJson \ "id").as[UUID],
+      (hypernodeJson \ "updatedAt").as[DateTime],
+      (hypernodeJson \ "createdAt").as[DateTime],
+      Json.parse((hypernodeJson \ "data").as[String]).as[HypernodeData]
+    ))
+  }
 
   def create(userEmail: String,
              hypergraphID: UUID,
@@ -43,7 +52,7 @@ class HypernodeDAO @Inject() (ws: WSClient,
           "id" -> hypernode.id,
           "createdAt" -> hypernode.createdAt.getMillis,
           "updatedAt" -> hypernode.updatedAt.getMillis,
-          "data" -> Json.stringify(hypernode.data.getOrElse(JsNull))
+          "data" -> Json.stringify(Json.toJson(hypernode.data))
         )
       ))
       .map(_.rows.head(0).as[Hypernode])
@@ -88,7 +97,16 @@ class HypernodeDAO @Inject() (ws: WSClient,
         "hypergraphID" -> hypergraphID,
         "userEmail" -> userEmail
       ))
-      .map(_.rows.map(row => row(0).as[Hypernode]))
+      .map(_.rows.map { row =>
+        val hypernodeJson = row(0)
+
+        Hypernode(
+          (hypernodeJson \ "id").as[UUID],
+          (hypernodeJson \ "updatedAt").as[DateTime],
+          (hypernodeJson \ "createdAt").as[DateTime],
+          Json.parse((hypernodeJson \ "data").as[String]).as[HypernodeData]
+        )
+      })
   }
 
   def update(userEmail: String,
@@ -105,7 +123,7 @@ class HypernodeDAO @Inject() (ws: WSClient,
     Cypher(cypherUpdate)
       .apply(Json.obj(
         "hypernodeID" -> hypernode.id,
-        "data" -> Json.stringify(hypernode.data.getOrElse(JsNull)),
+        "data" -> Json.stringify(Json.toJson(hypernode.data)),
         "updatedAt" -> hypernode.updatedAt.getMillis
       ))
       .map(_.rows.head(0).as[Hypernode])
@@ -121,13 +139,6 @@ class HypernodeDAO @Inject() (ws: WSClient,
         | SET hn.data = {data}, hn.updatedAt = {updatedAt}
         | RETURN hn;
       """.stripMargin
-
-    implicit val hypernodeReads: Reads[Hypernode] = (
-        ((JsPath \ "row")(0) \ "id").read[UUID] and
-        ((JsPath \ "row")(0) \ "createdAt").read[DateTime] and
-        ((JsPath \ "row")(0) \ "updatedAt").read[DateTime] and
-        ((JsPath \ "row")(0) \ "data").read[String].map(Json.parse(_).asOpt[JsObject])
-      )(Hypernode.apply _)
 
     val dbUsername = configuration.getString("neo4j.username").get
     val dbPassword = configuration.getString("neo4j.password").get
@@ -146,7 +157,7 @@ class HypernodeDAO @Inject() (ws: WSClient,
           "statement" -> cypherUpdate,
           "parameters" -> Json.obj(
             "hypernodeID" -> node.id,
-            "data" -> Json.stringify(node.data.getOrElse(JsNull)),
+            "data" -> Json.stringify(Json.toJson(node.data)),
             "updatedAt" -> node.updatedAt.getMillis
           )
         )
@@ -160,7 +171,9 @@ class HypernodeDAO @Inject() (ws: WSClient,
 
     // TODO: need to sanitize the response before returning it to client
     holder.post(neo4jReqJson).map { neo4jRes =>
-      ((neo4jRes.json \ "results")(0) \ "data").as[Seq[Hypernode]]
+      ((neo4jRes.json \ "results")(0) \ "data").as[Seq[JsObject]].map { result =>
+        (result \ "row")(0).as[Hypernode]
+      }
     }
   }
 
