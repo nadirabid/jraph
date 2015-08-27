@@ -233,6 +233,7 @@ define([
       },
 
       onForceLayoutEnd: function() {
+        console.log('on force layout end');
         this.saveAllGraphData();
         this.forceLayoutSettings.isRunning = false;
       },

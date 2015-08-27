@@ -44,7 +44,7 @@ define([
   var edgesMap = Object.create(null);
   var nodeComponentsMap = Object.create(null);
 
-  var hypergraphID = _graph.id;
+  var hypergraphID = _graphData.graph.id;
 
   ///
   /// MAIN APP CODE
@@ -131,7 +131,7 @@ define([
       hypergraphID: hypergraphID,
       nodeState: 'initial',
       dataState: 'SAVED', // UNSAVED/SAVING/SAVED
-      graph: _graph, // _graph is bootstrapped into the main.scala.html view
+      graph: _graphData.graph, // _graph is bootstrapped into the main.scala.html view
       nodes: [],
       edges: [],
       nodeInfoToDisplay: null,
@@ -223,21 +223,31 @@ define([
 
   // fetch data
 
-  $.when(NodeDAO.fetchAll(hypergraphID), EdgeDAO.fetchAll(hypergraphID))
-      .done(function (nodes, links) {
-        nodes.forEach(function (n) {
-          links.forEach(function (l) {
-            if (l.sourceId == n.id) l.source = n;
-            if (l.targetId == n.id) l.target = n;
+  function processBootstrappedGraphData() {
+    var nodes = _.map(_graphData.nodes, function(node) {
+      return NodeDAO.parseJSON(node);
+    });
 
-            var targets = edgesMap[l.sourceId] || (edgesMap[l.sourceId] = {});
-            targets[l.targetId] = l;
-          });
-        });
 
-        app.nodes = nodes;
-        app.edges = links;
+    var links = _.map(_graphData.edges, function(edge) {
+      return EdgeDAO.parseJSON(edge);
+    });
 
-        app.$.graphComponent.initializeForceLayout();
+    nodes.forEach(function (n) {
+      links.forEach(function (l) {
+        if (l.sourceId == n.id) l.source = n;
+        if (l.targetId == n.id) l.target = n;
+
+        var targets = edgesMap[l.sourceId] || (edgesMap[l.sourceId] = {});
+        targets[l.targetId] = l;
       });
+    });
+
+    app.nodes = nodes;
+    app.edges = links;
+
+    app.$.graphComponent.initializeForceLayout();
+  }
+
+  processBootstrappedGraphData();
 });

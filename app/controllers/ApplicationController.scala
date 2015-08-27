@@ -63,12 +63,23 @@ class ApplicationController @Inject() (
   }
 
   def hypergraph(hypergraphID: UUID) = SecuredAction.async { req =>
-    hypergraphDAO.read(req.identity.email, hypergraphID).map {
-      case Some(hypergraph) => Ok(views.html.graph.main(
-        Json.toJson(hypergraph),
-        Codecs.md5(req.identity.email.trim.toLowerCase.getBytes)
-      ))
-      case None => Redirect(routes.ApplicationController.userGraphs())
+    hypergraphDAO.read(req.identity.email, hypergraphID).flatMap {
+      case Some(hypergraph) => {
+        for {
+          nodes <- hypernodeDAO.readAll(req.identity.email, hypergraphID)
+          edges <- edgeDAO.readAll(req.identity.email, hypergraphID)
+        } yield {
+          val hypergraphData = (hypergraph, nodes, edges)
+
+          Ok(views.html.graph.main(
+            Json.toJson(hypergraphData),
+            Codecs.md5(req.identity.email.trim.toLowerCase.getBytes)
+          ))
+        }
+      }
+      case None => Future.successful {
+        Redirect(routes.ApplicationController.userGraphs())
+      }
     }
   }
 

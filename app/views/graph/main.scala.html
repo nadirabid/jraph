@@ -2,7 +2,7 @@
 
 @import play.api.libs.json.Json
 
-@layout("JRAPH: " + (graph \ "data" \ "name").as[String]) {
+@layout("JRAPH: " + (graph \ "graph" \ "data" \ "name").as[String]) {
   <div id="all">
     <x-nav
         data-state="{{@@ dataState }}"
@@ -62,6 +62,6 @@
   @templates.forceLayoutPanel()
 
   <script>
-    var _graph = @Html(Json.stringify(graph));
+    var _graphData = @Html(Json.stringify(graph));
   </script>
 }
