@@ -14,9 +14,11 @@ nav {
 
 nav > .nav-item {
     display: -webkit-flex;
-    display: flex;
+    -webkit-align-items: center;
 
+    display: flex;
     align-items: center;
+
     padding:0 5px;
 }
 
@@ -48,17 +50,49 @@ nav > .app-logo:hover {
 /* graph name */
 
 nav > .graph-name {
-    -webkit-flex:0 0 236px;
-    flex:0 0 236px;
+    -webkit-flex: 0 0 236px;
+    flex: 0 0 236px;
 
-    border-right:solid 1px #ddd;
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-align-items: flex-start;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+
+    border-right: solid 1px #ddd;
+}
+
+.graph-name > .data-state {
+    display: -webkit-flex;
+    -webkit-align-content: flex-start;
+
+    display: flex;
+    align-items: flex-start;
+
+    height:20px;
+
+    font-size:11px;
+    color:#aaa;
+}
+
+.graph-name > div:first-child {
+    -webkit-flex: 1;
+    display: -webkit-flex;
+    -webkit-align-items: flex-end;
+
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
 }
 
 .graph-name > div:first-child > span {
     cursor: pointer;
     font-weight: 600;
-    font-size: 16px;
-    color: #666;
+    font-size: 17px;
+    color: #555;
 }
 
 .graph-name > div:first-child > span:hover {
@@ -68,9 +102,9 @@ nav > .graph-name {
 
 .graph-name > div:first-child > input {
     display: inline;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 600;
-    color: #666;
+    color: #555;
 }
 
 /* utilities */
