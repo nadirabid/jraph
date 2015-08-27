@@ -158,7 +158,12 @@ define([
           markedForDeletion: false,
           data: {
             name: 'Node Name',
-            properties: {}
+            properties: {
+              tags: [],
+              links: [],
+              emails: [],
+              phoneNumbers: []
+            }
           }
         };
 
