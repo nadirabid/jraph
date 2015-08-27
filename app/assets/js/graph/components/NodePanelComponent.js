@@ -23,8 +23,7 @@ define([
         type: String
       },
       'node': {
-        required: true,
-        type: Object
+        required: true
       }
     },
 
@@ -70,8 +69,17 @@ define([
             this.node.data.name !== this.node._data.name;
       },
 
+      setStateForNodeNoLongerShownInPanel: function(node) {
+        node.isNodeInfoDisplayed = false;
+
+        if (node.isNew) {
+          node.markedForDeletion = true;
+        }
+      },
+
       closePanel: function() {
-        this.$parent.nodeInfoToDisplay = null;
+        this.setStateForNodeNoLongerShownInPanel(this.node);
+        this.node = null;
       },
 
       updateDimensionsAndPosition: function() {
@@ -403,7 +411,7 @@ define([
     watch: {
       'node': function(newNodeVal, oldNodeVal) {
         if (oldNodeVal) {
-          oldNodeVal.isNodeInfoDisplayed = false;
+          this.setStateForNodeNoLongerShownInPanel(oldNodeVal);
         }
 
         this.initializeData();
@@ -413,6 +421,11 @@ define([
         }
         else {
           this.$$.nameInput.blur();
+        }
+      },
+      'node.markedForDeletion': function(markedForDeletion) {
+        if (markedForDeletion) {
+          this.closePanel();
         }
       }
     },
@@ -433,29 +446,17 @@ define([
       var self = this;
 
       Mousetrap.bind('esc', function() {
-        self.$parent.nodeInfoToDisplay = null;
-      });
-
-      this.$watch('node.markedForDeletion', function(markedForDeletion) {
-        if (markedForDeletion === true) {
-          self.$parent.nodeInfoToDisplay = null;
-        }
+        self.closePanel();
       });
 
       if (this.node.markedForDeletion) {
-        this.$parent.nodeInfoToDisplay = null;
+        this.closePanel();
       }
     },
 
     beforeDestroy: function() {
       Mousetrap.unbind('esc');
       window.removeEventListener('resize', this.$updateDimensionsAndPosition);
-
-      this.node.isNodeInfoDisplayed = false;
-
-      if (this.node.isNew) {
-        this.node.markedForDeletion = true;
-      }
     }
 
   });
