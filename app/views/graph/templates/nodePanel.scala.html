@@ -199,7 +199,7 @@
         </button>
         <button
             v-class="hidden: node.isNew || !node.hasChanges, disabled: saving"
-            v-on="click:saveNode"
+            v-on="click: updateNode"
         >
             Save
         </button>

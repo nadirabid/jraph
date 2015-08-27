@@ -363,7 +363,7 @@ define([
         this.saving = true;
       },
 
-      saveNode: function() {
+      updateNode: function() {
         var self = this;
 
         NodeDAO.update(this.hypergraphID, [ this.node ])
