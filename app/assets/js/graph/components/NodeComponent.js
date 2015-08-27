@@ -112,7 +112,7 @@ define([
 
     this.dragend = function () {
       if (ctx.dragFlag) {
-        ctx.$parent.$parent.dataState = 'UNSAVED';
+        ctx.updateNode();
       }
 
       Vue.nextTick(function() {
@@ -206,6 +206,9 @@ define([
         required: true
       },
       nodeState: {
+        required: true
+      },
+      dataState: {
         required: true
       },
       centerViewTo: {
@@ -462,6 +465,19 @@ define([
         this.$unwatch.isNodeInfoDisplayed();
       },
 
+      updateNode: function() {
+        var self = this;
+
+        NodeDAO.update(this.id, [ this.$data ])
+            .done(function(nodes) {
+              var node = nodes[0];
+
+              self.dataState = 'SAVED';
+              _.merge(self.$data, node);
+            });
+
+        this.dataState = 'SAVING';
+      },
 
       deleteNode: function() {
         var self = this;
