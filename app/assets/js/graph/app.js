@@ -46,6 +46,31 @@ define([
 
   var hypergraphID = _graphData.graph.id;
 
+
+  function processBootstrappedGraphData(app) {
+    var nodes = _.map(_graphData.nodes, function(node) {
+      return NodeDAO.parseJSON(node);
+    });
+
+
+    var links = _.map(_graphData.edges, function(edge) {
+      return EdgeDAO.parseJSON(edge);
+    });
+
+    nodes.forEach(function (n) {
+      links.forEach(function (l) {
+        if (l.sourceId == n.id) l.source = n;
+        if (l.targetId == n.id) l.target = n;
+
+        var targets = edgesMap[l.sourceId] || (edgesMap[l.sourceId] = {});
+        targets[l.targetId] = l;
+      });
+    });
+
+    app.nodes = nodes;
+    app.edges = links;
+  }
+
   ///
   /// MAIN APP CODE
   ///
@@ -217,37 +242,12 @@ define([
             });
       }
 
+    },
+
+    ready: function() {
+      processBootstrappedGraphData(this);
     }
 
   });
 
-  // fetch data
-
-  function processBootstrappedGraphData() {
-    var nodes = _.map(_graphData.nodes, function(node) {
-      return NodeDAO.parseJSON(node);
-    });
-
-
-    var links = _.map(_graphData.edges, function(edge) {
-      return EdgeDAO.parseJSON(edge);
-    });
-
-    nodes.forEach(function (n) {
-      links.forEach(function (l) {
-        if (l.sourceId == n.id) l.source = n;
-        if (l.targetId == n.id) l.target = n;
-
-        var targets = edgesMap[l.sourceId] || (edgesMap[l.sourceId] = {});
-        targets[l.targetId] = l;
-      });
-    });
-
-    app.nodes = nodes;
-    app.edges = links;
-
-    app.$.graphComponent.initializeForceLayout();
-  }
-
-  processBootstrappedGraphData();
 });

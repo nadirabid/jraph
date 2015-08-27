@@ -34,10 +34,9 @@ define([
 
     data: function () {
       return {
+        initialForceLayoutStopCalled: false,
         isZooming: false,
         isPanning: false,
-        nodes: [],
-        edges: [],
         width: 0,
         height: 0,
         minX: 0,
@@ -228,25 +227,15 @@ define([
         this.showGraphContextMenu(e.clientX, e.clientY);
       },
 
-      initializeForceLayout: function() {
-        this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
-      },
-
       onForceLayoutEnd: function() {
-        console.log('on force layout end');
-        this.saveAllGraphData();
-        this.forceLayoutSettings.isRunning = false;
-      },
-
-      restartForceLayoutIfRunning: function() {
-        if (this.forceLayoutSettings.isRunning) {
-          this.forceLayoutSettings.isRunning = false;
-
-          var self = this;
-          Vue.nextTick(function() {
-            self.forceLayoutSettings.isRunning = true;
-          });
+        if (this.initialForceLayoutStopCalled) {
+          this.saveAllGraphData();
         }
+        else {
+          this.forceLayoutSettings.isRunning = false;
+        }
+
+        this.initialForceLayoutStopCalled = true;
       }
 
     },
@@ -315,6 +304,21 @@ define([
 
     created: function () {
       window.addEventListener('resize', this.resize.bind(this));
+
+      var forceLayoutParameters = this.forceLayoutSettings.parameters;
+      this.$forceLayout = d3.layout.force()
+          .size([this.width, this.height])
+          .alpha(forceLayoutParameters.alpha)
+          .theta(forceLayoutParameters.theta)
+          .friction(forceLayoutParameters.friction)
+          .gravity(forceLayoutParameters.gravity)
+          .charge(forceLayoutParameters.charge)
+          .chargeDistance(forceLayoutParameters.chargeDistance)
+          .linkDistance(forceLayoutParameters.linkDistance)
+          .linkStrength(forceLayoutParameters.linkStrength)
+          .stop();
+
+      this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     },
 
     ready: function() {
@@ -330,19 +334,6 @@ define([
       $svg.on('dragstart', this.panStart.bind(this));
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
-
-      var forceLayoutParameters = this.forceLayoutSettings.parameters;
-      this.$forceLayout = d3.layout.force()
-          .size([this.width, this.height])
-          .alpha(forceLayoutParameters.alpha)
-          .theta(forceLayoutParameters.theta)
-          .friction(forceLayoutParameters.friction)
-          .gravity(forceLayoutParameters.gravity)
-          .charge(forceLayoutParameters.charge)
-          .chargeDistance(forceLayoutParameters.chargeDistance)
-          .linkDistance(forceLayoutParameters.linkDistance)
-          .linkStrength(forceLayoutParameters.linkStrength)
-          .stop();
     }
 
   });
