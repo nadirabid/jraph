@@ -40,9 +40,9 @@ define([
 
       dataStateDisplayValue: function() {
         switch(this.dataState) {
-          case 'UNSAVED': return 'Save';
-          case 'SAVING': return 'Saving';
-          case 'SAVED': return 'Saved';
+          case 'UNSAVED': return 'Unsaved changes exist';
+          case 'SAVING': return 'Saving...';
+          case 'SAVED': return 'All changes saved';
         }
       },
 
