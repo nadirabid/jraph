@@ -462,7 +462,8 @@ define([
         this.$unwatch.isNodeInfoDisplayed();
       },
 
-      delete: function() {
+
+      deleteNode: function() {
         var self = this;
 
         var hypergraphID = this.$parent.$options.hypergraphID;
