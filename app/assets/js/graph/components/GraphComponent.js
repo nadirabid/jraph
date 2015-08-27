@@ -25,7 +25,10 @@ define([
       },
       showGraphContextMenu: {
         required: true,
-        type: Function,
+        type: Function
+      },
+      dataState: {
+        required: true
       },
       nodeState: {
         required: true
