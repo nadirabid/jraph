@@ -371,7 +371,7 @@ define([
               var node = nodes[0];
 
               self.saving = false;
-              self.node = node;
+              _.merge(self.node, node);
               self.node._data.name = node.data.name;
               self.node._data.properties = _.cloneDeep(node.data.properties);
             });
