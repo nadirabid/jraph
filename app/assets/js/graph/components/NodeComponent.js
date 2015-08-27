@@ -444,24 +444,6 @@ define([
         }
       },
 
-      delete: function() {
-        var self = this;
-
-        var hypergraphID = this.$parent.$options.hypergraphID;
-        var graphComponent = this.$parent;
-
-        NodeDAO.delete(hypergraphID, this)
-            .done(function() {
-              self.markedForDeletion = true;
-
-              graphComponent.edges = graphComponent.edges.filter(function(l) {
-                return l.sourceId != self.id && l.targetId != self.id;
-              });
-
-              graphComponent.nodes.$remove(self.$index);
-            });
-      },
-
       enableWatchersForCalculateRectBoundingEdges: function() {
         this.$unwatch.x =                   this.$watch('x',                    this.calculateRectBoundingEdges.bind(this));
         this.$unwatch.y =                   this.$watch('y',                    this.calculateRectBoundingEdges.bind(this));
@@ -478,6 +460,24 @@ define([
         this.$unwatch.height();
         this.$unwatch.isNewEdgeNode();
         this.$unwatch.isNodeInfoDisplayed();
+      },
+
+      delete: function() {
+        var self = this;
+
+        var hypergraphID = this.$parent.$options.hypergraphID;
+        var graphComponent = this.$parent;
+
+        NodeDAO.delete(hypergraphID, this)
+            .done(function() {
+              self.markedForDeletion = true;
+
+              graphComponent.edges = graphComponent.edges.filter(function(l) {
+                return l.sourceId != self.id && l.targetId != self.id;
+              });
+
+              graphComponent.nodes.$remove(self.$index);
+            });
       },
 
       mouseover: function () {
