@@ -37,6 +37,8 @@ define([
 ) {
   'use strict';
 
+  Vue.config.strict = true;
+
   ///
   /// DEFINITIONS
   ///
