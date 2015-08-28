@@ -1,0 +1,23 @@
+.graph-help-tip {
+    border-radius: 3px;
+    position: absolute;
+    top: 12px;
+    left: 460px;
+    background-color: #0097A7;
+    border: 1px solid #00838F;
+    color: #eee;
+    font-size: 12px;
+    padding: 4px 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    display: flex;
+}
+
+.graph-help-tip > .tip {
+    flex: 1;
+    padding: 0 0 0 18px;
+}
+
+.graph-help-tip > .close {
+    padding: 0 9px;
+}

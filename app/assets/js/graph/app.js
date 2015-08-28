@@ -15,7 +15,8 @@ define([
     'graph/components/GraphControlsComponent',
     'graph/components/ContextMenuComponent',
     'graph/components/NodePanelComponent',
-    'graph/components/ForceLayoutPanelComponent'
+    'graph/components/ForceLayoutPanelComponent',
+    'graph/components/HelpTipComponent'
 ], function (
     _,
     $,
@@ -33,7 +34,8 @@ define([
     GraphControlsComponent,
     ContextMenuComponent,
     NodePanelComponent,
-    ForceLayoutPanelComponent
+    ForceLayoutPanelComponent,
+    HelpTipComponent
 ) {
   'use strict';
 
@@ -113,6 +115,7 @@ define([
 
   });
 
+  Vue.component('x-help-tip', HelpTipComponent);
   Vue.component('x-force-layout-panel', ForceLayoutPanelComponent);
   Vue.component('x-node-panel', NodePanelComponent);
   Vue.component('x-graph-controls', GraphControlsComponent);
@@ -163,6 +166,14 @@ define([
       edges: [],
       nodeInfoToDisplay: null,
       forceLayoutSettings: new ForceLayoutSettings()
+    },
+
+    computed: {
+
+      showHowToCreateNodeTip: function() {
+        return this.nodes.length === 0;
+      }
+
     },
 
     methods: {

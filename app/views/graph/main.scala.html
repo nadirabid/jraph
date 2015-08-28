@@ -12,6 +12,8 @@
     </x-nav>
 
     <main id="main">
+      <x-help-tip v-if="showHowToCreateNodeTip"></x-help-tip>
+
       <x-force-layout-panel
           v-if="forceLayoutSettings.isPanelOpen"
           force-layout-settings="{{@@ forceLayoutSettings }}">
@@ -61,6 +63,7 @@
   @templates.graphControls()
   @templates.nodePanel()
   @templates.forceLayoutPanel()
+  @templates.helpTip()
 
   <script>
     var _graphData = @Html(Json.stringify(graph));
