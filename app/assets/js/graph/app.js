@@ -242,7 +242,11 @@ define([
           return !node.isNew;
         });
 
-        var updateNodesPromise = NodeDAO.update(hypergraphID, nodesToSave);
+        var updateNodesPromise = null;
+        if (nodesToSave.length) {
+           updateNodesPromise = NodeDAO.update(hypergraphID, nodesToSave);
+        }
+
         var updateGraphPromise = HypergraphDAO.update(this.graph);
 
         var self = this;

@@ -1,8 +1,6 @@
 @(graph: play.api.libs.json.JsValue, userHash: String)
 
-@import play.api.libs.json.Json
-
-@layout("JRAPH: " + (graph \ "graph" \ "data" \ "name").as[String]) {
+@layout("JRAPH: " + (graph \ "graph" \ "data" \ "name").as[String], graph) {
   <div id="all">
     <x-nav
         data-state="{{@@ dataState }}"
@@ -64,8 +62,4 @@
   @templates.nodePanel()
   @templates.forceLayoutPanel()
   @templates.helpTip()
-
-  <script>
-    var _graphData = @Html(Json.stringify(graph));
-  </script>
 }

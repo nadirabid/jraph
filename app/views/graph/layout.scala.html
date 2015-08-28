@@ -1,4 +1,6 @@
-@(title: String)(content: Html)
+@(title: String, dataToBootstrap: play.api.libs.json.JsValue)(content: Html)
+
+@import play.api.libs.json.Json
 
 <!DOCTYPE html>
 
@@ -24,10 +26,15 @@
   </head>
   <body>
     @content
+  </body>
 
-    <script src="@routes.Assets.at("js/libs/require.js")"></script>
+  <script>
+    var _graphData = @Html(Json.stringify(dataToBootstrap));
+  </script>
 
-    <script>
+  <script src="@routes.Assets.at("js/libs/require.js")"></script>
+
+  <script>
       'use strict';
 
       requirejs.config({
@@ -48,5 +55,4 @@
         });
       });
     </script>
-  </body>
 </html>
