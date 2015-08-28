@@ -307,21 +307,6 @@ define([
 
     created: function () {
       window.addEventListener('resize', this.resize.bind(this));
-
-      var forceLayoutParameters = this.forceLayoutSettings.parameters;
-      this.$forceLayout = d3.layout.force()
-          .size([this.width, this.height])
-          .alpha(forceLayoutParameters.alpha)
-          .theta(forceLayoutParameters.theta)
-          .friction(forceLayoutParameters.friction)
-          .gravity(forceLayoutParameters.gravity)
-          .charge(forceLayoutParameters.charge)
-          .chargeDistance(forceLayoutParameters.chargeDistance)
-          .linkDistance(forceLayoutParameters.linkDistance)
-          .linkStrength(forceLayoutParameters.linkStrength)
-          .stop();
-
-      this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     },
 
     ready: function() {
@@ -337,6 +322,21 @@ define([
       $svg.on('dragstart', this.panStart.bind(this));
       $svg.on('drag', this.pan.bind(this));
       $svg.on('dragend', this.panEnd.bind(this));
+
+      var forceLayoutParameters = this.forceLayoutSettings.parameters;
+      this.$forceLayout = d3.layout.force()
+          .size([this.width, this.height])
+          .alpha(forceLayoutParameters.alpha)
+          .theta(forceLayoutParameters.theta)
+          .friction(forceLayoutParameters.friction)
+          .gravity(forceLayoutParameters.gravity)
+          .charge(forceLayoutParameters.charge)
+          .chargeDistance(forceLayoutParameters.chargeDistance)
+          .linkDistance(forceLayoutParameters.linkDistance)
+          .linkStrength(forceLayoutParameters.linkStrength)
+          .stop();
+
+      this.$forceLayout.on('end', this.onForceLayoutEnd.bind(this));
     }
 
   });
