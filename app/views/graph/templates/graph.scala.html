@@ -1,7 +1,11 @@
 <template id="graph">
   <svg
       class="x-noselect graph"
-      v-on="contextmenu: contextMenu, wheel: mousewheelZoom"
+      v-on="
+          dblclick: newNode($event.clientX, $event.clientY),
+          contextmenu: contextMenu,
+          wheel: mousewheelZoom
+      "
   >
       <!-- Definitions -->
     <defs>

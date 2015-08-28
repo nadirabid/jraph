@@ -27,6 +27,10 @@ define([
         required: true,
         type: Function
       },
+      newNode: {
+        required: true,
+        type: Function
+      },
       dataState: {
         required: true
       },
