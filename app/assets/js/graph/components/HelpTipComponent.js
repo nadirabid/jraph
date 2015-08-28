@@ -19,6 +19,8 @@ define([
         var windowWidth = $(window).innerWidth();
         var helpTipWidth = $(this.$el).outerWidth();
 
+        console.log(windowWidth, helpTipWidth);
+
         this.left = (windowWidth/2) - (helpTipWidth/2);
       }
 
