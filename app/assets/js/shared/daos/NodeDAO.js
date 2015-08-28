@@ -46,9 +46,6 @@ define([
     datum.px = datum.x;
     datum.py = datum.y;
 
-    datum.isNew = datum.isNew || false;
-    datum.hasChanges = datum.hasChanges || false;
-
     datum.data.properties = new NodeProperties(datum.data.properties);
 
     return datum;

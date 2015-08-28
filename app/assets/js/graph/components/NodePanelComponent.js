@@ -31,7 +31,8 @@ define([
       return {
         padding: 0,
 
-        saving:false,
+        saving: false,
+        nodeHasChanges: false,
 
         editingNodeName: false,
         nodeNameCache: '',
@@ -64,9 +65,17 @@ define([
 
     methods: {
 
-      doesNodeHaveUnsavedChanges: function() {
-        return !_.isEqual(this.node._data.properties, this.node.data.properties) ||
-            this.node.data.name !== this.node._data.name;
+      initializeNodeData: function(node) {
+        if (!node._data) {
+          node._data = {};
+          node._data.name = node.data.name;
+          node._data.properties = _.cloneDeep(node.data.properties);
+        }
+      },
+
+      cancelEdits: function() {
+        this.node.data.name = this.node._data.name;
+        this.node.data.properties = _.cloneDeep(this.node._data.properties);
       },
 
       setStateForNodeNoLongerShownInPanel: function(node) {
@@ -105,6 +114,16 @@ define([
         });
       },
 
+      doesNodeHaveChanges: function(node) {
+        if (!node._data) {
+          return false;
+        }
+        else {
+          return !_.isEqual(node._data.properties, _.cloneDeep(node.data.properties)) ||
+              node.data.name !== node._data.name;
+        }
+      },
+
         /**
        *
        * Methods to handle updates for tag properties
@@ -135,14 +154,11 @@ define([
           this.node.data.properties.tags.push(new NodeProperty({ value: tagInputValue }));
           this.tagInputValue = '';
           this.validationError.tags.hasErrors = false;
-
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeTag: function(indexOfTag) {
         this.node.data.properties.tags.$remove(indexOfTag);
-        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
       },
 
       /**
@@ -197,8 +213,6 @@ define([
           this.node.data.properties.links.push(new NodeProperty({ value: linkInputValue }));
           this.linkInputValue = '';
           this.validationError.links.hasErrors = false;
-
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -210,13 +224,11 @@ define([
         }
         else {
           link.cachedValue_ = link.value;
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeLink: function(indexOfLink, e) {
         this.node.data.properties.links.$remove(indexOfLink);
-        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -249,8 +261,6 @@ define([
           this.node.data.properties.emails.push(new NodeProperty({ value: this.emailInputValue }));
           this.emailInputValue = '';
           this.validationError.emails.hasErrors = false;
-
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -262,13 +272,11 @@ define([
         }
         else {
           email.cachedValue_ = email.value;
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removeEmail: function(indexOfEmail, e) {
         this.node.data.properties.emails.$remove(indexOfEmail);
-        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -287,7 +295,6 @@ define([
           this.node.data.properties.phoneNumbers.push(new NodeProperty({ value: this.phoneNumberInputValue }));
           this.phoneNumberInputValue = '';
           this.validationError.phoneNumbers.hasErrors = false;
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
@@ -299,13 +306,11 @@ define([
         }
         else {
           phoneNumber.cachedValue_ = phoneNumber.value;
-          this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         }
       },
 
       removePhoneNumber: function(indexOfPhoneNumber, e) {
         this.node.data.properties.phoneNumbers.$remove(indexOfPhoneNumber);
-        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         e.stopPropagation();
       },
 
@@ -336,7 +341,6 @@ define([
           this.node.data.name = this.nodeNameCache;
         }
 
-        this.node.hasChanges = this.doesNodeHaveUnsavedChanges();
         this.editingNodeName = false;
       },
 
@@ -364,7 +368,7 @@ define([
               self.node = node;
               self.$parent.nodes.push(node);
               self.saving = false;
-              self.initializeData();
+              self.initializeNodeData(self.node);
               self.$emit('removeGhostNode');
             });
 
@@ -385,53 +389,52 @@ define([
             });
 
         this.saving = true;
-      },
-
-      cancelEdits: function() {
-        this.node.data.name = this.node._data.name;
-        this.node.data.properties = _.cloneDeep(this.node._data.properties);
-
-        this.node.hasChanges = false;
-      },
-
-      initializeData: function() {
-        var node = this.node;
-
-        node.isNodeInfoDisplayed = true;
-
-        if (!node._data) {
-          node._data = {};
-          node._data.name = node.data.name;
-          node._data.properties = _.cloneDeep(node.data.properties);
-        }
       }
 
     },
 
     watch: {
+
       'node': function(newNodeVal, oldNodeVal) {
         if (oldNodeVal) {
           this.setStateForNodeNoLongerShownInPanel(oldNodeVal);
         }
 
-        this.initializeData();
+        newNodeVal.isNodeInfoDisplayed = true;
 
-        if (this.node.isNew) {
+        this.initializeNodeData(newNodeVal);
+
+        if (newNodeVal.isNew) {
           this.editName();
         }
         else {
           this.$$.nameInput.blur();
         }
       },
+
+      'node.data.properties': {
+        handler: function() {
+          this.nodeHasChanges = this.doesNodeHaveChanges(this.node);
+        },
+        deep: true
+      },
+
+      'node.data.name': function() {
+        this.nodeHasChanges = this.doesNodeHaveChanges(this.node);
+      },
+
       'node.markedForDeletion': function(markedForDeletion) {
         if (markedForDeletion) {
           this.closePanel();
         }
       }
+
     },
 
     created: function() {
-      this.initializeData();
+      this.initializeNodeData(this.node);
+      this.node.isNodeInfoDisplayed = true;
+      this.nodeHasChanges = this.doesNodeHaveChanges(this.node);
     },
 
     ready: function() {
