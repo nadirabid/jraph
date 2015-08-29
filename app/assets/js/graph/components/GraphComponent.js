@@ -129,6 +129,8 @@ define([
 
         this.offset = this.$$el.offset();
 
+        this.translateViewBy((newWidth - this.width)/2, (newHeight - this.height)/2);
+
         this.width = newWidth;
         this.height = newHeight;
       },
@@ -186,6 +188,20 @@ define([
 
         Vue.nextTick(function() {
           Util.setCTM(self.$$.nodesAndLinksGroup, defaultCTM);
+        });
+      },
+
+      translateViewBy: function(dx, dy) {
+        var ctm = this.$$.nodesAndLinksGroup.getCTM();
+
+        // we don't need to muck with transform the current mouse location
+        // because all we need is the change in x and the change in y
+        var v = Util.transformVectorFromClientToEl(dx, dy, this.$$.nodesAndLinksGroup);
+
+        var self = this;
+
+        Vue.nextTick(function() {
+          Util.setCTM(self.$$.nodesAndLinksGroup, ctm.translate(v.x, v.y));
         });
       },
 
