@@ -538,15 +538,6 @@ define([
         }
       },
 
-      dblclick: function() {
-        if (this.isNew) {
-          return;
-        }
-
-        var stateEventHandlers = this.$states[ this.nodeState ];
-        return stateEventHandlers.dblclick.apply(stateEventHandlers, arguments);
-      },
-
       drag: function () {
         var stateEventHandlers = this.$states[ this.nodeState ];
         return stateEventHandlers.drag.apply(stateEventHandlers, arguments);
