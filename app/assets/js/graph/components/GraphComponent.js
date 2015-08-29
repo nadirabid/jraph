@@ -55,6 +55,14 @@ define([
       };
     },
 
+    computed: {
+
+      translateToCenter: function() {
+        return "translate(" + (this.width/2) + ", " + (this.height/2) + ")";
+      }
+
+    },
+
     methods: {
 
       incrementZoomLevel: function() {
@@ -172,14 +180,16 @@ define([
 
       resetView: function() {
         var self = this;
-        var defaultCTM = this.$el.createSVGMatrix();
+        var defaultCTM = this.$el
+            .createSVGMatrix()
+            .translate(this.width/2, this.height/2);
 
         Vue.nextTick(function() {
           Util.setCTM(self.$$.nodesAndLinksGroup, defaultCTM);
         });
       },
 
-      centerViewTo: function(x, y) {
+      centerViewTo: function(x, y, skipTransitionInterpolation) {
         var ctm = this.$$.nodesAndLinksGroup.getCTM();
         var p =  this.$el.createSVGPoint();
 
@@ -190,6 +200,11 @@ define([
 
         var dx = p.x - x;
         var dy = p.y - y;
+
+        if (skipTransitionInterpolation) {
+          Util.setCTM(this.$$.nodesAndLinksGroup, ctm.translate(dx, dy));
+          return true;
+        }
 
         if (Math.abs(dx + dy) < 1) { // view is already centered
           return false;
@@ -327,6 +342,7 @@ define([
       this.$options.edgeContextMenu = this.$parent.$options.edgeContextMenu;
 
       this.resize();
+      this.resetView();
 
       var $svg = Util(this.$el);
       $svg.on('dragstart', this.panStart.bind(this));
@@ -335,7 +351,6 @@ define([
 
       var forceLayoutParameters = this.forceLayoutSettings.parameters;
       this.$forceLayout = d3.layout.force()
-          .size([this.width, this.height])
           .alpha(forceLayoutParameters.alpha)
           .theta(forceLayoutParameters.theta)
           .friction(forceLayoutParameters.friction)
