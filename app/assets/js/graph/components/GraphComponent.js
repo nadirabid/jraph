@@ -243,6 +243,12 @@ define([
         }
 
         this.initialForceLayoutStopCalled = true;
+      },
+
+      dblclick: function(e) {
+        if (e.target == this.$$.backdrop) {
+          this.newNode(e.clientX, e.clientY);
+        }
       }
 
     },
