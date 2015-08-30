@@ -3014,7 +3014,7 @@
                 if (_.assertProp(prop, val)) {
                   child[childKey] = val
                 }
-              }, { sync: true }
+              }
           )
 
           // set the child initial value.
@@ -3036,7 +3036,7 @@
                   childKey,
                   function (val) {
                     parent.$set(parentKey, val)
-                  }, { sync: true }
+                  }
               )
             })
           }
@@ -3237,7 +3237,7 @@
       Watcher.prototype.update = function (shallow) {
         if (this.lazy) {
           this.dirty = true
-        } else if (this.sync || !config.async) {
+        } else if (!config.async) {
           this.run()
         } else {
           // if queued, only overwrite shallow with non-shallow,
