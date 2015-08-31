@@ -31,7 +31,7 @@ define([
         required: true,
         type: Function
       },
-      dataState: {
+      dataSyncState: {
         required: true
       },
       nodeState: {

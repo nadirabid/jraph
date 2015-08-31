@@ -3,7 +3,7 @@
 @layout("JRAPH: " + (graph \ "graph" \ "data" \ "name").as[String], graph) {
   <div id="all">
     <x-nav
-        data-state="{{@@ dataState }}"
+        data-sync-state="{{@@ dataSyncState }}"
         graph="{{@@ graph }}"
         on-save="{{ saveAllGraphData }}"
         is-force-layout-panel-open="{{@@ forceLayoutSettings.isPanelOpen }}">
@@ -32,7 +32,7 @@
             save-all-graph-data="{{ saveAllGraphData }}"
             show-graph-context-menu="{{ showGraphContextMenu }}"
             new-node="{{ newNode }}"
-            data-state="{{@@ dataState }}"
+            data-sync-state="{{@@ dataSyncState }}"
             node-state="{{@@ nodeState }}">
         </x-graph>
 

@@ -10,7 +10,7 @@ define([
     template: '#nav',
 
     props: {
-      dataState: {
+      dataSyncState: {
         type: String,
         required: true
       },
@@ -39,7 +39,7 @@ define([
     computed: {
 
       dataStateDisplayValue: function() {
-        switch(this.dataState) {
+        switch(this.dataSyncState) {
           case 'UNSAVED': return 'Unsaved changes exist';
           case 'SAVING': return 'Saving...';
           case 'SAVED': return 'All changes saved';
@@ -47,7 +47,7 @@ define([
       },
 
       dataStateCssClassValue: function() {
-        return this.dataState.toLowerCase();
+        return this.dataSyncState.toLowerCase();
       }
 
     },
@@ -87,13 +87,13 @@ define([
         }
         else if (this.graph.data.name !== this.cachedGraphName) {
           var self = this;
-          self.dataState = 'SAVING';
+          self.dataSyncState = 'SAVING';
 
           HypergraphDAO
               .update(this.graph)
               .done(function(graph) {
                 self.graph = graph;
-                self.dataState = 'SAVED';
+                self.dataSyncState = 'SAVED';
               });
         }
 

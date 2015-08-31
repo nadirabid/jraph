@@ -208,7 +208,7 @@ define([
       nodeState: {
         required: true
       },
-      dataState: {
+      dataSyncState: {
         required: true
       },
       centerViewTo: {
@@ -472,11 +472,11 @@ define([
             .done(function(nodes) {
               var node = nodes[0];
 
-              self.dataState = 'SAVED';
+              self.dataSyncState = 'SAVED';
               _.merge(self.$data, node);
             });
 
-        this.dataState = 'SAVING';
+        this.dataSyncState = 'SAVING';
       },
 
       deleteNode: function() {
