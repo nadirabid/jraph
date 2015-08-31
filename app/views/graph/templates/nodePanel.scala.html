@@ -203,6 +203,13 @@
         >
             Save
         </button>
+
+        <button
+            v-class="hidden: !node.isNew, disabled: saving"
+            v-on="click: closePanel"
+        >
+            Cancel
+        </button>
         <button
             v-class="hidden: !node.isNew, disabled: saving"
             v-on="click: createNode"
