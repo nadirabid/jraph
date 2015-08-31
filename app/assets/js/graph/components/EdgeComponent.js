@@ -63,13 +63,7 @@ define([
     template: document.getElementById('graph.edge').innerHTML,
 
     props: {
-      isForceLayoutRunning: {
-        required: true
-      },
-      isZooming: {
-        required: true
-      },
-      isPanning: {
+      isViewOptimizedForSpeed: {
         required: true
       },
       nodeState: {
@@ -84,14 +78,6 @@ define([
         targetClipX: 0,
         targetClipY: 0
       };
-    },
-
-    computed: {
-
-      isViewOptimizedForSpeed: function() {
-        return this.isForceLayoutRunning || this.isZooming || this.isPanning;
-      }
-
     },
 
     methods: {

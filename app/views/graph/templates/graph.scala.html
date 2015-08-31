@@ -43,9 +43,7 @@
       <x-edge
           v-repeat="edges"
           track-by="id"
-          is-force-layout-running="{{ forceLayoutSettings.isRunning }}"
-          is-zooming="{{ isZooming }}"
-          is-panning="{{ isPanning }}"
+          is-view-optimized-for-speed="{{ isViewOptimizedForSpeed }}"
           node-state="{{ nodeState }}">
       </x-edge>
 
@@ -55,15 +53,17 @@
       <x-node
           v-repeat="nodes"
           track-by="id"
-          is-force-layout-running="{{ forceLayoutSettings.isRunning }}"
-          is-zooming="{{ isZooming }}"
-          is-panning="{{ isPanning }}"
+          is-view-optimized-for-speed="{{ isViewOptimizedForSpeed }}"
           data-sync-state="{{@@ dataSyncState }}"
           node-state="{{@@ nodeState }}"
           graph-width="{{ width }}"
           graph-height="{{ height }}"
           center-view-to="{{ centerViewTo }}">
       </x-node>
+
+      <x-new-node
+          v-if="newNode" node="{{@@ newNode }}">
+      </x-new-node>
     </g>
   </svg>
 </template>

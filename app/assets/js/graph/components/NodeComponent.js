@@ -196,13 +196,7 @@ define([
     template: document.getElementById('graph.node').innerHTML,
 
     props: {
-      isForceLayoutRunning: {
-        required: true
-      },
-      isZooming: {
-        required: true
-      },
-      isPanning: {
+      isViewOptimizedForSpeed: {
         required: true
       },
       nodeState: {
@@ -247,10 +241,6 @@ define([
 
       isNodeSelected: function() {
         return this.isNewEdgeNode || this.isNodeInfoDisplayed;
-      },
-
-      isViewOptimizedForSpeed: function() {
-        return this.isForceLayoutRunning || this.isZooming || this.isPanning;
       },
 
       backgroundWidth: function() {
