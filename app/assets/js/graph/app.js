@@ -162,7 +162,6 @@ define([
       graph: _graphData.graph, // _graph is bootstrapped into the main.scala.html view
       nodes: [],
       edges: [],
-      tempNodeToCreate: null,
       nodeInfoToDisplay: null,
       forceLayoutSettings: new ForceLayoutSettings()
     },
@@ -178,47 +177,58 @@ define([
     methods: {
 
       newNode: function(x, y) {
-        var graphComponent = this.$.graphComponent;
-
-        var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
-        var p = graphComponent.$el.createSVGPoint();
-        p.x = x;
-        p.y = y;
-        p = p.matrixTransform(ctm.inverse());
-
-        var nodeData = {
-          x: p.x,
-          y: p.y,
-          fixed: false,
-          isNew: true,
-          hasChanges: false,
-          markedForDeletion: false,
-          data: {
-            name: 'Node Name',
-            properties: {
-              tags: [],
-              links: [],
-              emails: [],
-              phoneNumbers: []
-            }
-          }
-        };
-
-        //this.nodes.push(nodeData);
-
-
-        var nodeComponent = graphComponent
-            .$addChild({ data: nodeData }, NodeComponent)
-            .$mount()
-            .$appendTo(graphComponent.$$.dynamicContent);
-
-        nodeComponent.$watch('markedForDeletion', function(markedForDeletion) {
-          if (markedForDeletion) {
-            nodeComponent.$destroy(true);
-          }
+        // remove existing new node, if one already exists
+        var indexOfExistingNewNode = _.findIndex(this.nodes, function(node) {
+          return node.id == 'new_node';
         });
 
-        this.nodeInfoToDisplay = nodeData;
+        if (indexOfExistingNewNode >= 0) {
+          this.nodeInfoToDisplay = null;
+          this.nodes.splice(indexOfExistingNewNode, 1);
+        }
+
+        var self = this;
+        Vue.nextTick(function() {
+          var graphComponent = self.$.graphComponent;
+
+          var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
+          var p = graphComponent.$el.createSVGPoint();
+          p.x = x;
+          p.y = y;
+          p = p.matrixTransform(ctm.inverse());
+
+          var nodeData = {
+            id: 'new_node',
+            x: p.x,
+            y: p.y,
+            fixed: false,
+            isNew: true,
+            hasChanges: false,
+            markedForDeletion: false,
+            data: {
+              name: 'Node Name',
+              properties: {
+                tags: [],
+                links: [],
+                emails: [],
+                phoneNumbers: []
+              }
+            }
+          };
+
+          self.nodes.push(nodeData);
+          self.nodeInfoToDisplay = nodeData;
+        });
+      },
+
+      removeNewNode: function() {
+        var indexOfExistingNewNode = _.findIndex(this.nodes, function(node) {
+          return node.id == 'new_node';
+        });
+
+        if (indexOfExistingNewNode >= 0) {
+          this.nodes.splice(indexOfExistingNewNode, 1);
+        }
       },
 
       incrementZoom: function() {
@@ -238,8 +248,6 @@ define([
       },
 
       saveAllGraphData: function() {
-        console.log("Saving all graph data...");
-
         var nodesToSave = _.filter(this.nodes, function(node) {
           return !node.isNew;
         });

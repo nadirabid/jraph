@@ -369,7 +369,6 @@ define([
               self.$parent.nodes.push(node);
               self.saving = false;
               self.initializeNodeData(self.node);
-              self.$emit('removeGhostNode');
             });
 
         this.saving = true;
@@ -451,10 +450,6 @@ define([
       Mousetrap.bind('esc', function() {
         self.closePanel();
       });
-
-      if (this.node.markedForDeletion) {
-        this.closePanel();
-      }
     },
 
     beforeDestroy: function() {

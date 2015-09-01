@@ -453,6 +453,10 @@ define([
       },
 
       updateNode: function() {
+        if (this.isNew) {
+          return;
+        }
+
         var self = this;
 
         NodeDAO.update(this.id, [ this.$data ])
@@ -479,8 +483,6 @@ define([
               graphComponent.edges = graphComponent.edges.filter(function(l) {
                 return l.sourceId != self.id && l.targetId != self.id;
               });
-
-              graphComponent.nodes.$remove(self.$index);
             });
       },
 
@@ -551,21 +553,24 @@ define([
           this.enableWatchersForCalculateRectBoundingEdges();
           this.calculateRectBoundingEdges();
         }
+      },
+      markedForDeletion: function(markedForDeletion) {
+        if(markedForDeletion) {
+          this.$parent.nodes.$remove(this.$index);
+        }
       }
     },
 
     created: function () {
-      if (!this.isNew) {
-        this.$parent.$options.nodeComponentsMap[this.id] = this;
+      this.$parent.$options.nodeComponentsMap[this.id] = this;
 
-        this.$states = {
-          initial: new InitialNodeState(this),
-          linking: new LinkingNodeState(this)
-        };
+      this.$unwatch = {};
+      this.enableWatchersForCalculateRectBoundingEdges();
 
-        this.$unwatch = {};
-        this.enableWatchersForCalculateRectBoundingEdges();
-      }
+      this.$states = {
+        initial: new InitialNodeState(this),
+        linking: new LinkingNodeState(this)
+      };
 
       this.$watch('data.name', this.updateDimensionsOfNodeRect.bind(this));
     },
