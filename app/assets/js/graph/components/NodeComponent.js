@@ -230,10 +230,7 @@ define([
         hasNodeHaloTransitionBeenExecuted: false,
         fixed: false, //d3.force doesn't pick it up if not explicitly linked
         dragFlag: false,
-        clickCount: 0,
-        data: {
-          name: ''
-        }
+        clickCount: 0
       };
     },
 
