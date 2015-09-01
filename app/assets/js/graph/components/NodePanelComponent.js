@@ -18,11 +18,15 @@ define([
     template: document.getElementById('node.panel').innerHTML,
 
     props: {
-      'hypergraphID': {
+      hypergraphID: {
         required: true,
         type: String
       },
-      'node': {
+      dataSyncState: {
+        required: true,
+        type: String
+      },
+      node: {
         required: true
       }
     },
@@ -31,7 +35,6 @@ define([
       return {
         padding: 0,
 
-        saving: false,
         nodeHasChanges: false,
 
         editingNodeName: false,
@@ -367,11 +370,11 @@ define([
               // reset data now
               self.node = node;
               self.$parent.nodes.push(node);
-              self.saving = false;
+              self.dataSyncState = 'SAVED';
               self.initializeNodeData(self.node);
             });
 
-        this.saving = true;
+        this.dataSyncState = 'SAVING';
       },
 
       updateNode: function() {
@@ -381,13 +384,13 @@ define([
             .done(function(nodes) {
               var node = nodes[0];
 
-              self.saving = false;
+              self.dataSyncState = 'SAVED';
               _.merge(self.node, node);
               self.node._data.name = node.data.name;
               self.node._data.properties = _.cloneDeep(node.data.properties);
             });
 
-        this.saving = true;
+        this.dataSyncState = 'SAVING';
       }
 
     },

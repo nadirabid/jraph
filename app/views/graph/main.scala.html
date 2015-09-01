@@ -20,7 +20,8 @@
       <x-node-panel
           v-if="nodeInfoToDisplay"
           hypergraph-id="{{ hypergraphID }}"
-          node="{{@@ nodeInfoToDisplay }}">
+          node="{{@@ nodeInfoToDisplay }}"
+          data-sync-state="{{@@ dataSyncState }}">
       </x-node-panel>
 
       <div v-el="graphContainer" class="graph-container">
