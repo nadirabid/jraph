@@ -162,6 +162,7 @@ define([
       graph: _graphData.graph, // _graph is bootstrapped into the main.scala.html view
       nodes: [],
       edges: [],
+      tempNodeToCreate: null,
       nodeInfoToDisplay: null,
       forceLayoutSettings: new ForceLayoutSettings()
     },
@@ -202,6 +203,9 @@ define([
             }
           }
         };
+
+        //this.nodes.push(nodeData);
+
 
         var nodeComponent = graphComponent
             .$addChild({ data: nodeData }, NodeComponent)

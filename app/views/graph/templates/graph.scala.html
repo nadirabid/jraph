@@ -56,14 +56,8 @@
           is-view-optimized-for-speed="{{ isViewOptimizedForSpeed }}"
           data-sync-state="{{@@ dataSyncState }}"
           node-state="{{@@ nodeState }}"
-          graph-width="{{ width }}"
-          graph-height="{{ height }}"
           center-view-to="{{ centerViewTo }}">
       </x-node>
-
-      <x-new-node
-          v-if="newNode" node="{{@@ newNode }}">
-      </x-new-node>
     </g>
   </svg>
 </template>
