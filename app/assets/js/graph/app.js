@@ -177,58 +177,43 @@ define([
     methods: {
 
       newNode: function(x, y) {
-        // remove existing new node, if one already exists
         var indexOfExistingNewNode = _.findIndex(this.nodes, function(node) {
-          return node.id == 'new_node';
+          return node.id.startsWith('new_node');
         });
 
         if (indexOfExistingNewNode >= 0) {
-          this.nodeInfoToDisplay = null;
-          this.nodes.splice(indexOfExistingNewNode, 1);
+          var previousNewNode = this.nodes[indexOfExistingNewNode];
+          previousNewNode.markedForDeletion = true;
         }
 
-        var self = this;
-        Vue.nextTick(function() {
-          var graphComponent = self.$.graphComponent;
+        var graphComponent = this.$.graphComponent;
 
-          var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
-          var p = graphComponent.$el.createSVGPoint();
-          p.x = x;
-          p.y = y;
-          p = p.matrixTransform(ctm.inverse());
+        var ctm = graphComponent.$$.nodesAndLinksGroup.getScreenCTM();
+        var p = graphComponent.$el.createSVGPoint();
+        p.x = x;
+        p.y = y;
+        p = p.matrixTransform(ctm.inverse());
 
-          var nodeData = {
-            id: 'new_node',
-            x: p.x,
-            y: p.y,
-            fixed: false,
-            isNew: true,
-            hasChanges: false,
-            markedForDeletion: false,
-            data: {
-              name: 'Node Name',
-              properties: {
-                tags: [],
-                links: [],
-                emails: [],
-                phoneNumbers: []
-              }
+        var nodeData = {
+          id: _.uniqueId('new_node_'),
+          x: p.x,
+          y: p.y,
+          isNew: true,
+          hasChanges: false,
+          markedForDeletion: false,
+          data: {
+            name: 'Node Name',
+            properties: {
+              tags: [],
+              links: [],
+              emails: [],
+              phoneNumbers: []
             }
-          };
+          }
+        };
 
-          self.nodes.push(nodeData);
-          self.nodeInfoToDisplay = nodeData;
-        });
-      },
-
-      removeNewNode: function() {
-        var indexOfExistingNewNode = _.findIndex(this.nodes, function(node) {
-          return node.id == 'new_node';
-        });
-
-        if (indexOfExistingNewNode >= 0) {
-          this.nodes.splice(indexOfExistingNewNode, 1);
-        }
+        this.nodes.push(nodeData);
+        this.nodeInfoToDisplay = nodeData;
       },
 
       incrementZoom: function() {
