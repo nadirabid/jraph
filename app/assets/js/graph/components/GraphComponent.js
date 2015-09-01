@@ -57,10 +57,6 @@ define([
 
     computed: {
 
-      translateToCenter: function() {
-        return "translate(" + (this.width/2) + ", " + (this.height/2) + ")";
-      },
-
       isViewOptimizedForSpeed: function() {
         return this.forceLayoutSettings.isRunning || this.isZooming || this.isPanning;
       }
