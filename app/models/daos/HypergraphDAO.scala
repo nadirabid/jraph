@@ -85,7 +85,8 @@ class HypergraphDAO @Inject() (implicit val neo4jConnection: Neo4jConnection) {
       """
         | MATCH           (:User { email: {userEmail} })-[OWNS_HG:OWNS_HYPERGRAPH]->(hg:Hypergraph { id: {hypergraphID} })
         | OPTIONAL MATCH  (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)
-        | DELETE          OWNS_HG, OWNS_HN, hn, hg;
+        | OPTIONAL MATCH  (hg)-[OWNS_HN:OWNS_HYPERNODE]->(hn:Hypernode)-[E:EDGE]->()
+        | DELETE          OWNS_HG, OWNS_HN, E, hn, hg;
       """.stripMargin
 
     Cypher(cypherDelete)
