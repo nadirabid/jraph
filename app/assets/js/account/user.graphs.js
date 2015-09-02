@@ -184,6 +184,27 @@ require([
 
     },
 
+    methods: {
+
+      deleteGraph: function(e) {
+        e.preventDefault();
+
+        var self = this;
+        var hypergraphID = this.graph.id;
+        
+        HypergraphDAO
+            .delete(hypergraphID)
+            .then(function() {
+              var indexOfDeletedHypergraph = _.findIndex(self.$parent.hypergraphs, function(hypergraph) {
+                return hypergraph.graph.id == hypergraphID;
+              });
+
+              self.$parent.hypergraphs.splice(indexOfDeletedHypergraph, 1);
+            });
+      }
+
+    },
+
     ready: function() {
       this.bounds = calculateViewBoundsToFitAllNodes(this.nodes);
     }

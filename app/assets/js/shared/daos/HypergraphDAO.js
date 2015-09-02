@@ -45,5 +45,13 @@ define([
     return $.getJSON('/hypergraph/' + hypergraphID);
   };
 
+  HypergraphDAO.delete = function(hypergraphID) {
+    return $
+        .ajax({
+          url: '/hypergraph/' + hypergraphID,
+          type: 'DELETE'
+        });
+  };
+
   return HypergraphDAO;
 });
