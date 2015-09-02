@@ -191,7 +191,7 @@ require([
 
         var self = this;
         var hypergraphID = this.graph.id;
-        
+
         HypergraphDAO
             .delete(hypergraphID)
             .then(function() {
