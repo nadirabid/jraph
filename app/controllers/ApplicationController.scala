@@ -40,6 +40,15 @@ class ApplicationController @Inject() (
     )
   }
 
+  def splashPage = UserAwareAction { req =>
+    req.identity match {
+      case Some(user) =>
+        Redirect(routes.ApplicationController.userGraphs())
+      case None =>
+        Ok(views.html.splashPage())
+    }
+  }
+
   def userGraphs = SecuredAction.async { req =>
     val userEmail = req.identity.email
 
