@@ -15,10 +15,6 @@ html, body {
 }
 
 .hero {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-
     display: -webkit-flex;
     display: flex;
 
@@ -26,8 +22,9 @@ html, body {
     flex-direction:row-reverse;
 
     height:100%;
-    -webkit-backdrop-filter: blur(1px);
-    -webkit-filter: none;
+
+    -webkit-justify-content:center;
+    justify-content:center;
 }
 
 .hero > .hero-content {
@@ -42,9 +39,18 @@ html, body {
 
     -webkit-align-items:center;
     align-items:center;
+}
 
-    padding-right:80px;
-    padding-bottom:40px;
+@media (min-width:992px) {
+    .hero {
+        -webkit-justify-content:flex-start;
+        justify-content:flex-start;
+    }
+
+    .hero > .hero-content {
+        padding-right:80px;
+        padding-bottom:40px;
+    }
 }
 
 .hero > .hero-content > div:not(first-child) {
