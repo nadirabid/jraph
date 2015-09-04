@@ -2,7 +2,7 @@ package core
 
 import javax.inject.Inject
 
-import core.filters.UnsupportedDeviceFilter
+import core.filters.{UnsupportedBrowserFilter, UnsupportedDeviceFilter}
 import play.api.http.HttpFilters
 import play.api.mvc.EssentialFilter
 import play.filters.csrf.CSRFFilter
@@ -16,7 +16,8 @@ import play.filters.headers.SecurityHeadersFilter
 class Filters @Inject() (csrfFilter: CSRFFilter,
                          gzipFilter: GzipFilter,
                          securityHeadersFilter: SecurityHeadersFilter,
-                         unsupportedDeviceFilter: UnsupportedDeviceFilter)
+                         unsupportedDeviceFilter: UnsupportedDeviceFilter,
+                         unsupportedBrowserFilter: UnsupportedBrowserFilter)
   extends HttpFilters {
-  override def filters: Seq[EssentialFilter] = Seq(gzipFilter, csrfFilter, unsupportedDeviceFilter)
+  override def filters: Seq[EssentialFilter] = Seq(gzipFilter, csrfFilter, unsupportedDeviceFilter, unsupportedBrowserFilter)
 }
