@@ -9,9 +9,6 @@ html, body {
     height:100%;
     margin:0;
     background-color:#fafafa;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
 }
 
 .hero {
@@ -25,6 +22,10 @@ html, body {
 
     -webkit-justify-content:center;
     justify-content:center;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .hero > .hero-content {
