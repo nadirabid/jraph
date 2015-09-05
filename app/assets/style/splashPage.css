@@ -9,6 +9,8 @@ html, body {
     height:100%;
     margin:0;
     background-color:#fafafa;
+
+    font-family: 'Raleway', sans-serif;
 }
 
 .hero {
@@ -18,10 +20,10 @@ html, body {
     -webkit-flex-direction:row-reverse;
     flex-direction:row-reverse;
 
-    height:100%;
-
     -webkit-justify-content:center;
     justify-content:center;
+
+    height:650px;
 
     background-position: center;
     background-repeat: no-repeat;
@@ -69,7 +71,6 @@ html, body {
 .header > .title {
     color: #EC407A;
     font-size:60px;
-    font-family: 'Noto Sans', sans-serif;
     text-transform:uppercase;
     margin-right:18px;
 }
@@ -93,7 +94,6 @@ html, body {
     text-align:center;
     text-transform:lowercase;
     font-size:25px;
-    font-family: 'Noto Sans', sans-serif;
     font-weight:600;
     color:#C2185B;
 }
@@ -114,8 +114,8 @@ html, body {
     display:inline-block;
     text-decoration:none;
     transition: color 200ms ease,
-    background-color 200ms ease,
-    border-color 200ms ease;
+                background-color 200ms ease,
+                border-color 200ms ease;
 }
 
 .account-buttons > a:hover {
@@ -131,5 +131,56 @@ html, body {
 
 .account-buttons > .create-account {
     background-color:#EC407A;
+    color:#fff;
+}
+
+.overview {
+    background-color:#EC407A;
+
+    display:-webkit-flex;
+    display:flex;
+
+    -webkit-justify-content: center;
+    justify-content: center;
+
+    -webkit-align-items: center;
+    align-items: center;
+
+    -webkit-flex-direction: column;
+    flex-direction:column;
+
+    padding:40px 0;
+}
+
+.overview > .graph-editor-screenshot {
+    -webkit-flex:none;
+    flex:none;
+}
+
+.overview > .graph-editor-screenshot > img {
+    width:600px;
+}
+
+@media (min-width:768px) {
+    .overview > .graph-editor-screenshot > img {
+        width:700px;
+    }
+}
+
+@media (min-width:992px) {
+    .overview > .graph-editor-screenshot > img {
+        width:900px;
+    }
+}
+
+@media (min-width:1200px) {
+    .overview > .graph-editor-screenshot > img {
+        width:1100px;
+    }
+}
+
+.overview > .caption {
+    margin-bottom: 40px;
+    font-size:24px;
     color:#fff;
 }
