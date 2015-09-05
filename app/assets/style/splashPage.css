@@ -8,7 +8,7 @@ html, body {
     width:100%;
     height:100%;
     margin:0;
-    background-color:#fafafa;
+    background-color:#fff;
 
     font-family: 'Raleway', sans-serif;
 }
@@ -134,9 +134,7 @@ html, body {
     color:#fff;
 }
 
-.overview {
-    background-color:#EC407A;
-
+main > section {
     display:-webkit-flex;
     display:flex;
 
@@ -148,6 +146,10 @@ html, body {
 
     -webkit-flex-direction: column;
     flex-direction:column;
+}
+
+.overview {
+    background-color:#EC407A;
 
     padding:40px 0;
 }
@@ -183,4 +185,29 @@ html, body {
     margin-bottom: 40px;
     font-size:24px;
     color:#fff;
+}
+
+.layout {
+    padding:40px 0;
+}
+
+.layout > .type-of-layout {
+    -webkit-display:flex;
+    display:flex;
+
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.layout > .type-of-layout:not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.layout > .type-of-layout > img {
+    width:500px;
+}
+
+.layout > .type-of-layout > .caption {
+    width:400px;
+    text-align:center;
 }
