@@ -14,6 +14,7 @@ html, body {
 }
 
 .hero {
+    position:relative;
     display: -webkit-flex;
     display: flex;
 
@@ -42,6 +43,8 @@ html, body {
 
     -webkit-align-items:center;
     align-items:center;
+
+    z-index:1;
 }
 
 @media (min-width:992px) {
