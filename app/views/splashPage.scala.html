@@ -15,6 +15,7 @@
     .link {
       stroke: #bbb;
       stroke-opacity: 1;
+      stroke-width:2px;
     }
 
     .hero {
@@ -34,8 +35,8 @@
       -webkit-transform: translateZ(0);
       -webkit-backface-visibility: hidden;
 
-      -webkit-filter:blur(5px);
-      filter:blur(5px);
+      -webkit-filter:blur(8px);
+      filter:blur(10px);
     }
 
     .hero-background > svg {
@@ -109,7 +110,7 @@
       .size([width, height]);
 
   var setIntervalID = setInterval(function() { force.alpha(0.03); }, 2000);
-  setTimeout(function() { clearTimeout(setIntervalID); }, 16000);
+  setTimeout(function() { clearTimeout(setIntervalID); }, 20000);
 
   var svg = d3.select(".hero-background").append("svg")
       .attr("width", width)
@@ -117,70 +118,70 @@
 
   var graph = {
     "nodes":[
-      {"name":"Myriel","group":1},
-      {"name":"Napoleon","group":1},
-      {"name":"Mlle.Baptistine","group":1},
-      {"name":"Mme.Magloire","group":1},
-      {"name":"CountessdeLo","group":1},
-      {"name":"Geborand","group":1},
-      {"name":"Champtercier","group":1},
-      {"name":"Cravatte","group":1},
-      {"name":"Count","group":1},
-      {"name":"OldMan","group":1},
-      {"name":"Labarre","group":2},
-      {"name":"Valjean","group":2},
-      {"name":"Marguerite","group":3},
-      {"name":"Mme.deR","group":2},
-      {"name":"Isabeau","group":2},
-      {"name":"Gervais","group":2},
-      {"name":"Tholomyes","group":3},
-      {"name":"Listolier","group":3},
-      {"name":"Fameuil","group":3},
-      {"name":"Blacheville","group":3},
-      {"name":"Favourite","group":3},
-      {"name":"Dahlia","group":3},
-      {"name":"Zephine","group":3}
+      { id: 0 },
+      { id: 1 },
+      { id: 2 },
+      { id: 3 },
+      { id: 4 },
+      { id: 5 },
+      { id: 6 },
+      { id: 7 },
+      { id: 8 },
+      { id: 9 },
+      { id: 10 },
+      { id: 11 },
+      { id: 12 },
+      { id: 13 },
+      { id: 14 },
+      { id: 15 },
+      { id: 16 },
+      { id: 17 },
+      { id: 18 },
+      { id: 19 },
+      { id: 20 },
+      { id: 21 },
+      { id: 22 },
     ],
     "links":[
-      {"source":1,"target":0,"value":1},
-      {"source":2,"target":0,"value":8},
-      {"source":3,"target":0,"value":10},
-      {"source":3,"target":2,"value":6},
-      {"source":4,"target":0,"value":1},
-      {"source":5,"target":0,"value":1},
-      {"source":6,"target":0,"value":1},
-      {"source":7,"target":0,"value":1},
-      {"source":8,"target":0,"value":2},
-      {"source":9,"target":0,"value":1},
-      {"source":11,"target":10,"value":1},
-      {"source":11,"target":3,"value":3},
-      {"source":11,"target":2,"value":3},
-      {"source":11,"target":0,"value":5},
-      {"source":12,"target":11,"value":1},
-      {"source":13,"target":11,"value":1},
-      {"source":14,"target":11,"value":1},
-      {"source":15,"target":11,"value":1},
-      {"source":17,"target":16,"value":4},
-      {"source":18,"target":16,"value":4},
-      {"source":18,"target":17,"value":4},
-      {"source":19,"target":16,"value":4},
-      {"source":19,"target":17,"value":4},
-      {"source":19,"target":18,"value":4},
-      {"source":20,"target":16,"value":3},
-      {"source":20,"target":17,"value":3},
-      {"source":20,"target":18,"value":3},
-      {"source":20,"target":19,"value":4},
-      {"source":21,"target":16,"value":3},
-      {"source":21,"target":17,"value":3},
-      {"source":21,"target":18,"value":3},
-      {"source":21,"target":19,"value":3},
-      {"source":21,"target":20,"value":5},
-      {"source":22,"target":16,"value":3},
-      {"source":22,"target":17,"value":3},
-      {"source":22,"target":18,"value":3},
-      {"source":22,"target":19,"value":3},
-      {"source":22,"target":20,"value":4},
-      {"source":22,"target":21,"value":4}
+      {"source":1,"target":0 },
+      {"source":2,"target":0 },
+      {"source":3,"target":0 },
+      {"source":3,"target":2 },
+      {"source":4,"target":0 },
+      {"source":5,"target":0 },
+      {"source":6,"target":0 },
+      {"source":7,"target":0 },
+      {"source":8,"target":0 },
+      {"source":9,"target":0 },
+      {"source":11,"target":10 },
+      {"source":11,"target":3 },
+      {"source":11,"target":2 },
+      {"source":11,"target":0 },
+      {"source":12,"target":11 },
+      {"source":13,"target":11 },
+      {"source":14,"target":11 },
+      {"source":15,"target":11 },
+      {"source":17,"target":16 },
+      {"source":18,"target":16 },
+      {"source":18,"target":17 },
+      {"source":19,"target":16 },
+      {"source":19,"target":17 },
+      {"source":19,"target":18 },
+      {"source":20,"target":16 },
+      {"source":20,"target":17 },
+      {"source":20,"target":18 },
+      {"source":20,"target":19 },
+      {"source":21,"target":16 },
+      {"source":21,"target":17 },
+      {"source":21,"target":18 },
+      {"source":21,"target":19 },
+      {"source":21,"target":20 },
+      {"source":22,"target":16 },
+      {"source":22,"target":17 },
+      {"source":22,"target":18 },
+      {"source":22,"target":19 },
+      {"source":22,"target":20 },
+      {"source":22,"target":21 }
     ]
   };
 
@@ -192,8 +193,7 @@
   var link = svg.selectAll(".link")
       .data(graph.links)
     .enter().append("line")
-      .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .attr("class", "link");
 
   var node = svg.selectAll(".node")
       .data(graph.nodes)
