@@ -4,21 +4,42 @@
   <meta charset="UTF-8">
   <title>Jraph | A simple and beautiful graph editor</title>
 
-  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Noto+Sans' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="@routes.Assets.at("style/splashPage.css")">
   <style>
-    .node {
-      fill: #777;
+    @@font-face {
+      font-family: 'Raleway';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Raleway'), url(https://fonts.gstatic.com/s/raleway/v9/UAnF6lSK1JNc1tqTiG8pNALUuEpTyoUstqEm5AMlJo4.ttf) format('truetype');
     }
 
-    .link {
-      stroke: #bbb;
-      stroke-opacity: 1;
-      stroke-width:2px;
+    * {
+      -webkit-box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      box-sizing:border-box;
+    }
+
+    html, body {
+      width:100%;
+      height:100%;
+      margin:0;
+      background-color:#fff;
+
+      font-family: 'Raleway', sans-serif;
     }
 
     .hero {
+      position:relative;
+      display: -webkit-flex;
+      display: flex;
+
+      -webkit-flex-direction:row-reverse;
+      flex-direction:row-reverse;
+
+      -webkit-justify-content:center;
+      justify-content:center;
+
+      height:650px;
+
       overflow:hidden;
     }
 
@@ -45,6 +66,205 @@
 
     .hero-background > svg {
       display:inline-block;
+    }
+
+    .hero > .hero-content {
+      display: -webkit-flex;
+      display: flex;
+
+      -webkit-flex-direction:column;
+      flex-direction:column;
+
+      -webkit-justify-content:center;
+      justify-content:center;
+
+      -webkit-align-items:center;
+      align-items:center;
+
+      z-index:1;
+    }
+
+    @@media (min-width:992px) {
+      .hero {
+        -webkit-justify-content:flex-start;
+        justify-content:flex-start;
+      }
+
+      .hero > .hero-content {
+        padding-right:80px;
+        padding-bottom:40px;
+      }
+    }
+
+    .hero > .hero-content > div:not(first-child) {
+      margin-bottom:18px;
+    }
+
+    .header {
+      display:-webkit-flex;
+      display:flex;
+
+      -webkit-align-items:center;
+      align-items:center;
+    }
+
+    .header > .title {
+      color: #EC407A;
+      font-size:60px;
+      text-transform:uppercase;
+      margin-right:18px;
+    }
+
+    .header > .app-logo {
+      width:160px;
+      background-color: transparent;
+    }
+
+    .header > .app-logo > svg {
+      height: 100%;
+      display: block; /* svg default display value for some reason adds unwated space around tag */
+    }
+
+    .header > .app-logo > svg > g > path:not(:first-child) {
+      fill: #EC407A;
+      transition: fill 140ms ease;
+    }
+
+    .motto {
+      text-align:center;
+      text-transform:lowercase;
+      font-size:25px;
+      font-weight:600;
+      color:#C2185B;
+    }
+
+    .account-buttons {
+      flex:none;
+    }
+
+    .account-buttons > a {
+      cursor:pointer;
+      padding:10px;
+      font-size:16px;
+      font-family: 'Noto Sans', sans-serif;
+      font-weight:lighter;
+      border:solid 2px #EC407A;
+      border-radius:3px;
+      text-transform:uppercase;
+      display:inline-block;
+      text-decoration:none;
+      transition: color 200ms ease,
+      background-color 200ms ease,
+      border-color 200ms ease;
+    }
+
+    .account-buttons > a:hover {
+      border-color:#F50057;
+      background-color:#F50057;
+      color:#fff;
+    }
+
+    .account-buttons > .sign-in {
+      margin-right:18px;
+      color:#EC407A;
+    }
+
+    .account-buttons > .create-account {
+      background-color:#EC407A;
+      color:#fff;
+    }
+
+    main > section {
+      display:-webkit-flex;
+      display:flex;
+
+      -webkit-justify-content: center;
+      justify-content: center;
+
+      -webkit-align-items: center;
+      align-items: center;
+
+      -webkit-flex-direction: column;
+      flex-direction:column;
+    }
+
+    .overview {
+      background-color:#EC407A;
+      padding:40px 0;
+    }
+
+    .overview > .graph-editor-screenshot {
+      -webkit-flex:none;
+      flex:none;
+    }
+
+    .overview > .graph-editor-screenshot > img {
+      width:600px;
+    }
+
+    @@media (min-width:768px) {
+      .overview > .graph-editor-screenshot > img {
+       width:700px;
+      }
+    }
+
+    @@media (min-width:992px) {
+      .overview > .graph-editor-screenshot > img {
+       width:900px;
+      }
+    }
+
+    @@media (min-width:1200px) {
+      .overview > .graph-editor-screenshot > img {
+        width:1100px;
+      }
+    }
+
+    .overview > .caption {
+      margin-bottom: 40px;
+      font-size:24px;
+      color:#fff;
+    }
+
+    .layout {
+      padding:40px 0;
+    }
+
+    .layout > .type-of-layout {
+      -webkit-display:flex;
+      display:flex;
+
+      -webkit-align-items: center;
+      align-items: center;
+
+      width:1100px;
+    }
+
+    .layout > .type-of-layout:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    .layout > .type-of-layout > img {
+      width:600px;
+      border:solid 2px #EC407A;
+      border-radius:2px;
+    }
+
+    .layout > .type-of-layout > .caption {
+      flex:1;
+      text-align:center;
+      font-size:20px;
+      color:#EC407A;
+    }
+
+    .node {
+      fill: #777;
+    }
+
+    .link {
+      stroke: #bbb;
+      stroke-opacity: 1;
+      stroke-width:2px;
     }
   </style>
 </head>
