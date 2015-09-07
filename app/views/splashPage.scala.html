@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="@routes.Assets.at("style/splashPage.css")">
   <style>
     .node {
-      fill: #666;
+      fill: #777;
     }
 
     .link {
@@ -34,10 +34,13 @@
 
       /* safari: force GPU acceleration */
       -webkit-transform: translateZ(0);
+      transform: translateZ(0);
       -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      perspective: 1000px;
 
       -webkit-filter:blur(8px);
-      filter:blur(10px);
+      filter:blur(4px);
     }
 
     .hero-background > svg {
@@ -109,9 +112,6 @@
       .gravity(0.4)
       .friction(0.3)
       .size([width, height]);
-
-  var setIntervalID = setInterval(function() { force.alpha(0.03); }, 2000);
-  setTimeout(function() { clearTimeout(setIntervalID); }, 20000);
 
   var svg = d3.select(".hero-background").append("svg")
       .attr("width", width)
